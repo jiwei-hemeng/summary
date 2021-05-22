@@ -430,7 +430,7 @@ keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keys
 **查看证书信息**
 
 ```shell
-keytool -list -v -keystore test.keystore  
+keytool -list -v -keystore test.keystore
 Enter keystore password: //输入密码，回车
 ```
 
