@@ -417,5 +417,22 @@ setx Path "%PATH%;%JAVA_HOME%\bin";
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 ```
 
+## 安卓证书
+
+**生成**
+
+>  test.keystore 是文件名； testalias 是别名
+
+```powershell
+keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keystore test.keystore
+```
+
+**查看证书信息**
+
+```shell
+keytool -list -v -keystore test.keystore  
+Enter keystore password: //输入密码，回车
+```
+
 
 
