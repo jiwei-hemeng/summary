@@ -1,0 +1,171 @@
+### 关于*var* 、 *const* 、*let* 的区别
+
+|       | 初始值   | 更改值 | 重新声明 | 变量提升 | 块级作用域 | window调用 |
+| ----- | -------- | ------ | -------- | -------- | ---------- | ---------- |
+| var   | 可有可无 | √      | √        | √        | ×          | √          |
+| const | 必须有   | ×      | ×        | ×        | √          | ×          |
+| let   | 可有可无 | √      | ×        | ×        | √          | ×          |
+
+### 箭头函数与普通函数的异同？
+
++ 普通函数 *this* 指向 window；箭头函数没有 *this* 指向，所以箭头函数的 *this* 指向上级作用域
++ 普通函数有arguments；而箭头函数没有必须使用剩余参数 *...* 
++ 箭头函数不能用于构造函数: 普通函数可以用于构造函数
+
+### Set 新的数据类型
+
+> `Set`是ES6引入的一种类似Array的新的数据结构，Set实例的成员类似于数组item成员
+>
+> `区别`是Set实例的成员都是唯一，不重复的。这个特性可以轻松地实现数组去重
+
+```js
+var arr = [1,2,3,4,5,6];
+var newArr = [...new Set(...arr)];
+```
+
+### Map 新的数据类型
+
+>  `Map`是ES6引入的一种类似`Object`的新的数据结构。
+> `Map`可以理解为是`Object`的超集，**打破了以传统键值对形式定义对象，对象的key不再局限于字符串，也可以是Object**。可以更加全面的描述对象的属性。 
+
+```js
+let myMap = new Map()
+const obj = {p: "123"}
+myMap.set(obj, "ok")
+myMap.size() // 1
+myMap.get(obj) // "ok"
+myMap.has(obj) // true
+map.delete(obj) // true
+myMap.has(obj) // false
+myMap.clear() // 清除所有
+myMap.keys() // 返回键名的遍历器
+myMap.values() // 返回值的遍历器
+```
+
+### Symbol 数据类型
+
+> synbol, 表示独一无二的值，每个symbol类型的值都不相同。特点不能使用new 关键字调用它
+
+```js
+let sy = Symbol("test");
+let sy1 = Symbol("test");
+console.log(tepeof sy) // "symbol"
+sy == sy1; // false
+```
+
+### **es6中的class**
+
+```js
+class Person {
+  constructor(age) {
+    this.age = age
+  }
+}
+class Student extends Person {
+    constructor(name){
+        // 如果有super必须写在最强面
+      	super()
+        this.name = name
+    }
+    doSth(){
+        console.log(this.name)
+    }
+}
+let s1 = new Student('若川')
+s1.doSth();
+```
+
+### **模板字符串**
+
+```js
+let str = `bhjdc ${item}`
+```
+
+### **promise的异步封装**
+
+```js
+export function formatStatus() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { t } = await findAllRoles({  // 异步请求
+        roleId: permissions[0],
+      })
+      resolve(t)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+```
+
+### 函数默认值
+
+> ES6 之前，函数的形参是无法给默认值的，只能在函数内部通过变通的方法实现。
+
+```js
+function ES6func(a=1, b=2) {
+  console.log(a, b)
+}
+ES6func()  // 1, 2
+```
+
+### 关于ES6的 `Proxy`
+
+> `Proxy`是ES6新增的一个构造函数，可以理解为JS语言的一个代理，**用来改变JS默认的一些语言行为**，包括拦截默认的**get/set**等底层方法，使得JS的使用自由度更高，可以最大限度的满足开发者的需求。比如通过拦截对象的**get/set**方法，可以轻松地定制自己想要的**key或者value**。
+
+```js
+function createMyOwnObj() {
+  //想把所有的key都变成函数，或者Promise,或者anything
+  return new Proxy({}, {
+    get(target, propKey, receiver) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          let randomBoolean = Math.random() > 0.5;
+          let Message;
+          if (randomBoolean) {
+            Message = `你的${propKey}运气不错，成功了`;
+            resolve(Message);
+          } else {
+            Message = `你的${propKey}运气不行，失败了`;
+            reject(Message);
+          }
+        }, 1000);
+      });
+    }
+  });
+}
+
+let myOwnObj = createMyOwnObj();
+
+myOwnObj.hahaha.then(result => {
+  console.log(result) //你的hahaha运气不错，成功了
+}).catch(error => {
+  console.log(error) //你的hahaha运气不行，失败了
+})
+
+myOwnObj.wuwuwu.then(result => {
+  console.log(result) //你的wuwuwu运气不错，成功了
+}).catch(error => {
+  console.log(error) //你的wuwuwu运气不行，失败了
+})
+
+```
+
+### **async** 函数
+
+```js
+function add(a, b) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(a + b)
+    }, 2000)
+  })
+}
+// 函数使用async 标记
+async function test() {
+  // await 必须写在async函数中
+  let num = await add(2,3)
+  console.log(num)
+}
+```
+

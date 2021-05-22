@@ -1,0 +1,393 @@
+## express 
+
+**安装**
+
+```shell
+yarn add express -S
+```
+
+**搭建web服务器**
+
+```js
+const express = require("express");
+let app = express()
+let port = 3006
+app.get("/test", (req, res) => {
+  res.json({
+    code: 200,
+    msg: "测试成功"
+  })
+})
+app.listen(port, function() {
+  console.log(`Hello world is listening at port ${port}`)
+})
+```
+
+## 关于跨域
+
+跨域的中间件，必须放到最开头
+
+```js
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', "http://localhost:8080");
+});
+```
+
+也可以通过安装*cors* 插件
+
+```shell
+yarn add cors -S
+```
+
+通过使用中间件
+
+```js
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+); 
+```
+
+## 设置请求体
+
+**当请求头为*application/json* 时**
+
+```js
+app.use(express.json());
+```
+
+**当请求头为*application/x-www-form-urlencoded* 时**
+
+```js
+app.use(express.urlencoded({
+   extended: false;
+}));
+```
+
+## express的路由
+
+在*/router/test.js*中
+
+```js
+const express = require("express");
+const router = express.Router();
+
+router.get("/api/test/:id", function(req, res) {
+  res.json({
+    code: 200,
+    msg: "请求成功",
+    data: req.params
+  })
+});
+
+module.exports = router
+```
+
+在*app.js* 中导入并使用
+
+```js
+let Test = require("./router/test")
+app.use("/", Test)
+```
+
+## 开放静态资源
+
+在*app.js*中
+
+```js
+app.use(express.static("public"))
+```
+
+## 关于**jsonwebtoken**
+
+**安装**
+
+```shell
+yarn add jsonwebtoken -s
+```
+
+**使用**(生成token)
+
+```js
+const secretKey = "jiwei-96";
+router.post("/login", (req, res) => {
+    res.json({
+      code: 200,
+      message: "登录成功",
+      token:
+      "Bearer " +
+      jwt.sign({ username: req.body.username }, secretKey, {
+        expiresIn: "1h",
+      }),
+    });
+  });
+});
+```
+
+**解密token**
+
+```js
+const secretKey = "jiwei-96";
+router.post("/getUserInfo", (req, res) => {
+  const token = req.headers.sessiontoken //获取前端请求头发送过来的token
+  jwt.verify(token, secretKey, function (err, decode) {
+    if(err) {
+      res.json({
+        code: 400,
+        msg: "Failed to authenticate token"
+      })
+    } else {
+      console.log("userInfo", decode)
+      res.json({
+        code: 200,
+        msg: "操作成功"
+        data: decode
+      })
+    }
+  }
+})
+```
+
+## 关于动态验证码
+
+**安装**
+
+```shell
+yarn add svg-captcha
+```
+
+**生成普通验证码**
+
+```js
+const svgCaptcha = require("svg-captcha");
+router.get("/captcha", function (req, res) {
+  let captcha = svgCaptcha.create({}); // 创建验证码对象
+  req.session.captcha = captcha.text; // 把验证码上的字母保存到 session 中
+  res.type("svg");
+  res.status(200).send(captcha.data); // 做出响应
+});
+```
+
+ 调用 `create()` 之后，会返回一个对象，结构如下：`{data:'',text:''}` 
+
++  **data** 验证码 svg 图片 
++ **text**: 验证码字符
+
+ **create()的参数如下：** 
+
+- `size`: 4 // 验证码长度
+- `ignoreChars`: '0o1i' // 验证码字符中排除 0o1i
+- `noise`: 1 // 干扰线条的数量
+- `color`: true // 验证码的字符是否有颜色，默认没有，如果设定了背景，则默认有
+- `background`: '#cc9966' // 验证码图片背景颜色
+
+**创建算数式验证码**
+
+```js
+const express = require('express');
+const captcha = require('svg-captcha');
+const router = express.Router();
+router.get('/captcha',(req,res)=>{
+  const cap = captcha.createMathExpr();
+  req.session.captcha = cap.text; // session 存储
+  res.type('svg'); // 响应的类型
+  res.send(cap.data);
+});
+```
+
+**验证验证码是否正确**
+
+```js
+router.post("/reguser", (req, res) => {
+  if (req.body.vcode.toUpperCase() !== req.session.captcha.toUpperCase()) {
+    return res.json({ code: 500, message: "验证码错误" });
+  }
+  res.json({
+    code: 200,
+    msg: "验证码正确"
+  })
+});
+```
+
+## mysql
+
+安装
+
+```shell
+cnpm install mysql
+```
+
+创建*db.js* 
+
+```js
+module.exports = (sql, params, callback) => {
+    // 1. 加载mysql
+    const mysql = require('mysql');
+    // 2. 创建连接对象
+    const conn = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'heroes_manager' // 数据库名，不是表名
+    });
+    // console.log(conn);
+    // 3. 连接到mysql服务器
+    conn.connect();
+    // 4. 完成增删改查
+    conn.query(sql, params, callback);
+    // 5. 关闭连接
+    conn.end();
+}
+```
+
+使用
+
+```js
+const path = require("path");
+const db = require(path.join(__dirname, "../utils", "db.js"));
+router.post("/reguser", (req, res) => {
+  if (req.body.vcode.toUpperCase() !== req.session.captcha.toUpperCase()) {
+    return res.json({ status: 1, message: "验证码错误" });
+  }
+  delete req.body.vcode;
+  // 3. 添加到数据库，完成注册
+  db("insert into user set ?", req.body, (err, result) => {
+    console.log(err);
+    if (err || result.affectedRows < 1) {
+      console.log(err);
+      res.json({ code: 500, message: "注册失败！" });
+    } else {
+      res.json({ code: 200, message: "注册成功！" });
+    }
+  });
+});
+```
+
+## Node.js 文件系统
+
+**实例**
+
+ 创建 input.txt 文件，内容如下： 
+
+```txt
+菜鸟教程官网地址：www.runoob.com
+文件读取实例
+```
+
+**读取文件**
+
+```js
+const fs = require("fs");
+// 异步读取
+fs.readFile('input.txt','utf8', function (err, data) {
+   if (err) {
+       return console.error(err);
+   }
+   console.log("异步读取: " + data.toString());
+});
+// 同步读取
+const data = fs.readFileSync('input.txt');
+console.log("同步读取: " + data.toString());
+console.log("程序执行完毕。");
+```
+
+**写入文件**
+
+```js
+var fs = require("fs");
+fs.writeFile('input.txt', '我是通 过fs.writeFile 写入文件的内容', 'utf8', function(err) {
+   if (err) {
+       return console.error(err);
+   }
+   fs.readFile('input.txt', function (err, data) {
+      if (err) {
+         return console.error(err);
+      }
+      console.log("异步读取文件数据: " + data.toString());
+   });
+});
+```
+
+## 配置微信sdk
+
+**安装**
+
+```js
+yarn add wechat-jssdk
+```
+
+**使用方法(服务器端)**
+
+```js
+// 导入微信的jssdk
+const { Wechat } = require("wechat-jssdk");
+// 初始化jssdk
+const wx = new Wechat({
+  appId: "wx58299832d23f3198",
+  appSecret: "7d7eda6f72fcff7e71bc58d1029e8783",
+});
+router.get("/getsignature", (req, res) => {
+  wx.jssdk.getSignature("http://localhost:3006/").then((signatureData) => {
+    res.send(signatureData);
+  });
+});
+```
+
+前端
+
+```html
+<script>
+  $.ajax({
+    url: "/api/getsignature",
+    success: function (res) {
+      wx.config({
+        debug: true, 
+        appId: res.appId, // 必填，公众号的唯一标识
+        timestamp: res.timestamp, // 必填，生成签名的时间戳
+        nonceStr: res.nonceStr, // 必填，生成签名的随机串
+        signature: res.signature, // 必填，签名
+        jsApiList: [], // 必填，需要使用的JS接口列表
+      });
+    },
+  });
+  console.log(wx);
+</script>
+```
+
+## multer 上传文件
+
+>  Multer是Express官方推出的，用于Node.js `multipart/form-data`请求数据处理的中间件。 
+
+**安装**
+
+```shell
+npm install multer --save
+```
+
+**使用方法**
+
+```js
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" }); // 配置上传文件的存放目录
+router.post("/addhero", upload.single("heroIcon"), (req, res) => {
+  // 添加提交的信息到数据库
+  let sql = "insert into herose set ?";
+  let values = {
+    heroname: req.body.heroName,
+    nickname: req.body.heroNickName,
+    skill: req.body.skillName,
+    img_url: req.file.filename,
+  };
+  db(sql, values, (err, result) => {
+    console.log(err);
+    if (err || result.affectedRows < 1) {
+      res.json({ status: 1, message: "添加失败" });
+    } else {
+      res.json({ status: 0, message: "添加成功" });
+    }
+  });
+});
+```
+
