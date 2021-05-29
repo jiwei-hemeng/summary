@@ -160,3 +160,26 @@ const Button = defineComponent({
 export default Button;
 ```
 
+**vue3.0 插槽**
+
+> v-slot:default 可以简写为 #default
+
+```html
+<Suspense>
+    <template v-slot:default>
+      <div>
+        <AsyncShow />
+      </div>
+    </template>
+    <template v-slot:fallback>
+      <h1>Loading...</h1>
+    </template>
+  </Suspense>
+```
+
+**关于 Suspense 组件**
+
++ Suspense是Vue3.0推出的一个内置特殊组件，用来定义具有异步请求数据的组建的显示。如果使用Suspense，要setup函数中需要返回一个promise
++ Suspense组件内置了两个具名插槽slot,一个是default，用来显示异步组件请求成功的内容；一个是fallback用来显示异步组件请求响应前页面显示的内容
++ default插槽可以有多个组件，但是需要有一个根节点
+
