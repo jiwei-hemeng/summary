@@ -134,6 +134,29 @@ export default {
   },
 };
 </script>
+```
 
+**vue3.0 jsx语法**
+
+```js
+import { defineComponent } from "vue";
+const Button = defineComponent({
+  props: {
+    type: { type: String, default: () => "primary" },
+  },
+  setup(props, { slots, emit }) {
+    return () => (
+      <button
+        class={`mybtn-${props.type}`}
+        onClick={() => {
+          emit("addchage", "hahhah");
+        }}
+      >
+        {slots.default()}
+      </button>
+    );
+  },
+});
+export default Button;
 ```
 
