@@ -130,10 +130,21 @@ router.post("/login", (req, res) => {
 **配置不需要token认证的接口**
 
 ```js
+const expressJWT = require("express-jwt");
 app.use(expressJWT({ secret: secretKey }).unless({ path: [/^\/api\//] }));
 ```
 
-**解密token**
+**解密**
+
+**使用tokenexpressJWT**
+
+```js
+app.post("/api/getUserData", (req, res) => {
+  console.log("用户信息", req.user)
+})
+```
+
+**使用verify**
 
 ```js
 const secretKey = "jiwei-96";
@@ -481,5 +492,15 @@ socket.onopen = function () {
 socket.onmessage = function (e) {
   console.log("6", e.data);
 };
+```
+
+## 设置错误中间件(它必须放到所有的接口后面)
+
+```js
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    res.json({ status: 1, message: "身份认证失败" });
+  }
+});
 ```
 
