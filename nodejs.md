@@ -391,3 +391,36 @@ router.post("/addhero", upload.single("heroIcon"), (req, res) => {
 });
 ```
 
+## nodejs代理服务器
+
+**安装**
+
+```shell
+yarn add http-proxy-middleware
+```
+
+**使用**
+
+```js
+const express = require("express");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+let app = express();
+let port = 5000;
+app.use(express.static("proxy_public"));
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: "https://www.bilibili.com",
+    changeOrigin: true, //是否跨域
+    secure: false, // 如果是https接口，需要配置这个参数
+    pathRewrite: {
+      "/api": "",
+    },
+  })
+);
+app.listen(port, function () {
+  console.log(`Running: http://localhost:${port}`);
+});
+
+```
+
