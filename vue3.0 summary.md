@@ -38,3 +38,39 @@ export default {
 }
 ```
 
+**watch 和 watchEffect**
+
++ watch 是需要传入侦听的数据源，而 watchEffect 是自动收集数据源作为依赖。
++ watch 可以访问侦听状态变化前后的值，而 watchEffect 没有。
++ watch 是属性改变的时候执行，而 watchEffect 是默认会执行一次，然后属性改变也会执行
+
+案例
+
+```js
+import { reactive, toRefs, watchEffect, watch } from "vue";
+export default {
+  setup() {
+    const userInfo = reactive({
+      name: "小娜",
+      age: 10
+    })
+    watchEffect(() => {
+      console.log("改变了", testmr.age);
+    });
+    watch(
+      () => userInfo.age,
+      (newVal, oldVal) => {
+        console.log("watch监听数据的变化", newVal, oldVal);
+      },
+      {
+        deep: true,
+        immediate: true,
+      }
+    );
+    return {
+      ...toRefs(userInfo)
+    }
+  }
+}
+```
+
