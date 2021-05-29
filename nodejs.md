@@ -105,13 +105,14 @@ app.use(express.static("public"))
 **安装**
 
 ```shell
-yarn add jsonwebtoken -s
+yarn add jsonwebtoken expressJWT -s
 ```
 
 **使用**(生成token)
 
 ```js
 const secretKey = "jiwei-96";
+const jwt = require("jsonwebtoken");
 router.post("/login", (req, res) => {
     res.json({
       code: 200,
@@ -126,10 +127,17 @@ router.post("/login", (req, res) => {
 });
 ```
 
+**配置不需要token认证的接口**
+
+```js
+app.use(expressJWT({ secret: secretKey }).unless({ path: [/^\/api\//] }));
+```
+
 **解密token**
 
 ```js
 const secretKey = "jiwei-96";
+const jwt = require("jsonwebtoken");
 router.post("/getUserInfo", (req, res) => {
   const token = req.headers.sessiontoken //获取前端请求头发送过来的token
   jwt.verify(token, secretKey, function (err, decode) {
@@ -325,8 +333,8 @@ yarn add wechat-jssdk
 const { Wechat } = require("wechat-jssdk");
 // 初始化jssdk
 const wx = new Wechat({
-  appId: "wx58299832d23f3198",
-  appSecret: "7d7eda6f72fcff7e71bc58d1029e8783",
+  appId: "wx58299*****f3198",
+  appSecret: "71*****************29e8783",
 });
 router.get("/getsignature", (req, res) => {
   wx.jssdk.getSignature("http://localhost:3006/").then((signatureData) => {
