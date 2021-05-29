@@ -424,3 +424,54 @@ app.listen(port, function () {
 
 ```
 
+## WebSocket 测试服务器
+
+**安装**
+
+```shell
+yarn add ws
+```
+
+**使用**
+
+```js
+let express = require("express");
+let app = express();
+// nodejs 解决跨域共享
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+});
+
+app.listen(3000, function () {
+  console.log("websocket is running at 3000");
+});
+
+let WebSocket = require("ws");
+let wss = new WebSocket.Server({ port: 8888 });
+wss.on("connection", function (ws) {
+  console.log("服务器监听到了客户端的连接", new Date().getTime());
+  ws.on("message", function (data) {
+    console.log("客户端发来的消息", data);
+    ws.send("服务端说：你也好");
+  });
+});
+```
+
+**前端测试**
+
+```js
+let socket = new WebSocket("ws://localhost:8888");
+socket.onopen = function () {
+  console.log("1. 客户端连接上了服务器", new Date().getTime());
+  socket.send(
+    JSON.stringify({
+      msg: "你好",
+      token: "vxsjhxjxjxjsdhxjx",
+    })
+  );
+};
+socket.onmessage = function (e) {
+  console.log("6", e.data);
+};
+```
+
