@@ -74,3 +74,66 @@ export default {
 }
 ```
 
+**通过ref获取和操作DOM**
+
+单个DOM案例
+
+```html
+<template>
+  <input type="number" name="userName" id="" ref="dom" />
+</template>
+<script>
+import { ref, nextTick } from "vue";
+export default {
+  name: "refDom",
+  setup() {
+    // 单个dom获取
+    const dom = ref(null);
+    // 下次Dom树更新时
+    nextTick(() => {
+      console.log("单个dom", dom.value);
+    });
+    return {
+      dom,
+    };
+  },
+};
+</script>
+```
+
+多个DOM(案例)
+
+```html
+<template>
+  <ul>
+    <li v-for="(item, index) in arr" :key="index" :ref="setRef">
+      {{ item }}
+    </li>
+  </ul>
+</template>
+
+<script>
+import { ref, nextTick } from "vue";
+export default {
+  name: "refDom",
+  setup() {
+    const arr = ref([1, 2, 3]);
+    // 存储dom数组
+    const myRef = ref([]);
+    const setRef = (el) => {
+      myRef.value.push(el);
+    };
+    // 下次Dom树更新时
+    nextTick(() => {
+      console.dir(myRef.value);
+    });
+    return {
+      arr,
+      setRef,
+    };
+  },
+};
+</script>
+
+```
+
