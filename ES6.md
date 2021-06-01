@@ -138,6 +138,16 @@ console.log("年龄", person.age);
 person.cls = "1-2"; // 不是响应式的不能修改
 ```
 
+### Reflect
+
+> **Reflect** 是一个内置的对象，它提供拦截 JavaScript 操作的方法。与大多数全局对象不同`Reflect`并非一个构造函数，所以不能通过[new运算符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)对其进行调用，或者将`Reflect`对象作为一个函数来调用。`Reflect`的所有属性和方法都是静态的（就像[`Math`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math)对象）。
+
+**静态方法**
+
++ Reflect.set(target, key, value)   在一个对象上设置一个属性, 返回一个[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean)，如果更新成功，则返回`true`
++ Reflect.has(target, key)  检测一个对象是否存在特定属性,返回一个[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean)，如果存在，则返回`true`
++ Reflect.deleteProperty(target, key) 允许用于删除属性, 如果删除成功，则返回`true`
+
 ### **async** 函数
 
 ```js
