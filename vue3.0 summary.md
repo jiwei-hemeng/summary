@@ -177,6 +177,27 @@ export default Button;
   </Suspense>
 ```
 
+作用域插槽
+
+```html
+<!-- 子组件-->
+<ul>
+  <li v-for="( item, index ) in items">
+    <slot :item="item"></slot>
+  </li>
+</ul>
+<!-- 父组件-->
+<todo-list>
+  <template v-slot:default="slotProps">
+    <i class="fas fa-check"></i>
+    <span class="green">{{ slotProps.item }}</span>
+  </template>
+  <template v-slot:other="otherSlotProps">
+    ...
+  </template>
+</todo-list>
+```
+
 **关于 Suspense 组件**
 
 + Suspense是Vue3.0推出的一个内置特殊组件，用来定义具有异步请求数据的组建的显示。如果使用Suspense，要setup函数中需要返回一个promise
