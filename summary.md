@@ -494,16 +494,8 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 
 ### Js 数据类型？如何判断
 
-- 简单数据类型：Number、String、布尔类型(boolean)
-- 复杂数据类型：对象类型、数组、Set类型
-- 可以通过typeof 或者 instrandof 判断
-
-- typeof 判断复杂数据类型
-
-  - *typeof*  用于判断数据类型，返回值为6个字符串，分别为string、Boolean、number、function、object、undefined
-  -  *typeof* 对于丰富的对象实例，只能返回"Object"字符串
-  -  *instanceof* 用来判断对象，代码形式为obj1 instanceof obj2（obj1是否是obj2的实例），obj2必须为对象，否则会报错！其返回值为布尔值
-  -  *instanceof* 可以对不同的对象实例进行判断，判断方法是根据对象的原型链依次向下查询，如果obj2的原型属性存在obj1的原型链上，（obj1 instanceof obj2）值为true。
+- 简单数据类型：Number、String、布尔类型(boolean)、null     ---> 可以通过typeof判断
+- 复杂数据类型：对象类型、数组、Set类型    --->  通过instrandof 判断
 
 ### 简单数据类型和复杂数据类型的存储方式？
 
@@ -518,11 +510,6 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 ### JavaScript的作用域链
 
 当需要从局部函数查找某一属性或方法时，如果当前作用域没有找到，就会上溯到上层作用域查找，直至全局作用域，这种组织形式就是作用域链
-
-### == 和 === 的区别？
-
-- ’==’ 只是值的相等；
-- ’===’则是值和数据类型必须都相等
 
 ### 如何获取Dom元素？
 
