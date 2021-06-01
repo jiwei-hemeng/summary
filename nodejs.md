@@ -105,7 +105,7 @@ app.use(express.static("public"))
 **安装**
 
 ```shell
-yarn add jsonwebtoken express-jwt -s
+yarn add jsonwebtoken express-jwt -S
 ```
 
 **使用**(生成token)

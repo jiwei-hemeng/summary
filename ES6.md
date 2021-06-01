@@ -135,6 +135,7 @@ person = new Proxy(person, {
 console.log("姓名", person.name);
 person.age = 20;
 console.log("年龄", person.age);
+person.cls = "1-2"; // 不是响应式的不能修改
 ```
 
 ### **async** 函数
