@@ -111,44 +111,30 @@ ES6func()  // 1, 2
 
 ### 关于ES6的 `Proxy`
 
-> `Proxy`是ES6新增的一个构造函数，可以理解为JS语言的一个代理，**用来改变JS默认的一些语言行为**，包括拦截默认的**get/set**等底层方法，使得JS的使用自由度更高，可以最大限度的满足开发者的需求。比如通过拦截对象的**get/set**方法，可以轻松地定制自己想要的**key或者value**。
+> `Proxy`是ES6新增的一个构造函数，可以理解为JS语言的一个代理。
+>
+> 语法： let p = new Proxy(target, handler);
 
 ```js
-function createMyOwnObj() {
-  //想把所有的key都变成函数，或者Promise,或者anything
-  return new Proxy({}, {
-    get(target, propKey, receiver) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          let randomBoolean = Math.random() > 0.5;
-          let Message;
-          if (randomBoolean) {
-            Message = `你的${propKey}运气不错，成功了`;
-            resolve(Message);
-          } else {
-            Message = `你的${propKey}运气不行，失败了`;
-            reject(Message);
-          }
-        }, 1000);
-      });
-    }
-  });
-}
-
-let myOwnObj = createMyOwnObj();
-
-myOwnObj.hahaha.then(result => {
-  console.log(result) //你的hahaha运气不错，成功了
-}).catch(error => {
-  console.log(error) //你的hahaha运气不行，失败了
-})
-
-myOwnObj.wuwuwu.then(result => {
-  console.log(result) //你的wuwuwu运气不错，成功了
-}).catch(error => {
-  console.log(error) //你的wuwuwu运气不行，失败了
-})
-
+let person = {
+    name: "hemeng",
+    age: 24,
+};
+person = new Proxy(person, {
+    get(target, key) {
+        console.log("xhg", target, key);
+        return target[key];
+    },
+    set(target, key, value) {
+        if (key === "age" && typeof value !== "number") {
+            throw Error("age字段必须为Number类型");
+        }
+        return Reflect.set(target, key, value);
+    },
+});
+console.log("姓名", person.name);
+person.age = 20;
+console.log("年龄", person.age);
 ```
 
 ### **async** 函数
