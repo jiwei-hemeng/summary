@@ -27,6 +27,8 @@ git stash pop
 git checkout src/view/index/index.vue
 # 比较文件
 git diff src/view/index/index.vue
+# 清除本地库的缓存
+git rm -r --cached .
 ```
 
 ### **Git 配置命令**
