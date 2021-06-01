@@ -1306,9 +1306,9 @@ function generateMixed(n) {
   
     - 会形成数据的缓存，用完之后需要手动清空（给该变量赋一个空值null）
 
-### 防抖
+### 防抖与节流
 
-- 概念：短时间内多次触发同一事件，只执行最后一次，或者只执行最开始的一次，中间的不执行
+**防抖**
 
 ```js
 var timer = null
@@ -1322,14 +1322,30 @@ function debounce(){
 debounce()
 ```
 
-+ 关于防抖与节流
+**节流**
 
-  防抖与节流都是希望在同一时间内，不要重复触发请求。
+```js
+let canRun = true;
+document.getElementById("throttle").onscroll = function(){
+  if(!canRun){
+    // 判断是否已空闲，如果在执行中，则直接return
+    return;
+  }
+  canRun = false;
+  setTimeout(function(){
+    console.log("函数节流");
+    canRun = true;
+  }, 1000);
+}
+```
 
-  防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计算
+**防抖与节流的异同**
 
-  节流是要是在规定的时间内只触发一次
-  
+防抖与节流都是希望在同一时间内，不要重复触发请求。
+
+防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计算
+
+节流是要是在规定的时间内只触发一次
 
 ### js 常用的封装的正则表达式方法
 
