@@ -83,6 +83,8 @@ let str = `bhjdc ${item}`
 
 ### **promise的异步封装**
 
+> 用来解决回调地狱
+
 ```js
 export function formatStatus() {
   return new Promise(async (resolve, reject) => {
@@ -149,6 +151,8 @@ person.cls = "1-2"; // 不是响应式的不能修改
 + Reflect.deleteProperty(target, key) 允许用于删除属性, 如果删除成功，则返回`true`
 
 ### **async** 函数
+
+> 可以像执行同步代码一样的写异步代码，async 函数必须是基于Promise
 
 ```js
 function add(a, b) {
