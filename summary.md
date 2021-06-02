@@ -506,7 +506,7 @@ function instance_of(L, R) {//L 表示左表达式，R 表示右表达式
     while (true) {    
         if (L === null) {
             return false;
-        }    
+        }
         if (O === L){
             // 当 O 显式原型 严格等于  L隐式原型 时，返回true
             return true;
