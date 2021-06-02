@@ -128,7 +128,7 @@ rename table student to stu;
 
 ```mysql
 # delete from 表名 where 表达式;
-delete table student where id=1;
+delete from student where id=1;
 ```
 
 导出数据库
