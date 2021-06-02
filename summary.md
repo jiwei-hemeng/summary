@@ -492,15 +492,15 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 -  获取本地存储的数据  *localStorage.setItem(key)*
 -  从本地存储中移除数据  *localStorage.removeItem(key)*
 
-### Js 数据类型？如何判断
+### Js 数据类型如何判断
 
-- 简单数据类型：Number、String、布尔类型(boolean)、null     ---> 可以通过typeof判断
-- 复杂数据类型：对象类型、数组、Set类型    --->  通过instrandof 判断
++ typeof 可以用此来判断`number`, `string`, `object`, `boolean`, `function`, `undefined` ，但是对于对象、数组、`null` 返回的值是 `object`
++ `instanceof`运算符用于检测构造函数的 `prototype`属性是否出现在某个实例对象的原型链上,返回值为布尔值，用于指示一个变量是否属于某个对象的实例。
 
 ### 简单数据类型和复杂数据类型的存储方式？
 
-- 简单数据类型存放到堆
-- 复杂数据类型存放到栈
+- 简单数据类型存放到堆 Number、String、布尔类型(boolean)、null  、Symbol
+- 复杂数据类型存放到栈 Object function Set Map
 
 - 栈和堆的区别
 
