@@ -235,6 +235,14 @@ async getUserToken (userInfo) {
         uni.navigateBack();
     }
 }
+// 页面加载进来时调用此方法，但是需要之前授权过，否则只能通过点击按钮
+async js_getInfo () {
+    const [err,res] = await uni.getUserInfo()
+    // 如果获取到请求获取token
+    if(res){
+        this.getUserToken(res)
+    }
+},
 ```
 
 ## 统一分装请求
