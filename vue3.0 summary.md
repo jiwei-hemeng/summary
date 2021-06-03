@@ -204,3 +204,26 @@ export default Button;
 + Suspense组件内置了两个具名插槽slot,一个是default，用来显示异步组件请求成功的内容；一个是fallback用来显示异步组件请求响应前页面显示的内容
 + default插槽可以有多个组件，但是需要有一个根节点
 
+**挂载全局的属性和方法**
+
+方法一：
+
+```js
+// main.js
+app.config.globalProperties.$title = "vue3.0 测试";
+// used.vue
+import { getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
+console.log("$title", proxy, proxy.$title);
+```
+
+方法二(推荐)：
+
+```js
+// main.js
+app.provide($title, "vue3.0 测试")
+// used.vue
+import { inject } from "vue"
+const $title = inject($title)
+```
+
