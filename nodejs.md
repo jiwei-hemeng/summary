@@ -506,3 +506,36 @@ app.use((err, req, res, next) => {
 });
 ```
 
+## Nodejs定时任务
+
+**安装**
+
+```shell
+yarn add node-schedule
+```
+
+**使用**
+
+```js
+let timer = schedule.scheduleJob({ second: 0 }, function () {
+  console.log("scheduleObjectLiteralSyntax:" + new Date());
+});
+```
+
+**配置项**
+
+```txt
+dayOfWeek --> 每周第几天
+month --> 月
+dayOfMonth --> 每月第几天 
+hour --> 时 
+minute --> 分 
+second --> 秒
+```
+
+**取消定时器**
+
+```js
+timer.cancel();
+```
+
