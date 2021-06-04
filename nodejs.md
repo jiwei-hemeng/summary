@@ -299,34 +299,36 @@ router.post("/reguser", (req, res) => {
 
 ```js
 const fs = require("fs");
-// 异步读取
-fs.readFile('input.txt','utf8', function (err, data) {
-   if (err) {
-       return console.error(err);
-   }
-   console.log("异步读取: " + data.toString());
-});
-// 同步读取
-const data = fs.readFileSync('input.txt');
-console.log("同步读取: " + data.toString());
-console.log("程序执行完毕。");
+exports.readfile = (fileUrl) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(fileUrl, "utf8", function (err, data) {
+      if (err) {
+        console.error(err);
+        return reject(err);
+      }
+      return resolve(data.toString());
+    });
+  });
+};
 ```
 
 **写入文件**
 
 ```js
-var fs = require("fs");
-fs.writeFile('input.txt', '我是通 过fs.writeFile 写入文件的内容', 'utf8', function(err) {
-   if (err) {
-       return console.error(err);
-   }
-   fs.readFile('input.txt', function (err, data) {
+const fs = require("fs");
+exports.writeFile = (fileUrl, content) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(fileUrl, JSON.stringify(content), "utf8", function (err) {
       if (err) {
-         return console.error(err);
+        console.error(err);
+        return reject(err);
       }
-      console.log("异步读取文件数据: " + data.toString());
-   });
-});
+      return resolve({
+        msg: true,
+      });
+    });
+  });
+};
 ```
 
 ## 配置微信sdk
