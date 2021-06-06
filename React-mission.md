@@ -19,10 +19,6 @@
   + vue和react的生命周期钩子函数不同
   + vue本质是是MVVM框架；react是组件化
 
-### 触发多次setstate，render函数执行几次，为什么？
-
-1次，因为render函数执行的话会更新真实dom，而dom的更新是很消耗性能的，react为了节约性能将每次setstate先缓存起来，最后才会执行一次
-
 ### 鉴权路由 **AuthRoute**
 
 ```js
@@ -177,7 +173,7 @@ history.push({
 
 ### setState() 修改state
 
-> 用来修改state，且更新数据是异步的。如果立即获取修改后的state，需要使用第二个参数
+> 用来修改state，且更新数据是异步的。如果立即获取修改后的state，需要使用第二个参数。如果触发多次setstate() 它会先缓存起来，最后进行合并，也就是说只会执行一次DOM更新
 
 ```js
 this.setState({
