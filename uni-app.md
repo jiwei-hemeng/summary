@@ -502,5 +502,37 @@ export default {
 }
 ```
 
+## 软件版本升级下载方法封装
+
+```js
+UpVersion(){
+  // #ifdef APP-PLUS
+   plus.runtime.getProperty(plus.runtime.appid, (wgtInfo)=> {
+       var version = wgtInfo.version
+       this.version = wgtInfo.version
+       // console.log('wgtInfo: ', wgtInfo.version);
+       if('替换成后端返回版本号' != version){  //更新
+           uni.showModal({
+               title: '更新提示',
+               content: `检测有新版本发布，是否更新？\n当前版本号:${version}\n最新版本号:'替换成后端返回版本号'`,
+               success:  (res)=> {
+                   if (res.confirm) {
+                       plus.runtime.openURL('替换成下载地址', function(res) {     //跳转浏览器
+                           // console.log(res);  
+                       });
+                   } else if (res.cancel) {
+                       
+
+                   }
+               }
+           }); 
+       }
+   })
+   // #endif		    
+}
+```
+
+
+
 
 
