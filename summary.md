@@ -945,7 +945,7 @@ let imageURI = base64.split(",")[1]
 const imgfile = convertBase64UrlToImgFile(imageURI,fileName,'image/jpeg');
 ```
 
-## 二维码相关
+### 二维码相关
 
 **二维码的生成方法**
 
@@ -1372,6 +1372,28 @@ document.getElementById("throttle").onscroll = function(){
 防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计算
 
 节流是要是在规定的时间内只触发一次
+
+### 数组扁平化的方式
+
+**方法一：**
+
+```js
+const arr = [1,[2,[3,[4,5]]],6]
+//  方法一：数组自带的扁平化方法,flat的参数代表的是需要展开几层，如果是Infinity的话，就是不过嵌套几层，全部都展开
+console.log(arr.flat(Infinity))
+```
+
+**方法二**
+
+```js
+
+const newArr = (arr)=>{
+     return arr.reduce((pre,cur)=>{
+          return pre.concat(Array.isArray(cur) ? newArr(cur) : cur)
+     },[])
+}
+console.log(newArr(arr),"reduce方法")
+```
 
 ## JQuery
 
