@@ -726,6 +726,7 @@ if (
 
 document.getElementById("capture").addEventListener("click", function () {
     context.drawImage(video, 0, 0, 480, 320);
+    let imgBase64 = canvas.toDataURL("image/jpeg", 0.7);
 });
 ```
 
