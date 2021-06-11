@@ -651,6 +651,13 @@ document.querySelector("ul").addEventListener("click", function (e) {
 });
 ```
 
+### 设置 element 的滚动条位置
+
+```js
+element.scrollTop = 0; // 设置 element 的滚动条位置居首
+element.scrollTop = element.scrollHeight; // 设置 element 的滚动条位置始终居底
+```
+
 ### 原生js实现拍照
 
 在html中
