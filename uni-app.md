@@ -502,6 +502,58 @@ export default {
 }
 ```
 
+## 微信浏览器私有接口 WeixinJSBridge
+
+**分享给好友 （menu:share:appmessage）**
+
+```js
+WeixinJSBridge.on('menu:share:appmessage', function(argv){
+    WeixinJSBridge.invoke('sendAppMessage',{
+        "appid":"", //appid 设置空就好了。
+        "img_url": imgUrl, //分享时所带的图片路径
+        "img_width": "120", //图片宽度
+        "img_height": "120", //图片高度
+        "link":url, //分享附带链接地址
+        "desc":"我是一个介绍", //分享内容介绍
+        "title":"标题，再简单不过了。"
+    }, function(res){
+        /*** 回调函数，最好设置为空 ***/
+    }); 
+});
+```
+
+**分享到微博（menu:share:weibo）**
+
+```js
+WeixinJSBridge.on('menu:share:weibo', function(argv){
+    WeixinJSBridge.invoke('shareWeibo',{
+        "content":dataForWeixin.title+' '+dataForWeixin.url,
+        "url":dataForWeixin.url
+    }, function(res){
+        /*** 回调函数，最好设置为空 ***/
+    });
+});
+```
+
+**分享到朋友圈（menu:share:timeline）**
+
+```js
+WeixinJSBridge.on('menu:share:timeline', function(argv){
+    WeixinJSBridge.invoke('shareTimeline',{
+
+        "appid":"", //appid 设置空就好了。
+        "img_url": imgUrl, //分享时所带的图片路径
+        "img_width": "120", //图片宽度
+        "img_height": "120", //图片高度
+        "link":url, //分享附带链接地址
+        "desc":"我是一个介绍", //分享内容介绍
+        "title":"标题，再简单不过了。"
+    }, function(res){
+        /*** 回调函数，最好设置为空 ***/});
+	}); 
+});
+```
+
 ## 软件版本升级下载方法封装
 
 ```js
