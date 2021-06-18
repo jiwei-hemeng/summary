@@ -227,3 +227,37 @@ import { inject } from "vue"
 const $title = inject($title)
 ```
 
+**vuex在setup函数中的使用**
+
+获取状态
+
+```js
+import { computed } from "vue";
+import { useStore } from "vuex";
+setup() {
+    const store = useStore();
+    const state = store.state;
+    const userInfo = computed(() => {
+        return {
+            userName: state.user.userName,
+        	age: state.user.age,
+        }
+    })
+    return {
+        userInfo
+    }
+}
+```
+
+修改状态
+
+```js
+setup() {
+    const store = useStore();
+    // 同步修改 提交Mutation
+    store.commit("setAcAge", 2)
+    // 异步修改 提交action
+    store.dispatch("setAcAge", 2);
+}
+```
+
