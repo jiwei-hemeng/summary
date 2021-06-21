@@ -131,7 +131,7 @@ router.post("/login", (req, res) => {
 
 ```js
 const expressJWT = require("express-jwt");
-app.use(expressJWT({ secret: secretKey }).unless({ path: [/^\/api\//] }));
+app.use(expressJWT({ secret: secretKey, algorithms: ["HS256"] }).unless({ path: [/^\/api\//] }));
 ```
 
 **解密**
