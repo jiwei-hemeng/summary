@@ -610,3 +610,10 @@ UpVersion(){
 }
 ```
 
+**Android应用市场上架uni-app(5+App)应用合规指南，以及收到工信部或应用市场合规整改通知的解决办法**
+
+相关网页 https://ask.dcloud.net.cn/article/39073
+
+Android平台隐私与政策提示框配置方法：https://ask.dcloud.net.cn/article/36937
+Android平台应用启动时读写手机存储、访问设备信息(如IMEI)等权限策略及提示信息：https://ask.dcloud.net.cn/article/36549
+Android平台配置权限参考：https://ask.dcloud.net.cn/article/36982
