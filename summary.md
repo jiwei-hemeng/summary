@@ -525,8 +525,8 @@ instance_of(per, Person)
 
 ### 简单数据类型和复杂数据类型的存储方式？
 
-- 简单数据类型存放到堆 Number、String、布尔类型(boolean)、null  、Symbol
-- 复杂数据类型存放到栈 Object function Set Map
+- 简单数据类型存放到栈 Number、String、布尔类型(boolean)、null  、Symbol
+- 复杂数据类型存放到堆 Object function Set Map
 
 - 栈和堆的区别
 
@@ -732,40 +732,40 @@ document.getElementById("capture").addEventListener("click", function () {
 
 ### **创建对象的方式**
 
-- 字面量的方式 
+字面量的方式 
 
-  ```js
-  var obj = {}
-  ```
+```js
+var obj = {}
+```
 
-- *new Object()*  的方式创建对象
+*new Object()*  的方式创建对象
 
-  ```js
-  var obj = new Obect()
-  ```
+```js
+var obj = new Obect()
+```
 
-- 自定义构造函数创建对象
+自定义构造函数创建对象
 
-  ```js
-  function  CreateHero ( name, age, height ) {
-      this.name = name;
-      this.age = age;
-      this.height = height;
-   }
-  ```
+```js
+function  CreateHero ( name, age, height ) {
+    this.name = name;
+    this.age = age;
+    this.height = height;
+ }
+```
 
-- 工厂的方式创建对象
+工厂的方式创建对象
 
-  ```js
-  function  create ( name, age, height ) {
-     var  Ob = new Object()
-     Ob.name = name;
-     Ob.age = age;
-     Ob.height = height;
-     Ob.eat = function () {}
-     return Ob;
-  }
-  ```
+```js
+function  create ( name, age, height ) {
+   var  Ob = new Object()
+   Ob.name = name;
+   Ob.age = age;
+   Ob.height = height;
+   Ob.eat = function () {}
+   return Ob;
+}
+```
 
 ### 获取URL参数的对象
 
@@ -1280,11 +1280,10 @@ js的数据类型分别为基本数据类型和复杂数据类型，基本数据
 ### 获取一段范围内的随机数
 
 ```js
-function GetRandomNum(Min,Max)
-{   
-var Range = Max - Min;   
-var Rand = Math.random();   
-return(Min + Math.round(Rand * Range));   
+function GetRandomNum(Min,Max) {   
+    var Range = Max - Min;   
+    var Rand = Math.random();   
+    return(Min + Math.round(Rand * Range));   
 }   
 var num = GetRandomNum(1,10); 
 ```
@@ -1394,7 +1393,6 @@ console.log(arr.flat(Infinity))
 **方法二**
 
 ```js
-
 const newArr = (arr)=>{
      return arr.reduce((pre,cur)=>{
           return pre.concat(Array.isArray(cur) ? newArr(cur) : cur)
