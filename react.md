@@ -512,6 +512,8 @@ module.exports = override(
 
 ### px2rem适配的配置
 
+> 相关链接 https://www.cnblogs.com/beyonds/p/12988329.html
+
 **安装依赖**
 
 ```shell
