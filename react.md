@@ -167,7 +167,11 @@ export default class App extends React.Component{
 ```js
 const { history } = this.props;
 history.push({
-  pathName: "/home"
+  pathName: "/home",
+  state:{name : 'sunny' },
+  query:{
+	id: 123,
+  }
 })
 ```
 
