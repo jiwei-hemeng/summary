@@ -523,6 +523,14 @@ function instance_of(L, R) {//L 表示左表达式，R 表示右表达式
 instance_of(per, Person)
 ```
 
+### input 事件和change 事件的区别
+
+input输入框的onchange事件，要在 input 失去焦点的时候才会触发；
+
+在输入框内容变化的时候不会触发change，当鼠标在其他地方点一下才会触发；
+
+onchange 事件也可用于单选框与复选框改变后触发的事件。
+
 ### 简单数据类型和复杂数据类型的存储方式？
 
 - 简单数据类型存放到栈 Number、String、布尔类型(boolean)、null  、Symbol
