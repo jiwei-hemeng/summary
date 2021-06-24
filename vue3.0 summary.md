@@ -1,5 +1,7 @@
 ## vue3.0 新特征
 
+> 建议阅读迁移 https://v3.cn.vuejs.org/guide/migration/array-refs.html
+
 **setup函数的特性**
 
 + setup函数是vue3.0新特性，与之对应的是vue2.0的BeforeCreate 和Created 两个生命周期。由于在setup函数中vue实例并没有创建出来，所以该函数没有this
