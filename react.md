@@ -562,3 +562,58 @@ module.exports = override(
 import 'lib-flexible'
 ```
 
+### Hooks 基础
+
+> 相关链接 https://mp.weixin.qq.com/s/_uCquHuFaAk8W2bVjaC7Sg
+
+让我们从最简单的 Hooks 使用开始。
+
+**useState**
+
+```js
+import React, { useState } from 'react';
+function Example() {
+  // 声明一个 "count" 的 state 变量
+  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [dataList, setDataList] = useState([]);
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+`useState` 就是一个 Hooks，以前的函数组件是无状态的，但是有了 Hooks 后我们可以在函数中通过 `useState` 来获取 state 属性（count）以及修改 state 属性的方法（setCount）。
+
+**useEffect**
+
+在 Hooks 出现之前函数组件是不能访问生命周期钩子的，所以提供了 `useEffect` Hooks 来解决钩子问题，以往的所有生命周期钩子都被合并成了 `useEffect`，并且其解决了之前所提的关于生命周期钩子的问题。
+
+```js
+import React, { useState, useEffect } from 'react';
+function Example() {
+  const [count, setCount] = useState(0);
+  // 效果如同 componentDidMount 和 componentDidUpdate:
+  useEffect(() => {
+    // 更新 title
+    document.title = `你点击了 ${count} 次`;
+  });
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+可以看到无论是初始化渲染还是更新渲染，`useEffect` 总是会确保在组件渲染完毕后再执行，这就相当于组合了初始化和更新渲染时的生命周期钩子。并且由于闭包的特性，`useEffect` 可以访问到函数组件中的各种属性和方法。
+
