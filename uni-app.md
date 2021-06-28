@@ -556,6 +556,8 @@ WeixinJSBridge.on('menu:share:timeline', function(argv){
 
 ## 软件版本升级下载方法封装
 
+> 相关链接https://ask.dcloud.net.cn/article/34972
+
 ```js
 UpVersion(){
   // #ifdef APP-PLUS
