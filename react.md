@@ -617,3 +617,48 @@ function Example() {
 
 可以看到无论是初始化渲染还是更新渲染，`useEffect` 总是会确保在组件渲染完毕后再执行，这就相当于组合了初始化和更新渲染时的生命周期钩子。并且由于闭包的特性，`useEffect` 可以访问到函数组件中的各种属性和方法。
 
+### react-spring
+
+> React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
+
+**环境安装和配置**
+
+```shell
+npm i react-spring
+```
+
+**使用**
+
+```js
+// App.js:
+import React, { useState } from 'react';
+import { useSpring, animated } from 'react-spring';
+const App = () => {
+  const animation = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 }
+  });
+  const colorAnimation = useSpring({
+    from: { color: 'blue' },
+    to: { color: `rgb(255,0,0)` }
+  });
+  const multiAnimation = useSpring({
+    from: { opacity: 0, color: 'red' },
+    to: [
+        { opacity: 1, color: '#ffaaee' },
+        { opacity: 1, color: 'red' },
+        { opacity: .5, color: '#008000' },
+        { opacity: .8, color: 'black' }
+    ]
+  });
+  return (
+    <div>
+      <animated.h1 style={animation}>Hello World</animated.h1>
+      <animated.h1 style={colorAnimation}>Hello World</animated.h1>
+      <animated.h1 style={multiAnimation}>Hello World</animated.h1>
+    </div>
+  )
+};
+export default App;
+```
+
