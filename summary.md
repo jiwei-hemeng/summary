@@ -1409,6 +1409,14 @@ const newArr = (arr)=>{
 console.log(newArr(arr),"reduce方法")
 ```
 
+## 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
+
+- `CSS`不会阻塞`DOM`解析，但是会阻塞`DOM`渲染，严谨一点则是`CSS`会阻塞`render tree`的生成，进而会阻塞`DOM`的渲染
+- `JS`会阻塞`DOM`解析
+- `CSS`会阻塞`JS`的执行
+- 浏览器遇到`<script>`标签且没有`defer`或`async`属性时会触发页面渲染
+- `Body`内部的外链`CSS`较为特殊，请慎用
+
 ## JQuery
 
 ### jQuery获取元素的兄弟节点的几种方法
