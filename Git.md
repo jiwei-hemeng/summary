@@ -33,6 +33,8 @@ git rm -r --cached .
 
 ### **Git 配置命令**
 
+> 相关链接 https://www.liuvv.com/p/a9407b5.html
+
 ```shell
 # 设置用户名
 git config --global user.name 'userName'
@@ -42,8 +44,10 @@ git config --global user.email 'example@xx.com'
 ssh-keygen -t rsa -C "你的邮箱地址"
 # 查看你的 public key
 cat ~/.ssh/id_rsa.pub
-# 添加主机到本机SSH可信列表
-ssh -T git@gitee.com
+# 测试是否连接到github, 现在带上私钥
+ssh -T git@github.com -i github
+# 测试是否连接到码云, 现在带上私钥
+ssh -T git@gitee.com -i mayun
 ```
 
 ### **关于分支的命令**
