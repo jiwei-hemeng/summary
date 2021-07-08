@@ -40,6 +40,8 @@ git config --global user.name 'userName'
 git config --global user.email 'example@xx.com'
 # 配置SSH
 ssh-keygen -t rsa -C "你的邮箱地址"
+# 查看你的 public key
+cat ~/.ssh/id_rsa.pub
 ```
 
 ### **关于分支的命令**
