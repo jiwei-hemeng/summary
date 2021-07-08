@@ -548,3 +548,20 @@ exports.decryptData = (appId, sessionKey, encryptedData, iv) => {
 };
 ```
 
+##  history模式在node中的配置方法
+
+**安装**
+
+```shell
+npm install --save connect-history-api-fallback
+```
+
+**使用**
+
+```js
+const history = require("connect-history-api-fallback");
+const express = require("express");
+const app = express();
+app.use(history());
+```
+
