@@ -42,6 +42,8 @@ git config --global user.email 'example@xx.com'
 ssh-keygen -t rsa -C "你的邮箱地址"
 # 查看你的 public key
 cat ~/.ssh/id_rsa.pub
+# 添加主机到本机SSH可信列表
+ssh -T git@gitee.com
 ```
 
 ### **关于分支的命令**
