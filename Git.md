@@ -71,7 +71,7 @@ git merge dev
 git branch -D dev
 ```
 
-### **工作中想将dev分支合并到master分支，操作如下：**
+### 工作中想将dev分支合并到master分支，操作如下
 
 **首先切换到master分支上**
 
@@ -106,3 +106,27 @@ nothing to commit, working tree clean
 > 最后执行下面提交命令
 git push origin master
 ```
+
+###  免密远程登陆及免密远程拷贝设置
+
+```shell
+# 生成公钥
+ssh-keygen -t rsa
+# 进入shh 文件夹
+cd ~/.ssh/
+# 将RSA密钥添加到authorized_keys文件
+cat id_rsa.pub >>authorized_keys
+# 配置ssh文件的权限
+chmod 600 authorized_keys
+# 登录并上传公钥
+scp authorized_keys root@192.168.112.131:/root/.ssh
+# 去登录
+ssh 192.168.112.131
+# 本地文件拷贝到远程主机
+scp anaconda-ks.cfg root@192.168.112.131:/tmp
+# 远程主机文件拷贝到本地
+scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
+```
+
+
+
