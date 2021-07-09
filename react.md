@@ -564,7 +564,7 @@ import 'lib-flexible'
 
 ### Hooks 基础
 
-> 相关链接 https://mp.weixin.qq.com/s/_uCquHuFaAk8W2bVjaC7Sg
+> 相关链接 https://react.docschina.org/docs/hooks-intro.html   https://mp.weixin.qq.com/s/_uCquHuFaAk8W2bVjaC7Sg
 
 让我们从最简单的 Hooks 使用开始。
 
