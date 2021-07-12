@@ -202,9 +202,30 @@ export default Button;
 
 **关于 Suspense 组件**
 
+> 相关链接 https://v3.cn.vuejs.org/guide/migration/suspense.html#%E4%BA%8B%E4%BB%B6
+
 + Suspense是Vue3.0推出的一个内置特殊组件，用来定义具有异步请求数据的组建的显示。如果使用Suspense，要setup函数中需要返回一个promise
 + Suspense组件内置了两个具名插槽slot,一个是default，用来显示异步组件请求成功的内容；一个是fallback用来显示异步组件请求响应前页面显示的内容
 + default插槽可以有多个组件，但是需要有一个根节点
+
+```html
+<router-view v-slot="{ Component }">
+  <template v-if="Component">
+    <transition mode="out-in">
+      <keep-alive>
+        <suspense>
+          <component :is="Component"></component>
+          <template #fallback>
+            <div>
+              Loading...
+            </div>
+          </template>
+        </suspense>
+      </keep-alive>
+    </transition>
+  </template>
+</router-view>
+```
 
 **挂载全局的属性和方法**
 
