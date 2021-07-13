@@ -427,6 +427,8 @@ setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 
 ## 安卓证书
 
+> 相关链接 https://ask.dcloud.net.cn/article/35777
+
 **生成**
 
 >  test.keystore 是文件名； testalias 是别名
