@@ -634,5 +634,9 @@ Android平台配置权限参考：https://ask.dcloud.net.cn/article/36982
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 ```
 
+### 微信网页开发 网页授权
+
+[网页授权](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
+
 
 
