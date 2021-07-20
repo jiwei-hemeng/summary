@@ -15,6 +15,7 @@
 + 不同点
   + ref 创建出来的是简单数据类型的相应数据
   + reactive 创建出来的是复杂数据类型
+  + 从ref返回的引用将自动解包，因此模板中使用不需要.value。在setup中访问必须需要`.value`
 
 **toRef 和 toRefs的区别**
 
@@ -214,7 +215,9 @@ export default Button;
     <transition mode="out-in">
       <keep-alive>
         <suspense>
-          <component :is="Component"></component>
+          <template #default>
+            <component :is="Component"></component>
+          </template>
           <template #fallback>
             <div>
               Loading...
