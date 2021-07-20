@@ -106,6 +106,8 @@ export default {
 
 多个DOM(案例)
 
+> [官网链接](https://v3.cn.vuejs.org/guide/migration/array-refs.html)
+
 ```html
 <template>
   <ul>
