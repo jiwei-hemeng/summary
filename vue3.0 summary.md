@@ -296,3 +296,47 @@ setup() {
 + checkbox 和 radio 使用 `checked` property 和 `change` 事件；
 
 + select 字段将 `value` 作为 prop 并将 `change` 作为事件
+
+**在 `setup` 中访问路由和当前路由**
+
+> [相关链接](https://next.router.vuejs.org/zh/guide/advanced/composition-api.html)
+
+因为我们在 `setup` 里面没有访问 `this`，所以我们不能再直接访问 `this.$router` 或 `this.$route`。作为替代，我们使用 `useRouter` 函数：
+
+```js
+import { useRouter, useRoute } from 'vue-router'
+export default {
+  setup() {
+    const router = useRouter()
+    const route = useRoute()
+    function pushWithQuery(query) {
+      router.push({
+        name: 'search',
+        query: {
+          ...route.query,
+        },
+      })
+    }
+  },
+}
+```
+
+`route` 对象是一个响应式对象，所以它的任何属性都可以被监听，但你应该**避免监听整个 `route`** 对象
+
+```js
+import { useRoute } from 'vue-router'
+export default {
+  setup() {
+    const route = useRoute()
+    const userData = ref()
+    // 当参数更改时获取用户信息
+    watch(
+      () => route.params,
+      async newParams => {
+        userData.value = await fetchUser(newParams.id)
+      }
+    )
+  },
+}
+```
+
