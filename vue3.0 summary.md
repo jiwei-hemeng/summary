@@ -342,3 +342,46 @@ export default {
 }
 ```
 
+**v-model用于自定义组件时**
+
+> [相关链接](https://v3.cn.vuejs.org/guide/migration/v-model.html#%E6%A6%82%E8%A7%88)
+
+prop：`value` -> `modelValue`
+
+event：`input` -> `update:modelValue`；
+
+**自定义修饰符**
+
+> [相关链接](https://v3.cn.vuejs.org/guide/component-custom-events.html#%E5%A4%84%E7%90%86-v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6)
+
+让我们创建一个示例自定义修饰符 `capitalize`，它将 `v-model` 绑定提供的字符串的第一个字母大写。
+
+```html
+<my-component v-model.capitalize="myText"></my-component>
+```
+
+```js
+app.component('my-component', {
+  props: {
+    modelValue: String,
+    modelModifiers: {
+      default: () => ({})
+    }
+  },
+  emits: ['update:modelValue'],
+  methods: {
+    emitValue(e) {
+      let value = e.target.value
+      if (this.modelModifiers.capitalize) {
+        value = value.charAt(0).toUpperCase() + value.slice(1)
+      }
+      this.$emit('update:modelValue', value)
+    }
+  },
+  template: `<input
+    type="text"
+    :value="modelValue"
+    @input="emitValue">`
+})
+```
+
