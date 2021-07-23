@@ -76,6 +76,130 @@ let API = axios.create({
 })
 ```
 
+### fetch()
+
+> `fetch()`是 XMLHttpRequest 的升级版，用于在 JavaScript 脚本里面发出 HTTP 请求.
+>
+> [相关链接](https://www.ruanyifeng.com/blog/2020/12/fetch-tutorial.html)
+
+`fetch()`的功能与 XMLHttpRequest 基本相同，但有三个主要的差异。
+
+（1）`fetch()`使用 Promise，不使用回调函数，因此大大简化了写法，写起来更简洁。
+
+（2）`fetch()`采用模块化设计，API 分散在多个对象上（Response 对象、Request 对象、Headers 对象），更合理一些；相比之下，XMLHttpRequest 的 API 设计并不是很好，输入、输出、状态都在同一个接口管理，容易写出非常混乱的代码。
+
+（3）`fetch()`通过数据流（Stream 对象）处理数据，可以分块读取，有利于提高网站性能表现，减少内存占用，对于请求大文件或者网速慢的场景相当有用。XMLHTTPRequest 对象不支持数据流，所有的数据必须放在缓存里，不支持分块读取，必须等待全部拿到后，再一次性吐出来
+
+**`fetch()`第二个参数的完整 API**
+
+```js
+const response = fetch(url, {
+  method: "GET",
+  headers: {
+    "Content-Type": "text/plain;charset=UTF-8"
+  },
+  body: undefined,
+  referrer: "about:client",
+  referrerPolicy: "no-referrer-when-downgrade",
+  mode: "cors", 
+  credentials: "same-origin",
+  cache: "default",
+  redirect: "follow",
+  integrity: "",
+  keepalive: false,
+  signal: undefined
+});
+```
+
+**判断请求是否成功**
+
+```js
+async function fetchText() {
+  let response = await fetch('/readme.txt');
+  if (response.status >= 200 && response.status < 300) {
+    return await response.text();
+  } else {
+    throw new Error(response.statusText);
+  }
+}
+```
+
+另一种方法是判断`response.ok`是否为`true`
+
+```js
+if (response.ok) {
+  // 请求成功
+} else {
+  // 请求失败
+}
+```
+
+**定制 HTTP 请求**
+
+POST 请求(application/x-www-form-urlencoded)
+
+```js
+const response = await fetch(url, {
+  method: 'POST',
+  headers: {
+    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+  },
+  body: 'foo=bar&lorem=ipsum',
+});
+const json = await response.json();
+```
+
+提交 JSON 数据
+
+```js
+const user =  { name:  'John', surname:  'Smith'  };
+const response = await fetch('/article/fetch/post/user', {
+  method: 'POST',
+  headers: {
+   'Content-Type': 'application/json;charset=utf-8'
+  }, 
+  body: JSON.stringify(user) 
+});
+const json = await response.json();
+```
+
+提交表单
+
+```js
+const form = document.querySelector('form');
+const response = await fetch('/users', {
+  method: 'POST',
+  body: new FormData(form)
+})
+```
+
+文件上传
+
+```js
+const input = document.querySelector('input[type="file"]');
+const data = new FormData();
+data.append('file', input.files[0]);
+data.append('user', 'foo');
+fetch('/avatars', {
+  method: 'POST',
+  body: data
+});
+```
+
+上传二进制数据
+
+```js
+let blob = await new Promise(resolve =>   
+  canvasElem.toBlob(resolve,  'image/png')
+);
+let response = await fetch('/article/fetch/post/image', {
+  method:  'POST',
+  body: blob
+});
+```
+
+
+
 ### https和http的区别主要如下：
 
 - http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
