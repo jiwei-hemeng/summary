@@ -662,3 +662,90 @@ const App = () => {
 export default App;
 ```
 
+### 闭包陷阱
+
+ 初使用Hooks时，比较常见的一个错误就是闭包。 
+
+```js
+const IntervalDemo = () => {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        let timer = setInterval(() => {
+            setCount(count + 1);
+        }, 1000);
+        return ()=>{
+            clearInterval(timer)
+        }
+    }, []);
+    return <div>{count}</div>;
+};
+```
+
+ 事实上每次更新之后count的值都不会变化，其原因跟 
+
+```js
+for (var i = 0; i < 10; ++i) {
+    setTimeout(function () {
+        console.log(i);
+    }, 1000);
+}
+```
+
+ 一种解决办法是使用函数式的setCount，可以获取到最新的count值。 
+
+```js
+const IntervalDemo2 = () => {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        let timer = setInterval(() => {
+            setCount((c) => c + 1); // 可以拿到上一轮的值
+        }, 1000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+    return <div>{count}</div>;
+};
+```
+
+最简单的做法是使用外部自由变量来保存。
+
+```js
+
+let globalCount = 0
+const IntervalDemo2 = () => {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        let timer = setInterval(() => {
+            globalCount++
+            console.log(globalCount)
+            setCount(globalCount);
+        }, 1000);
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+    return <div>{count}</div>;
+};
+```
+
+ 官方的做法是使用useRef 
+
+```js
+const IntervalDemo3 = () => {
+    const [count, setCount] = useState(0);
+    const countRef = useRef(0);
+    useEffect(() => {
+        let timer = setInterval(() => {
+            countRef.current += 1;
+            setCount(countRef.current);
+        }, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+    return <div>{count}</div>;
+};
+```
+
