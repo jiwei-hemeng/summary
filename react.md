@@ -664,6 +664,8 @@ export default App;
 
 ### 闭包陷阱
 
+> [相关连接](https://mp.weixin.qq.com/s/Zq1-XLHuh6-edGcTmPojjQ)
+
  初使用Hooks时，比较常见的一个错误就是闭包。 
 
 ```js
@@ -746,6 +748,120 @@ const IntervalDemo3 = () => {
         };
     }, []);
     return <div>{count}</div>;
+};
+```
+
+### render Hook
+
+> 在某些场景下可能期望获取组件的实例，方便调用组件上面的一些方法，最经典的场景是调用Form.validate()表单组件的字段校验。
+
+在Class组件的使用中
+
+```js
+class Form extends React.Component {
+    validate = () => {
+        console.log("validate form");
+    };
+    render() {
+        return <div>form</div>;
+    }
+}
+```
+
+ 可以通过ref获取组件实例然后调用组件方法 
+
+```js
+const Parent = () => {
+    const ref = useRef(null)
+    useEffect(()=>{
+        const instance = ref.current
+        instance.validate()
+    },[])
+    return (
+      <Form ref={ref}></Form>
+    );
+};
+```
+
+ 在函数组件中，并不存在组件instance这一说法，也无法直接设置ref属性，直接在函数组件上使用ref会出现警告 
+
+>  Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()? 
+
+  为了实现与类组件的功能，需要使用借助forwardRef和useImperativeHandle 
+
+```js
+const Form2 = forwardRef((props, ref)=>{
+      // 实现ref获取到实例相关的接口
+    useImperativeHandle(ref, ()=>{
+        return {
+            validate(){
+                console.log('validate')
+            }
+        }
+    })
+    return (<div>form</div>)
+})
+```
+
+ 但是现在有了Hook，我们可以将组件和操作组件的方法通过hook暴露出来，无需再通过ref了。 
+
+```js
+const useForm = () => {
+    const validate = () => {
+        console.log("validate form");
+    };
+    const render = () => {
+        return <div>form</div>;
+    };
+    return {
+        render,
+        validate,
+    };
+};
+const FormDemo = ()=>{
+    const {render, validate} = useForm()
+    useEffect(() => {
+        validate()
+    }, []);
+
+    return render()
+}
+```
+
+ 相较于ref获取类组件实例，这种实现看起来更加简单清晰，一切皆是函数。 
+
+ 借助这种包含渲染render功能的hook和JSX的强大表现力，可以实现很多有趣的组件，如弹窗。 
+
+```js
+const Modal = ({ visible, children }) => {
+    return <dialog open={visible}>{children}</dialog>;
+};
+const useModal = (content) => {
+    const [visible, setVisible] = useState(false);
+    const modal = <Modal visible={visible}>{content}</Modal>;
+
+    const toggleModal = () => {
+        setVisible(!visible);
+    };
+    return {
+        modal,
+        toggleModal,
+    };
+};
+```
+
+ 使用起来很方便。 
+
+```js
+
+const ModalDemo = () => {
+    const { modal, toggleModal } = useModal(<h1>hi model</h1>);
+    return (
+        <div>
+            {modal}
+            <button onClick={toggleModal}>toggle</button>
+        </div>
+    );
 };
 ```
 
