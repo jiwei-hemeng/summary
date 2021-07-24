@@ -713,7 +713,6 @@ const IntervalDemo2 = () => {
 最简单的做法是使用外部自由变量来保存。
 
 ```js
-
 let globalCount = 0
 const IntervalDemo2 = () => {
     const [count, setCount] = useState(0);
@@ -853,7 +852,6 @@ const useModal = (content) => {
  使用起来很方便。 
 
 ```js
-
 const ModalDemo = () => {
     const { modal, toggleModal } = useModal(<h1>hi model</h1>);
     return (
