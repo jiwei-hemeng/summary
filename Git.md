@@ -29,6 +29,8 @@ git checkout src/view/index/index.vue
 git diff src/view/index/index.vue
 # 清除本地库的缓存
 git rm -r --cached .
+# 撤销已被放入暂存区的文件
+git reset HEAD -- .
 ```
 
 ### **Git 配置命令**
