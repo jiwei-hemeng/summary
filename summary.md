@@ -198,8 +198,6 @@ let response = await fetch('/article/fetch/post/image', {
 });
 ```
 
-
-
 ### https和http的区别主要如下：
 
 - http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
@@ -221,11 +219,6 @@ let response = await fetch('/article/fetch/post/image', {
 
 **传输数据量上：**POST没有限制，而GET有限制
 
-### 常见的模板引擎
-
-- 百度的`template`
-- 腾讯的`art-template`
-
 ### 同源策略及产生的影响
 
 > 如果协议、域名、端口号不一致时就会非同源，就会阻止dom获取和操作，无法发送Ajax请求
@@ -243,20 +236,6 @@ let response = await fetch('/article/fetch/post/image', {
 - 特点
   - 只能发送get请求
   - 需要后台配合
-
-### http协议是什么？
-
-- 首先有客服端发起http请求
-- 服务器收到客服端的请求后处理数据，然后将结果返回给客户端
-
-- 状态码及其代表的意义
-
-  - 200 表示请求成功
-  - 401 身份认证失败
-  - 403 没有访问权限
-  - 404 找不到页面
-  - 500 服务端错误
-  - 507 数据库错误
 
 ## H5C3
 
@@ -1533,7 +1512,7 @@ const newArr = (arr)=>{
 console.log(newArr(arr),"reduce方法")
 ```
 
-## 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
+### 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
 
 - `CSS`不会阻塞`DOM`解析，但是会阻塞`DOM`渲染，严谨一点则是`CSS`会阻塞`render tree`的生成，进而会阻塞`DOM`的渲染
 - `JS`会阻塞`DOM`解析
