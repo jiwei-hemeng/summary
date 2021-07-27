@@ -385,3 +385,7 @@ app.component('my-component', {
 })
 ```
 
+**proxy与defineProperty的区别**
+
+Object.defineProperty只能监听到对象的读取或写入，Proxy除了可以监听读写还可以监听对象属性的删除、对象当中方法的调用
+
