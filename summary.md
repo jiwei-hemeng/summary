@@ -511,6 +511,10 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 /*and  可以将多个媒体特性链接到一块,相当于且*/
 /*only   指定某个特定的媒体类型, 可以省略*/
 @media only screen and (min-width: 320px) and (max-width: 767px) {}
+/* 横屏显示 */
+@media screen and (orientation: landscape) {}
+/* 竖屏显示 */
+@media screen and (orientation: portrait) {}
 ```
 
 ### px 、em 和 rem 的区别

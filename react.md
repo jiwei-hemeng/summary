@@ -478,8 +478,6 @@ ReactDOM.render(<Zuzong />, document.getElementById('root'))
 
 ### 重写webpack配置(以antd—moblie为例)
 
-安装
-
 ```po
 yarn add react-app-rewired customize-cra babel-plugin-import -S
 ```
