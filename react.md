@@ -861,3 +861,29 @@ const ModalDemo = () => {
 };
 ```
 
+### react-zmage
+
+> [官网地址](https://github.com/Caldis/react-zmage)
+
+安装
+
+```shell
+npm i react-zmage --save
+```
+
+使用
+
+```js
+import Zmage from "react-zmage";
+<img src="图片源连接"/>
+👆 to 👇
+<Zmage src="图片源连接"/>
+```
+
+也可以通过函数调用来唤出图片
+
+```js
+// Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
+<a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
+```
+
