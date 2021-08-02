@@ -31,6 +31,8 @@ git diff src/view/index/index.vue
 git rm -r --cached .
 # 撤销已被放入暂存区的文件
 git reset HEAD -- .
+# 推送dev分支到远程仓库
+git push --set-upstream origin dev
 ```
 
 ### **Git 配置命令**
