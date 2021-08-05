@@ -529,6 +529,25 @@ p span{
 }
 ```
 
+### 文字溢出时显示点点点
+
+**单行**
+
+```css
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+```
+
+**多行**
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;  //这里是在第二行有省略号
+overflow: hidden;
+```
+
 ### px 、em 和 rem 的区别
 
 + px 是一个固定单位
