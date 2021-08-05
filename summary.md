@@ -517,6 +517,18 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 @media screen and (orientation: portrait) {}
 ```
 
+### 怎么让Chrome支持小于12px 的文字
+
+> 谷歌Chrome最小字体是12px，不管你设置成8px还是10px，在浏览器中只会显示12px，那么如何解决这个坑爹的问题呢？
+
+```css
+p span{
+    font-size:10px;
+    -webkit-transform:scale(0.8);
+    display:block;
+}
+```
+
 ### px 、em 和 rem 的区别
 
 + px 是一个固定单位
