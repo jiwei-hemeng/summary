@@ -154,18 +154,18 @@ module.exports = {
 安装依赖
 
 ```shell
-npm i hmtl-webpack-plugin -D
+yarn add --dev html-webpack-plugin
 ```
 
 修改配置文件
 
 ```js
 // webpack.config.js
-const hmtlWebpackPlugin = require("hmtl-webpack-plugin");
+const htmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   // 插件
   plugins: [
-  	new hmtlWebpackPlugin({
+  	new htmlWebpackPlugin({
   		// title: "Output Management"
   		template: "./index.html"
 		})

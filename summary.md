@@ -303,7 +303,7 @@ background-attachment: fixed;
 background-position: center;
 ```
 
-### **css的calc()函数**
+### css的calc()函数
 
 **在less或sass中经常会遇到**
 
