@@ -810,6 +810,26 @@ element.scrollTop = element.scrollHeight; // 设置 element 的滚动条位置�
 
 > **总结：**精度丢失可能出现在进制转换和对阶运算中
 
+### 实现函数能够深度克隆基本类型
+
+> 递归的方法实现
+
+```js
+function deepCopy(obj) {
+  if (typeof obj === 'object') {
+    let result = obj.constructor === Array ? [] : {};
+    for (let i in obj) {
+      result[i] = typeof obj[i] === 'object' ? deepCopy(obj[i]) : obj[i];
+    }
+  } else {
+    let result = obj;
+  }
+  return result;
+}
+```
+
+**深度克隆的其他方法：** JSON.stringify转为字符串再JSON.parse
+
 ### 原生js实现拍照
 
 在html中
@@ -1420,14 +1440,6 @@ form.addEventListener("submit", (e) => {
 - 实例继承
 - call/apply继承（组合继承）
 - ES6 使用class extends 继承
-
-### 关于深/浅拷贝
-
-js的数据类型分别为基本数据类型和复杂数据类型，基本数据从类型保存的是值，复杂数据类型保存的是内存的地址。浅拷贝共用一个引用地址，深拷贝会创建新的内存地址
-
-浅拷贝的方法：直接复制、Object.assign
-
-深拷贝的方法： JSON.stringify转为字符串再JSON.parse    深度遍历
 
 ### 获取一段范围内的随机数
 
