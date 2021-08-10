@@ -368,3 +368,25 @@ module.exports = {
 npx eslint --init
 ```
 
+**压缩 js 文件**
+
+> 使用 uglifyjs-webpack-plugin 将js压缩，减少打包后的 vendor.js , bundle.js 等js的文件大小
+
+安装
+
+```shell
+npm install -D uglifyjs-webpack-plugin
+```
+
+使用
+
+```js
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+// webpack.config.js
+module.exports = {
+    plugins: [
+        new UglifyJsPlugin(), // 压缩 JavaScript
+    ],
+}
+```
+
