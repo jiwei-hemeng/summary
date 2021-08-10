@@ -196,12 +196,14 @@ module.exports = {
 
 **babel**
 
+> [官网地址](https://webpack.js.org/loaders/babel-loader/#install)
+>
 > 使用babel把es6转为es5
 
 安装依赖
 
 ```shell
-npm i babel-loader @babel/core @babel/perset-env
+npm install -D babel-loader @babel/core @babel/preset-env
 ```
 
 修改配置文件
@@ -212,16 +214,15 @@ module.exports = {
   // 插件
   rules: [
     {
-      test: /\.m?js$/,
-      exclude: /(node_modules|bower-components)/,
-      use: {
-        loader: "babel-loader",
-        options: {
-          persets: "@babel/perset-env", // 转换规则
-          cacheDirectory: true, // 开启缓存
-        }
-      }
-    }
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+            loader: "babel-loader",
+            options: {
+                presets: ["@babel/preset-env"],
+            },
+        },
+    },
   ]
 }
 ```
