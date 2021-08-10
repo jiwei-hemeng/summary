@@ -185,11 +185,11 @@ npm i clean-webpack-plugin -D
 
 ```js
 // webpack.config.js
-const { cleanWebpackPlugin }  = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   // 插件
   plugins: [
-  	new cleanWebpackPlugin(),
+  	new CleanWebpackPlugin(),
   ]
 }
 ```
