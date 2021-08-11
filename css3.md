@@ -371,3 +371,24 @@ div {
   display: none;
 }
 ```
+
+## 使用CSS自定义属性（变量）
+
+> [相关链接](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Using_CSS_custom_properties)
+>
+> **自定义属性**（有时候也被称作**CSS变量**或者**级联变量**）是由CSS作者定义的，它包含的值可以在整个文档中重复使用。由自定义属性标记设定值（比如： **`--main-color: black;`**），由[var() ](https://developer.mozilla.org/zh-CN/docs/Web/CSS/var())函数来获取值（比如： `color: **var(--main-color)**;`）
+
+```css
+:root {
+  --main-bg-color: brown;
+}
+.one {
+  color: white;
+  background-color: var(--main-bg-color);
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+}
+```
+
