@@ -605,6 +605,12 @@ if (
 ) {
     //调用用户媒体设备, 访问摄像头
     getUserMedia({ video: { width: 480, height: 320 } }, success, error);
+    // 调用移动端后摄像头
+    getUserMedia(
+        { audio: true, video: { facingMode: { exact: "environment" } } },
+        success,
+        error
+    );
 } else {
     alert("不支持访问用户媒体");
 }
