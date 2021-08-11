@@ -239,6 +239,16 @@ let response = await fetch('/article/fetch/post/image', {
 
 ## H5C3
 
+### html5调用系统拍照或者摄像
+
+```html
+<label>照相机</label>
+<input type="file" id="image" accept="image/*" capture="camera" />
+<br />
+<label>摄像机</label>
+<input type="file" id="video" accept="video/*" capture="camcorder" />
+```
+
 ### Css的优先级、权重
 
 - !important(无穷大)
