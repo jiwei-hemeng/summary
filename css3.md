@@ -104,6 +104,24 @@ img {
 }
 ```
 
+## css中的attr()函数
+
+> 使用 attr() 函数，你可以检索所选元素的属性值并在样式中使用它。
+
+例如
+
+```html
+<p>Some <span data-tooltip="tooltip">text</span> here</p>
+```
+
+使用
+
+```css
+span::after {
+    content: attr(data-tooltip);
+}
+```
+
 ## css的calc()函数
 
 **在less或sass中经常会遇到**
