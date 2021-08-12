@@ -426,3 +426,14 @@ div {
 }
 ```
 
+## 移动端特殊的css
+
+```css
+/* 清除移动端高亮 */
+-webkit-tap-highlight-color: transparent;
+/* 清除ios默认样式 */
+-webkit-appearance: none;
+/* 禁止长按弹出菜单 */
+-webkit-touch-callout: none;
+```
+
