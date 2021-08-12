@@ -593,3 +593,56 @@ https.createServer({
 })
 ```
 
+## nodemailer 发送电子邮件
+
+**安装**
+
+```shell
+npm install nodemailer --save
+```
+
+封装(以新浪邮箱为例)
+
+```js
+const nodemailer = require("nodemailer");
+let transporter = nodemailer.createTransport({
+  // host: 'smtp.ethereal.email',
+  host: "smtp.sina.cn",
+  // service: "sina", // 使用了内置传输发送邮件 查看支持列表：https://nodemailer.com/smtp/well-known/
+  port: 25, // SMTP 端口
+  // secureConnection: true, // 使用了 SSL
+  auth: {
+    user: "jiwei7065@sina.com",
+    // 这里密码不是qq密码，是你设置的smtp授权码
+    pass: "bd4d210******d3a",
+  },
+});
+exports.sendEmail = (mailOptions) => {
+  return new Promise((resolve, reject) => {
+      // send mail with defined transport object
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log(error);
+              return reject(error);
+          }
+          console.log("info", info);
+          resolve();
+      });
+  });
+};
+```
+
+调用
+
+```js
+let { sendEmail } = require("../utils/sendemail.js");
+sendEmail({
+    from: '"JavaScript测试" <j******5@sina.com>', // sender address
+    to: "144*******8@qq.com", // list of receivers
+    subject: "Hello", // Subject line
+    // 发送text或者html格式
+    // text: 'Hello world?', // plain text body
+    html: "<b>Hello world?</b>", // html body
+});
+```
+
