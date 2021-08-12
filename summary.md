@@ -213,11 +213,11 @@ let response = await fetch('/article/fetch/post/image', {
 
 ### GET和POST的区别：
 
-**本质上：**GET 一般只是获取服务端数据；POST 可以修改服务端数据
+**本质上：** GET 一般只是获取服务端数据；POST 可以修改服务端数据
 
-**安全上：**POST比GET安全
+**安全上：** POST比GET安全
 
-**传输数据量上：**POST没有限制，而GET有限制
+**传输数据量上：** POST没有限制，而GET有限制
 
 ### 同源策略及产生的影响
 
@@ -227,7 +227,7 @@ let response = await fetch('/article/fetch/post/image', {
 
 - Jsonp（本质是js调用）
 - cors（后台设置）
-- 服务端代理（运维配置）
+- 服务端代理（前端配置）
 
 **Jsonp 的原理和特点是什么**
 
@@ -248,14 +248,6 @@ let response = await fetch('/article/fetch/post/image', {
 <label>摄像机</label>
 <input type="file" id="video" accept="video/*" capture="camcorder" />
 ```
-
-### Css的优先级、权重
-
-- !important(无穷大)
-- 行内样式（1000）
-- Id （100）
-- Class （10）
-- 标签 （1）
 
 ### **iframe的使用**
 
