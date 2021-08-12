@@ -88,6 +88,22 @@ background-attachment: fixed;
 background-position: center;
 ```
 
+## object-fit
+
+> object-fit 属性控制被替换元素的纵横比，例如 img 和 video，如果它们有宽度或高度，以及缩放过程。
+
+![image-20210812095044739](./assets/images/image-20210812095044739.png)
+
+```css
+img {
+    width: 100px;
+    height: 100px;
+    object-fit: scale-down;
+    border: 1px dashed #262626;
+    border-radius: 4px;
+}
+```
+
 ## css的calc()函数
 
 **在less或sass中经常会遇到**
