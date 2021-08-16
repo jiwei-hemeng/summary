@@ -1100,6 +1100,8 @@ form.addEventListener("submit", (e) => {
 
     第一种，使用slice():
 
+    > 语法：slice(start, [end])
+
     ```js
     var myStr = "I,love,you,Do,you,love,me"
     var subStr = myStr.slice(1,5)	//",lov"
@@ -1107,12 +1109,16 @@ form.addEventListener("submit", (e) => {
 
     第二种，使用substring():
 
+    > 语法： substring(start, [end])
+
     ```js
     var myStr = "I,love,you,Do,you,love,me"
     var subStr = myStr.substring(1,5)	 //",lov"
     ```
 
     第三种，使用substr():
+
+    > 语法: subsrt(index, [length])
 
     ```js
     var myStr = "I,love,you,Do,you,love,me"
