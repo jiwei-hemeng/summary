@@ -296,6 +296,53 @@ let response = await fetch('/article/fetch/post/image', {
 <a href="tel:18834177065">联系我</a>
 ```
 
+## 使用标签元素触发隐藏文件输入元素
+
+> [MDN](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications)
+
+```html
+<input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden">
+<label for="fileElem">Select some files</label>
+```
+
+```css
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+input.visually-hidden:focus + label {
+  outline: thin dotted;
+}
+input.visually-hidden:focus-within + label {
+  outline: thin dotted;
+}
+```
+
+> clip: rect(1px, 1px, 1px, 1px); 将编译成 left:1px;  rigth: 1px; top: 1px; bottom:1px;
+
+## 伪类选择器 `:focus-within`
+
+> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
+
+```html
+<div class="warp">
+    <label for="name">姓名</label>
+    <input type="text" name="" id="name" />
+</div>
+<style>
+    .warp {
+        width: 100%;
+        height: 100px;
+    }
+    .warp:focus-within {
+        border: 1px dashed skyblue;
+    }
+</style>
+```
+
 ### H5新特性
 
 - 多媒体，用于媒介回放的video和audio元素
@@ -1268,7 +1315,7 @@ document.getElementById("throttle").onscroll = function(){
 
 防抖与节流都是希望在同一时间内，不要重复触发请求。
 
-防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计算
+防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计时
 
 节流是要是在规定的时间内只触发一次
 
