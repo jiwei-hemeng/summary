@@ -80,7 +80,7 @@ let API = axios.create({
 
 > `fetch()`是 XMLHttpRequest 的升级版，用于在 JavaScript 脚本里面发出 HTTP 请求.
 >
-> [相关链接](https://www.ruanyifeng.com/blog/2020/12/fetch-tutorial.html)
+> [相关链接](https://www.ruanyifeng.com/blog/2020/12/fetch-tutorial.html) [MDN连接](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch)
 
 `fetch()`的功能与 XMLHttpRequest 基本相同，但有三个主要的差异。
 
@@ -95,9 +95,9 @@ let API = axios.create({
 ```js
 const response = fetch(url, {
   method: "GET",
-  headers: {
+  headers: new Headers({
     "Content-Type": "text/plain;charset=UTF-8"
-  },
+  }),
   body: undefined,
   referrer: "about:client",
   referrerPolicy: "no-referrer-when-downgrade",
@@ -141,9 +141,9 @@ POST 请求(application/x-www-form-urlencoded)
 ```js
 const response = await fetch(url, {
   method: 'POST',
-  headers: {
+  headers: new Headers({
     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-  },
+  }),
   body: 'foo=bar&lorem=ipsum',
 });
 const json = await response.json();
@@ -155,12 +155,16 @@ const json = await response.json();
 const user =  { name:  'John', surname:  'Smith'  };
 const response = await fetch('/article/fetch/post/user', {
   method: 'POST',
-  headers: {
+  headers: new Headers({
    'Content-Type': 'application/json;charset=utf-8'
-  }, 
+  }), 
   body: JSON.stringify(user) 
 });
-const json = await response.json();
+if(response.ok) {
+    const json = await response.json();
+} else {
+   throw new Error('Network response was not ok.'); 
+}
 ```
 
 提交表单
