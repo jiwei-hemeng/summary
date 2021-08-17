@@ -1531,5 +1531,65 @@ var reg = /(\d{4})\/(\d{2})\/(\d{2})/;
 dateStr = dateStr.replace(reg, '$1-$2-$3')  // "2018-04-18"
 ```
 
+### JavaScript 正则表达式的方法
 
+**match()**
 
+方法返回 3 个可能的值：
+
++ 如果正则表达式包含一个 g 标记，即为全局匹配，它将返回一个包含所有匹配项的数组，没捕获组信息；
++ 如果正则表达式没有 g 标记，它将返回一个包含第一个匹配项和其相关的捕获组的数组；
++ 如果根本没有匹配项，则返回 null 。
+
+```js
+const strText = "Hello China";
+const regex = /[A-Z]/g; // 大写字母正则表达式
+console.log(strText.match(regex)); // [ 'H', 'C' ]
+```
+
+**test()**
+
+test() 用于测试指定字符串和正则表达式之间是否匹配，接受一个字符串作为其参数，并根据是否匹配返回 true 或 false 。
+
+```js
+const strText = "hello china";
+const regex = /china/;
+console.log(regex.test(strText)); // true
+```
+
+**search()**
+
+search() 方法是一个字符串方法，用于在字符串中搜索匹配项, 方法返回第一个匹配项在整个字符串中的位置（索引），如果没有匹配项，则返回 -1。
+
+```js
+const strText = "hello china，i love china";
+const regex = /china/;
+console.log(strText.search(regex)); // 6
+```
+
+**replace()**
+
+replace() 是在字符串中搜索指定的值或正则表达式并将其替换为另一个值
+
+```js
+const strText = "hello world,i love world";
+const regex = /world/;
+console.log(strText.replace(regex, "china")); // hello china,i love world
+```
+
+**replaceAll()**
+
+replaceAll() 类似于方法 replace() ，但它允许替换字符串中所有匹配的值或正则表达式。
+
+```js
+const strText = "hello world,i love world";
+console.log(strText.replaceAll("world", "china")); // hello china,i love china
+```
+
+等效于如下代码：
+
+```js
+const strText = "hello world,i love world";
+const regex = /world/g;
+console.log(strText.replaceAll(regex, "china")); // hello china,i love china
+```
