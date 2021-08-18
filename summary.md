@@ -565,6 +565,9 @@ document.querySelector("ul").addEventListener("click", function (e) {
 ```js
 element.scrollTop = 0; // 设置 element 的滚动条位置居首
 element.scrollTop = element.scrollHeight; // 设置 element 的滚动条位置始终居底
+// 页面滚动
+document.body.scrollTop = 0;
+document.documentElement.scrollTop = 0;
 ```
 
 ### 0.1 + 0.2 === 0.3 嘛？为什么
