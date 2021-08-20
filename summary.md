@@ -323,32 +323,15 @@ input.visually-hidden:focus-within + label {
 
 > clip: rect(1px, 1px, 1px, 1px); 将编译成 left:1px;  rigth: 1px; top: 1px; bottom:1px;
 
-## 伪类选择器 `:focus-within`
-
-> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
-
-```html
-<div class="warp">
-    <label for="name">姓名</label>
-    <input type="text" name="" id="name" />
-</div>
-<style>
-    .warp {
-        width: 100%;
-        height: 100px;
-    }
-    .warp:focus-within {
-        border: 1px dashed skyblue;
-    }
-</style>
-```
-
 ### H5新特性
 
 - 多媒体，用于媒介回放的video和audio元素
 - 图像效果，用于绘画的canvas元素，svg元素等。
 - 离线&存储，对本地离线存储能够更好地支持，比如localstorage,Cookies等
 - 设备兼容特性
+- 语义化标签（nav、header、footer、aside）
+- 表单标签（Email、tel、password、color）
+- 地理位置
 
 ### localStorage与sessionStorage与cookie的区别总结
 
@@ -386,12 +369,6 @@ input.visually-hidden:focus-within + label {
 - for if else 必须使用大括号
 - 语句结束加分号
 - 命名要有意义，使用驼峰命名法
-
-### 本地存储
-
-- 保存数据到本地   *localStorage.setItem(key, value)*
--  获取本地存储的数据  *localStorage.setItem(key)*
--  从本地存储中移除数据  *localStorage.removeItem(key)*
 
 ### Js 数据类型如何判断
 

@@ -460,3 +460,23 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 ```
 
+## 伪类选择器 `:focus-within`
+
+> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
+
+```html
+<div class="warp">
+    <label for="name">姓名</label>
+    <input type="text" name="" id="name" />
+</div>
+<style>
+    .warp {
+        width: 100%;
+        height: 100px;
+    }
+    .warp:focus-within {
+        border: 1px dashed skyblue;
+    }
+</style>
+```
+
