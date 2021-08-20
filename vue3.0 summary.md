@@ -389,3 +389,44 @@ app.component('my-component', {
 
 Object.defineProperty只能监听到对象的读取或写入，Proxy除了可以监听读写还可以监听对象属性的删除、对象当中方法的调用
 
+**多页面应用程序**
+
+配置 `vue.config.js`
+
+```javascript
+module.exports = {
+    pages: {
+        index1: {
+            // page 的入口
+            entry: “src/views/index1/main.js”,
+            // 模板来源
+            template: “src/views/index1/index.html”,
+            // 在 dist/index.html 的输出
+            filename: “index1.html”,
+            // 当使用 title 选项时，
+            // template 中的 title 标签需要是 <%= htmlWebpackPlugin.options.title %>
+            title: “IndexPage”,
+            // 在这个页面中包含的块，默认情况下会包含
+            // 提取出来的通用 chunk 和 vendor chunk。
+            chunks: [“chunk-vendors”, “chunk-common”, “index1”]
+        },
+        index2: {
+            // page 的入口
+            entry: “src/views/index2/main.js”,
+            // 模板来源
+            template: “src/views/index2/index.html”,
+            // 在 dist/index.html 的输出
+            filename: “index2.html”,
+            // 当使用 title 选项时，
+            // template 中的 title 标签需要是 <%= htmlWebpackPlugin.options.title %>
+            title: “jhd”,
+            // 在这个页面中包含的块，默认情况下会包含
+            // 提取出来的通用 chunk 和 vendor chunk。
+            chunks: [“chunk-vendors”, “chunk-common”, “index2”]
+        }
+    },
+}
+```
+
+
+
