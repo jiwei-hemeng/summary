@@ -587,16 +587,21 @@ console.log("end");
 
 ```js
 function deepCopy(obj) {
-  if (typeof obj === 'object') {
-    let result = obj.constructor === Array ? [] : {};
-    for (let i in obj) {
-      result[i] = typeof obj[i] === 'object' ? deepCopy(obj[i]) : obj[i];
+    if (typeof obj === "object") {
+        var result = obj.constructor === "Array" ? [] : {};
+        for (let key in obj) {
+            result[key] =
+                typeof obj[key] === "object" ? deepCopy(obj[key]) : obj[key];
+        }
+    } else {
+        result = obj;
     }
-  } else {
-    let result = obj;
-  }
-  return result;
+    return result;
 }
+let oldVal = { s1: 123, s2: [1, 2, 3] };
+let newVal = deepCopy(oldVal);
+newVal.s1 = 456;
+console.log("newVal", newVal, oldVal);
 ```
 
 **深度克隆的其他方法：** JSON.stringify转为字符串再JSON.parse
