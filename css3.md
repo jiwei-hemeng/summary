@@ -480,3 +480,25 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 ```
 
+### 标准盒模型和怪异盒模型的区别
+
+标准盒模型 box-sizing: content-box; IE盒子模型 box-sizing: border-box; 
+
+标准盒与怪异盒的区别在于他们的总宽度的计算公式不一样。
+
++ 标准模式(也称w3c盒模型)下总宽度=width+margin（左右）+ padding（左右）+ border（左右）；
++ 怪异模式下总宽度=width+margin（左右）（就是说width已经包含了padding和border值）
+
+### flex属性 是哪些属性的简写
+
+ **flex-grow**
+
+该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
+
+**flex-shrink**
+
+该属性用来设置，当父元素的宽度小于所有子元素的宽度的和时（即子元素会超出父元素），子元素如何缩小自己的宽度的。 `flex-shrink`的默认值为1，当父元素的宽度小于所有子元素的宽度的和时，子元素的宽度会减小。值越大，减小的越厉害。如果值为0，表示不减小。
+
+**flex-basis**
+
+该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
