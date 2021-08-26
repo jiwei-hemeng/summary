@@ -1261,7 +1261,71 @@ function generateMixed(n) {
 - call()方法 第一个参数和apply()方法的一样，但是传递给函数的参数必须列举出来，会立即执行
 - Bind()和call很相似，第一个参数是this的指向，从第二个参数开始是接收的参数列表，不会立即执行
 
+### 变量提升
+
+> ES6之前我们一般使用var来声明变量，提升简单来说就是把我们所写的类似于var a = 123;这样的代码，声明提升到它所在作用域的顶端去执行，到我们代码所在的位置来赋值。
+
+```js
+function test() {
+    console.log(a);
+    var a = 123;
+}
+test(); // undefined
+// 它的实际执行顺序如下：
+function test() {
+    vat a;
+    console.log(a);
+    a = 123;
+}
+```
+
+下面来看一道经典面试题：
+
+```js
+console.log(a);
+var a = 100
+function foo() {
+    console.log(a);
+    var a = 200;
+    console.log(a)
+}
+foo()
+console.log(a) 
+// result: undefined undefined 200 100
+```
+
+**函数提升**
+
+```js
+console.log(bar)
+function bar() {
+    console.log(123)
+}
+// result: f bar() {console.log(123) }
+执行顺序相当于：
+function bar() {
+    console.log(123);
+}
+console.log(bar);
+```
+
+函数提升是整个代码块提升到它所在的作用域的最开始执行, 这就是**函数优先规则**
+
+```js
+foo();
+var foo;
+function foo() {
+    console.log(1)
+}
+foo = function() {
+    console.log(2)
+}
+// result: 1
+```
+
 ### 闭包的优点和缺点是什么 
+
+> [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures)
 
 - 在本质上，闭包是将函数内部和函数外部连接起来的桥梁。
 
@@ -1290,6 +1354,42 @@ function generateMixed(n) {
 - 缺点
   
     - 会形成数据的缓存，用完之后需要手动清空（给该变量赋一个空值null）
+    
+- 使用
+
+    **用闭包模拟私有方法**
+
+    > 编程语言中，比如 Java，是支持将方法声明为私有的，即它们只能被同一个类中的其它方法所调用。而 JavaScript 没有这种原生支持，但我们可以使用闭包来模拟私有方法。私有方法不仅仅有利于限制对代码的访问：还提供了管理全局命名空间的强大能力，避免非核心的方法弄乱了代码的公共接口部分。
+
+    ```js
+    var makeCounter = function() {
+      var privateCounter = 0;
+      function changeBy(val) {
+        privateCounter += val;
+      }
+      return {
+        increment: function() {
+          changeBy(1);
+        },
+        decrement: function() {
+          changeBy(-1);
+        },
+        value: function() {
+          return privateCounter;
+        }
+      }
+    };
+    
+    var Counter1 = makeCounter();
+    var Counter2 = makeCounter();
+    console.log(Counter1.value()); /* logs 0 */
+    Counter1.increment();
+    Counter1.increment();
+    console.log(Counter1.value()); /* logs 2 */
+    Counter1.decrement();
+    console.log(Counter1.value()); /* logs 1 */
+    console.log(Counter2.value()); /* logs 0 */
+    ```
 
 ### 防抖与节流
 
