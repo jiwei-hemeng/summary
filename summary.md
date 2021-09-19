@@ -783,6 +783,21 @@ export function getURLParameters(url) {
 }
 ```
 
+### 将键值对拼接成URL带参数
+
+```js
+export function fnParamsToUrl(obj) {
+      let aUrl = []
+      let fnAdd = function(key, value) {
+        return key + '=' + value
+      }
+      for (var k in obj) {
+        aUrl.push(fnAdd(k, obj[k]))
+      }
+      return encodeURIComponent(aUrl.join('&'))
+ }
+```
+
 ### URL的编码与解码
 
 - 编码使用encodeURI()函数---> 解码使用decodeURI()函数
@@ -1262,8 +1277,6 @@ function compressCss(s) {
   return s == null ? "" : s[1];
 }
 ```
-
-
 
 ### 字符串常用的方法
 
