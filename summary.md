@@ -1184,7 +1184,7 @@ form.addEventListener("submit", (e) => {
 }
 ```
 
-生成xlsx文件
+### 生成xlsx文件
 
 ```html
 <!DOCTYPE html>
@@ -1232,6 +1232,38 @@ form.addEventListener("submit", (e) => {
 </body>
 </html>
 ```
+
+### 加入收藏夹
+
+```js
+function addFavorite(sURL, sTitle) {
+  try {
+    window.external.addFavorite(sURL, sTitle);
+  } catch (e) {
+    try {
+      window.sidebar.addPanel(sTitle, sURL, "");
+    } catch (e) {
+      alert("加入收藏失败，请使用Ctrl+D进行添加");
+    }
+  }
+}
+```
+
+### 压缩CSS样式代码
+
+```js
+function compressCss(s) {
+  //压缩代码
+  s = s.replace(/\/\*(.|\n)*?\*\//g, ""); //删除注释
+  s = s.replace(/\s*([\{\}\:\;\,])\s*/g, "$1");
+  s = s.replace(/\,[\s\.\#\d]*\{/g, "{"); //容错处理
+  s = s.replace(/;\s*;/g, ";"); //清除连续分号
+  s = s.match(/^\s*(\S+(\s+\S+)*)\s*$/); //去掉首尾空白
+  return s == null ? "" : s[1];
+}
+```
+
+
 
 ### 字符串常用的方法
 
