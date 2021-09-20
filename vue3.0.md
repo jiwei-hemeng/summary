@@ -446,3 +446,9 @@ module.exports = {
 
   父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
 
+**vue 的渲染过程**
+
++ 把模板编译成render函数
++ 实例进行挂载，根据根节点render函数的调用，递归生成虚拟DOM
++ 对比虚拟DOM，渲染真实的DOM
++ 组件内部的data发生变化，组件和子组件的data作为props重新调用render函数生成虚拟DOM
