@@ -48,6 +48,7 @@ html {
     width: 100%;
     height: 260px;
 }
+/* 滚动条的样式 */
 .content-warpper::-webkit-scrollbar {
     width: 2px;
     background-color: #dbdbdb;
@@ -55,6 +56,15 @@ html {
 }
 .content-warpper::-webkit-scrollbar:active {
     background-color: #616161;
+}
+/* 滚动条里面的小方块 */
+.content-warpper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: skyblue;
+}
+/* 滚动条里面的轨道 */
+.content-warpper::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rbga(0,0,0, 0.5);
 }
 ```
 
