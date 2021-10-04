@@ -798,6 +798,15 @@ export function fnParamsToUrl(obj) {
  }
 ```
 
+### 复制到剪切板
+
+```js
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text);
+}
+copyToClipboard("哈哈哈")
+```
+
 ### URL的编码与解码
 
 - 编码使用encodeURI()函数---> 解码使用decodeURI()函数

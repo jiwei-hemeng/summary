@@ -268,7 +268,7 @@ setup() {
     const userInfo = computed(() => {
         return {
             userName: state.user.userName,
-        	age: state.user.age,
+        		age: state.user.age,
         }
     })
     return {

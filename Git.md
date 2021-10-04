@@ -145,6 +145,3 @@ scp anaconda-ks.cfg root@192.168.112.131:/tmp
 # 远程主机文件拷贝到本地
 scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 ```
-
-
-

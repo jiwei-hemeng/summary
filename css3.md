@@ -491,6 +491,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ### flex属性 是哪些属性的简写
 
+> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0 的简写。
+
  **flex-grow**
 
 该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
