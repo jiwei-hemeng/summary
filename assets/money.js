@@ -92,28 +92,28 @@ function splits(tranvalue) {
 
 function numberPutCommaShow(value) {
   let installVal = value;
-  if (value != '') {
+  if (value != "") {
     value = Number(value).toFixed(2)
     let intPart = Math.trunc(value) // 获取整数部分
-    let intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') // 将整数部分逢三一断
-    let floatPart = '.00' // 预定义小数部分
-    let value2Array = value.split('.')
+    let intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, "$1,") // 将整数部分逢三一断
+    let floatPart = ".00" // 预定义小数部分
+    let value2Array = value.split(".")
     // =2表示数据有小数位
     if (value2Array.length === 2) {
       floatPart = value2Array[1].toString() // 拿到小数部分
       if (floatPart.length === 1) { // 补0,实际上用不着
-        return intPartFormat + '.' + floatPart + '0'
+        return intPartFormat + "." + floatPart + "0"
       } else {
         if (installVal < 0 && intPartFormat == 0) {
-          return '-' + intPartFormat + '.' + floatPart
+          return "-" + intPartFormat + "." + floatPart
         } else {
-          return intPartFormat + '.' + floatPart
+          return intPartFormat + "." + floatPart
         }
       }
     } else {
       return intPartFormat + floatPart
     }
   } else if (value == 0 && String(value)) {
-    return '0.00'
+    return "0.00"
   }
 }
