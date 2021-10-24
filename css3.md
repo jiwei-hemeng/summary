@@ -480,7 +480,7 @@ input[type="number"]::-webkit-outer-spin-button {
 </style>
 ```
 
-### 标准盒模型和怪异盒模型的区别
+## 标准盒模型和怪异盒模型的区别
 
 标准盒模型 box-sizing: content-box; IE盒子模型 box-sizing: border-box; 
 
@@ -489,7 +489,7 @@ input[type="number"]::-webkit-outer-spin-button {
 + 标准模式(也称w3c盒模型)下总宽度=width+margin（左右）+ padding（左右）+ border（左右）；
 + 怪异模式下总宽度=width+margin（左右）（就是说width已经包含了padding和border值）
 
-### flex属性 是哪些属性的简写
+## flex属性 是哪些属性的简写
 
 > flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0 的简写。
 
@@ -504,3 +504,24 @@ input[type="number"]::-webkit-outer-spin-button {
 **flex-basis**
 
 该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
+
+##  li与li之间有看不见的空白间隔是什么原因引起的？有什么解决方法？
+
+> 行框的排列会受到之间空白(回车空格)等的影响，因为空格也属于字符，这些空白也会被应用样式，占据空间，所以会用空格
+
+**解决办法**
+
++ 可以将<li>代码写成一排
++ 浮动li中float: left;
++ 在ul中用font-size: 0(谷歌不支持);可以使用letter-space: -3px;
+
+##  行内元素什么时候会显示间隙
+
+> 元素被当成行内元素排版时，原来的html代码这回车换行被转换成一个空白字符，在字体不为0的情况下，空白符会占据一定的宽度，所以行内元素会显示间隙
+
+**解决办法**
+
++ 给父元素设置字体为0
++ 改变书写方式
++ 使用margin负值
++ 使用word-spacing或者letter-spacing
