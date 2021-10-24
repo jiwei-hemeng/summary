@@ -145,3 +145,17 @@ scp anaconda-ks.cfg root@192.168.112.131:/tmp
 # 远程主机文件拷贝到本地
 scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 ```
+
+### 在vscode中配置GIT终端
+
+```json
+{
+  "terminal.integrates.profiles.windows": {
+    "Git-Bash": {
+      "path": "D:\\Program Files\\Git\\bin\\bash.exe",
+      "args": []
+    }
+  }
+}
+```
+
