@@ -1532,3 +1532,19 @@ export default {
   </script>
 ```
 
+### js 中如何获取路由对象
+
+**使用router.currentRoute.fullPath**
+
+```js
+import router from "@/route"
+function redireatLogin() {
+  router.replace({
+    name: "login",
+    query: {
+      redireat: router.currentRoute.fullPath
+    }
+  })
+}
+```
+

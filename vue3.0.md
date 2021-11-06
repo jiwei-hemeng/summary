@@ -452,3 +452,4 @@ module.exports = {
 + 实例进行挂载，根据根节点render函数的调用，递归生成虚拟DOM
 + 对比虚拟DOM，渲染真实的DOM
 + 组件内部的data发生变化，组件和子组件的data作为props重新调用render函数生成虚拟DOM，使用diff算法对比新旧虚拟DOM，将变化的DOM更新
+
