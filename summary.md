@@ -58,11 +58,14 @@ axios.interceptors.request.use(config => {
 
 // 响应拦截器 常用来处理错误的请求
 axios.interceptors.response.use(response => {
-  if (response.data.status === 400) {
-    // 移除 token
-    localStorage.getItem("token")
-  }
+  // 响应成功
   return response
+}, error => {
+  // error.config 是请求的配置项，可以用来做无感触的刷新token
+  // 响应失败
+  if(error.code === 401) {
+    // 清楚token 重新登陆
+  }
 })
 ```
 
