@@ -815,6 +815,39 @@ copyToClipboard("哈哈哈")
 - 编码使用encodeURI()函数---> 解码使用decodeURI()函数
 - 编码使用encodeURIComponent()函数 ---> 解码使用decodeURIComponent()函数
 
+### 关于FileReader
+
+> fileReader是一种一部文件读取机制，结合input:file可以很方便地读取本地文件
+
+**创建File Reader对象**
+
+```js
+const fileReader = new FileReader();
+```
+
+**FileReader对象的常用方法**
+
++ **readerAsArrayBuffer(file)** 按字节读取文件内容，结果为ArrayBuffer对象
++ **raederAsBinaryString(file)** 按字节读取文件内容，结果为二进制串
++ **raederAsDataUrl(file)** 结果为base64文件
+
+**案例**
+
+```html
+<input type="file" id="file" />
+```
+
+```js
+document.querySelector("#file").addEventListener("change", (fileList) => {
+  const file = fileList.target.files[0];
+  const fileReader = new FileReader();
+  fileReader.raederAsDataUrl(file);
+  fileReader.onload = function(e) {
+    console.log("base64文件", e.target.result)
+  }
+})
+```
+
 ### 原生js实现给图片加水印
 
 **步骤一** 在html中
