@@ -557,3 +557,25 @@ div {
 }
 ```
 
+## css 的阴影和渐变
+
+**渐变**
+
+```css
+.box {
+  // 线性渐变
+  background: linear-gradient(45deg, #f00 20%, #0f0 40%, #0f0 60%);
+  // 径向渐变 ellipse 为椭圆 circle 为正元
+  background: radial-gradient(ellipse, #0f0, #f00, #00f)
+}
+```
+
+**阴影**
+
+```css
+.box-shadow {
+  // 没有inset是外阴影; 1px -- x轴， 2px -- y轴， 4px -- 模糊程度
+  box-shadow: inset 1px 2px 4px #fff;
+}
+```
+
