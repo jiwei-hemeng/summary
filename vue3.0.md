@@ -474,7 +474,7 @@ setup script`语法糖提供了三个新的`API`来供我们使用：`defineProp
 
 `父组件`
 
-```js
+```html
 <template>
   <div>
     <h2>我是父组件！</h2>
@@ -494,7 +494,7 @@ const handleClick = (ctx) => {
 
 `子组件`
 
-```js
+```html
 <template>
   <span @click="sonClick">msg: {{ props.msg }}</span>
 </template>
@@ -517,4 +517,89 @@ const sonClick = () => {
 `script setup语法糖请注意`
 
  如果在父组件中通过`ref='xxx'`的方法来获取子组件实例，子组件使用了`script setup`语法糖,那么子组件的数据需要用expose的方式导出，否则会因为获取不到数据而报错。 
+
+**跨组件通讯mitt.js**
+
+>  `Vue2`中怎么实现跨组件通讯呢,很多人第一想法就是`event bus`。但是`Vue3`移除了`$on`,`$once`,`$off`导致不能使用这个方法。但是`Vue`官方给大家推荐了`mitt.js`,它的原理就是`event bus`。 
+
+安装
+
+```shell
+npm i mitt -s
+```
+
+封装一个hook
+
+```js
+//mitt.js
+import mitt from 'mitt'
+const emitter = mitt();
+export default emitter;
+```
+
+ 子组件1 
+
+```html
+<template>
+  <div>
+    我是子组件1
+    <h1>{{msg}}</h1>
+  </div>
+</template>
+
+<script>
+import { ref, onUnmounted } from 'vue'
+import emitter from '../mitt'
+export default {
+  name: '',
+
+  setup() {
+    //初始化
+    const msg = ref('hello')
+    const changeMsg = () => {
+      msg.value = 'world'
+    }
+    // 监听事件,更新数据
+    emitter.on('change-msg', changeMsg)
+    // 显式卸载
+    onUnmounted(() => {
+      emitter.off('change-msg', changeMsg)
+    })
+    return {
+      msg,
+      changeMsg,
+    }
+  },
+}
+</script>
+```
+
+组件2
+
+```html
+<template>
+  <div>
+    我是子组件2
+  </div>
+  <button @click='changeMsg'>点击修改msg</button>
+</template>
+
+<script>
+import { ref } from 'vue'
+import emitter from '../mitt'
+
+export default {
+  name: '',
+
+  setup() {
+    const changeMsg = () => {
+      emitter.emit('change-msg')
+    }
+    return {
+      changeMsg,
+    }
+  },
+}
+</script>
+```
 
