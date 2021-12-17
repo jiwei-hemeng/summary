@@ -1351,6 +1351,19 @@ foo = function() {
     console.log(Counter1.value()); /* logs 1 */
     console.log(Counter2.value()); /* logs 0 */
     ```
+    
+    **模拟块级作用域**
+    
+    ```js
+    function A() {
+      (function() {
+        for(var i = 0; i < num; i++) {
+    			num++;      
+        }
+      })()
+      console.log("模拟块级作用域", i);
+    }
+    ```
 
 ### 防抖与节流
 
