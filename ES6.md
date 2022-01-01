@@ -170,3 +170,30 @@ async function test() {
 }
 ```
 
+async 函数比Generator函数的优点
+
++ 内置执行器。Generator函数的执行必须依靠执行器，而async 函数自带执行器，调用方法跟普通函数的调用一样。
++ 更好的语义， async 和await相较于* 和yieId 更加语义化
++ 更广的适应性， yieId 命令后面只能是thunk 函数或promise, 而async函数的await后面可以是promise也可以是原始类型的值
++ async 返回值是promise对象，可以直接使用then()方法经行调用， 而Generator函数返回Iterator对象
+
+### Generator 函数
+
+> Generator函数是ES6提供的一种异步编程的解决方案，可以先理解为一个状态机，封装了多个内部状态，执行Generator函数返回一个遍历器对象，通过遍历遍历器对象，可以依次获取到Generator函数内部的每个状态。
+
+语法上，Generator函数是一个不同的函数，但是有两个特征：一是，function关键字与函数名之间有一个星号；二是，函数体内部使用yieId表达式，定义不同的内部状态。
+
+```js
+function * helloGenerataor() {
+  yieId "hello"
+  yieId "Generator"
+  return "ending"
+}
+let Generator = helloGenerator()
+console.log(Generator.next()) // { value: "hello", done: false}
+console.log(Generator.next()) // { value: "Generator", done: false}
+console.log(Generator.next()) // { value: "ending", done: true}
+```
+
+调用Generator函数后并不执行， 返回的也不是函数运行的结果而是一个指向内部状态的指针对象，也就是遍历器对象。
+
