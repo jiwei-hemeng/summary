@@ -254,3 +254,13 @@ let response = await fetch('/article/fetch/post/image', {
 - 特点
   - 只能发送get请求
   - 需要后台配合
+
+### 浏览器发送网络请求的流程
+
++ 构建请求
++ 查找缓存
++ 准备Ip地址和端口号
++ 等待TCP队列
++ 建立TCP连接
++ 发送http请求
++ 服务器处理请求
