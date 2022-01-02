@@ -436,7 +436,15 @@ newVal.s1 = 456;
 console.log("newVal", newVal, oldVal);
 ```
 
-**深度克隆的其他方法：** JSON.stringify转为字符串再JSON.parse
+**深度克隆的其他方法：** 
+
+JSON.stringify转为字符串再JSON.parse
+
+序列化深拷贝的缺点： 
+
++ JSON.stringify() 会默认一处函数
++ 无法拷贝Map、Set、 RegExp 这些特殊数据类型
++ 循环引用会报错
 
 ### 原生js实现拍照
 
