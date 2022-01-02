@@ -26,6 +26,50 @@
 <!-- target 属性指向特定的iframe -->
 ```
 
+### hash模式与history模式
+
+**hash模式**
+
+> hsah 模式是一种把前端路由的路径用`#`拼接在真实的URL后面的模式。当`#`号后面的路径变化时，浏览器并不会重新发起请求，而是会触发`hashchange`事件。
+
+```html
+<a href="#/a"></a>
+<a href="#/b"></a>
+<div id="app"></div>
+<script>
+  function render() {
+    const app = document.querySelector("#app");
+    app.innerHTML = window.location.hash;
+  }
+  window.addEventListener("hashchange", render);
+</script>
+```
+
+**history模式**
+
+> history API 是h5 提供的新特性，允许开发者直接更改前端路由，即`更改前端路由而不重新发起网络请求`
+
+```html
+<a href="javascript: toA();">A页面</a>
+<a href="javascript: toB();">B页面</a>
+<div id="app"></div>
+<script>
+  function render() {
+    console.log("render");
+    app.innerHTML = window.location.pathname;
+  }
+  function ToA() {
+    history.pushState({}, null, "/a");
+    render();
+  }
+  function ToB() {
+    history.pushState({}, null, "/b");
+    render();
+  }
+  window.addEventListener("popState", render)
+</script>
+```
+
 ### 超链接的一些实用属性
 
 **download** 属性表明当前链接用于下载。而不是跳转到例另外一个URL。如果*download* 属性设置了值，表示下载的文件名。
