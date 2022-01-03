@@ -1548,3 +1548,40 @@ function redireatLogin() {
 }
 ```
 
+### vue 的自定义指令
+
+**vue 自定义指令控制按钮权限**
+
+定义自定义指令
+
+```js
+import Vue from "vue";
+const permissionList = ["B0.1add", "B0.2remove", "B0.3export"];
+Vue.directive("permission", {
+  inserted(el, binding, vnode) {
+    const name = binding.value;
+    const index = persissionList.indexOf(name);
+    if(index === -1) {
+      el.parentNode.removeChild(el);
+    }
+  }
+})
+```
+
+在`main.js`引入项目
+
+```js
+import "@/utils/permission.js"
+```
+
+使用指令
+
+```html
+<!-- 控制添加按钮的权限 -->
+<el-button v-permission="B0.1add">添加</el-button>
+<!-- 控制编辑按钮的权限 -->
+<el-button v-permission="B0.5edit">修改</el-button>
+```
+
+
+
