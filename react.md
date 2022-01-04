@@ -549,6 +549,10 @@ module.exports = override(
                 })
             ],
         });
+      	// 生产环境去掉 sourcemap
+        if (process.env.NODE_ENV === "production") {
+          config.devtool = false;
+        }
         return config
     }
 );
