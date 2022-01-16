@@ -263,11 +263,27 @@ onchange 事件也可用于单选框与复选框改变后触发的事件。
 
 ### new 操作符具体干了什么
 
-- 创建一个空对象，并且this 变量引用该对象，同时继承了该函数的原型
-- 属性和方法被加入到this应用的对象中
-- 新创建的对象由this所应用，并且最后隐式返回this
++ 创建了一个空对象
 
-### **this 指向问题**
+  ```js
+  let obj = new Object();
+  ```
+
++ 设置原型链
+
+  ```js
+  obj.proto = Func.prototype;
+  ```
+
++ 改变Func 中的this指向，并指向Fun函数体
+
+  ```js
+  let result = Func.call(this);
+  ```
+
++ 将创建的该对象返回
+
+### this 指向问题**
 
 - 在普通函数中，this指向 *window*
 - 在事件处理程序中，this 指向  *事件源*
