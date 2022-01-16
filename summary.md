@@ -261,6 +261,29 @@ onchange 事件也可用于单选框与复选框改变后触发的事件。
 - *document.querySelect()*  通过选择器获取元素
 - *document.querrySelectAll()*  通过选择器获取一类元素，得到伪数组
 
+###  关于内存泄漏的几种情况
+
+> 少数的内存泄漏会影响性能，大量的内存泄漏会导致内存溢出，从而导致系统的奔溃。
+
++ 以外的全局变量
+
++ 闭包的错误使用
+
++ 没有及时清理的定时器
+
++ 不清理DOM元素的引用
+
+  ``` js
+  const refA = document.getElementById("refA");
+  ducument.body.removeChild("refA");
+  console.log("refA", refA); // 虽然dom删除了，但是还存在引用
+  refA = null; // 解除引用
+  ```
+
++ 监听的事件没有及时解除
+
+  监听的时候addEventListener, 在不监听的时候使用removeEventListener
+
 ### new 操作符具体干了什么
 
 + 创建了一个空对象
