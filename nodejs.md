@@ -646,3 +646,22 @@ sendEmail({
 });
 ```
 
+##  nrm
+
+> 作用：1. 更换国内镜像包源，解决国内npm国外包慢的问题  2. 更换某些内网独立的包源，实现安装内网独立的npm包
+
+**使用方法**
+
+```shell
+# 全局安装
+npm install -g nrm
+# 查看npm 的包源
+nrm ls
+# 切换npm包源
+nrm use taobao
+# 增加npm包源
+nrm add npmName http://registry.com
+# 删除包源
+nrm del npmName
+```
+
