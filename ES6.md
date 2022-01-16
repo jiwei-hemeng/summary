@@ -197,3 +197,42 @@ console.log(Generator.next()) // { value: "ending", done: true}
 
 调用Generator函数后并不执行， 返回的也不是函数运行的结果而是一个指向内部状态的指针对象，也就是遍历器对象。
 
+### super 关键字
+
+> super 关键字既可以当作函数使用，也可以当作对象使用 
+
+**当作函数使用**
+
+```js
+class A {}
+class B extends A {
+  constructor() {
+    super();
+  }
+}
+```
+
+注意：super 虽然代表了父类A的构造函数，但是返回的是子类B的实例，即super内部的this指向B的实例，因此super()在这里相当于 `A.prototype.constructor.call(this)`
+
+**当作对象使用**
+
+```js
+class A {
+  constructor() {
+    this.a = 1;
+  }
+  c() {
+    return this.a;
+  }
+}
+class B extends A {
+  constructor() {
+    super();
+    this.a = 2;
+    console.log(super.c()); // 2
+  }
+}
+let b = new B();
+```
+
+上面案例中，子类B当中的`super.c()` ， 就是将`super`当作一个对象使用。
