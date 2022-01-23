@@ -619,6 +619,33 @@ function Example() {
 
 可以看到无论是初始化渲染还是更新渲染，`useEffect` 总是会确保在组件渲染完毕后再执行，这就相当于组合了初始化和更新渲染时的生命周期钩子。并且由于闭包的特性，`useEffect` 可以访问到函数组件中的各种属性和方法。
 
+**useRef**
+
+```js
+import React, { useRef } from "react";
+export default function UseRefExample {
+  let inputRef = useRef(null);
+  const handleClick = () => {
+    inputRef.current.focus();
+  }
+  return (
+    <div>
+    	使用useRef() hook:
+    	<br />
+    	<input type="text" ref={inputRef} />
+			<button onClick={handleClick}>
+        click me
+      </button>
+    </div>
+  )
+}
+```
+
+和createRef的区别是： 
+
++ createRef 每次渲染都会返回一个新的引用，而useRef 每次渲染都会返回相同的引用。
++ createRef 只能在class 组件中使用；useRef 只能在function组件中使用；
+
 ### react-spring
 
 > React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
