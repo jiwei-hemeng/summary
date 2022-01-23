@@ -148,6 +148,8 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 
 ### 在vscode中配置GIT终端
 
+![1953033-20210812175755860-640591619](E:\study\summary\assets\images\1953033-20210812175755860-640591619.png)
+
 ```json
 {
   "terminal.integrates.profiles.windows": {
