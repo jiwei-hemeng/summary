@@ -454,20 +454,26 @@ console.log("end");
 
 ### 实现函数能够深度克隆基本类型
 
-> 递归的方法实现
+**递归的方法实现**
 
 ```js
-function deepCopy(obj) {
-    if (typeof obj === "object") {
-        var result = obj.constructor === "Array" ? [] : {};
-        for (let key in obj) {
-            result[key] =
-                typeof obj[key] === "object" ? deepCopy(obj[key]) : obj[key];
-        }
+function deepCopy(target) {
+  let newObj = {};
+  for(key in target) {
+  	if(target[key] instanceof Array) {
+      // 如果是数组
+      newObj[key] = [];
+      newObj[key] = deepCopy(newObj[key], target[key]);
+    } else if(target[key] instanceof Object) {
+      // 如果是对象
+      newObj[key] = {};
+      newObj[key] = deepCopy(newObj, target[key]);
     } else {
-        result = obj;
+      // 简单数据类型
+      newObj[key] = target[key]
     }
-    return result;
+  }
+  return newObj;
 }
 let oldVal = { s1: 123, s2: [1, 2, 3] };
 let newVal = deepCopy(oldVal);
