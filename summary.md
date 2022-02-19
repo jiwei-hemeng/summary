@@ -1715,6 +1715,33 @@ var reg = /(\d{4})\/(\d{2})\/(\d{2})/;
 dateStr = dateStr.replace(reg, '$1-$2-$3')  // "2018-04-18"
 ```
 
+**案例三：**
+
+> 使用正则分组实现字符串的驼峰命名
+
+```js
+function toHumpName(str) {
+  let reg = /\_(\w)/g;
+  return str.replace(reg, ($0, $1) => {
+    return $1.toUpperCase();
+  })
+}
+let str = "border_top_color";
+console.log(toHumpName(str)); // result: borderTopColor
+```
+
+也可以使用其他方法
+
+```js
+function toHumpName(str) {
+  let arr = str.split("_");
+  for(let i = 1; i < arr.length; i++) {
+    arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
+  }
+  return arr.join("");
+}
+```
+
 ### JavaScript 正则表达式的方法
 
 **match()**
