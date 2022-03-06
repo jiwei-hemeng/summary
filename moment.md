@@ -9,13 +9,13 @@ npm i moment
 ```
 ### 常用方法
 
-**格式化时间 **
+**格式化时间**
 
 ```js
 const timeStr = moment().format("YYYY-MM-DD HH:mm:ss"); // 2022-02-22 19:58:37
 ```
 
-**时间差 **
+**时间差**
 
 ```js
 import moment form "moment";
