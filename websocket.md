@@ -1,0 +1,64 @@
+## webSocket
+
+> 实现实时通信
+
+### 原生websocket 体验
+
+```js
+const ws = new WebSocket("wss://echo.websocket.org");
+ws.onopen = function(evt) {
+  console.log("建立连接成功");
+  ws.send("hello webscoket");
+}
+ws.onmessage = function(evt) {
+  console.log("接收到的消息", evt.data);
+}
+ws.onclose = function(evt) {
+  console.log("连接已关闭");
+}
+```
+
+### socketIo
+
+**安装**
+
+```shell
+npm i socket.io-client
+```
+
+**使用**
+
+```js
+import io from "socket.io-client";
+// 建立连接
+const socket = io(http://localhost?token=abc);
+socket.on("connect", function() {
+  console.log("连接建立成功")
+})
+socket.on("event", function() {})
+socket.on("disconnect", function() {
+  console.log("断开连接了")
+})
+```
+
+**发送消息**
+
+> 语法： socket.emit("消息类型", "消息内容");
+
+```js
+socket.emit("message", {
+  msg: "你好",
+  timestamp: Date.now()
+})
+```
+
+**接收消息**
+
+> 语法： socket.on("消息类型", callback)
+
+```js
+socket.on("message", (data) => {
+  const.log("message", data)
+})
+```
+
