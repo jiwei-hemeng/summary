@@ -20,6 +20,8 @@ ws.onclose = function(evt) {
 
 ### socketIo
 
+> 相关连接：[github 仓库](https://github.com/socketio/socket.io-client)       [客户端 API](https://socket.io/docs/v4/client-api/)
+
 **安装**
 
 ```shell
