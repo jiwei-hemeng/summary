@@ -598,3 +598,92 @@ body {
 }
 ```
 
+## 圣杯布局
+
+> 两边固定，中间自适应的布局叫圣杯布局
+
+**实现方式1**
+
+```html
+<div class="warp">
+  <div class="left">1</div>
+  <div class="mid">2</div>
+  <div class="rigth">3</div>
+</div>
+```
+
+```css
+.warp {
+  height: 30px;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 30px;
+}
+.left,
+.rigth {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  background-color: aqua;
+}
+.left {
+  left: 0;
+}
+.rigth {
+  right: 0;
+}
+.mid {
+  height: 30px;
+  background-color: blueviolet;
+}
+```
+
+**实现方法2**
+
+```css
+.warp {
+  height: 30px;
+  position: relative;
+}
+.left,
+.rigth {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  background-color: aqua;
+}
+.left {
+  left: 0;
+}
+.rigth {
+  right: 0;
+}
+.mid {
+  height: 30px;
+  margin: 0 30px;
+  background-color: blueviolet;
+}
+```
+
+##  二倍精灵图
+
+> **概念**：设置的图片的分辨率和图片的宽高是2倍的关系称为**二倍图**
+
+**步骤**
+
+1. 利用background-image引入二倍精灵图    
+2. 将二倍精灵图在fw软件中缩小至一倍，查看此时图片的宽度，利用background-size设置背景大小
+3. 利用fw软件测量此时需要的图标的定位，利用background-position设置背景定位
+
+```css
+.warp {
+  width: 16px;
+  height: 16px;
+  background: url(images/dog.jpg) no-repeat;
+  background-size: 160px auto; /* 注意：原图宽为320px */
+  background-position: -32px -32px; /* 利用background-position设置背景定位 */
+}
+```
+
