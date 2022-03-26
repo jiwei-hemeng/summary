@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>在线拍照</title>
+</head>
+
+<body>
+  <video id="video" width="480" height="320" controls></video>
+  <div>
+    <button id="capture">拍照</button>
+  </div>
+  <canvas id="canvas" width="480" height="320"></canvas>
+  <script>
+    //访问用户媒体设备的兼容方法
+    function getUserMedia(constraints, success, error) {
+      if (navigator.mediaDevices.getUserMedia) {
+        //最新的标准API
+        navigator.mediaDevices
+          .getUserMedia(constraints)
+          .then(success)
+          .catch(error);
+      } else if (navigator.webkitGetUserMedia) {
+        //webkit核心浏览器
+        navigator.webkitGetUserMedia(constraints, success, error);
+      } else if (navigator.mozGetUserMedia) {
+        //firfox浏览器
+        navigator.mozGetUserMedia(constraints, success, error);
+      } else if (navigator.getUserMedia) {
+        //旧版API
+        navigator.getUserMedia(constraints, success, error);
+      }
+    }
+    function success(stream) {
+      //兼容webkit核心浏览器
+      let CompatibleURL = window.URL || window.webkitURL;
+      video.srcObject = stream;
+      video.play();
+    }
+    function error(error) {
+      console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+    }
+  </script>
+  <script>
+    let video = document.getElementById("video");
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    if (
+      navigator.mediaDevices.getUserMedia ||
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia
+    ) {
+      //调用用户媒体设备, 访问摄像头
+      getUserMedia({ video: { width: 480, height: 320 } }, success, error);
+      // 调用移动端后摄像头
+      // getUserMedia(
+      //   { audio: true, video: { facingMode: { exact: "environment" } } },
+      //   success,
+      //   error
+      // );
+    } else {
+      alert("不支持访问用户媒体");
+    }
+
+    document.getElementById("capture").addEventListener("click", function () {
+      context.drawImage(video, 0, 0, 480, 320);
+      let imgBase64 = canvas.toDataURL("image/jpeg", 0.7);
+      console.log("imgBase64", imgBase64)
+    });
+  </script>
+</body>
+
+</html>
