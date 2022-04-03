@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>导出表格</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <table id="table" style="border: 1px solid #ccc; border-collapse: collapse;">
+    <tr style="height: 50px;">
+      <th style="width: 100px; color: red; border: 1px solid #ccc;">姓名</th>
+      <th style="border: 1px solid #ccc;">性别</th>
+      <th style="border: 1px solid #ccc;">年龄</th>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #ccc;">小米</td>
+      <td style="border: 1px solid #ccc;">男</td>
+      <td style="border: 1px solid #ccc;">16</td>
+    </tr>
+  </table>
+  <script>
+    let html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+      </head>
+      <body>
+        ${document.getElementById("table").outerHTML}
+      </body>
+      </html>
+    `
+    let blob = new Blob([html], { type: "application/vnd.ms-excel" })
+    const url = URL.createObjectURL(blob)
+    console.log("blob", url, blob)
+  </script>
+</body>
+
+</html>

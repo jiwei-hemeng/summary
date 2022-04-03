@@ -919,82 +919,17 @@ console.log(arr);    // result [1, 2, 3, 4, 5]
     console.log(Object.values(myObj)); // ["xiaomin", "12"]
     ```
 
-### 获取文件对象的blob
+### 获取文件对象的blob地址
 
 ```js
 const blob = window.URL.createObjectURL(this.$refs.file.files[0])
 // this.$refs.file.files[0] 为文件的文件对象
 ```
 
-js原生用法
-
-```js
-// 获取表单对象
-var form = document.querySelector(".form")
-// 为表单对象设置提交事件
-form.addEventListener("submit", (e) => {
-    // 阻止表单默认提交行为
-    e.preventDefault()
-    // 获取文件对象
-    var file = document.querySelector(".file").files[0]
-    // 获取blob数据
-    var blob = window.URL.createObjectURL(file)
-    // 创建formdata对象
-    var fd = new FormData()
-    // 追加提交属性
-    fd.append("file", blob)
-    // 查看formdata对象
-    console.log(fd.get('file'))
-}
-```
-
 ### 生成xlsx文件
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>导出表格</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-</head>
-<body>
-  <table id="table" style="border: 1px solid #ccc; border-collapse: collapse;">
-    <tr style="height: 50px;">
-      <th style="width: 100px; color: red; border: 1px solid #ccc;">姓名</th>
-      <th style="border: 1px solid #ccc;">性别</th>
-      <th style="border: 1px solid #ccc;">年龄</th>
-    </tr>
-    <tr>
-      <td style="border: 1px solid #ccc;">小米</td>
-      <td style="border: 1px solid #ccc;">男</td>
-      <td style="border: 1px solid #ccc;">16</td>
-    </tr>
-  </table>
-  <script>
-    let html = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-      </head>
-      <body>
-        ${document.getElementById("table").outerHTML}
-      </body>
-      </html>
-    `
-    let blob = new Blob([html], { type: "application/vnd.ms-excel" })
-    const url = URL.createObjectURL(blob)
-  </script>
-</body>
-</html>
+
 ```
 
 ### 加入收藏夹
