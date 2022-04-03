@@ -926,12 +926,6 @@ const blob = window.URL.createObjectURL(this.$refs.file.files[0])
 // this.$refs.file.files[0] 为文件的文件对象
 ```
 
-### 生成xlsx文件
-
-```html
-
-```
-
 ### 加入收藏夹
 
 ```js
