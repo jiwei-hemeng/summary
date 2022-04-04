@@ -72,7 +72,8 @@ drop table info;
 
 ```mysql
 # insert into <表名> [(字段名1)[,...字段名n])] value (值1）[,(值n)];
-insert into student (id,name,age) value (1,'张三',13);
+insert into student (id,name,age) value (1,'张三',13),(3, "王五", 28);
+insert into student set id=2,name="李四",age=100;
 ```
 
 查询数据表中的数据
