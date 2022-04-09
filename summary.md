@@ -1155,19 +1155,22 @@ foo = function() {
 
 **防抖**
 
+> 只有最后一次出发生效
+
 ```js
 var timer = null
 function debounce(){
     if(timer) clearTimeout(timer);
     timer = setTimeout(()=>{
-        ...
-        timer = false
-    },100)
+        // 在这里可以获取搜索建议
+    },150)
 }
 debounce()
 ```
 
 **节流**
+
+> 减少事件的触发频率，选择性的执行事件
 
 ```js
 let canRun = true;
@@ -1180,7 +1183,7 @@ document.getElementById("throttle").onscroll = function(){
   setTimeout(function(){
     console.log("函数节流");
     canRun = true;
-  }, 1000);
+  }, 200);
 }
 ```
 
