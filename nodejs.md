@@ -44,8 +44,8 @@ yarn add cors -S
 ```js
 app.use(
   cors({
-    origin: true,
-    credentials: true,
+    origin: true, // 发送请求的源
+    credentials: true, // 相应的请求
   })
 ); 
 ```
@@ -228,6 +228,20 @@ router.post("/reguser", (req, res) => {
     msg: "验证码正确"
   })
 });
+```
+
+## 配置session 中间件
+
+```js
+const session = require("express-session");
+app.use(
+  session({
+    secret: "asdfasfda",
+    resave: false, // 随便填
+    saveUninitialized: true, // 随便填
+    // store: {}
+  })
+);
 ```
 
 ## mysql
