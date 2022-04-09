@@ -579,11 +579,28 @@ a = 20 // 报错
 
 ### 获取URL参数的对象
 
+**方法一**
+
 ```js
 export function getURLParameters(url) {
     const str = url.match(/([^?=&]+)(=([^&]*))/g) || []
     return str.reduce((a, v) => ((a[decodeURIComponent(v.slice(0, v.indexOf('=')))] = decodeURIComponent(v.slice(v.indexOf('=') + 1))), a), {})
 }
+```
+
+**方法二**
+
+```js
+function getURLParameters(url) {
+  const hash = decodeURIComponent(url).split("?");
+  if (hash.length >= 2) {
+    const json = "{\"" + hash[1].replace(/&/g, "\",\"").replace(/\=/g, "\":\"") + "\"}";
+    return JSON.parse(json)
+  }
+  return {}
+}
+const str = "http://wwww.baidu.com?sear=aaa&keyword=bbbb";
+console.log("test", getURLParameters(str)) // reslut: test {sear: 'aaa', keyword: 'bbbb'}
 ```
 
 ### 将键值对拼接成URL带参数
