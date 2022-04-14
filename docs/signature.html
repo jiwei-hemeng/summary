@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>签名</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #canvas {
+        border: 1px solid black;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <button id="clear">清空画布</button>
+        <button id="imgInfo">保存签名</button>
+      </div>
+      <canvas id="canvas" width="300" height="300"></canvas>
+      <div class="imgs" id="imgs"></div>
+    </div>
+    <script>
+      //1.获取canvas
+      var myCanvas = document.getElementById("canvas");
+      //获取2d对象
+      var ctx = myCanvas.getContext("2d");
+      //清空画布
+      var clear = document.getElementById("clear");
+      // 保存签名
+      var imgInfo = document.getElementById("imgInfo");
+      // 保存的盒子
+      var imgs = document.getElementById("imgs");
+      //控制线条是否画
+      var isMouseMove = false;
+      //线条位置
+      var lastX, lastY;
+      window.onload = function () {
+        initCanvas();
+      };
+      //初始化
+      function initCanvas() {
+        let offset = myCanvas.getBoundingClientRect();
+        var start = (e) => {
+          e.preventDefault();
+          isMouseMove = true;
+          drawLine(
+            e.changedTouches[0].clientX - offset.left,
+            e.changedTouches[0].clientY - offset.top,
+            false
+          );
+        };
+        let move = (e) => {
+          if (isMouseMove) {
+            drawLine(
+              e.changedTouches[0].clientX - offset.left,
+              e.changedTouches[0].clientY - offset.top,
+              true
+            );
+          }
+        };
+        let end = (e) => {
+          isMouseMove = false;
+        };
+        let cancel = (e) => {
+          isMouseMove = false;
+        };
+
+        myCanvas.addEventListener("touchstart", start);
+        myCanvas.addEventListener("touchmove", move);
+        myCanvas.addEventListener("touchend", end);
+        myCanvas.addEventListener("touchcancel", cancel);
+      }
+      //画线
+      function drawLine(x, y, isT) {
+        if (isT) {
+          ctx.beginPath();
+          ctx.lineWidth = 2; //设置线宽状态
+          ctx.strokeStyle = "black"; //设置线的颜色状态
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          ctx.closePath();
+        }
+        // 每次移动都要更新坐标位置
+        lastX = x;
+        lastY = y;
+      }
+
+      //清空画图
+      function clearCanvas() {
+        imgs.innerHTML = "";
+        ctx.beginPath();
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        ctx.closePath(); //可加入，可不加入
+      }
+      //保存图片
+      function saveImgInfo() {
+        var images = myCanvas.toDataURL("image/png");
+        const alink = document.createElement("a");
+        alink.setAttribute("href", images);
+        alink.setAttribute("download", "123.png");
+        alink.click();
+        // document.open(images)
+      }
+      clear.addEventListener("click", clearCanvas);
+      imgInfo.addEventListener("click", saveImgInfo);
+    </script>
+  </body>
+</html>
