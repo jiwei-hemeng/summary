@@ -161,3 +161,9 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 }
 ```
 
+### cmd 常用命令
+```shell
+# 刷新本地dns
+ipconfig /flushdns
+```
+
