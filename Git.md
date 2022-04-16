@@ -163,13 +163,10 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 
 ### cmd 常用命令
 ```shell
-
 # 刷新本地dns
 ipconfig /flushdns
-
 # 列出所有连接过的WiFi的配置文件  
 netsh wlan show profiles
-
 # 查看到某个具体WiFi的配置详情，包括密码：
 netsh wlan show profiles name="XXXXXX" key=clear
 
