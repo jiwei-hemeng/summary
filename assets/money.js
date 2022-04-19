@@ -117,3 +117,7 @@ function numberPutCommaShow(value) {
     return "0.00"
   }
 }
+// 每三个数字一个，分割
+export function ThousandNum(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
