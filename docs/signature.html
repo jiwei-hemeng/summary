@@ -11,8 +11,6 @@
         padding: 0;
       }
       #canvas {
-        width: calc(100% - 2px);
-        display: block;
         border: 1px solid black;
         margin: 0 auto;
       }
@@ -30,7 +28,7 @@
   </head>
   <body>
     <div class="container">
-      <canvas id="canvas" width="300" height="300"></canvas>
+      <canvas id="canvas"></canvas>
       <div class="g_btn">
         <button id="clear">清空画布</button>
         <button id="imgInfo">保存签名</button>
@@ -38,20 +36,23 @@
       <div class="imgs" id="imgs"></div>
     </div>
     <script>
-      //1.获取canvas
-      var myCanvas = document.getElementById("canvas");
+      // 获取屏幕宽度
+      let width = document.body.clientWidth - 2;
+      // 获取canvas
+      let myCanvas = document.getElementById("canvas");
+      myCanvas.width = width;
       //获取2d对象
-      var ctx = myCanvas.getContext("2d");
+      let ctx = myCanvas.getContext("2d");
       //清空画布
-      var clear = document.getElementById("clear");
+      let clear = document.getElementById("clear");
       // 保存签名
-      var imgInfo = document.getElementById("imgInfo");
+      let imgInfo = document.getElementById("imgInfo");
       // 保存的盒子
-      var imgs = document.getElementById("imgs");
+      let imgs = document.getElementById("imgs");
       //控制线条是否画
-      var isMouseMove = false;
+      let isMouseMove = false;
       //线条位置
-      var lastX, lastY;
+      let lastX, lastY;
       window.onload = function () {
         initCanvas();
       };
@@ -69,6 +70,7 @@
         };
         let move = (e) => {
           if (isMouseMove) {
+            console.log("XX", e.changedTouches[0].clientX, offset.left)
             drawLine(
               e.changedTouches[0].clientX - offset.left,
               e.changedTouches[0].clientY - offset.top,
