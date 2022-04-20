@@ -107,8 +107,9 @@
         const alink = document.createElement("a");
         alink.setAttribute("href", images);
         alink.setAttribute("download", "123.png");
+        document.body.appendChild(alink);
         alink.click();
-        // document.open(images)
+        document.body.removeChild(alink);
       }
       clear.addEventListener("click", clearCanvas);
       imgInfo.addEventListener("click", saveImgInfo);
