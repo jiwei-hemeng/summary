@@ -123,4 +123,7 @@ console.log(obj); // result: {uname: "zsf", age: 22, score: 98}
 obj.say(); // hello, 我是父类的方法
 obj.hi(); // hi, 我是子类的方法
 ```
+## 完整的原型图
+![20180706190059251](https://user-images.githubusercontent.com/62381906/164414464-35968d69-3ddd-4936-9b26-b96fb1357b38.jpg)
+
 
