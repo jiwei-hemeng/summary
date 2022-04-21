@@ -686,6 +686,3 @@ body {
   background-position: -32px -32px; /* 利用background-position设置背景定位 */
 }
 ```
-
-
-
