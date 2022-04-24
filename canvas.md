@@ -125,7 +125,7 @@ context.arc(300, 300, 50, 0, Math.PI * 2);
 context.stroke();
 ```
 
-**画布-画圆效果**
+**画布-文字效果**
 
 ```js
 const app = document.querySelector("#canvas")
