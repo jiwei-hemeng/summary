@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>印章生成器</title>
+    <style>
+      #canvas {
+        display: block;
+        margin: 20px auto;
+        border: 1px solid #666;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="210px" height="210px"></canvas>
+    <button class="btn" id="btn">下载图片</button>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      context.translate(15, 15); //移动坐标原点
+      const company = "中国测试科技股份有限公司";
+      const name = "合同专用章";
+      // 绘制印章边框
+      const width = 90;
+      const height = 90;
+      context.lineWidth = 3;
+      context.strokeStyle = "#f00";
+      context.beginPath();
+      context.arc(width, height, 100, 0, Math.PI * 2);
+      context.stroke();
+      context.save();
+
+      // 绘制印章名称(1)
+      context.font = "bolder 20px SimSun";
+      context.textBaseline = "middle"; //设置文本的垂直对齐方式
+      context.textAlign = "center"; //设置文本的水平对对齐方式
+      context.lineWidth = 1;
+      context.fillStyle = "#f00";
+      context.fillText(name, width, height + 70);
+
+      //绘制印章单位
+      context.translate(width, height); // 平移到此位置,
+      context.font = "bolder 25px SimSun";
+      const count = company.length; // 字数
+      const angle = (16 * Math.PI) / (12 * (count - 1)); // 字间角度
+      const chars = company.split("");
+      let c;
+      for (let i = 0; i < count; i++) {
+        c = chars[i]; // 需要绘制的字符
+        if (i == 0) context.rotate((5 * Math.PI) / 6);
+        else context.rotate(angle);
+        context.save();
+        context.translate(85, 0); // 平移到此位置,此时字和x轴垂直，第一个参数是与圆外边的距离，越大距离越近
+        context.rotate(Math.PI / 2); // 旋转90度,让字平行于x轴
+        context.fillText(c, 0, 5); // 此点为字的中心点
+        context.restore();
+      }
+      //画五角星
+      create5star(context, 0, 0, 30, "#f00", 0);
+      function create5star(context, sx, sy, radius, color, rotato) {
+        context.save();
+        context.fillStyle = color;
+        context.translate(sx, sy); //移动坐标原点
+        context.rotate(Math.PI + rotato); //旋转
+        context.beginPath(); //创建路径
+        let x = Math.sin(0);
+        let y = Math.cos(0);
+        let dig = (Math.PI / 5) * 4;
+        for (let i = 0; i < 5; i++) {
+          //画五角星的五条边
+          let x = Math.sin(i * dig);
+          let y = Math.cos(i * dig);
+          context.lineTo(x * radius, y * radius);
+        }
+        context.closePath();
+        context.stroke();
+        context.fill();
+        context.restore();
+      }
+
+      function drowImageToCanvas(context, x, y) {
+        let img = new Image();
+        //指定图片的URL
+        img.src = "dh.png";
+        //浏览器加载图片完毕后再绘制图片
+        img.onload = function () {
+          context.save();
+          context.rotate(-0.5); //旋转
+          //以Canvas画布上的坐标(10,10)为起始点，绘制图像
+          context.translate(-165, -165); //移动坐标原点
+          context.drawImage(img, x, y);
+          context.restore();
+        };
+      }
+      document.getElementById("btn").addEventListener("click", function () {
+        // let imgobj = new Image();
+        // context.drawImage(imgobj, 0, 0);
+        const dataURL = canvas.toDataURL("image/png", 0.9);
+        const alink = document.createElement("a");
+        alink.setAttribute("href", dataURL);
+        alink.setAttribute("download", company + ".png");
+        alink.click();
+      });
+    </script>
+  </body>
+</html>
