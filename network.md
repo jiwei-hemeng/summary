@@ -205,6 +205,21 @@ let response = await fetch('/article/fetch/post/image', {
 });
 ```
 
+获取二进制文件
+
+```js
+const response = await fetch('flower.jpg');
+const myBlob = await response.blob();
+const objectURL = URL.createObjectURL(myBlob);
+```
+
+获取流媒体文件
+
+```js
+const response = await fetch('song.ogg');
+const buffer = await response.arrayBuffer();
+```
+
 **fetch存在问题**
 
 1. fetch只对网络请求报错，对400，500都当做成功的请求，服务器返回 400，500 错误码时并不会 reject，只有网络错误这些导致请求不能完成时，fetch 才会被 reject。
