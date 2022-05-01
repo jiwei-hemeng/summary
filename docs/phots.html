@@ -84,11 +84,11 @@
           const width = Number(img.width);
           app.width = width;
           app.height = height;
-          context.drawImage(img, width, height)
+          context.drawImage(img, 0, 0)
           let imageData = context.getImageData(0, 0, width, height);
           // // 处理逻辑
           imageData = red(imageData)
-          context.putImageData(imageData, width, height);
+          context.putImageData(imageData, 0, 0);
           const base64 = app.toDataURL("image/jpeg", 0.7)
           console.log("base64Data", base64)
         })
