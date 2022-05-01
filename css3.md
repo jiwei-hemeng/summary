@@ -497,7 +497,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ## flex属性 是哪些属性的简写
 
-> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0 的简写。
+> flex: 1就是flex-grow: 0; flex-shrink; 1; flex-basis: auto 的简写。
 
  **flex-grow**
 
@@ -582,6 +582,7 @@ div {
 .box-shadow {
   // 没有inset是外阴影; 1px -- x轴， 2px -- y轴， 4px -- 模糊程度
   box-shadow: inset 1px 2px 4px #fff;
+  box-shadow: 0px 0px 13px 1px rgba(51, 51, 51, 0.1);
 }
 ```
 
@@ -736,3 +737,9 @@ p {
 }
 ```
 
+## **解决vertical-align属性不生效**
+
+ 在使用vertical-align:middle实现垂直居中的时候，经常会发现不生效的情况。这里需要注意它生效需要满足的条件： 
+
++ 作用环境 :  父元素设置line-height。需要和height一致。或者将display属性设置为table-cell，将块元素转化为单元格。 
++  作用对象 :  子元素中的inline-block和inline元素 
