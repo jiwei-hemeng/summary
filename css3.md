@@ -721,3 +721,18 @@ p {
 }
 ```
 
+## css 大小写的转化
+
+```css
+p {
+  /* 将所有字母变成大写字母 */
+  text-transform: uppercase;
+  /* 将所有字母变成小写字母 */
+  text-transform: lowercase;
+  /* 首字母大写 */
+  text-transform: capitalize;
+  /* 首字母小写 */
+  text-transform: small-caps;
+}
+```
+
