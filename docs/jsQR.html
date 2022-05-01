@@ -1,58 +1,61 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>二维码的解析</title>
-    <!-- 引入jsQr库 -->
-    <script src="../assets/jsQR.js"></script>
-  </head>
-  <body>
-    <input type="file" name="" id="pictureChange" />
-    <script>
-      let canvas = document.createElement("canvas");
-      canvas.setAttribute("id", "qrcanvas");
-      document.querySelector("body").append(canvas);
-      document
-        .querySelector("#pictureChange")
-        .addEventListener("change", function (e) {
-          let file = e.target.files[0];
-          if (window.FileReader) {
-            let fr = new FileReader();
-            fr.readAsDataURL(file);
-            fr.onloadend = function (ev) {
-              let base64Data = ev.target.result;
-              base64ToqR(base64Data);
-            };
-          }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>二维码的解析</title>
+  <!-- 引入jsQr库 -->
+  <script src="../assets/jsQR.js"></script>
+</head>
+
+<body>
+  <input type="file" name="" id="pictureChange" />
+  <script>
+    let canvas = document.createElement("canvas");
+    canvas.setAttribute("id", "qrcanvas");
+    document.querySelector("body").append(canvas);
+    document
+      .querySelector("#pictureChange")
+      .addEventListener("change", function (e) {
+        let file = e.target.files[0];
+        if (window.FileReader) {
+          let fr = new FileReader();
+          fr.readAsDataURL(file);
+          fr.onloadend = function (ev) {
+            let base64Data = ev.target.result;
+            base64ToqR(base64Data);
+          };
+        }
+      });
+    function base64ToqR(data) {
+      var c = document.getElementById("qrcanvas");
+      var ctx = c.getContext("2d");
+      var img = new Image();
+      img.src = data;
+      img.onload = function () {
+        let qrcanvas = document.querySelector("#qrcanvas");
+        qrcanvas.setAttribute("width", img.width);
+        qrcanvas.setAttribute("height", img.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        var imageData = ctx.getImageData(0, 0, img.width, img.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
         });
-      function base64ToqR(data) {
-        var c = document.getElementById("qrcanvas");
-        var ctx = c.getContext("2d");
-        var img = new Image();
-        img.src = data;
-        img.onload = function () {
-          let qrcanvas = document.querySelector("#qrcanvas");
-          qrcanvas.setAttribute("width", img.width);
-          qrcanvas.setAttribute("height", img.height);
-          ctx.drawImage(img, 0, 0, img.width, img.height);
-          var imageData = ctx.getImageData(0, 0, img.width, img.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: "dontInvert",
-          });
-          if (code) {
-            showCode(code.data);
-          } else {
-            alert("识别错误");
-          }
-        };
-      }
-      function showCode(code) {
-        let alink = document.createElement("a");
-        alink.setAttribute("href", code);
-        alink.click();
-      }
-    </script>
-  </body>
+        if (code) {
+          showCode(code.data);
+        } else {
+          alert("识别错误");
+        }
+      };
+    }
+    function showCode(code) {
+      let alink = document.createElement("a");
+      alink.setAttribute("href", code);
+      alink.click();
+    }
+  </script>
+</body>
+
 </html>

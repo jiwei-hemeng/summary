@@ -114,6 +114,8 @@ img {
 }
 ```
 
+ fill: 默认值。内容拉伸填满整个content box, 不保证保持原有的比例。contain: 保持原有尺寸比例。长度和高度中长的那条边跟容器大小一致，短的那条等比缩放，可能会有留白。cover: 保持原有尺寸比例。宽度和高度中短的那条边跟容器大小一致，长的那条等比缩放。可能会有部分区域不可见。（常用）none: 保持原有尺寸比例。同时保持替换内容原始尺寸大小。scale-down:保持原有尺寸比例,如果容器尺寸大于图片内容尺寸，保持图片的原有尺寸，不会放大失真；容器尺寸小于图片内容尺寸，用法跟contain一样。 
+
 ## css中的attr()函数
 
 > 使用 attr() 函数，你可以检索所选元素的属性值并在样式中使用它。
@@ -686,3 +688,32 @@ body {
   background-position: -32px -32px; /* 利用background-position设置背景定位 */
 }
 ```
+
+## 中英文自动换行
+
+```css
+p {
+  /* 只对英文起作用, 以字母作为换行依据 */
+  word-break: break-all;
+  /* 只对英文起作用, 以单词作为换行依据 */
+  word-wrap: break-word;
+  /* 只对中文起作用，强制换行 */
+  white-space: pre-wrap;
+  /* 强制不换行，中英文都起作用 */
+  white-space: nowrap;
+}
+```
+
+## CSS 实现文本两端对齐
+
+```css
+.laterr {
+  width: 230px;
+  text-align: justify;
+  text-justify: distribute-all-lines;
+  text-align-last: justify;
+  -moz-text-align-last: justify;
+  -webkit-text-aligin-last: justify;
+}
+```
+
