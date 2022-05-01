@@ -169,6 +169,19 @@ ipconfig /flushdns
 netsh wlan show profiles
 # 查看到某个具体WiFi的配置详情，包括密码：
 netsh wlan show profiles name="XXXXXX" key=clear
+# 磁盘检查
+chkdsk
+# 打开磁盘清理工具
+cleanmgr
+```
 
+### cmd 安装jdk并配置环境变量
+
+```shell
+# 引号中换成自己的路径
+setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
+setx Path "%PATH%;%JAVA_HOME%\bin";
+# 设置classpath命令
+setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 ```
 

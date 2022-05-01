@@ -415,16 +415,6 @@ function isWechart() {
 }
 ```
 
-## 安装jdk并配置环境变量
-
-```powershell
-# 引号中换成自己的路径
-setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
-setx Path "%PATH%;%JAVA_HOME%\bin";
-# 设置classpath命令
-setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
-```
-
 ## 安卓证书
 
 > 相关链接 https://ask.dcloud.net.cn/article/35777
