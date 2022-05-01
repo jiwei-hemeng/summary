@@ -743,3 +743,26 @@ p {
 
 + 作用环境 :  父元素设置line-height。需要和height一致。或者将display属性设置为table-cell，将块元素转化为单元格。 
 +  作用对象 :  子元素中的inline-block和inline元素 
+
+## **移动端软键盘变为搜索方式**
+
+ 默认情况下软键盘上该键位为前往或者确认等文字，要使其变为搜索文字，需要在 input 上加上 type 声明： 
+
+```html
+<form action="#">
+  <input type="search" placeholder="请输入..." name="search" />
+</form>
+```
+
+ 需要一个 form 标签套起来,并且设置 action 属性,这样写完之后输入法的右下角就会自动变成搜索 
+
+ 同时，使用了 search 类型后，搜索框上会默认自带删除按钮 
+
+ 如需屏蔽，可以使用如下方式： 
+
+```css
+input[type="search"]::-webkit-search-cancel-button{
+  -webkit-appearance: none;
+}
+```
+
