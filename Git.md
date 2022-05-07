@@ -19,10 +19,18 @@ git remote add origin git@github.com:jiwei-hemeng/node-96.git
 git push -u origin master
 # 清除远程仓库
 git remote rm origin
-# 将未提交的文件移入缓存区
-git stash save "test1"
-# 将最新暂存的文件移入工作区
+# 保存当前未commit的代码并添加备注
+git stash save "备注的内容"
+# 列出stash的所有记录
+git stash list
+# 删除stash的所有记录
+git stash clear
+# 应用最近一次的stash
+git stash apply
+# 应用最近一次的stash，随后删除该记录
 git stash pop
+# 删除最近的一次stash
+git stash drop
 # 撤回未提交的更改
 git checkout src/view/index/index.vue
 # 比较文件
