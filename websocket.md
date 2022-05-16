@@ -17,6 +17,21 @@ ws.onclose = function(evt) {
   console.log("连接已关闭");
 }
 ```
+### 原生websocket 常用方法
+
+**发送消息**
+```js
+const message = {
+	id: 1,
+	title: '发送ws数据'
+}
+ws.send(JSON.stringify(message));    // 复杂的数据结构要先进行序列化
+```
+**断开连接**
+```js
+ws.close()
+
+```
 
 ### socketIo
 
