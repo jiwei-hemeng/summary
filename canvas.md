@@ -162,7 +162,7 @@ const context = app.getContext("2d");
 const img = new Image()
 img.src = "../case.png";
 img.addEventListener("load", () => {
-  let imageData = context.getImageData(img, 0, 0, 480, 320);
+  let imageData = context.getImageData(0, 0, 480, 320);
   // 处理逻辑
   context.putImageData(imageData, 0 200)
 })
