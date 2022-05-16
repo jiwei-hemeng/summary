@@ -148,8 +148,8 @@ img.src = "../case.png";
 img.addEventListener("load", () => {
   app.width = img.width;
   app.height = img.height;
-  context.drawImage(img, 0, 0, 480, 320);
-  const imgBase64 = canvas.toDataURL("image/jpeg", 0.7);
+  context.drawImage(img, 0, 0);
+  const imgBase64 = app.toDataURL("image/jpeg", 0.7);
   console.log("imgBase64", imgBase64);
 })
 ```
