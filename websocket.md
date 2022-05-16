@@ -22,8 +22,8 @@ ws.onclose = function(evt) {
 **发送消息**
 ```js
 const message = {
-	id: 1,
-	title: '发送ws数据'
+  id: 1,
+  title: '发送ws数据'
 }
 ws.send(JSON.stringify(message));    // 复杂的数据结构要先进行序列化
 ```
