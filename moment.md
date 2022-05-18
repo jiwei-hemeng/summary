@@ -50,6 +50,13 @@ const begin = moment().startOf('week');
 const end = moment().endOf('week');
 ```
 
+**明年**
+
+```js
+const begin = moment().add(1, "years").startOf("year").format("YYYY-MM-DD HH:mm:ss");
+const end = moment().add(1, "years").endOf("year").format("YYYY-MM-DD HH:mm:ss");
+```
+
 **上一周**
 
 ```js
