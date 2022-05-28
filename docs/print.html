@@ -7,8 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>局部打印</title>
   <style type="text/css">
+    .content {
+      width: 960px;
+      margin: 0 auto;
+      height: 660px;
+      background-color: blanchedalmond;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
     img {
-      width: 300px;
+      width: 100%;
     }
 
     @media print {
@@ -16,8 +30,10 @@
         display: none;
       }
     }
+
     @page {
       /* 布局 */
+      margin: 0mm;
       size: auto !important;
     }
   </style>
