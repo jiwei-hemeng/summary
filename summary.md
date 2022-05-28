@@ -730,14 +730,11 @@ const imgfile = convertBase64UrlToImgFile(imageURI,fileName,'image/jpeg');
 ```html
 <!-- 引入JQuery -->
 <script type="text/javascript" src="http://static.runoob.com/assets/jquery/2.0.3/jquery.min.js"></script>
-
 <!-- 引入qrcodjs库 -->
 <script type="text/javascript" src="http://static.runoob.com/assets/qrcode/qrcode.min.js"></script>
-
 <!-- 使用 -->
 <input id="text" type="text" value="http://www.runoob.com" style="width:80%" /><br />
 <div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
-
 <script type="text/javascript">
 var qrcode = new QRCode(document.getElementById("qrcode"), {
 	width : 100,
@@ -746,7 +743,6 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H
 });
-
 function makeCode () {		
 	var elText = document.getElementById("text");
 	
@@ -755,10 +751,8 @@ function makeCode () {
 		elText.focus();
 		return;
 	}
-	
 	qrcode.makeCode(elText.value);
 }
-
 makeCode();
 let text = document.querySelector("#text");
 text.addEventListener("blur", function () {
@@ -819,49 +813,6 @@ text.addEventListener("keydown", function (e) {
     alink.click()
   }
 </script>
-```
-
-### 数组转树形数组的方法
-
-**定义方法**
-
-```js
-function totree(list, parId) {
-  let obj = {};
-  let result = [];
-  list.map(el => {
-    obj[el.id] = el;
-  })
-  for (let i = 0, len = list.length; i < len; i++) {
-    let id = list[i].parentId;
-    if (id == parId) {
-      result.push(list[i]);
-      continue;
-    }
-    if (obj[id].children) {
-      obj[id].children.push(list[i]);
-    } else {
-      obj[id].children = [list[i]];
-    }
-  }
-  return result;
-}
-```
-
-**调用方法**
-
-```js
-let arr = [
-  { id: 2, name: '部门B', parentId: 0 },
-  { id: 3, name: '部门C', parentId: 1 },
-  { id: 1, name: '部门A', parentId: 2 },
-  { id: 4, name: '部门D', parentId: 1 },
-  { id: 5, name: '部门E', parentId: 2 },
-  { id: 6, name: '部门F', parentId: 3 },
-  { id: 7, name: '部门G', parentId: 2 },
-  { id: 8, name: '部门H', parentId: 4 }
-];
-let res1 = totree(arr, 0)
 ```
 
 ### 数组的常用方法
