@@ -467,11 +467,9 @@ function deepCopy(target) {
   for (key in target) {
     if (target[key] instanceof Array) {
       // 如果是数组
-      newObj[key] = [];
       newObj[key] = deepCopy(target[key]);
     } else if (target[key] instanceof Object) {
       // 如果是对象
-      newObj[key] = {};
       newObj[key] = deepCopy(target[key]);
     } else {
       // 简单数据类型
