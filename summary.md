@@ -458,16 +458,21 @@ console.log("end");
 
 ```js
 function deepCopy(target) {
-  let newObj = {};
-  for(key in target) {
-  	if(target[key] instanceof Array) {
+  let newObj = null;
+  if (target instanceof Array) {
+    newObj = []
+  } else if (target instanceof Object) {
+    newObj = {}
+  }
+  for (key in target) {
+    if (target[key] instanceof Array) {
       // 如果是数组
       newObj[key] = [];
-      newObj[key] = deepCopy(newObj[key], target[key]);
-    } else if(target[key] instanceof Object) {
+      newObj[key] = deepCopy(target[key]);
+    } else if (target[key] instanceof Object) {
       // 如果是对象
       newObj[key] = {};
-      newObj[key] = deepCopy(newObj, target[key]);
+      newObj[key] = deepCopy(target[key]);
     } else {
       // 简单数据类型
       newObj[key] = target[key]
@@ -475,9 +480,10 @@ function deepCopy(target) {
   }
   return newObj;
 }
-let oldVal = { s1: 123, s2: [1, 2, 3] };
+let oldVal = { s1: 123, s2: [1, 2, 3], s3: { a: 1, b: 2 } };
 let newVal = deepCopy(oldVal);
 newVal.s1 = 456;
+newVal.s3.a = 66;
 console.log("newVal", newVal, oldVal);
 ```
 
