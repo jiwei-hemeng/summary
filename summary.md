@@ -458,18 +458,9 @@ console.log("end");
 
 ```js
 function deepCopy(target) {
-  let newObj = null;
-  if (target instanceof Array) {
-    newObj = []
-  } else if (target instanceof Object) {
-    newObj = {}
-  }
+  let newObj = Array.isArray(target) ? [] : {};
   for (key in target) {
-    if (target[key] instanceof Array) {
-      // 如果是数组
-      newObj[key] = deepCopy(target[key]);
-    } else if (target[key] instanceof Object) {
-      // 如果是对象
+    if (typeof target[key] === "object") {
       newObj[key] = deepCopy(target[key]);
     } else {
       // 简单数据类型
