@@ -460,7 +460,7 @@ console.log("end");
 function deepCopy(target) {
   let newObj = Array.isArray(target) ? [] : {};
   for (key in target) {
-    if (typeof target[key] === "object") {
+    if (typeof target[key] === "object" && target[key] !== null) {
       newObj[key] = deepCopy(target[key]);
     } else {
       // 简单数据类型
