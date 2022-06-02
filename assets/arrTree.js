@@ -34,3 +34,21 @@ export function arrToTree(data, pId) {
   }
   return loop(pId)
 }
+// 普通数组转树形数组, 如果children的长度等于0，children 赋值null
+export function arrToTree2(data, pId) {
+  const loop = parentId => {
+    const res = []
+    data.forEach(item => {
+      if (item.parentId === parentId) {
+        if(loop(item.id).length > 0) {
+          item.children = loop(item.id)
+        } else {
+          item.children = null
+        }
+        res.push(item)
+      }
+    })
+    return res
+  }
+  return loop(pId)
+}
