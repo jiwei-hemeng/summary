@@ -34,6 +34,7 @@ export function arrToTree(data, pId) {
   }
   return loop(pId)
 }
+
 // 普通数组转树形数组, 如果children的长度等于0，children 赋值null
 export function arrToTree2(data, pId) {
   const loop = parentId => {
@@ -51,4 +52,24 @@ export function arrToTree2(data, pId) {
     return res
   }
   return loop(pId)
+}
+
+// 将树形数组中的sonList替换成children
+export function tranformTreeArr(treeDate) {
+  function loop(data) {
+    let arr = [];
+    data.forEach((item) => {
+      if(item.sonList) {
+        if(item.sonList.length > 0) {
+          item.children = loop(item.sonList)
+        } else {
+          item.children = null;
+        }
+        item.sonList = null
+      }
+      arr.push(item)
+    })
+    return arr
+  }
+  return loop(treeDate);
 }
