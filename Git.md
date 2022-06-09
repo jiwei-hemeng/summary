@@ -183,6 +183,8 @@ netsh wlan show profiles name="XXXXXX" key=clear
 chkdsk
 # 打开磁盘清理工具
 cleanmgr
+# 向对方电脑发送一条文本提示
+msg /server:192.168.1.109 * "需要发送的消息" 
 ```
 
 ### cmd 安装jdk并配置环境变量
@@ -192,8 +194,6 @@ cleanmgr
 setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
 setx Path "%PATH%;%JAVA_HOME%\bin";
 # 设置classpath命令
-setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
-# 向对方电脑发送一条文本提示
-msg /server:192.168.1.109 * "123"  
+setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%"; 
 ```
 
