@@ -193,5 +193,7 @@ setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
 setx Path "%PATH%;%JAVA_HOME%\bin";
 # 设置classpath命令
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
+# 向对方电脑发送一条文本提示
+msg /server:192.168.1.109 * "123"  
 ```
 
