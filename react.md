@@ -924,9 +924,8 @@ import React, {
   useRef,
   useImperativeHandle,
   useState,
-  forwardRef
+  forwardRef,
 } from "react";
-
 function Son(props, ref) {
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
@@ -939,7 +938,7 @@ function Son(props, ref) {
         },
         onChangeValue(value) {
           setInputValue(value);
-        }
+        },
       };
       return handleRefs;
     },
@@ -951,29 +950,22 @@ function Son(props, ref) {
     </div>
   );
 }
-
 const ForwarSon = forwardRef(Son);
-
 const Index = () => {
-  let inputRef = null;
+  let inputRef = useRef(null);
 
   const handerClick = () => {
-    const { onFocus, onChangeValue } = inputRef;
+    const { onFocus, onChangeValue } = inputRef.current;
     onFocus();
     onChangeValue("let us learn React!");
   };
 
   return (
     <div style={{ marginTop: "50px" }}>
-      <ForwarSon
-        ref={(node) => {
-          inputRef = node;
-        }}
-      />
+      <ForwarSon ref={inputRef} />
       <button onClick={handerClick}>操控子组件</button>
     </div>
   );
 };
-
 export default Index;
 ```
