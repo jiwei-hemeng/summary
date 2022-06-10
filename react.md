@@ -917,4 +917,63 @@ import Zmage from "react-zmage";
 // Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
 <a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
 ```
+### react hook组件中父组件调用子组件的方法
+> [官网连接](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
+```js
+import React, {
+  useRef,
+  useImperativeHandle,
+  useState,
+  forwardRef
+} from "react";
 
+function Son(props, ref) {
+  const inputRef = useRef(null);
+  const [inputValue, setInputValue] = useState("");
+  useImperativeHandle(
+    ref,
+    () => {
+      const handleRefs = {
+        onFocus() {
+          inputRef.current.focus();
+        },
+        onChangeValue(value) {
+          setInputValue(value);
+        }
+      };
+      return handleRefs;
+    },
+    []
+  );
+  return (
+    <div>
+      <input placeholder="请输入内容" ref={inputRef} value={inputValue} />
+    </div>
+  );
+}
+
+const ForwarSon = forwardRef(Son);
+
+const Index = () => {
+  let inputRef = null;
+
+  const handerClick = () => {
+    const { onFocus, onChangeValue } = inputRef;
+    onFocus();
+    onChangeValue("let us learn React!");
+  };
+
+  return (
+    <div style={{ marginTop: "50px" }}>
+      <ForwarSon
+        ref={(node) => {
+          inputRef = node;
+        }}
+      />
+      <button onClick={handerClick}>操控子组件</button>
+    </div>
+  );
+};
+
+export default Index;
+```
