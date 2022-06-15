@@ -1,20 +1,9 @@
-function transform(tranvalue) {
+export function transform(tranvalue) {
   try {
     var i = 1;
-    var dw2 = new Array("", "万", "亿"); //大单位
-    var dw1 = new Array("拾", "佰", "仟"); //小单位
-    var dw = new Array(
-      "零",
-      "壹",
-      "贰",
-      "叁",
-      "肆",
-      "伍",
-      "陆",
-      "柒",
-      "捌",
-      "玖"
-    );
+    var dw2 = ["", "万", "亿"]; //大单位
+    var dw1 = ["拾", "佰", "仟"]; //小单位
+    var dw = ["零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"];
     //整数部分用
     //以下是小写转换成大写显示在合计大写的文本框中
     //分离整数与小数
@@ -81,7 +70,7 @@ function transform(tranvalue) {
   return str;
 }
 //拆分整数与小数
-function splits(tranvalue) {
+export function splits(tranvalue) {
   var value = ["", ""];
   let temp = tranvalue.split(".");
   for (var i = 0; i < temp.length; i++) {
@@ -90,7 +79,7 @@ function splits(tranvalue) {
   return value;
 }
 
-function numberPutCommaShow(value) {
+export function numberPutCommaShow(value) {
   let installVal = value;
   if (value != "") {
     value = Number(value).toFixed(2)
