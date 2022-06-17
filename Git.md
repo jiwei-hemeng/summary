@@ -39,6 +39,8 @@ git diff src/view/index/index.vue
 git rm -r --cached .
 # 撤销已被放入暂存区的文件
 git reset HEAD -- .
+# 将已经提交到本地仓库的代码退回到暂存区
+git reset --soft [版本号]
 # 更改远程仓库的 URL
 git remote set-url git@github.com:jiwei-hemeng/node-96.git
 ```
