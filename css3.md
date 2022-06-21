@@ -765,4 +765,7 @@ input[type="search"]::-webkit-search-cancel-button{
   -webkit-appearance: none;
 }
 ```
-
+## 解决margin塌陷的方法
++ 给父盒子设置border，添加border后父盒子和子盒子就不会贴在一起了
++ 给父盒子添加overflow：hidden  让他溢出隐藏
++ 给父盒子设定padding值 
