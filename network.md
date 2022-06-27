@@ -75,7 +75,9 @@ axios.interceptors.response.use(response => {
 // 导入axios 模块
 import axios from 'axios'
 let API = axios.create({
-  baseURL: 'xx.com'
+  baseURL: 'xx.com',
+  withCredentials: true // 允许携带cookie
+  timeout: 5000, // 请求的超时时间
 })
 ```
 
