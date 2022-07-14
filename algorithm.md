@@ -6,7 +6,7 @@
 
 **动画演示：**
 
-![冒泡排序（Bubble Sort）](./assets/images/Bubble.webp)
+![冒泡排序（Bubble Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Bubble.webp)
 
 **代码**
 
