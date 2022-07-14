@@ -6,7 +6,7 @@
 
 **动画演示：**
 
-![冒泡排序（Bubble Sort）](https://segmentfault.com/img/bVDcJN?w=826&h=257)
+![冒泡排序（Bubble Sort）](./assets/images/Bubble.webp)
 
 **代码**
 
