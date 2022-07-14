@@ -37,7 +37,7 @@ function bubbleSort(arr) {
 
 **动画演示：**
 
-![选择排序（Selection Sort）](https://segmentfault.com/img/bVDcJC?w=811&h=248)
+![选择排序（Selection Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Selection.webp)
 
 **代码**
 
@@ -71,7 +71,7 @@ function selectionSort(arr) {
 
 **动画演示：**
 
-![插入排序（Insertion Sort）](https://segmentfault.com/img/bVDcJz?w=811&h=505)
+![插入排序（Insertion Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Insertion.webp)
 
 **代码**
 
@@ -106,7 +106,7 @@ function insertionSort(arr) {
 
 **动图演示**
 
-![希尔排序（Shell Sort）](https://segmentfault.com/img/bV8LhB?w=665&h=290)
+![希尔排序（Shell Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Shell.webp)
 
 **代码**
 
