@@ -969,3 +969,41 @@ const Index = () => {
 };
 export default Index;
 ```
+
+### 自定义hook
+
+> 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
+
+**定义**
+
+```js
+import React,{useState, useEffect} from 'react';
+function useLocalStorage(key) {
+  const [data, setData] = useState(() => {
+    return JSON.parse(window.localStorage.getItem(key))
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(data));
+  }, [data]);
+
+  return [data, setData];
+}
+
+export default useLocalStorage;
+```
+**使用**
+```js
+import React, { useState, useEffect } from 'react';
+import useLocalStorage from './useLocalStorage';
+export default function CustomDataStoreHook() {
+  const [name, setName] = useLocalStorage("name");
+
+  return (
+    <div>
+      <h2>CustomDataStoreHook: {name}</h2>
+      <button onClick={e => setName("kobe")}>设置name</button>
+    </div>
+  )
+}
+```
