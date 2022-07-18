@@ -77,7 +77,7 @@ console.log(Counter2.value()); /* logs 0 */
 function A() {
   (function() {
     for(var i = 0; i < num; i++) {
-			num++;      
+	num++;      
     }
   })()
   console.log("模拟块级作用域", i);
