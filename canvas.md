@@ -141,6 +141,14 @@ context.textAlign = "right"
 // 在指定位置绘制文字，这里指定距离右下角20坐标的地方
 context.fillText(text, canvas.width - 20, canvas.height - 20);
 ```
+**旋转**
+
+```js
+const app = document.querySelector("#canvas")
+const context = app.getContext("2d");
+context.translate(230, 230); // 重置中心点
+context.rotate(10 * Math.PI / 180);
+```
 
 **将图片绘制到画布上**
 
