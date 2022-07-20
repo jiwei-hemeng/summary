@@ -46,8 +46,10 @@ context.lineTo(200, 100);
 context.lineTo(250, 200);
 context.lineTo(150, 200);
 // 边框三角型样式
-context.strokeStyle = "teal";
-context.lineWidth = "5";
+context.strokeStyle = "pink"; // 修改直线的颜色
+context.lineWidth = "5"; // 修改直线的宽度
+// 修改直线两端样式
+cxt.lineCap = "round"; // 默认: butt; 圆形: round; 方形: square
 context.closePath();
 // 进行绘制
 context.stroke();
