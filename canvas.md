@@ -150,6 +150,14 @@ context.translate(230, 230); // 重置中心点
 context.rotate(10 * Math.PI / 180);
 ```
 
+**清楚画布**
+
+```js
+const app = document.querySelector("#canvas")
+const context = app.getContext("2d");
+context.clearRect(0, 0, 500, 500);
+```
+
 **将图片绘制到画布上**
 
 ```js
