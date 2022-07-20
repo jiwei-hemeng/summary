@@ -42,7 +42,7 @@ var context = app.getContext("2d");
 // 3.绘制边框三角形
 // 绘制路径：beginPath()：开启一条路径或重置当前路径
 context.beginPath();
-context.lineTo(200, 100);
+context.moveTo(200, 100);
 context.lineTo(250, 200);
 context.lineTo(150, 200);
 // 边框三角型样式
