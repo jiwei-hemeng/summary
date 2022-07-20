@@ -53,6 +53,8 @@ context.lineTo(150, 200);
 context.closePath();
 // 进行绘制
 context.stroke();
+context.fillStyle = "blue"; // 填充背景色
+context.fill(); // 开始填充
 ```
 
 **画布-渐变效果**
