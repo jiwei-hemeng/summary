@@ -150,7 +150,7 @@ context.translate(230, 230); // 重置中心点
 context.rotate(10 * Math.PI / 180);
 ```
 
-**清楚画布**
+**清除画布**
 
 ```js
 const app = document.querySelector("#canvas")
@@ -187,3 +187,22 @@ img.addEventListener("load", () => {
   context.putImageData(imageData, 0 200)
 })
 ```
+
+**HTML canvas drawImage() 方法**
+
+语法 1：在画布上定位图像：
+> context.drawImage(img,x,y);
+语法 2：在画布上定位图像，并规定图像的宽度和高度
+> context.drawImage(img,x,y,width,height);
+语法 3： 剪切图像，并在画布上定位被剪切的部分
+> context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+参数说明：
++ img	规定要使用的图像、画布或视频。
++ sx	可选。开始剪切的 x 坐标位置。
++ sy	可选。开始剪切的 y 坐标位置。
++ swidth	可选。被剪切图像的宽度。
++ sheight	可选。被剪切图像的高度。
++ x	在画布上放置图像的 x 坐标位置。
++ y	在画布上放置图像的 y 坐标位置。
++ width	可选。要使用的图像的宽度。（伸展或缩小图像）
++ height	可选。要使用的图像的高度。（伸展或缩小图像）
