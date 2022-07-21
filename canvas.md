@@ -192,10 +192,16 @@ img.addEventListener("load", () => {
 
 语法 1：在画布上定位图像：
 > context.drawImage(img,x,y);
+
+
 语法 2：在画布上定位图像，并规定图像的宽度和高度
 > context.drawImage(img,x,y,width,height);
+
+
 语法 3： 剪切图像，并在画布上定位被剪切的部分
 > context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+
+
 参数说明：
 + img	规定要使用的图像、画布或视频。
 + sx	可选。开始剪切的 x 坐标位置。
