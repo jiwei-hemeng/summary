@@ -216,10 +216,7 @@ img.addEventListener("load", () => {
 **canvas 虚线**
 只传1个值
 ```js
-// 只传1个参数，实线与空白都是 10px
-cxt.setLineDash([10]);
-// 2个参数，此时，实线是 10px, 空白 20px
-cxt.setLineDash([10, 20])
-// 传3个以上的参数，此例：10px实线，20px空白，5px实线，10px空白，20px实线，5px空白 ……
-cxt.setLineDash([10, 20, 5])
+cxt.setLineDash([10]); // 只传1个参数，实线与空白都是 10px
+cxt.setLineDash([10, 20]); // 2个参数，此时，实线是 10px, 空白 20px
+cxt.setLineDash([10, 20, 5]); // 传3个以上的参数，此例：10px实线，20px空白，5px实线，10px空白，20px实线，5px空白 ……
 ```
