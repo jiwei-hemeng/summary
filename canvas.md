@@ -214,7 +214,7 @@ img.addEventListener("load", () => {
 + height	可选。要使用的图像的高度。（伸展或缩小图像）
 
 **canvas 虚线**
-只传1个值
+
 ```js
 cxt.setLineDash([10]); // 只传1个参数，实线与空白都是 10px
 cxt.setLineDash([10, 20]); // 2个参数，此时，实线是 10px, 空白 20px
