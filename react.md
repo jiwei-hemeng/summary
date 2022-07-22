@@ -1007,3 +1007,20 @@ export default function CustomDataStoreHook() {
   )
 }
 ```
+### 分析 Bundle (包) 大小
+
+**安装依赖**
+```shell
+yarn add source-map-explorer
+```
+**然后在 package.json 中，将以下行添加到 scripts 中：**
+```json
+{
+  "scripts": {
+    "analyze": "source-map-explorer build/static/js/main.*"
+}
+```
+**然后分析 bundle(包) 运行生产构建然后运行分析脚本。**
+```shell
+npm run analyze
+```
