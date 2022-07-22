@@ -212,3 +212,14 @@ img.addEventListener("load", () => {
 + y	在画布上放置图像的 y 坐标位置。
 + width	可选。要使用的图像的宽度。（伸展或缩小图像）
 + height	可选。要使用的图像的高度。（伸展或缩小图像）
+
+**canvas 虚线**
+只传1个值
+```js
+// 只传1个参数，实线与空白都是 10px
+cxt.setLineDash([10]);
+// 2个参数，此时，实线是 10px, 空白 20px
+cxt.setLineDash([10, 20])
+// 传3个以上的参数，此例：10px实线，20px空白，5px实线，10px空白，20px实线，5px空白 ……
+cxt.setLineDash([10, 20, 5])
+```
