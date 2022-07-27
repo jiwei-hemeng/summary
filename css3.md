@@ -80,8 +80,9 @@ html {
 
 ```css
 .sidebar h3 {
-    writing-mode: lb-rl;
-    transform: rotate(-180deg)
+  text-align: center;
+  writing-mode: vertical-lr;
+  background-color: #eee;
 }
 ```
 
