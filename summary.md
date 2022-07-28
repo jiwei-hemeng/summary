@@ -648,7 +648,8 @@ copyToClipboard("哈哈哈")
   </div>
 </div>
 <script>
-  changeBlur(){
+  // ios键盘唤起后收起页面不归位
+  function changeBlur() {
     let u = navigator.userAgent, app = navigator.appVersion;
     let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
     if(isIOS){
@@ -656,6 +657,17 @@ copyToClipboard("哈哈哈")
         const scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0
         window.scrollTo(0, Math.max(scrollHeight - 1, 0))
       }, 200)
+    }
+  }
+  // 安卓弹出的键盘遮盖文本框
+  function changefocus() {
+    let u = navigator.userAgent, app = navigator.appVersion;
+    let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1;
+    if(isAndroid){
+      setTimeout(function() {
+        document.activeElement.scrollIntoViewIfNeeded();
+        document.activeElement.scrollIntoView();
+      }, 500);       
     }
   }
 </script>
