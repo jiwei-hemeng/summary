@@ -1,44 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-<p>定位的函数，chrome用起来不好用</p>
-<script>
-    // 获取当前的地理位置
-// 方法一：不靠谱
-// 只能获取一次地理位置
-
-/*
-window.navigator.geolocation.getCurrentPosition(success,error);
-
-function success(msg,position) {
-    console.log(msg);
-    console.log(position);
-}
-
-function error(msg) {
-    console.log(msg);
-}
-
-*/
-
-// 方法二：实时获取地理位置
-
-navigator.geolocation.getCurrentPosition((position) => {
-    console.log("地理位置", position)
-});
-
-function success(msg,position) {
-    console.log(msg);
-    console.log(position);
-}
-
-function error(msg) {
-    console.log(msg);
-}
-
-</script>
-</body>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <p>定位的函数，chrome用起来不好用</p>
+    <script>
+      navigator.geolocation.getCurrentPosition((position) => {
+        const p = document.querySelector("p");
+        const content = `经度:${position.coords.longitude} 纬度：${position.coords.latitude}`;
+        p.innerHTML = content;
+      });
+    </script>
+  </body>
 </html>
