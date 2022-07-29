@@ -1024,3 +1024,14 @@ yarn add source-map-explorer
 ```shell
 npm run analyze
 ```
+
+### useMemo
+
+> 类似于vue 的计算属性，可以把 useMemo 作为性能优化的手段，但不要把它当成语义上的保证
+> [官网地址](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
+
+把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
+
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
