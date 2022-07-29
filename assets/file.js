@@ -10,3 +10,12 @@ export function base64UrlToFile(base64Url, filename) {
   }
   return new File([u8arr], filename, { type: mime });
 }
+// 下载文件
+export function downloadFile(url, filename) {
+  const alink = document.createElement("a");
+  alink.setAttribute("href", url);
+  alink.setAttribute("download", filename);
+  document.body.appendChild(alink);
+  alink.click();
+  document.body.removeChild(alink);
+}
