@@ -495,7 +495,7 @@ yarn add react-app-rewired customize-cra babel-plugin-import -S
 在项目的根目录上新建`config-overrides.js`文件
 
 ```js
-const { override, fixBabelImports, addWebpackExternals } = require('customize-cra');
+const { override, fixBabelImports, addWebpackExternals, setWebpackPublicPath } = require('customize-cra');
 const { resolve } = require("path");
 module.exports = override(
   fixBabelImports('import', {
@@ -505,6 +505,8 @@ module.exports = override(
   addWebpackAlias({
     "@": resolve("src");
   })，
+  // 设置public目录
+  setWebpackPublicPath("/source"),
   addWebpackExternals({
     react: "React",
     "react-dom": "ReactDOM",
