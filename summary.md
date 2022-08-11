@@ -1392,3 +1392,8 @@ const strText = "hello world,i love world";
 const regex = /world/g;
 console.log(strText.replaceAll(regex, "china")); // hello china,i love china
 ```
+**验证数字类型**
+```js
+const reg = /^(([1-9]{1}\d*)|(0{1}))((.\d{0,})?)$/;
+reg.test(123.2323) // result: true
+```
