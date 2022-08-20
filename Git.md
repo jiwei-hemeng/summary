@@ -211,13 +211,19 @@ ssh root@192.168.5.128 -p 22
 # 把本机生成的公钥添加到远程服务器
 ssh-copy-id -i /root/.ssh/id_dsa.pub root@192.168.5.128
 # 也可以使用第二种，方式添加
-cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 “mkdir ~/.ssh; cat >> ~/.ssh/authorized_keys”
+cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 "mkdir ~/.ssh; cat >> ~/.ssh/authorized_keys"
 # 将本地的文件或者文件夹上传到服务器 -r 选项表示上传文件夹
 scp -r D:\etc\liLianInfo\unpackage\dist\dev\mp-weixin root@192.168.5.128:/home/root/path
 # 下载整个目录
 scp -r root@192.168.5.128:/home/root/path D:/path
+# 安装yum
+sudo apt-get install yum
 # 解决liunx ifconfig 命令找不到
-yum install net-tools
+sudo apt-get install net-tools
+# 设置root用户的密码
+sudo passwd root
+# 切换root用户
+su root
 # 查找ifconfig 脚本的位置
 find / -name ifconfig -print
 # linux 安装Openssh
