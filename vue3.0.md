@@ -388,8 +388,6 @@ app.directive("abs", (el, binding) => {
 })
 ```
 
-
-
 **自定义修饰符**
 
 > [相关链接](https://v3.cn.vuejs.org/guide/component-custom-events.html#%E5%A4%84%E7%90%86-v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6)
