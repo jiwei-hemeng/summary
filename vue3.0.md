@@ -356,7 +356,7 @@ event：`input` -> `update:modelValue`；
 
 ```js
 app.directive("permission", {
-  muunted(el, binding) {
+  mounted(el, binding) {
     // 获取到的角色权限
     const permissionList = ["B0.1add", "B0.2remove", "B0.3export"];
     const name = binding.value;
