@@ -350,6 +350,46 @@ prop：`value` -> `modelValue`
 
 event：`input` -> `update:modelValue`；
 
+**自定义指令**
+
+定义
+
+```js
+app.directive("permission", {
+  muunted(el, binding) {
+    // 获取到的角色权限
+    const permissionList = ["B0.1add", "B0.2remove", "B0.3export"];
+    const name = binding.value;
+    const index = persissionList.indexOf(name);
+    if(index === -1) {
+      el.style.display = "none";
+    }
+  }
+})
+```
+
+使用
+
+```html
+<!-- 拥有该权限 -->
+<button v-permission="B0.1add">新增</button>
+<!-- 没有该权限 -->
+<button v-permission="C0.1remove">删除</button>
+```
+
+动态指令参数
+
+```js
+const app = Vue.createApp({
+  template: `<div class="box" v-abs:left="100px"></div>`
+})
+app.directive("abs", (el, binding) => {
+  el.style[binding.arg] = binding.value;
+})
+```
+
+
+
 **自定义修饰符**
 
 > [相关链接](https://v3.cn.vuejs.org/guide/component-custom-events.html#%E5%A4%84%E7%90%86-v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6)
