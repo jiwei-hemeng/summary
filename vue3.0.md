@@ -493,6 +493,8 @@ module.exports = {
 
 **语法糖**
 
+> [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
+
  虽然`Composition API`用起来已经非常方便了，但是我们还是有很烦的地方，比如 
 
 + 组件引入了还要注册
@@ -510,44 +512,29 @@ setup script`语法糖提供了三个新的`API`来供我们使用：`defineProp
 +  **defineEmit** 用来声明触发的事件表 
 +  **useContext** 用来获取组件上下文`context` 
 
-`父组件`
-
 ```html
-<template>
-  <div>
-    <h2>我是父组件！</h2>
-    <Child msg="hello"
-           @child-click="handleClick" />
-  </div>
-</template>
-
+// 子组件
+<div class="hello">
+  <button @click="btn">点击</button>
+</div>
 <script setup>
-import Child from './components/Child.vue'
-
-const handleClick = (ctx) => {
-  console.log(ctx)
-}
-</script>
-```
-
-`子组件`
-
-```html
-<template>
-  <span @click="sonClick">msg: {{ props.msg }}</span>
-</template>
-
-<script setup>
-import { useContext, defineProps, defineEmit } from 'vue'
-
-const emit = defineEmit(['child-click'])
-const ctx = useContext()
+// 获取父组件传来的 props
 const props = defineProps({
   msg: String,
-})
-
-const sonClick = () => {
-  emit('child-click', ctx)
+});
+const emit = defineEmits(["change", "delete", "handle"]);
+const btn = () => {
+  emits('handle', '张三')
+}
+</script>
+// 父级组件中
+<div class="home">
+  <HelloWorld @handle="handleClick" open-type="add" />
+</div>
+<script setup>
+import HelloWorld from '@/components/HelloWorld'
+const handleClick = function (data) {
+  console.log(data)
 }
 </script>
 ```
