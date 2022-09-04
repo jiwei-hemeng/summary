@@ -598,6 +598,19 @@ const str = "http://wwww.baidu.com?sear=aaa&keyword=bbbb";
 console.log("test", getURLParameters(str)) // reslut: test {sear: 'aaa', keyword: 'bbbb'}
 ```
 
+**方法三**
+
+```js
+function getearcgParams() {
+  const searchPar = new URLSearchParams(location.search)
+  const searchObj = {}
+  for (const [key, value] of searchPar.entries()) {
+    searchObj[key] = value
+  }
+  return searchObj
+}
+```
+
 ### 将键值对拼接成URL带参数
 
 ```js
