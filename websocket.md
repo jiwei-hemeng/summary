@@ -79,3 +79,56 @@ socket.on("message", (data) => {
 })
 ```
 
+### 实例
+
+**nodejs**
+
+```js
+const express = require("express");
+const app = express();
+app.use(express.static("public"));
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: true, // 解决报跨域的问题
+});
+let userList = [];
+io.on('connection', (socket) => {
+  console.log("websocket建立连接成功")
+  socket.on("jojn", function (room) {
+    userList.push({ id: socket.id, room })
+    socket.join(room);
+  });
+  socket.on("chat-message", function (msg) {
+    socket.emit("chat-message", { type: "发给自己的消息", msg })
+    const user = userList.find(item => { return item.id === socket.id })
+    io.to(user.room).emit("feature-message", {
+      msg
+    });
+  });
+});
+server.listen(3000);
+```
+
+**页面**
+
+```js
+const socket = io("http://localhost:3000");
+socket.on("connect", function () {
+  console.log("连接建立成功")
+  socket.emit("jojn", location.search)
+  const input = document.querySelector("#message")
+  input.addEventListener("blur", () => {
+    socket.emit("chat-message", input.value)
+  });
+})
+socket.on("feature-message", function (data) {
+  console.log("发给我的消息", data)
+})
+socket.on("chat-message", function (data) {
+  console.log("发给我的消息", data)
+})
+socket.on("disconnect", function () {
+  console.log("断开连接了")
+})
+```
+
