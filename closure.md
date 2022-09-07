@@ -108,6 +108,21 @@ newFoo(obj)() // xiaom
 newFoo(obj1)() // xiaoh
 ```
 
+**柯里化实例**
+
+```js
+function curring(reg) {
+  return (str) => {
+    return reg.test(str);
+  };
+}
+var checkPhone = curring(/^1[34578]\d{9}$/);
+var checkEmail = curring(/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/);
+console.log(checkPhone("183888888")); // false
+console.log(checkPhone("17654239819")); // true
+console.log(checkEmail("exy@163.com")); // true
+```
+
 ### 防抖与节流
 
 ```js
