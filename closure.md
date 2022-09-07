@@ -108,3 +108,29 @@ newFoo(obj)() // xiaom
 newFoo(obj1)() // xiaoh
 ```
 
+### 防抖与节流
+
+```js
+// 防抖
+function debounce(fn, wait = 50) {
+  let timer;
+  return function () {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+    }, wait);
+  };
+}
+// 节流
+function throttle(fn, wait = 200) {
+  let canRun = true;
+  return function () {
+    if (!canRun) return (canRun = false);
+    setTimeout(() => {
+      fn.apply(this, arguments);
+      canRun = true;
+    }, wait);
+  };
+}
+```
+
