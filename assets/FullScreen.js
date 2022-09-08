@@ -1,3 +1,4 @@
+// 进入全屏
 export function goToFullScreen(element) {
  element = element || document.body;
  if (element.requestFullscreen) {
@@ -10,6 +11,7 @@ export function goToFullScreen(element) {
    element.webkitRequestFullScreen();
  }
 };
+// 退出全屏
 export function goExitFullscreen() {
  if (document.exitFullscreen) {
    document.exitFullscreen();
