@@ -191,6 +191,8 @@ msg /server:192.168.1.109 * "需要发送的消息"
 chkdsk d: /f
 # D盘下生成一个指向E盘文件夹system\systemconfig的软连接link文件夹
 mklink /j D:\systemconfig D:\system\systemconfig
+# 清除日志垃圾
+%temp%
 ```
 
 ### cmd 安装jdk并配置环境变量
