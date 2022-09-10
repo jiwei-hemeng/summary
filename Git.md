@@ -230,5 +230,6 @@ su root
 find / -name ifconfig -print
 # linux 安装Openssh
 sudo apt-get install openssh-server
+# 安装nodejs
+sudo apt-get install -y nodejs
 ```
-
