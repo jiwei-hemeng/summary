@@ -255,24 +255,25 @@ cnpm install mysql
 创建*db.js* 
 
 ```js
-module.exports = (sql, params, callback) => {
-    // 1. 加载mysql
-    const mysql = require('mysql');
-    // 2. 创建连接对象
+const mysql = require("mysql");
+module.exports = (sql, params) => {
+  return new Promise((resolve, reject) => {
     const conn = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'heroes_manager' // 数据库名，不是表名
+      host: "localhost",
+      user: "root",
+      password: "",
+      database: "heroes_manager", // 数据库名，不是表名
     });
-    // console.log(conn);
     // 3. 连接到mysql服务器
     conn.connect();
     // 4. 完成增删改查
-    conn.query(sql, params, callback);
+    conn.query(sql, params, (err, result) => {
+      resolve([err, result])
+    });
     // 5. 关闭连接
     conn.end();
-}
+  })
+};
 ```
 
 使用
@@ -280,21 +281,19 @@ module.exports = (sql, params, callback) => {
 ```js
 const path = require("path");
 const db = require(path.join(__dirname, "../utils", "db.js"));
-router.post("/reguser", (req, res) => {
+router.post("/reguser", async (req, res) => {
   if (req.body.vcode.toUpperCase() !== req.session.captcha.toUpperCase()) {
     return res.json({ status: 1, message: "验证码错误" });
   }
   delete req.body.vcode;
   // 3. 添加到数据库，完成注册
-  db("insert into user set ?", req.body, (err, result) => {
+  const [err, result] = await db("insert into user set ?", req.body);
+  if (err || result.affectedRows < 1) {
     console.log(err);
-    if (err || result.affectedRows < 1) {
-      console.log(err);
-      res.json({ code: 500, message: "注册失败！" });
-    } else {
-      res.json({ code: 200, message: "注册成功！" });
-    }
-  });
+    res.json({ code: 500, message: "注册失败！" });
+  } else {
+    res.json({ code: 200, message: "注册成功！" });
+  }
 });
 ```
 
