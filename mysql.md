@@ -12,6 +12,11 @@ mysql -hlocalhost -uroot -p
 ```mysql
 exit（回车）
 ```
+查看该数据库下的表
+
+```sql
+show tables;
+```
 
 修改用户密码
 
