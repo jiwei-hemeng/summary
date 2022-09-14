@@ -84,7 +84,6 @@ socket.on("message", (data) => {
 **广播消息给除当前客户端之外的所有在线客户端**
 
 ```js
-// 
 socket.broadcast.emit('user connected');
 ```
 
