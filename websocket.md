@@ -79,6 +79,34 @@ socket.on("message", (data) => {
 })
 ```
 
+### 服务端
+
+**广播消息给除当前客户端之外的所有在线客户端**
+
+```js
+// 
+socket.broadcast.emit('user connected');
+```
+
+**当前房间的客户端广播消息**
+
+```js
+io.on('connection', (socket) => {
+  // to one room
+  socket.to('others').emit('an event', { some: 'data' });
+  // to multiple rooms
+  socket.to('room1').to('room2').emit('hello');
+  // a private message to another socket
+  socket.to(/* another socket id */).emit('hey');
+});
+```
+
+**与当客户端的连接丢失后，会自动的将其从房间移除**
+
+```js
+socket.leave(room[, callback])
+```
+
 ### 实例
 
 **nodejs**
