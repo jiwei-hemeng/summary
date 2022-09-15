@@ -628,5 +628,9 @@ Android平台配置权限参考：https://ask.dcloud.net.cn/article/36982
 
 [网页授权](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
 
+### 微信小程序订阅消息
+
+[微信小程序订阅消息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%E8%AF%AD%E9%9F%B3%E6%8F%90%E9%86%92)
+
 
 
