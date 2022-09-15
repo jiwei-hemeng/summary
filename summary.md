@@ -686,6 +686,12 @@ copyToClipboard("哈哈哈")
 </script>
 ```
 
+### 让当前的元素滚动到浏览器窗口的可视区域内
+
+```js
+element.scrollIntoView()
+```
+
 ### URL的编码与解码
 
 - 编码使用encodeURI()函数---> 解码使用decodeURI()函数
