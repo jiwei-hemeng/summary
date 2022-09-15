@@ -688,8 +688,11 @@ copyToClipboard("哈哈哈")
 
 ### 让当前的元素滚动到浏览器窗口的可视区域内
 
+> scrollIntoViewIfNeeded可以接受一个Boolean型参数，和scrollIntoView不同，true为默认值，但不是滚动到顶部，而是让元素在可视区域中居中对齐；false时元素可能顶部或底部对齐，视乎元素靠哪边更近。简单的例子可以点这里。大致代码如下：
+
 ```js
 element.scrollIntoView()
+element.scrollIntoViewIfNeeded()
 ```
 
 ### URL的编码与解码
