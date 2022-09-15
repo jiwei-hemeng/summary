@@ -262,6 +262,7 @@ module.exports = (sql, params) => {
       host: "localhost",
       user: "root",
       password: "",
+      port:3306, // 端口号
       database: "heroes_manager", // 数据库名，不是表名
     });
     // 3. 连接到mysql服务器
