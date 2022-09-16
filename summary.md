@@ -628,9 +628,15 @@ export function fnParamsToUrl(obj) {
 
 ### 复制到剪切板
 
+[相关连接](https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html)
+
 ```js
 const copyToClipboard = (text) => {
   navigator.clipboard.writeText(text);
+}
+async function clipboardReadText() {
+  const text = await navigator.clipboard.readText();
+  console.log(text);
 }
 copyToClipboard("哈哈哈")
 ```
