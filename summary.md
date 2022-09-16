@@ -295,7 +295,7 @@ onchange 事件也可用于单选框与复选框改变后触发的事件。
 + 设置原型链
 
   ```js
-  obj.proto = Func.prototype;
+  obj.__proto__ = Func.prototype;
   ```
 
 + 改变Func 中的this指向，并指向Fun函数体
