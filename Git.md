@@ -232,4 +232,6 @@ find / -name ifconfig -print
 sudo apt-get install openssh-server
 # 安装nodejs
 sudo apt-get install -y nodejs
+# 删除非空目录
+rm -rf [目录名]
 ```
