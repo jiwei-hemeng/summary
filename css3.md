@@ -772,3 +772,14 @@ input[type="search"]::-webkit-search-cancel-button{
 + 给父盒子设置border，添加border后父盒子和子盒子就不会贴在一起了
 + 给父盒子添加overflow：hidden  让他溢出隐藏
 + 给父盒子设定padding值 
+
+## accent-color 应用场景
+
+> 表单控件颜色设置  
+
+```css
+input[type=radio] {
+  accent-color: red;
+}
+```
+
