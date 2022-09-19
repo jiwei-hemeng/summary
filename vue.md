@@ -1583,5 +1583,12 @@ import "@/utils/permission.js"
 <el-button v-permission="B0.5edit">修改</el-button>
 ```
 
+### Vue2 中的 this 为啥能够直接获取到 data 和 methods 
+
+通过 this 直接访问到 data 里面的数据的原因是：data里的属性最终会存储到new Vue的实例（vm）上的 _data对象中，访问 this.xxx，是访问Object.defineProperty代理后的 this._data.xxx。
+
+通过this直接访问到methods里面的函数的原因是：因为methods里的方法通过 bind指定了this为 new Vue的实例(vm)
+
+
 
 
