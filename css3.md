@@ -782,4 +782,52 @@ input[type=radio] {
   accent-color: red;
 }
 ```
+    
+## grid 布局
+```html
+<div class="wrapper">
+  <div class="one item">One</div>
+  <div class="two item">Two</div>
+  <div class="three item">Three</div>
+  <div class="four item">Four</div>
+  <div class="five item">Five</div>
+  <div class="six item">Six</div>
+</div>
+```
+```css
+.wrapper {
+    margin: 60px auto;
+    /* 声明一个容器 */
+    display: grid;
+    /* 声明列的宽度,数字3表示的重复3次，即有3列宽度为200px*/
+    grid-template-columns: repeat(3, 33%);
+    /* 声明行间距和列间距 */
+    grid-gap: 10px;
+    /* 分别表示两行的高度 */
+    grid-template-rows: 100px 120px;
+}
+.item {
+    text-align: center;
+    font-size: 200%;
+    color: #fff;
+}
+.one {
+    background-color: #b8e8e0;
+}
+.two {
+    background-color: #8cc7b5;
+}
+.three {
+    background-color: #efe3bf;
+}
+.four {
+    background-color: #bee7e9;
+}
+.five {
+    background-color: #e6ceac;
+}
+.six {
+    background-color: #ecad9e;
+}
+```
 
