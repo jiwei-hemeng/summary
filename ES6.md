@@ -256,3 +256,14 @@ let b = new B();
 ```
 
 上面案例中，子类B当中的`super.c()` ， 就是将`super`当作一个对象使用。
+
+###  有条件地向对象添加属性
+
+```js
+const condition = true;
+const person = {
+  id: 1,
+  name: 'John Doe',
+  ...(condition && { age: 16 }),
+};
+```
