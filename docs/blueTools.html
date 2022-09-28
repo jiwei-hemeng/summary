@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button class="btns">连接蓝牙</button>
+    <script>
+        // 不知道如何获取 服务的uuid 与 特征的uuid 请先在  chrome://bluetooth-internals/#devices/c8:b2:1e:97:9e:a3 这个谷歌游览器的这个网址先进行连接一个蓝牙设备
+        // 你可以先在这个网址简单的了解一下 蓝牙连接的步骤  https://web.dev/i18n/zh/bluetooth/ 如果打不开,就搜索 通过 JavaScript 与蓝牙设备通信
+
+
+        //  0xa5 0x07 0x01 0x00 0xf9 0x00 0x00 0xff 0xff     
+        // 监听到的蓝牙数据返回值时一个16进制的数组数据  0x表示 16进制,你需要把0x之后的数据转换为 10进制
+        //  上面的9个16进制数据,表示的含义不同(可能你的设备获取到的不止9个16进制的数据),你需要根据你的文档,来判断出你需要的是第几个数据
+        var bluetoothDevice;
+        let btn = document.querySelector('.btns')
+        btn.addEventListener('click', getBlueObject)
+        // 获取蓝牙对象
+        function getBlueObject() {
+            bluetoothDevice = null;
+            navigator.bluetooth.requestDevice({
+                // 当使用 acceptAllDevices: true 为条件时,在你获取 服务 和 特征的时候,需要把服务的uuid 和 特征的uuid写入optionalServices里面
+                acceptAllDevices: true,
+                optionalServices: ['']
+            }).then(device => {
+                bluetoothDevice = device
+                // 监听蓝牙断开,gattserverdisconnected 蓝牙断开事件
+                bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected)
+                connect()
+            }).catch(err => {
+                console.log('获取蓝牙失败');
+            })
+        }
+        // 开始连接
+        function connect() {
+            exponentialBackoff(3 /* 最大重试次数 */, 2 /* 秒延迟 */,
+                function toTry() {
+                    return bluetoothDevice.gatt.connect();
+                },
+                function success(server) {
+                    getServer(server)
+                },
+                function fail() {
+                    console.log('连接失败');
+                });
+        }
+        // 获取服务\特征,监听蓝牙数据返回
+        function getServer(server) {
+            console.log('连接成功', server);
+            //     getPrimaryService(uuid)  参数为服务的uuid, 获取到指定的服务,返回一个对象
+            //     getPrimaryServices()  获取到全部的 服务,返回一个数组,
+            server.getPrimaryService('00001810-0000-1000-8000-00805f9b34fb').then(service => {
+                console.log('获取全部服务信息成功,开始获取特征信息', service)
+                //             getCharacteristic(uuid) 参数为 特征的uuid,获取到指定特征的对象,返回一个对象
+                //             getCharacteristics()  获取全部特征的参数 返回一个数组
+                return service.getCharacteristic('00002a35-0000-1000-8000-00805f9b34fb')
+            }).then(characteristic => {
+                return characteristic.startNotifications().then(_ => {
+                    characteristic.addEventListener('characteristicvaluechanged',
+                        handleNotifications);
+                });
+            }).catch(err => {
+                console.log('获取服务失败', err);
+            })
+        }
+        function onDisconnected() {
+            console.log('重连中');
+            connect()
+        }
+        function exponentialBackoff(max, delay, toTry, success, fail) {
+            toTry().then(result => success(result))
+                .catch(_ => {
+                    if (max === 0) {
+                        return fail();
+                    }
+                    setTimeout(function () {
+                        exponentialBackoff(--max, delay * 2, toTry, success, fail);
+                    }, delay * 1000);
+                });
+        }
+        function handleNotifications(event) {
+            let value = event.target.value;
+            let a = [];
+            for (let i = 0; i < value.byteLength; i++) {
+                a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
+            }
+            console.log('> ' + a.join(' '));
+        }
+
+    </script>
+</body>
+
+</html>
