@@ -240,16 +240,16 @@ rm -rf [目录名]
 + 移动 HEAD 指向的分支 （若指定了 --soft，则到此停止）；
   ```shell
   # 它本质上是撤销了上一次 git commit 命令
-  git reset –soft HEAD~
+  git reset --soft HEAD~
   ```
 + 重置 index 以便和 HEAD 相匹配 （若未指定 --hard，则到此停止）；
   ```shell
   # 它依然会撤销一上次提交，但还会取消所有暂存。 于是，我们回滚到了所有 git add 和 git commit 的命令执行之前。
-  git reset –mixed HEAD~
+  git reset --mixed HEAD~
   ```
 + 使工作目录看起来像索引
   ```shell
   # 撤销了最后的提交（git commit ）、git add 和工作目录中的所有工作。
-  git reset –hard HEAD~
+  git reset --hard HEAD~
   ```
 
