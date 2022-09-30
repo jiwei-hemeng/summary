@@ -625,7 +625,7 @@ function Example() {
 
 ```js
 import React, { useRef } from "react";
-export default function UseRefExample {
+export default function UseRefExample() {
   let inputRef = useRef(null);
   const handleClick = () => {
     inputRef.current.focus();
