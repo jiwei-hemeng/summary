@@ -827,6 +827,12 @@ export default {
   ```shell
   json-server db.json
   ```
+  
++ 也可以直接使用npx的方式启动
+
+  ```shell
+  npx json-server --watch --port 3000 db.json  
+  ```
 
 
 ### 递归组件的使用
