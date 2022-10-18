@@ -47,8 +47,6 @@ git remote set-url git@github.com:jiwei-hemeng/node-96.git
 
 ### **Git 配置命令**
 
-> 相关链接 https://www.liuvv.com/p/a9407b5.html
-
 ```shell
 # 设置用户名
 git config --global user.name 'userName'
@@ -160,7 +158,7 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 
 ### 在vscode中配置GIT终端
 
-![1953033-20210812175755860-640591619](./assets/images/1953033-20210812175755860-640591619.png)
+![1953033-20210812175755860-640591619](https://jiwei-hemeng.github.io/summary/assets/images/1953033-20210812175755860-640591619.png)
 
 ```json
 {
