@@ -13,12 +13,8 @@ git rm file
 git log
 # 查看当前文件修改状态
 git status
-# 添加远程仓库
-git remote add origin git@github.com:jiwei-hemeng/node-96.git
 # 将本地仓库推送到远程仓库
 git push -u origin master
-# 清除远程仓库
-git remote rm origin
 # 保存当前未commit的代码并添加备注
 git stash save "备注的内容"
 # 列出stash的所有记录
@@ -41,8 +37,12 @@ git rm -r --cached .
 git reset HEAD -- .
 # 将已经提交到本地仓库的代码退回到暂存区
 git reset --soft [版本号]
+# 添加远程仓库
+git remote add origin git@github.com:jiwei-hemeng/node-96.git
 # 更改远程仓库的 URL
 git remote set-url origin git@github.com:jiwei-hemeng/node-96.git
+# 清除远程仓库
+git remote rm origin
 ```
 
 ### **Git 配置命令**
