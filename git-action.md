@@ -50,6 +50,8 @@ jobs:
       - run: yarn
       # 打包构建
       - run: yarn build
+        env:
+          CI: false
       # 发布到 GitHub Pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2
@@ -80,6 +82,8 @@ jobs:
         run: yarn        # 安装依赖
       - name: Build
         run: yarn build  # 打包构建
+        env:
+          CI: false
 
       # 利用action把build好的文件上传到服务器/var/www/react-app路径下,需要确认此目录已在服务端创建
       - name: deploy file to server
