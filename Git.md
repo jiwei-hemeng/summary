@@ -42,7 +42,7 @@ git reset HEAD -- .
 # 将已经提交到本地仓库的代码退回到暂存区
 git reset --soft [版本号]
 # 更改远程仓库的 URL
-git remote set-url git@github.com:jiwei-hemeng/node-96.git
+git remote set-url origin git@github.com:jiwei-hemeng/node-96.git
 ```
 
 ### **Git 配置命令**
