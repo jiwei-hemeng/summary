@@ -232,6 +232,8 @@ sudo apt-get install openssh-server
 sudo apt-get install -y nodejs
 # 删除非空目录
 rm -rf [目录名]
+# 将2.txt 文件的内容追加到1.txt 文件内容的后面
+cat 2.txt >> 1.txt
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
