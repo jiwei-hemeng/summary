@@ -719,15 +719,15 @@ copyToClipboard("哈哈哈")
 
 ### 让当前的元素滚动到浏览器窗口的可视区域内
 
-> scrollIntoViewIfNeeded可以接受一个Boolean型参数，和scrollIntoView不同，true为默认值，但不是滚动到顶部，而是让元素在可视区域中居中对齐；false时元素可能顶部或底部对齐，视乎元素靠哪边更近。简单的例子可以点这里。大致代码如下：
-
 ```js
 element.scrollIntoView()
 element.scrollIntoViewIfNeeded()
 ```
-scrollIntoView只接受一个参数，但接受两种类型的参数，分别是Boolean型参数和Object型参数; 
+scrollIntoView  只接受一个参数，但接受两种类型的参数，分别是Boolean型参数和Object型参数; 
 + Boolean型参数，顾名思义，参数可以使true和false。如果为true，元素的顶端将和其所在滚动区的可视区域的顶端对齐。若为false，元素的底端将和其所在滚动区的可视区域的底端对齐
 + Object型参数，这个对象有两个选项，也就是对象里面的key。block与之前的Boolean型参数一致，不过值不再是true和false，是更语义化的start和end。另一个选项是behavior，MDN上给出三个可取的值，分别是auto、instant与smooth。这个选项决定页面是如何滚动的
+
+scrollIntoViewIfNeeded 可以接受一个Boolean型参数，和scrollIntoView不同，true为默认值，但不是滚动到顶部，而是让元素在可视区域中居中对齐；false时元素可能顶部或底部对齐，视乎元素靠哪边更近
 
 ### URL的编码与解码
 
