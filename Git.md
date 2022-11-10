@@ -213,9 +213,9 @@ ssh-copy-id -i /root/.ssh/id_dsa.pub root@192.168.5.128
 # 也可以使用第二种，方式添加
 cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 "mkdir ~/.ssh; cat >> ~/.ssh/authorized_keys"
 # 将本地的文件或者文件夹上传到服务器 -r 选项表示上传文件夹
-scp -r D:\etc\liLianInfo\unpackage\dist\dev\mp-weixin root@192.168.5.128:/home/root/path
+scp -r -P 22 D:\etc\liLianInfo\unpackage\dist\dev\mp-weixin root@192.168.5.128:/home/root/path
 # 下载整个目录
-scp -r root@192.168.5.128:/home/root/path D:/path
+scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
 # 安装yum
 sudo apt-get install yum
 # 解决liunx ifconfig 命令找不到
