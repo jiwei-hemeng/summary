@@ -882,3 +882,33 @@ input[type=radio] {
 </script>
 ```
 
+### clip-path
+
+**正三角形**
+
+```html
+<style>
+  .pic {
+    width: 100px;
+    height: 100px;
+    background-color: #f00;
+    clip-path: polygon(0% 100%, 100% 100%, 0 50%);
+  }
+</style>
+<div class="pic"></div>
+```
+
+**正五边形**
+
+```html
+<style>
+  .pic {
+    width: 100px;
+    height: 100px;
+    background-color: #f00;
+    clip-path: polygon(0% 38.31%, 50% 0%, 100% 38.31%, 80.86% 100%, 19.14% 100%);
+  }
+</style>
+<div class="pic"></div>
+```
+
