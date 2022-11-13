@@ -912,3 +912,17 @@ input[type=radio] {
 <div class="pic"></div>
 ```
 
+**椭圆**
+
+```html
+<style>
+  .pic {
+    width: 100px;
+    height: 100px;
+    background-color: #f00;
+    clip-path: ellipse(30% 20% at 50% 50%);
+  }
+</style>
+<div class="pic"></div>
+```
+
