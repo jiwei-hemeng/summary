@@ -123,7 +123,51 @@ console.log(obj); // result: {uname: "zsf", age: 22, score: 98}
 obj.say(); // hello, 我是父类的方法
 obj.hi(); // hi, 我是子类的方法
 ```
+### instanceof底层是如何工作的
+
+```js
+function instance_of(L, R) {//L 表示左表达式，R 表示右表达式 
+    var O = R.prototype;   // 取 R 的显示原型 
+    L = L.__proto__;  // 取 L 的隐式原型
+    while (true) {    
+        if (L === null) {
+            return false;
+        }
+        if (O === L){
+            // 当 O 显式原型 严格等于  L隐式原型 时，返回true
+            return true;
+        }         
+        L = L.__proto__;  
+    }
+}
+// 调用: per instanceof Person
+instance_of(per, Person)
+```
+
+### new 操作符具体干了什么
+
++ 创建了一个空对象
+
+  ```js
+  let obj = new Object();
+  ```
+
++ 设置原型链
+
+  ```js
+  obj.__proto__ = Func.prototype;
+  ```
+
++ 改变Func 中的this指向，并指向Fun函数体
+
+  ```js
+  let result = Func.call(this);
+  ```
+
++ 将创建的该对象返回
+
 ## 完整的原型图
+
 ![完整的原型图](https://user-images.githubusercontent.com/62381906/164414464-35968d69-3ddd-4936-9b26-b96fb1357b38.jpg)
 
 

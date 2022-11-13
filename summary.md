@@ -207,32 +207,6 @@ input.visually-hidden:focus-within + label {
 + typeof 可以用此来判断`number`, `string`, `object`, `boolean`, `function`, `undefined` ，但是对于对象、数组、`null` 返回的值是 `object`
 + `instanceof`运算符用于检测构造函数的 `prototype`属性是否出现在某个实例对象的原型链上,返回值为布尔值，用于指示一个变量是否属于某个对象的实例。
 
-### instanceof底层是如何工作的
-
-```js
-function instance_of(L, R) {//L 表示左表达式，R 表示右表达式 
-    var O = R.prototype;   // 取 R 的显示原型 
-    L = L.__proto__;  // 取 L 的隐式原型
-    while (true) {    
-        if (L === null) {
-            return false;
-        }
-        if (O === L){
-            // 当 O 显式原型 严格等于  L隐式原型 时，返回true
-            return true;
-        }         
-        L = L.__proto__;  
-    }
-}
-```
-
-**调用方式**
-
-```js
-// per instanceof Person
-instance_of(per, Person)
-```
-
 ### input 事件和change 事件的区别
 
 input输入框的onchange事件，要在 input 失去焦点的时候才会触发；
@@ -260,51 +234,6 @@ onchange 事件也可用于单选框与复选框改变后触发的事件。
 - *document.getElementById(‘id’)*  通过id获取元素
 - *document.querySelect()*  通过选择器获取元素
 - *document.querrySelectAll()*  通过选择器获取一类元素，得到伪数组
-
-###  关于内存泄漏的几种情况
-
-> 少数的内存泄漏会影响性能，大量的内存泄漏会导致内存溢出，从而导致系统的奔溃。
-
-+ 以外的全局变量
-
-+ 闭包的错误使用
-
-+ 没有及时清理的定时器
-
-+ 不清理DOM元素的引用
-
-  ``` js
-  const refA = document.getElementById("refA");
-  ducument.body.removeChild("refA");
-  console.log("refA", refA); // 虽然dom删除了，但是还存在引用
-  refA = null; // 解除引用
-  ```
-
-+ 监听的事件没有及时解除
-
-  监听的时候addEventListener, 在不监听的时候使用removeEventListener
-
-### new 操作符具体干了什么
-
-+ 创建了一个空对象
-
-  ```js
-  let obj = new Object();
-  ```
-
-+ 设置原型链
-
-  ```js
-  obj.__proto__ = Func.prototype;
-  ```
-
-+ 改变Func 中的this指向，并指向Fun函数体
-
-  ```js
-  let result = Func.call(this);
-  ```
-
-+ 将创建的该对象返回
 
 ### this 指向问题
 
