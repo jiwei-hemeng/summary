@@ -925,6 +925,20 @@ input[type=radio] {
 </style>
 <div class="pic"></div>
 ```
+**星星**
+    
+```html
+<style>
+  .pic {
+    width: 100px;
+    height: 100px;
+    background-color: #f00;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+  }
+</style>
+<div class="pic"></div>
+```
 ## 伪类，伪元素
     
 >  CSS3 规范中有一部分要求，为了区分伪类和伪元素，伪元素使用两个冒号 (::)， 伪类使用一个冒号 (:)
