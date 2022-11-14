@@ -935,9 +935,11 @@ input[type=radio] {
     
   设置鼠标悬停在元素上时的样式 `:hover`
     
-  为已访问和未访问链接设置不同的样式 `:link`、`:visited`、`:hover`、`:active`
+  为已访问和未访问链接设置不同的样式 `:link`、`:visited`、`:active`
     
   设置元素获得焦点时的样式 `:focus`
+ 
+  选择每个被选中的元素`:checked`
     
 **伪元素**
     
