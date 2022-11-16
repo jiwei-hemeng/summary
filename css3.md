@@ -965,3 +965,116 @@ input[type=radio] {
     
   选择用户选择的元素部分 `::selection`
 
+## flex 计算
+
+第一步中：
+
+- `auto`：使用子元素的尺寸
+- 长度：使用此固定长度
+- 百分比：根据其包含块（即伸缩父容器）的主尺寸计算。如果包含块的主尺寸未定义（即父容器的主尺寸取决于子元素），则计算结果和设为 `auto` 一样
+
+第二步中：
+
+如果经过第一步填充之后，父元素还有剩余宽度，则执行 flex-grow 计算，如果内容超出，则根据 flex-shrink 计算。
+
+### 实例一：拉伸
+
+```js
+<style>
+    .parent {
+        display: flex;
+        width: 600px;
+    }
+
+    .parent > div {
+        height: 100px;
+    }
+
+    .item-1 {
+        width: 140px;
+        flex: 2 1 0%;
+        background: blue;
+    }
+
+    .item-2 {
+        width: 100px;
+        flex: 2 1 auto;
+        background: darkblue;
+    }
+
+    .item-3 {
+        flex: 1 1 200px;
+        background: lightblue;
+    }
+</style>
+<div  class="parent">
+ <div  class="item-1"></div>
+ <div  class="item-2"></div>
+ <div  class="item-3"></div>
+</div>
+```
+
+第一步：
+
+- 主轴上父容器总尺寸为 600px
+- 子元素的总基准值是：0% + auto + 200px = 300px
+
+第二步：
+
+- 剩余空间为 600px - 300px = 300px，有剩余空间，需要拉伸
+- 伸缩放大系数之和为： 2 + 2 + 1 = 5
+- 剩余空间分配如下：
+
+```
+item-1 和 item-2 各分配 2/5，各得 120px
+item-3 分配 1/5，得 60px
+```
+
+- 各项目最终宽度为：
+
+```ini
+item-1 = 0% + 120px = 120px
+item-2 = auto + 120px = 220px
+item-3 = 200px + 60px = 260px
+```
+
+### 实例二：缩小
+
+```html
+<style>
+.item-4 {
+    width: 100px;
+    flex: 2 1 0;
+    background: blue;
+}
+.item-5 {
+    width: 600px;
+    flex: 2 2 auto;
+    background: lightblue;
+}
+</style>
+<div  class="parent">
+    <div  class="item-4"></div>
+    <div  class="item-5"></div>
+</div>
+```
+
+ **第一步，计算基准值：**
+
+子元素的总基准值是：100px + 600px = 700px，大于600px，需要缩小；
+
+**第二步，计算缩放：**
+
+设缩小因子为x；
+
+```ini
+100 * x + 600 * 2x = 700 - 600 // result x = 0.076
+```
+
+各项目最终宽度为：
+
+```ini
+item-1 = 100 - 100 * 0.076 = 92.4
+item-2 = 600 - 600 * 0.076 * 2 = 508
+```
+
