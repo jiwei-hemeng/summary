@@ -979,7 +979,7 @@ input[type=radio] {
 
 ### 实例一：拉伸
 
-```js
+```html
 <style>
 .parent {
   display: flex;
