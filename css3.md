@@ -981,31 +981,30 @@ input[type=radio] {
 
 ```js
 <style>
-    .parent {
-        display: flex;
-        width: 600px;
-    }
+.parent {
+  display: flex;
+  width: 600px;
+}
 
-    .parent > div {
-        height: 100px;
-    }
+.parent > div {
+  height: 100px;
+}
 
-    .item-1 {
-        width: 140px;
-        flex: 2 1 0%;
-        background: blue;
-    }
+.item-1 {
+ width: 140px;
+ flex: 2 1 0%;    background: blue;
+}
 
-    .item-2 {
-        width: 100px;
-        flex: 2 1 auto;
-        background: darkblue;
-    }
+.item-2 {
+ width: 100px;
+ flex: 2 1 auto;
+ background: darkblue;
+}
 
-    .item-3 {
-        flex: 1 1 200px;
-        background: lightblue;
-    }
+.item-3 {
+ flex: 1 1 200px;
+ background: lightblue;
+}
 </style>
 <div  class="parent">
  <div  class="item-1"></div>
