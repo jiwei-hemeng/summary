@@ -400,6 +400,19 @@ result: start end promise1 timer1 promise2 timer2
 + 先执行同步代码，再执行异步代码
 + 同步代码按调用顺序执行
 
+### 检测系统主题
+
+```js
+window.addEventListener('theme-mode', event =>{ 
+  if(event.mode == 'dark'){}
+  if(event.mode == 'light'){} 
+})
+
+window.matchMedia('(prefers-color-scheme: dark)') .addEventListener('change', event => { 
+  if (event.matches) {} // dark mode
+})
+```
+
 ### 0.1 + 0.2 === 0.3 嘛？为什么
 
 在两数相加时，会先转换成二进制，0.1 和 0.2 转换成二进制的时候尾数会发生无限循环，然后进行对阶运算，JS 引擎对二进制进行截断，所以造成精度丢失。
