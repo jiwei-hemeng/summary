@@ -500,7 +500,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ## flex属性 是哪些属性的简写
 
-> flex: 1就是flex-grow: 0; flex-shrink; 1; flex-basis: auto 的简写。
+> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0% 的简写。
 
  **flex-grow**
 
