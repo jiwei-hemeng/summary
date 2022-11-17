@@ -223,7 +223,7 @@ html {
 - CSS实现圆角（border-radius）,阴影（box-shadow）,边框图片border-image
 - 对文字加特效（text-shadow）,强制文本换行（word-wrap）,线性渐变（linear-gradient）
 - 旋转，缩放，定位，倾斜
-- 媒体查询（@media）,多栏布局（flex）
+- 查询（@media）,多栏布局（flex）
 
 ## less 中的混入(mixin)
 
@@ -373,6 +373,9 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 @media screen and (orientation: landscape) {}
 /* 竖屏显示 */
 @media screen and (orientation: portrait) {}
+/* 当前的系统主题 */
+@media (prefers-color-scheme: dark) { //... } 
+@media (prefers-color-scheme: light) { //... }
 ```
 
 ## 怎么让Chrome支持小于12px 的文字
