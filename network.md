@@ -221,6 +221,27 @@ const objectURL = URL.createObjectURL(myBlob);
 const response = await fetch('song.ogg');
 const buffer = await response.arrayBuffer();
 ```
+取消fetch请求
+
+> fetch()请求发送后，如果中途想要取消，需要使用AbortController对象
+
+```js
+//创建一个AbortController实例
+let controller = new AbortController();
+fetch(url, {
+  signal: controller.signal
+});
+//给controller.signal绑定监听事件，controller.signal的值改变则会触发abort事件
+controller.signal.addEventListener('abort',
+  () => console.log('abort!')
+);
+// controller.abort()方法用于发出取消信号。这时会触发abort事件，这个事件可以监听
+
+controller.abort(); // 取消
+
+// 可以通过controller.signal.aborted属性判断取消信号是否已经发出
+console.log(controller.signal.aborted); // true
+```
 
 **fetch存在问题**
 
