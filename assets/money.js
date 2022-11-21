@@ -83,6 +83,12 @@ export function splits(tranvalue) {
   return value;
 }
 
+/** 
+ * 将数字按照每隔3位逗号分割
+ * @param {number} tranvalue 需要转换的数字
+ * @return {string}
+ */
+
 export function numberPutCommaShow(value) {
   let installVal = value;
   if (value != "") {
