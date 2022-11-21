@@ -1,3 +1,7 @@
+/** 
+ * @param {string} tranvalue 需要转换的数字
+ * @return {string}
+ */
 export function transform(tranvalue) {
   try {
     var i = 1;
