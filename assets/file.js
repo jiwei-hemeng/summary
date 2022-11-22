@@ -19,3 +19,15 @@ export function downloadFile(url, filename) {
   alink.click();
   document.body.removeChild(alink);
 }
+// 文件切片
+export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
+  let start = 0;
+  let count = 0;
+  const chunkTime = Math.ceil(file.size / chunkSize); // 分割次数
+  while (count < chunkTime) {
+    start = count * chunkSize;
+    const chunkFile1 = file.slice(start, start + chunkSize);
+    bigFile.push(chunkFile1);
+    count += 1;
+  }
+}
