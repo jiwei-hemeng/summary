@@ -32,8 +32,7 @@ export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
   const chunkTime = Math.ceil(file.size / chunkSize); // 分割次数
   while (count < chunkTime) {
     start = count * chunkSize;
-    const chunkFile1 = file.slice(start, start + chunkSize);
-    bigFile.push(chunkFile1);
+    const fileChunk = file.slice(start, start + chunkSize); // 得到切片文件
     count += 1;
   }
 }
