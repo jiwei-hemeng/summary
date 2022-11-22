@@ -1596,6 +1596,7 @@ import "@/utils/permission.js"
 通过this直接访问到methods里面的函数的原因是：因为methods里的方法通过 bind指定了this为 new Vue的实例(vm)
 
 ### 完整的导航解析流程
+> [vue 官网连接](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html#%E5%AE%8C%E6%95%B4%E7%9A%84%E5%AF%BC%E8%88%AA%E8%A7%A3%E6%9E%90%E6%B5%81%E7%A8%8B)
 - 导航被触发。
 - 在失活的组件里调用 beforeRouteLeave 守卫。
 - 调用全局的 beforeEach 守卫。
