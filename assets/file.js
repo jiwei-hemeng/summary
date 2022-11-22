@@ -24,7 +24,7 @@ export function downloadFile(url, filename) {
  * 文件切片
  * @params {file} file
  * @params {number} chunkSize
-*/
+ */
 
 export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
   let start = 0;
@@ -41,7 +41,7 @@ export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
  * 将多个切片文件合成一个文件
  * @params {array[file]}
  * @return {file}
-*/
+ */
 export function chunkFileToFile(bigFile) {
   return new Blob(bigFile, {
     type: "application/octet-stream",
