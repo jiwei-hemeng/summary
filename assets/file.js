@@ -31,3 +31,13 @@ export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
     count += 1;
   }
 }
+/**
+ * @params {array[file]}
+ * @return {file}
+*/
+export function chunkFileToFile(bigFile) {
+  return new Blob(bigFile, {
+    type: "application/octet-stream",
+  });
+}
+
