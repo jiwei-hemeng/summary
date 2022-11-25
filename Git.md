@@ -191,6 +191,8 @@ chkdsk d: /f
 mklink /j D:\systemconfig D:\system\systemconfig
 # 清除日志垃圾
 %temp%
+# 删除恶意软件
+MRT
 ```
 
 ### cmd 安装jdk并配置环境变量
