@@ -97,6 +97,33 @@ obj.hi(); // hi, 我是子类的方法
 + 使用**原型链继承**来保证子类能够继承到父类原型中的属性和方法
 + 使用**构造函数继承**来保证子类能继承到父类实例的属性和方法
 
+### 寄生组合式继承
+
+```js
+function Parent(name) {
+  this.name = name
+}
+Parent.prototype.getName = function () {
+  return this.name
+}
+
+function Son(name, age) {
+  // 这里其实就等于 this.name = name
+  Parent.call(this, name)
+  this.age = age
+}
+
+Son.prototype.getAge = function () {
+  return this.age
+}
+Son.prototype.__proto__ = Object.create(Parent.prototype)
+
+const son1 = new Son('shao', 20)
+
+console.log(son1.getName()) // shao
+console.log(son1.getAge()) // 20
+```
+
 ## es6 中的继承
 
 ```js
