@@ -958,7 +958,7 @@ input[type=radio] {
  
   选择每个被选中的元素`:checked`
     
-  表单元素验证通过和不通过 `:valid`、`:invalid`
+  表单元素验证是否必填、通过和不通过 `:required` `:valid`、`:invalid`
     
 **伪元素**
     
