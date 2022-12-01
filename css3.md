@@ -901,6 +901,20 @@ input[type=radio] {
 <div class="pic"></div>
 ```
 
+**圆**
+
+```html
+<style>
+  .pic {
+    width: 100px;
+    height: 100px;
+    background-color: #f00;
+    clip-path: circle(30% at 150px 120px);
+  }
+</style>
+<div class="pic"></div>
+```
+
 **正五边形**
 
 ```html
