@@ -327,7 +327,7 @@ A.prototype.sayName=function () {
 
 // B的实例继承了A的属性
 var B = function () { };
-B.prototype = Object.create(A.prototype);
+B.prototype.__proto__ = Object.create(A.prototype);
 var b = new B();
 b.sayName();  // a
 ```
