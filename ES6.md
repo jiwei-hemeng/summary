@@ -267,3 +267,68 @@ const person = {
   ...(condition && { age: 16 }),
 };
 ```
+
+### Object.create()介绍
+
+> Object.create(null) 创建的对象是一个空对象，在该对象上没有继承 Object.prototype 原型链上的属性或者方法. 例如：toString(), hasOwnProperty()等方法
+
+我们来看看底层实现
+
+```js
+ Object.create =  function (o) {
+    var F = function () {};
+    F.prototype = o;
+    return new F();
+};
+```
+
+下面我们来看具体应用
+
+```js
+
+  //创建一个Obj对象
+  var Obj ={
+      name:'mini',
+      age:3,
+      show:function () {
+          console.log(this.name +" is " +this.age);
+      }
+  }
+
+  //MyObj 继承obj, prototype指向Obj
+  var MyObj = Object.create(Obj,{
+      like:{
+          value:"fish",        // 初始化赋值
+          writable:true,       // 是否是可改写的
+          configurable:true,   // 是否能够删除，是否能够被修改
+          enumerable:true      //是否可以用for in 进行枚举
+      },
+      hate:{
+          configurable:true,
+          get:function () { console.log(111);  return "mouse" }, // get对象hate属性时触发的方法
+          set:function (value) {                                 // set对象hate属性时触发的方法 
+              console.log(value,2222);
+              return value;
+          }    
+      }
+  });   
+```
+
+> 划重点：这里get和set 方法似乎还蕴含更大的潜力 。我们可以利用它们去实现数据的过滤和数据的绑定 。实现一些简单的mvvm的效果
+
+
+Object.create继承的应用：
+
+```js
+var A = function () { };
+A.prototype.sayName=function () {
+    console.log('a');
+}
+
+// B的实例继承了A的属性
+var B = function () { };
+B.prototype = Object.create(A.prototype);
+var b = new B();
+b.sayName();  // a
+```
+> 划重点：相对于构造函数的继承Object.create继承实现了将A,B的原型完美分隔 。双方不会互相影响。这是Object.create亮点所在
