@@ -334,3 +334,26 @@ var b = new B();
 b.sayName();  // a
 ```
 > 划重点：相对于构造函数的继承Object.create继承实现了将A,B的原型完美分隔 。双方不会互相影响。这是Object.create亮点所在
+
+### 可选的链接运算符
+
+数据层级嵌套太深, 我没经常见到的是：
+
+```js
+const showName = (data) => {
+  console.log(data && data.user && data.user.person ...)
+}
+showName('fatfish')
+```
+
+更加优雅的写法是：
+
+```js
+
+const showName = (data) => {
+  console.log(data?.user?.name)
+}
+showName('fatfish')
+```
+
+
