@@ -413,6 +413,17 @@ window.matchMedia('(prefers-color-scheme: dark)') .addEventListener('change', ev
 })
 ```
 
+### 函数的length属性
+
+- 函数的length是js函数对象的一个属性，函数的length代表形参的个数（即有多少必传参数）
+- 形参的数量不包括剩余参数的个数，仅包括“第一个具有默认值之前的参数个数”
+
+```js
+function a1(a, b, c){}; // result: 3
+function a2(a, b = 2, c){}; // result: 1
+function a2(a = 1, b, c){}; // result: 0
+```
+
 ### 0.1 + 0.2 === 0.3 嘛？为什么
 
 在两数相加时，会先转换成二进制，0.1 和 0.2 转换成二进制的时候尾数会发生无限循环，然后进行对阶运算，JS 引擎对二进制进行截断，所以造成精度丢失。
