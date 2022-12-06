@@ -705,6 +705,7 @@ const eventEmitter = new EventEmitter();
 eventEmitter.on("sysLanguageChange", sysLanguageChange)
 // 发布订阅
 eventEmitter.emit("sysLanguageChange", "ZH");
+// 关闭订阅
 eventEmitter.off("sysLanguageChange", sysLanguageChange)
 ```
 
