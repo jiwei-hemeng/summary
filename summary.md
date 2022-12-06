@@ -668,7 +668,48 @@ const fileReader = new FileReader();
 </script>
 ```
 
+### 发布订阅者模式
+
+> 应用场景： react 总线通信
+
+```js
+class EventEmitter {
+  constructor() {
+    this.events = {}
+  }
+  on(name, callback) {
+    if (this.events[name]) {
+      this.events[name].push(callback)
+    } else {
+      this.events[name] = [callback]
+    }
+  }
+  off(name, callback) {
+    if (!this.events[name]) return;
+    if (!callback) {
+      // 如果没有callback,就删掉整个事件
+      this.events[name] = undefined;
+    }
+    this.events[name] = this.events[name].filter((item) => item !== callback);
+
+  }
+  emit(name, ...args) {
+    if (!this.events[name]) return
+    this.events[name].forEach(cb => cb(...args))
+  }
+}
+function sysLanguageChange(e) {
+  console.log("接受到的消息", e); // 接受订阅
+}
+const eventEmitter = new EventEmitter();
+eventEmitter.on("sysLanguageChange", sysLanguageChange)
+// 发布订阅
+eventEmitter.emit("sysLanguageChange", "ZH");
+eventEmitter.off("sysLanguageChange", sysLanguageChange)
+```
+
 ### 关于reduce函数的介绍
+
 + reduce函数有两个参数
   + 累加器函数
   + 初始值
