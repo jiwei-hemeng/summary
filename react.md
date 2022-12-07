@@ -294,6 +294,12 @@ export default HouseItem
 
 ```
 
+同时添加多个类
+
+```html
+<a className={[styles.alink, styles.delAlink].join(' ')} href="javascript:;">删除</a>
+```
+
 ### 组件之间的数据通讯
 
 **父组件向子组件传值**
