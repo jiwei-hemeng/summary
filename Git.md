@@ -193,6 +193,8 @@ mklink /j D:\systemconfig D:\system\systemconfig
 %temp%
 # 删除恶意软件
 MRT
+# 查看系统配置
+dxdiag
 ```
 
 ### cmd 安装jdk并配置环境变量
