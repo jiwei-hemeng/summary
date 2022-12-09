@@ -707,6 +707,7 @@ function sysLanguageChange(e) {
   console.log("接受到的消息", e); // 接受订阅
 }
 const eventEmitter = new EventEmitter();
+// 订阅消息
 eventEmitter.on("sysLanguageChange", sysLanguageChange)
 // 发布订阅
 eventEmitter.emit("sysLanguageChange", "ZH");
