@@ -149,12 +149,12 @@
       .toISOString()
       .slice(0, 19)
       .replace("T", " ")
-      .replace(" ", "_")
+      .replace(" ", " ")
       .replace(/:/g, "-");
     const a = document.createElement("a");
 
     a.style = "display: none";
-    a.download = `${name}.avi`;
+    a.download = `${name}.mov`;
     a.href = url;
 
     document.body.appendChild(a);

@@ -54,13 +54,14 @@ html {
     background-color: #dbdbdb;
     border-radius: 1px;
 }
+/* 滚动条的样式 */
 .content-warpper::-webkit-scrollbar:active {
     background-color: #616161;
 }
 /* 滚动条里面的小方块 */
 .content-warpper::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: skyblue;
+  background-image: linear-gradient(45deg, #ffbd61 25%,#ffbd61 50%, #ff8800 75%, #ff8800 100%);
 }
 /* 滚动条里面的轨道 */
 .content-warpper::-webkit-scrollbar-track {
@@ -957,33 +958,34 @@ input[type=radio] {
 <div class="pic"></div>
 ```
 ## 伪类，伪元素
-    
+
 >  CSS3 规范中有一部分要求，为了区分伪类和伪元素，伪元素使用两个冒号 (::)， 伪类使用一个冒号 (:)
-    
+
 **伪类**
     
 + 概念: 为处于某个状态的已有元素添加对应的样式，这个状态是根据用户行为而动态改变的
-    
+  
   设置鼠标悬停在元素上时的样式： `:hover`
-    
+  
   为已访问和未访问链接设置不同的样式： `:link`、`:visited`、`:active`
-    
+  
   设置元素获得焦点时的样式： `:focus`
- 
+
   选择每个被选中的元素： `:checked`
-    
+  
   表单元素验证是否必填、通过和不通过: `:required`、 `:valid`、`:invalid`
-    
+  
   选择页面中为空的元素：`:empty`
-    
+  
+
 **伪元素**
     
 + 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
-    
+  
   设置元素的首字母、首行的样式 `::first-letter`、`::first-line`
-    
+  
   在元素的内容之前或之后插入内容 `::after`、 `::before`
-    
+  
   选择用户选择的元素部分 `::selection`
 
 ## flex 计算
