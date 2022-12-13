@@ -2,6 +2,10 @@
 
 > [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures)
 
+**定义**
+
+有权访问局部变量（函数作用域的变量）的函数
+
 **本质**
 
 闭包是将函数内部和函数外部连接起来的桥梁。
