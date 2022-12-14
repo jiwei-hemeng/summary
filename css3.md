@@ -1,3 +1,131 @@
+## css的calc()函数
+
+**在less或sass中经常会遇到**
+
+```css
+$width = 100px;
+.box {
+    width: $width + 100px;
+}
+```
+
+然而 **clac()**  函数提供了更好的
+
+```css
+.box {
+    width: clac(100% - 50px);
+}
+```
+
+表示box元素的宽度总是小于父元素的50px
+
+**应用1：创建根栅格尺寸**
+
+```css
+html {
+    font-size: calc(100vw / 750);
+}
+```
+
+**应用2：实现元素的居中**
+
+```css
+.box {
+    position: absolute;
+    top: calc(50% - 150px);
+    left: calc(50% - 150px);
+}
+```
+
+## css中的attr()函数
+
+> 使用 attr() 函数，你可以检索所选元素的属性值并在样式中使用它。
+
+例如
+
+```html
+<p>Some <span data-tooltip="tooltip">text</span> here</p>
+```
+
+使用
+
+```css
+span::after {
+    content: attr(data-tooltip);
+}
+```
+
+## 使用CSS自定义属性（变量）
+
+> [相关链接](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Using_CSS_custom_properties)
+
+**CSS 全局变量**
+
+要在全局范围内声明变量，就要将变量定义在 :`root` 选择器中：
+
+```css
+:root {
+  --primary-color: #000;
+}
+```
+
+**CSS 局部变量**
+
+要在局部范围声明变量，只需要在选择器中定义变量即可，这样声明的变量只能在该选择器中使用，如果尝试在其他地方使用，它不会有任何效果：
+
+```css
+h2 {
+  --h2-color: #999;
+  color: var(--h2-color);
+}
+
+h3 {
+  color: var(--h2-color);  /* 不生效 */
+}
+```
+
+**例子**
+
+```css
+:root {
+  --main-bg-color: brown;
+  --width: 25%;
+  --margin: 20px;
+}
+.one {
+  color: white;
+  background-color: var(--main-bg-color);
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+}
+```
+
+除了变量名之外，`var()` 还有第二个参数——**备用值**。在发现变量值不可访问的情况下，将使用备用值来代替它：
+
+```css
+div {
+  background-color: var(--main-bg-color, red);
+}
+```
+
+我们甚至可以在**媒体查询**中重新设置变量
+
+```css
+@media (max-width: 400px) {
+  :root {
+    --width: 50%;
+    --margin: 10px;
+  }
+}
+```
+
+ **SASS 变量 vs CSS 变量**
+
+- SASS 变量代码经过编译后，变量也就消失了。因此，我们不能在 CSS 运行时更改变量值。
+- 预处理器中的变量范围归结为嵌套的大括号块。然而，因为 CSS 变量是属性，所以它们的作用域是基于 DOM 的。这意味着 CSS 变量是按元素解析的，而不是按作用域解析的
+
 ## 文本选择颜色
 
 ```css
@@ -118,88 +246,9 @@ img {
 }
 ```
 
-
-
 ![image-20210812095044739](https://jiwei-hemeng.github.io/summary/assets/images/image-20210812095044739.png)
 
  fill: 默认值。内容拉伸填满整个content box, 不保证保持原有的比例。contain: 保持原有尺寸比例。长度和高度中长的那条边跟容器大小一致，短的那条等比缩放，可能会有留白。cover: 保持原有尺寸比例。宽度和高度中短的那条边跟容器大小一致，长的那条等比缩放。可能会有部分区域不可见。（常用）none: 保持原有尺寸比例。同时保持替换内容原始尺寸大小。scale-down:保持原有尺寸比例,如果容器尺寸大于图片内容尺寸，保持图片的原有尺寸，不会放大失真；容器尺寸小于图片内容尺寸，用法跟contain一样。 
-
-## css中的attr()函数
-
-> 使用 attr() 函数，你可以检索所选元素的属性值并在样式中使用它。
-
-例如
-
-```html
-<p>Some <span data-tooltip="tooltip">text</span> here</p>
-```
-
-使用
-
-```css
-span::after {
-    content: attr(data-tooltip);
-}
-```
-
-## css的calc()函数
-
-**在less或sass中经常会遇到**
-
-```css
-$width = 100px;
-.box {
-    width: $width + 100px;
-}
-```
-
-然而 **clac()**  函数提供了更好的
-
-```css
-.box {
-    width: clac(100% - 50px);
-}
-```
-
-表示box元素的宽度总是小于父元素的50px
-
-**应用1：创建根栅格尺寸**
-
-```css
-html {
-    font-size: calc(100vw / 750);
-}
-```
-
-**应用2：实现元素的居中**
-
-```css
-.box {
-    position: absolute;
-    top: calc(50% - 150px);
-    left: calc(50% - 150px);
-}
-```
-
-## 使用CSS自定义属性（变量）
-
-> [相关链接](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Using_CSS_custom_properties)
->
-> **自定义属性**（有时候也被称作**CSS变量**或者**级联变量**）是由CSS作者定义的，它包含的值可以在整个文档中重复使用。由自定义属性标记设定值（比如： **`--main-color: black;`**），由[var() ](https://developer.mozilla.org/zh-CN/docs/Web/CSS/var())函数来获取值（比如： `color: **var(--main-color)**;`）
-
-```css
-:root {
-  --main-bg-color: brown;
-}
-.one {
-  color: white;
-  background-color: var(--main-bg-color);
-  margin: 10px;
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-}
-```
 
 ## 常见的让盒子居中显示的方法
 
