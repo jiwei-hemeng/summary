@@ -81,7 +81,7 @@ result: start end promise1 timer1 promise2 timer2
 
 + 代码按调用顺序执行
 + 先执行同步代码，再执行异步代码
-+ 微宏任务优先于宏任务
++ 异步代码中微任务优先于宏任务
 
 ### 发布订阅者模式
 
