@@ -417,7 +417,7 @@ function isWechart() {
 
 ## 安卓证书
 
-> 相关链接 https://ask.dcloud.net.cn/article/35777
+> [相关链接](https://ask.dcloud.net.cn/article/35777)
 
 **生成**
 
@@ -433,6 +433,10 @@ keytool -genkey -alias testalias -keyalg RSA -keysize 2048 -validity 36500 -keys
 keytool -list -v -keystore test.keystore
 Enter keystore password: //输入密码，回车
 ```
+
+## IOS 证书
+
+> [相关连接](https://ask.dcloud.net.cn/article/152)
 
 ## 微信网页版支付
 
