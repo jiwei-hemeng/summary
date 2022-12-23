@@ -416,16 +416,16 @@ img {
 H5的新特性，为了移动端的使用而新增的特性，使用 @media 查询，你可以针对不同的媒体类型定义不同的样式，响应式布局就是使用媒体查询的原理
 
 ```css
-/*and  可以将多个媒体特性链接到一块,相当于且*/
-/*only   指定某个特定的媒体类型, 可以省略*/
 @media only screen and (min-width: 320px) and (max-width: 767px) {}
-/* 横屏显示 */
+/* 横屏、竖屏 显示 */
 @media screen and (orientation: landscape) {}
-/* 竖屏显示 */
 @media screen and (orientation: portrait) {}
 /* 当前的系统主题 */
 @media (prefers-color-scheme: dark) { //... } 
 @media (prefers-color-scheme: light) { //... }
+/* 像素比 */
+@media screen and (-webkit-min-device-pixel-ratio: 2) {}
+@media screen and (-webkit-min-device-pixel-ratio: 3) {}
 ```
 
 ## 怎么让Chrome支持小于12px 的文字
