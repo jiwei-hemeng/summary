@@ -43,6 +43,8 @@ git remote add origin git@github.com:jiwei-hemeng/node-96.git
 git remote set-url origin git@github.com:jiwei-hemeng/node-96.git
 # 清除远程仓库
 git remote rm origin
+# 查找当前存在冲突的文件
+git diff --check
 ```
 
 ### **Git 配置命令**
