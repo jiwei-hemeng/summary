@@ -270,6 +270,8 @@ module.exports = (sql, params) => {
     conn.connect();
     // 4. 完成增删改查
     conn.query(sql, params, (err, result) => {
+      // 将数据库返回的结果转为json
+      results = results.map(v => Object.assign({}, v));
       resolve([err, result])
     });
     // 5. 关闭连接
