@@ -264,6 +264,7 @@ module.exports = (sql, params) => {
       password: "",
       port:3306, // 端口号
       database: "heroes_manager", // 数据库名，不是表名
+      timezone: "08:00", // 设置时区
     });
     // 3. 连接到mysql服务器
     conn.connect();
