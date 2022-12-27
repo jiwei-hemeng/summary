@@ -130,13 +130,6 @@ alter table student add primary key (id);
 alter table student add unique emp_name2(id);
 ```
 
-查询表结构
-
-```mysql
-# show columns from student;
-show columns from student;
-```
-
 修改数据库表名
 
 ```mysql
