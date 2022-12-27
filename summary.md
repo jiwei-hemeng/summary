@@ -303,6 +303,16 @@ document.querySelector("ul").addEventListener("click", function (e) {
 });
 ```
 
+### 获取html 的自定义属性值
+
+```html
+<div id="root" data-list="bbbbbb">bbbbb</div>
+<script>
+  const root = document.querySelector("#root")
+  console.dir(root.dataset.list)
+</script>
+```
+
 ### 设置 element 的滚动条位置
 
 ```js
