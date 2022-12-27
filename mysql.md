@@ -56,7 +56,15 @@ use company;
 
 ```mysql
 # create table <表名>
-create table user
+create table user;
+CREATE TABLE `rpt_oe_exposure_for_hundred_bed_rate_monthly` (
+  `year_id` year NOT NULL COMMENT '统计年度',
+  `month_id` tinyint unsigned NOT NULL COMMENT '统计月份',
+  `exposure_cases` int(11) NOT NULL DEFAULT '0' COMMENT '职业暴露发生例次数',
+  `inpatient_days` int(11) NOT NULL DEFAULT '0' COMMENT '患者住院日数',
+  `bed_rate` float(10,2) DEFAULT NULL COMMENT '每百床日职业暴露发生率',
+  PRIMARY KEY (year_id,month_id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 ```
 
 获取数据库表结构
@@ -64,6 +72,8 @@ create table user
 ```mysql
 # desc <表名>;
 desc user;
+# 或者使用
+show columns from user;
 ```
 
 删除数据表
@@ -71,6 +81,8 @@ desc user;
 ```mysql
 # drop table <表名>	
 drop table info;
+# 如果该表存在就删除该表
+drop table if exists company;
 ```
 
 向数据表中插入数据
