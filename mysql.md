@@ -74,6 +74,8 @@ CREATE TABLE `rpt_oe_exposure_for_hundred_bed_rate_monthly` (
 desc user;
 # 或者使用
 show columns from user;
+# 获取完整的数据库表结构
+show full columns from user;
 ```
 
 删除数据表
