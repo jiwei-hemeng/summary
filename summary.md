@@ -20,7 +20,6 @@
 <iframe width="100%" height="600px" src="https://www.mahailushu.com/pdfjs/web/mine.pdf" frameborder="0"></iframe>
 <!-- 预览pdf 文件 并关闭按钮  -->
 <iframe width="100%" height="600px" src="https://www.mahailushu.com/pdfjs/web/mine.pdf#toolbar=0&navpanes=0&scrollbar=0" frameborder="0"></iframe>
-<!-- src 指向默认页面 -->
 ```
 
 通过点击超链接
@@ -28,6 +27,52 @@
 ```html
 <a href="home" target="fm">首页</a>
 <!-- target 属性指向特定的iframe -->
+<iframe name="fm" src="index.html" style="width: 100%; heigth: 100%"></iframe>
+```
+
+### HTML5 拖放（Drag 和 Drop）
+
+**拖拽元素**
+
+设置元素为可拖放：为了使元素可拖动，把 draggable 属性设置为 true ，例如：
+
+```html
+<img draggable="true">
+```
+
+拖动什么 - ondragstart 和 setData()：规定当元素被拖动时，会发生什么
+
+> dataTransfer：实现数据的存储和获取  setData(format,data) 存储数据 
+
+```js
+document.ondragstart = function(e){
+  e.dataTransfer.setData("nodeId", e.target.id); //存储数据
+  e.target.style.opacity = 0.5;
+}
+```
+
+**目标元素**
+
+放到何处 - ondragover
+
+> 浏览器会默认阻止ondrop事件，所以必须在ondragover事件中阻止默认行为
+
+```js
+document.ondragover = function(e){
+  e.preventDefault();
+}
+```
+
+进行放置 - ondrop：当放置被拖数据时，会触发 drop 事件
+
+> - 通过 dataTransfer.getData("Text") 方法获得被拖的数据。该方法将返回在 setData() 方法中设置为相同类型的任何数据。
+> - 把被拖元素追加到放置元素（目标元素）中
+
+```js
+document.ondrop = function(e){
+   var data = e.dataTransfer.getData("nodeId")
+   e.target.appendChild(document.getElementById(data))
+}
 ```
 
 ### hash模式与history模式
