@@ -16,6 +16,10 @@
 
 ```html
 <iframe name="fm" src="index.html" style="width: 100%; heigth: 100%"></iframe>
+<!-- 预览pdf 文件  -->
+<iframe width="100%" height="600px" src="https://www.mahailushu.com/pdfjs/web/mine.pdf" frameborder="0"></iframe>
+<!-- 预览pdf 文件 并关闭按钮  -->
+<iframe width="100%" height="600px" src="https://www.mahailushu.com/pdfjs/web/mine.pdf#toolbar=0&navpanes=0&scrollbar=0" frameborder="0"></iframe>
 <!-- src 指向默认页面 -->
 ```
 
