@@ -200,25 +200,15 @@ server.listen(3000, function () {
 **前端页面**
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-
-<body>
-  <ul id="elUl"></ul>
-  <div>
+<ul id="elUl"></ul>
+<div>
     <input type="text" id="message" />
     <button id="send">发送</button>
-  </div>
-  <script>
+</div>
+<script>
     function getURLParameters(url = location.href) {
-      const str = url.match(/([^?=&]+)(=([^&]*))/g) || []
-      return str.reduce((a, v) => ((a[decodeURIComponent(v.slice(0, v.indexOf('=')))] = decodeURIComponent(v.slice(v.indexOf('=') + 1))), a), {})
+        const str = url.match(/([^?=&]+)(=([^&]*))/g) || []
+        return str.reduce((a, v) => ((a[decodeURIComponent(v.slice(0, v.indexOf('=')))] = decodeURIComponent(v.slice(v.indexOf('=') + 1))), a), {})
     }
     const ws = new WebSocket('ws://localhost:3000');
     const elUl = document.querySelector("#elUl")
@@ -226,38 +216,36 @@ server.listen(3000, function () {
     let msgData = { timeStarp: Date.now(), type: "open", toUserId: userInfo.toUserId, fromUserId: userInfo.fromUserId }
     // 监听连接成功
     ws.onopen = () => {
-      console.log('连接服务端WebSocket成功', ws);
+        console.log('连接服务端WebSocket成功', ws);
 
-      document.querySelector("#send").addEventListener("click", () => {
-        const messageNode = document.querySelector("#message");
-        const messageStr = JSON.stringify({
-          timeStarp: Date.now(), type: "message", toUserId: userInfo.toUserId, fromUserId: userInfo.fromUserId, content: messageNode.value
+        document.querySelector("#send").addEventListener("click", () => {
+            const messageNode = document.querySelector("#message");
+            const messageStr = JSON.stringify({
+                timeStarp: Date.now(), type: "message", toUserId: userInfo.toUserId, fromUserId: userInfo.fromUserId, content: messageNode.value
+            })
+            ws.send(messageStr);
+            elUl.innerHTML += `<li class="message-item rigth">${userInfo.toUserId}：${messageNode.value}</li>`;
+            messageNode.value = ""
         })
-        ws.send(messageStr);
-        elUl.innerHTML += `<li class="message-item rigth">${userInfo.toUserId}：${messageNode.value}</li>`;
-        messageNode.value = ""
-      })
-      ws.send(JSON.stringify(msgData));	// send 方法给服务端发送消息
+        ws.send(JSON.stringify(msgData));	// send 方法给服务端发送消息
     };
 
     // 监听服务端消息(接收消息)
     ws.onmessage = (msg) => {
-      let message = JSON.parse(msg.data);
-      elUl.innerHTML += `<li class="message-item left">${message.fromUserId}：${message.content}</li>`;
+        let message = JSON.parse(msg.data);
+        elUl.innerHTML += `<li class="message-item left">${message.fromUserId}：${message.content}</li>`;
     };
 
     // 监听连接失败
     ws.onerror = () => {
-      console.log('连接失败，正在重连...');
-      connectWebsocket();
+        console.log('连接失败，正在重连...');
+        connectWebsocket();
     };
 
     // 监听连接关闭
     ws.onclose = () => {
-      console.log('连接关闭');
+        console.log('连接关闭');
     };
-  </script>
-</body>
-</html>
+</script>
 ```
 
