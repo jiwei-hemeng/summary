@@ -162,6 +162,8 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 
 ![1953033-20210812175755860-640591619](https://jiwei-hemeng.github.io/summary/assets/images/1953033-20210812175755860-640591619.png)
 
+在settings.json
+
 ```json
 {
   "terminal.integrates.profiles.windows": {
@@ -173,7 +175,16 @@ scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
 }
 ```
 
+### vscode如何将生成的html模板中的语言改为中文？
+
+在settings.json
+
+```json
+"emmet.variables": {"lang": "zh-CN"}
+```
+
 ### cmd 常用命令
+
 ```shell
 # 刷新本地dns
 ipconfig /flushdns
