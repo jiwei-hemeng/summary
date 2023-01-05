@@ -109,11 +109,17 @@ select * from student;
 update student set age=20 where id=1;
 ```
 
-增加字段
+增加字段（添加列）:
 
 ```mysql
 # alter table 表名 add 字段 类型 其他;	
 alter table student add address varchar(40) default null;
+```
+
+删除字段  (删除列) :
+
+```mysql
+alter table student drop column nickName;
 ```
 
 加主关键字
