@@ -243,6 +243,63 @@ controller.abort(); // 取消
 console.log(controller.signal.aborted); // true
 ```
 
+**底层接口**
+
+`Response.body`是 Response 对象暴露出的底层接口，返回一个 `ReadableStream` 对象，供用户操作
+
+例如：用来分块读取内容，显示下载的进度
+
+```js
+function chunkFileToFile(bigFile) {
+  return new Blob(bigFile, {
+    type: "application/octet-stream",
+  });
+}
+fetch("http://localhost:3000/ubuntu-18.04.2-desktop-amd64.iso").then(
+  async (response) => {
+    // response.body.getReader()方法返回一个遍历器
+    const reader = response.body.getReader();
+    let process = 0;
+    let chunkFile = []
+    const contentLength = response.headers.get("Content-Length");
+    console.log("文件的总大小: ", contentLength);
+    while (true) {
+      // 这个遍历器的read()方法每次返回一个对象，表示本次读取的内容块
+      const { done, value } = await reader.read();
+      // done属性是一个布尔值，用来判断有没有读完
+      if (done) {
+        break;
+      }
+      process += value.length;
+      chunkFile.push(value);
+      const bit = ((process / contentLength) * 100).toFixed(2);
+      // value属性是一个 arrayBuffer 数组，表示内容块的内容，而value.length属性是当前块的大小
+      console.log(`Received ${value.length} bytes`);
+      console.log(`已下载 ${bit} %`);
+    }
+    // 最后合成的文件对象
+    const blob = chunkFileToFile(chunkFile);
+  }
+);
+```
+
+**创建副本（clone）**
+
+Stream 对象只能读取一次，读取完就没了,这意味着五个读取方法，只能使用一个，否则会报错。
+
+```js
+let text =  await response.text();
+let json =  await response.json();  // 报错
+```
+
+Response 对象提供`Response.clone()`方法，创建Response对象的副本，实现多次读取。
+
+```js
+const response2 = response1.clone();
+const myBlob1 = await response.blob();
+const myBlob2 = await response1.json();
+```
+
 **fetch存在问题**
 
 1. fetch只对网络请求报错，对400，500都当做成功的请求，服务器返回 400，500 错误码时并不会 reject，只有网络错误这些导致请求不能完成时，fetch 才会被 reject。
