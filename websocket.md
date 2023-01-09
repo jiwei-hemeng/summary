@@ -164,13 +164,9 @@ socket.on("disconnect", function () {
 **nodeJS**
 
 ```js
-const express = require("express");
-const app = express();
-const server = require("http").Server(app);
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ server: server });
-app.use(express.static("proxy_public"));
-wss.on("connection", (ws) => {
+const wss = new WebSocket.Server({ port: 3000 });
+wss.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     let msgData = JSON.parse(message);
     if (msgData.type === "open") {
@@ -197,12 +193,9 @@ wss.on("connection", (ws) => {
     }
   });
   // 连接关闭
-  ws.on("close", () => {
-    console.log("连接关闭");
+  ws.on("close", (req) => {
+    console.log("连接关闭", req);
   });
-});
-server.listen(3000, function () {
-  console.log(`Running: http://localhost:${3000}`);
 });
 ```
 
@@ -210,7 +203,7 @@ server.listen(3000, function () {
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -268,7 +261,7 @@ server.listen(3000, function () {
           {}
         );
       }
-      const ws = new WebSocket("ws://localhost:3000");
+      const ws = new WebSocket("ws://localhost:3000?token=123456");
       const elUl = document.querySelector("#elUl");
       const userInfo = getURLParameters();
       let msgData = {
@@ -289,7 +282,7 @@ server.listen(3000, function () {
             content: messageNode.value,
           });
           ws.send(messageStr);
-          elUl.innerHTML += `<li class="message-item rigth">${userInfo.toUserId}：${messageNode.value}</li>`;
+          elUl.innerHTML += `<li class="message-item rigth">${userInfo.fromUserId}：${messageNode.value}</li>`;
           messageNode.value = "";
         });
         ws.send(JSON.stringify(msgData)); // send 方法给服务端发送消息
@@ -301,7 +294,7 @@ server.listen(3000, function () {
         if(message.type === "chart-data") {
           elUl.innerHTML += `<li class="message-item left">${message.fromUserId}：${message.content}</li>`;
         } else {
-          console.log(message.content)
+          console.log(JSON.stringify(message))
         }
         
       };
@@ -309,7 +302,6 @@ server.listen(3000, function () {
       // 监听连接失败
       ws.onerror = () => {
         console.log("连接失败，正在重连...");
-        connectWebsocket();
       };
 
       // 监听连接关闭
