@@ -78,13 +78,12 @@ console.log(Counter2.value()); /* logs 0 */
 **模拟块级作用域**
 
 ```js
-function A() {
-  (function() {
-    for(var i = 0; i < num; i++) {
-	num++;      
-    }
-  })()
-  console.log("模拟块级作用域", i);
+for (var i = 0; i < 10; i++) {
+  (function(i) {
+    setTimeout(() => {
+      console.log(i)
+    }, 5000)
+  })(i)
 }
 ```
 
