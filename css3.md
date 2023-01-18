@@ -1193,3 +1193,16 @@ h5:has(+ p) { font-size: 1rem; }
 ## 隐藏元素 - display:none或visibility:hidden 的区别
 
 visibility:hidden可以隐藏某个元素，但隐藏的元素仍需占用与未隐藏之前一样的空间。也就是说，该元素虽然被隐藏了，但仍然会影响布局。
+
+## CSS 视口 - viewport
+
+**布局视口 layout viewport** 一般移动设备的浏览器都默认设置了一个布局视口，用于解决早期的PC端页面在手机上显示的问题，iOS, Android基本都将这个视口分辨率设置为 980px，所以PC上的网页大多都能在手机上呈现，只不过元素看上去很小
+
+**视觉视口 visual viewport** 它是用户正在看到的网站的区域，在移动端就是设备的宽
+
+**理想视口 ideal viewport** 为了使网站在移动端有最理想的浏览和阅读宽度而设定
+
+```html
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+```
+
