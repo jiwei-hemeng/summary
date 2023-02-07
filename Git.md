@@ -45,6 +45,8 @@ git remote set-url origin git@github.com:jiwei-hemeng/node-96.git
 git remote rm origin
 # 查找当前存在冲突的文件
 git diff --check
+# 修改提交信息(commit message)
+git commit --amend --only -m 'xxxxxxx'
 ```
 
 ### **Git 配置命令**
