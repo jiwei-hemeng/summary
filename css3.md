@@ -1206,3 +1206,9 @@ visibility:hidden可以隐藏某个元素，但隐藏的元素仍需占用与未
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 ```
 
+## H5标签中的 hidden 属性
+
+hidden 属性是一个标准的 HTML 属性，可以添加到元素中以指示它应该从视图中隐藏。当 hidden 属性出现在元素上时，浏览器会自动应用 display: none 到该元素，有效地将其隐藏在视图中。在引入 hidden 属性之前，开发人员通常会使用 display: none 来隐藏页面上的元素。然而，这种方法可能有一些缺点。例如，如果开发人员使用 display:none 来隐藏一个元素，然后稍后尝试使用 JavaScript 再次显示它，他们必须首先将 display 属性更改回其原始值（例如 display:block）。这可能很麻烦且容易出错。相比之下，隐藏属性简化了这个过程。当元素具有隐藏属性时，浏览器会根据需要负责应用和删除适当的显示值。因此，如果开发人员想要根据某些条件（例如单击按钮）显示或隐藏元素，他们可以简单地切换隐藏属性的存在，而不是直接修改显示属性。
+
+> 总结： 有了H5标签中的 hidden 属性，尽量少用 display: none
+
