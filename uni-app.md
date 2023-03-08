@@ -666,5 +666,19 @@ updateManager.onCheckForUpdate(function(res) {
 // #endif
 ```
 
+## 分享小程序
+
+```js
+export default {
+  name: "Index",
+  onShareAppMessage() {
+  	return {
+   	  title: "山未动，心已远!一起和我旅游吧！",
+      path: "pages/index/index"
+    };
+  }
+}
+```
+
 
 
