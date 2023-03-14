@@ -1212,3 +1212,52 @@ hidden 属性是一个标准的 HTML 属性，可以添加到元素中以指示�
 
 > 总结： 有了H5标签中的 hidden 属性，尽量少用 display: none
 
+## 打印相关的css
+
+```css
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 3.7cm 2.6cm 3.5cm; /* 国家标准公文页边距 GB/T 9704-2012 */
+  }
+
+  h1 {
+    page-break-before: always;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  thead,
+  tfoot,
+  tr,
+  th,
+  td,
+  li {
+    page-break-inside: avoid;
+  }
+
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  nav,
+  aside {
+    display: none;
+  }
+
+  a::after {
+    content: "(" attr(href) ")";
+  }
+
+  thead,
+  tfoot {
+    display: table-row-group;
+  }
+}
+```
+
