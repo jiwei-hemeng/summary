@@ -77,4 +77,20 @@ const start = moment().quarter(moment().quarter() - 1).startOf('quarter').format
 const end = moment().quarter(moment().quarter() - 1).endOf('quarter').format('YYYY-MM-DD')
 ```
 
+## dayJs
+
+> dayjs 和moment 具有相同的api , 同时具有更小的体积
+
+```js
+import dayjs from "dayjs";
+import zh_CN from "dayjs/locale/zh-cn.js";
+import relativeTime from "dayjs/plugin/relativeTime.js";
+// 使用插件
+dayjs.extend(relativeTime);
+// 设置语言
+dayjs.locale(zh_CN);
+console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"));
+console.log(dayjs("2022-12-12").fromNow());
+console.log(dayjs().add(1, "day").format("YYYY-MM-DD"));
+```
 
