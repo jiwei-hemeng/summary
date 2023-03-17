@@ -390,3 +390,28 @@ module.exports = {
 }
 ```
 
+**webpack配置---实现某文件夹下的文件不打包**
+
+安装插件
+
+```shell
+cnpm install --save-dev copy-webpack-plugin
+```
+
+创建static目录并修改webpack配置文件
+
+```js
+// 在头部引入插件
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// 在plugins配置数组中添加一项
+plugins: [
+  new CopyWebpackPlugin([
+    {
+      from: path.resolve(__dirname, '../static'),
+      to: 'static',
+      ignore: ['.*']
+    }
+  ])
+]
+```
+
