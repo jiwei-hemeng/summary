@@ -778,9 +778,11 @@ console.log(arr);    // result [1, 2, 3, 4, 5]
 
 ### 获取文件对象的blob地址
 
+> 注意： 使用完成后一定要调用revokeObjectURL 方法解除内存的占用
+
 ```js
 const blob = window.URL.createObjectURL(this.$refs.file.files[0])
-// this.$refs.file.files[0] 为文件的文件对象
+window.URL.revokeObjectURL(blob)
 ```
 
 ### 加入收藏夹
