@@ -294,3 +294,25 @@ nrm add npmName http://registry.com
 # 删除包源
 nrm del npmName
 ```
+
+### Termux
+
+[Github地址](https://github.com/termux/termux-app/releases)
+
+```shell
+# 更换源
+termux-change-repo
+# ssh 登录
+ssh u0_a238@192.168.1.113 -p 8022
+# 安装openssh
+pkg install openssh
+# 更改密码
+password
+# 开启sshd服务
+sshd
+# 查看IP
+ifconfig
+# 查看用户名
+whoami
+```
+
