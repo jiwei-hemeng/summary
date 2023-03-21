@@ -10,3 +10,9 @@ export function uuid(len = 32) {
   var uuid = s.join("");
   return uuid;
 }
+
+export function uuid(len = 36) {
+  const blobStr = URL.createObjectURL(new Blob())
+  URL.revokeObjectURL(blobStr)
+  return blobStr.substring(blobStr.length - len);
+}
