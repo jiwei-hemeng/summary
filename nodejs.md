@@ -611,3 +611,44 @@ sendEmail({
     html: "<b>Hello world?</b>", // html body
 });
 ```
+
+## 在nodejs 中使用es 模块化规范
+
+在 `package.json` 添加 `type: "module"`
+
+```json
+{
+  "name": "serve",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "ISC",
+}
+```
+
+js 文件中就可以直接使用es模块化规范, 如
+
+```js
+import NodeRSA from "node-rsa"
+const key = new NodeRSA({ b: 512 });
+key.setOptions({ encryptionScheme: "pkcs1" });
+// 私钥
+const privatePem = key.exportKey("pkcs8-private-pem");
+// 公钥
+const publicPem = key.exportKey("pkcs8-public-pem");
+console.log("=================私钥:===============")
+console.log(privatePem)
+console.log("=================公钥================")
+console.log(publicPem)
+const data = "我是加密前的数据";
+// const encrypt = new NodeRSA(privatePem)
+key.importKey(publicPem)
+console.log("正在加密中...")
+const cioherText = key.encrypt(data, "base64");
+console.log("加密后是：", cioherText);
+key.importKey(privatePem);
+console.log("正在解密中...")
+const rowText = key.decrypt(cioherText, "utf8");
+console.log("解密后是：", rowText);
+```
+
