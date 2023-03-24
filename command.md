@@ -316,5 +316,11 @@ ifconfig
 whoami
 # 需要允许手机的读写存储权限
 termux-setup-storage
+# 查看进程
+ps
+# 查看实时进程
+top
+# 杀死进程
+kill [pid]
 ```
 
