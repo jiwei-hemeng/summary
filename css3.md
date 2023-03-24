@@ -329,6 +329,12 @@ img {
 }
 ```
 
+## 解决margin塌陷的方法
+
++ 给父盒子设置border，添加border后父盒子和子盒子就不会贴在一起了
++ 给父盒子添加overflow：hidden  让他溢出隐藏
++ 给父盒子设定padding值 
+
 ## 关于flex布局
 
 + flex-direction：设置主轴的方向
@@ -551,22 +557,6 @@ input[type="number"]::-webkit-outer-spin-button {
 + 标准模式(也称w3c盒模型)下总宽度=width+margin（左右）+ padding（左右）+ border（左右）；
 + 怪异模式下总宽度=width+margin（左右）（就是说width已经包含了padding和border值）
 
-## flex属性 是哪些属性的简写
-
-> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0% 的简写。
-
- **flex-grow**
-
-该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
-
-**flex-shrink**
-
-该属性用来设置，当父元素的宽度小于所有子元素的宽度的和时（即子元素会超出父元素），子元素如何缩小自己的宽度的。 `flex-shrink`的默认值为1，当父元素的宽度小于所有子元素的宽度的和时，子元素的宽度会减小。值越大，减小的越厉害。如果值为0，表示不减小。
-
-**flex-basis**
-
-该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
-
 ##  li与li之间有看不见的空白间隔是什么原因引起的？有什么解决方法？
 
 > 行框的排列会受到之间空白(回车空格)等的影响，因为空格也属于字符，这些空白也会被应用样式，占据空间，所以会用空格
@@ -767,9 +757,10 @@ p {
 
 ## CSS 实现文本两端对齐
 
+> 注意：必须指定宽度
+
 ```css
 .laterr {
-  width: 230px;
   text-align: justify;
   text-justify: distribute-all-lines;
   text-align-last: justify;
@@ -821,11 +812,6 @@ input[type="search"]::-webkit-search-cancel-button{
   -webkit-appearance: none;
 }
 ```
-## 解决margin塌陷的方法
-+ 给父盒子设置border，添加border后父盒子和子盒子就不会贴在一起了
-+ 给父盒子添加overflow：hidden  让他溢出隐藏
-+ 给父盒子设定padding值 
-
 ## accent-color 应用场景
 
 > 表单控件颜色设置  
@@ -1037,6 +1023,22 @@ input[type=radio] {
 在元素的内容之前或之后插入内容 `::after`、 `::before`
 
 选择用户选择的元素部分 `::selection`
+
+## flex属性 是哪些属性的简写
+
+> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0% 的简写。
+
+ **flex-grow**
+
+该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
+
+**flex-shrink**
+
+该属性用来设置，当父元素的宽度小于所有子元素的宽度的和时（即子元素会超出父元素），子元素如何缩小自己的宽度的。 `flex-shrink`的默认值为1，当父元素的宽度小于所有子元素的宽度的和时，子元素的宽度会减小。值越大，减小的越厉害。如果值为0，表示不减小。
+
+**flex-basis**
+
+该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
 
 ## flex 计算
 
