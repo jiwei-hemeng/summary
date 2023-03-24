@@ -1,0 +1,79 @@
+body,
+ol,
+ul,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+th,
+td,
+dl,
+dd,
+form,
+fieldset,
+legend,
+input,
+textarea,
+select {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-family: "Microsoft Yahei", sans-serif;
+}
+li {
+  list-style: none;
+}
+button,
+input {
+  outline: none;
+}
+.hidden {
+  display: none;
+}
+a {
+  text-decoration: none;
+  color: #1890ff;
+  cursor: pointer;
+}
+
+em,
+i {
+  font-style: normal;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+div,
+p {
+  box-sizing: border-box;
+}
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+  width: 0;
+  visibility: hidden;
+  height: 0;
+}
+.clearfix {
+  zoom: 1;
+}
+img {
+  border: 0 none;
+  outline-style: none;
+  vertical-align: middle;
+}
