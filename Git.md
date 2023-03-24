@@ -314,5 +314,7 @@ sshd
 ifconfig
 # 查看用户名
 whoami
+# 需要允许手机的读写存储权限
+termux-setup-storage
 ```
 
