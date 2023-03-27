@@ -527,21 +527,30 @@ router.post("/addhero", upload.single("heroIcon"), (req, res) => {
 > 磁盘存储引擎可以让你控制文件的存储。
 
 ```js
+import express from "express";
 import multer from "multer";
-import path from "path"
+import path from "path";
+const router = express.Router();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join("./", "/proxy_public", "/uploads"))
+    const __dirname = path.resolve();
+    cb(null, path.join(__dirname, "/proxy_public", "/uploads"));
   },
   filename: function (req, file, cb) {
-    cb(null, "avatar" + Date.now()  + path.extname(file.originalname));
+    cb(null, "avatar" + Date.now() + path.extname(file.originalname));
   },
 });
 const upload = multer({ storage: storage });
-app.post("/uploadFile", upload.single("file"), (req, res) => {
-  console.log("file", req.file);
-  res.json({ status: 200, message: "添加成功", url: "/uploads/" + req.file.filename });
+router.post("/uploadFile", upload.single("file"), (req, res) => {
+  res.json({
+    status: 200,
+    message: "添加成功",
+    user: req.body.user,
+    url: "/uploads/" + req.file.filename,
+  });
 });
+
+export default router;
 ```
 
 ## nodejs代理服务器
