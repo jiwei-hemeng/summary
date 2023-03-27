@@ -519,6 +519,7 @@ content-visibility属性有三个可选值:
 
 ```css
 input[type="number"] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 input[type="number"]::-webkit-inner-spin-button,
