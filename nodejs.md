@@ -348,6 +348,99 @@ exports.writeFile = (fileUrl, content) => {
 };
 ```
 
+**验证路径是否存在**
+
+```js
+const fs = require("fs");
+fs.exists(path, callback)
+fs.existsSync(path)
+```
+
+**获取文件信息**
+
+```js
+const fs = require("fs");
+fs.stat(path, callback)
+fs.stat(path)
+```
+
+**删除文件**
+
+```js
+const fs = require("fs");
+fs.unlink(path, callback)
+fs.unlinkSync(path)
+```
+
+**建立目录**
+
+```js
+const fs = require("fs");
+fs.mkdir(path[, mode], callback)
+fs.mkdirSync(path[, mode])
+```
+
+**删除目录**
+
+```js
+const fs = require("fs");
+fs.rmdir(path, callback)
+fs.rmdirSync(path)
+```
+
+**重命名文件和目录**
+
+```js
+const fs = require("fs");
+fs.rename(oldPath, newPath, callback)
+fs.renameSync(oldPath, newPath)
+```
+
+**监视文件更改**
+
+```js
+const fs = require("fs");
+fs.watchFile(filename[, options], listener)
+```
+
+## path 路径模块
+
+> path 模块是 Node.js 官方提供的、用来处理路径的模块。它提供了一系列的方法和属性，用来满足用户对路径的处理需求。
+
+**路径拼接 `path.join()`**
+
+```js
+const path = require('path');
+const fs = require('fs');
+const pathStr = path.join('/a', '/b/c', '../../', './d', 'e');
+console.log(pathStr) // \a\d\e
+```
+
+**获取路径中文件名 `path.basename()`**
+
+> path.basename(path[, ext])
+
+```js
+const path = require('path');
+// 定义文件的存放路径
+const fpath = '/a/b/c/index.html'
+const fullName = path.basename(fpath)
+console.log(fullName) // index.html
+const nameWithoutExt = path.basename(fpath, '.html');
+console.log(nameWithoutExt) // index
+```
+
+**获取路径中文件扩展名**
+
+> ### 获取路径中文件扩展名 `path.extname()`
+
+```js
+const path = require('path')
+const fpath = '/a/b/c/index.html'
+const fext = path.extname(fpath)
+console.log(fext) // .html
+```
+
 ## 配置微信sdk
 
 **安装**
