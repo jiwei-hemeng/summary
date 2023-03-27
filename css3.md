@@ -940,6 +940,8 @@ input[type=radio] {
 
 **圆**
 
+> clip-path: circle([半径] at [圆心 x 轴坐标]  [圆心 y 轴坐标]); 
+
 ```html
 <style>
   .pic {
@@ -968,6 +970,8 @@ input[type=radio] {
 
 **椭圆**
 
+> 定义：clip-path: ellipse(圆的水平半径 圆的垂直半径 at 圆心)
+
 ```html
 <style>
   .pic {
@@ -980,19 +984,84 @@ input[type=radio] {
 <div class="pic"></div>
 ```
 **星星**
-    
-```html
-<style>
-  .pic {
-    width: 100px;
-    height: 100px;
-    background-color: #f00;
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 
+```css
+clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+```
+**对话框**
+
+```css
+clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+```
+
+**八边形**
+
+```css
+clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+```
+
+**实用的 clip-path 特效**
+
+```html
+<div class="clippath-Warp">
+  <div>clip-path: inset 的神奇特效</div>
+</div>
+<style>
+  .clippath-Warp {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .Index > div {
+    height: 300px;
+    background: rebeccapurple;
+    position: relative;
+    line-height: 30px;
+    padding: 0 20px;
+    color: #fff;
+    border-radius: 5px;
+  }
+  .clippath-Warp > div:hover {
+    filter: contrast(1.1);
+  }
+  .clippath-Warp > div:active {
+    filter: contrast(0.9);
+  }
+  .clippath-Warp > div::before,
+  .clippath-Warp > div::after {
+    content: "";
+    border: 2px solid;
+    border-image: linear-gradient(45deg, gold, deeppink) 1;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    animation: clippath 3s infinite;
+  }
+  .clippath-Warp > div::before {
+    animation: clippath 3s infinite -1.5s linear;
+  }
+  @keyframes clippath {
+    0%,
+    100% {
+      clip-path: inset(0 0 96% 0);
+      filter: hue-rotate(0deg);
+    }
+    25% {
+      clip-path: inset(0 96% 0 0);
+    }
+    50% {
+      clip-path: inset(96% 0 0 0);
+      filter: hue-rotate(360deg);
+    }
+    75% {
+      clip-path: inset(0 0 0 96%);
+    }
   }
 </style>
-<div class="pic"></div>
 ```
+
 ## 伪类，伪元素
 
 >  CSS3 规范中有一部分要求，为了区分伪类和伪元素，伪元素使用两个冒号 (::)， 伪类使用一个冒号 (:)
