@@ -432,7 +432,7 @@ console.log(nameWithoutExt) // index
 
 **获取路径中文件扩展名**
 
-> ### 获取路径中文件扩展名 `path.extname()`
+> 获取路径中文件扩展名 `path.extname()`
 
 ```js
 const path = require('path')
