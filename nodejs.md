@@ -374,10 +374,17 @@ fs.unlinkSync(path)
 
 **建立目录**
 
+> 异步：fs.mkdir(path[, mode], callback)   同步： fs.mkdirSync(path[, mode])
+
 ```js
 const fs = require("fs");
-fs.mkdir(path[, mode], callback)
-fs.mkdirSync(path[, mode])
+const path = require("path");
+fs.mkdir(path.join(__dirname, "test"), { recursive: true }, (err) => {
+    if (err) {
+        return console.error(err);
+    }
+    console.log("Directory created successfully!");
+});
 ```
 
 **删除目录**
