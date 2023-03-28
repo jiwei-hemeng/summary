@@ -760,6 +760,14 @@ sendEmail({
 js 文件中就可以直接使用es模块化规范, 如
 
 ```js
+import express from "express";
+import dayjs from "dayjs";
+export default function() {return aaa}
+```
+
+## NodeRSA
+
+```js
 import NodeRSA from "node-rsa"
 const key = new NodeRSA({ b: 512 });
 key.setOptions({ encryptionScheme: "pkcs1" });
