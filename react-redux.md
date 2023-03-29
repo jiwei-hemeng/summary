@@ -20,7 +20,7 @@ npm i react-redux redux -S
 在项目`src`目录上创建  `store/index.js`
 
 ```js
-import { createStore } from 'redux'
+import { legacy_createStore as createStore } from 'redux'
 import Reducer from './reducer.js'
 let state = {
   num: 10
@@ -33,17 +33,29 @@ export default store
 
 ```js
 // 返回reducer
+const reducerAction = {
+  add: (state, action) => {
+    const newState = { ...state };
+    newState.num += action.value;
+    return newState;
+  },
+  setToken: (state, action) => {
+    const newToken = { ...state };
+    newToken.token = action.value;
+    return newToken;
+  },
+  setJoinTime: (state, action) => {
+    const newToken = { ...state };
+    newToken.joinTime = action.value;
+    return newToken;
+  },
+};
 const Reducer = (state, action) => {
-  switch (action.type) {
-    case 'add':
-      const newState = {...state}
-      newState.num += action.value
-      return newState
-    default:
-      return state
-  }
-}
-export default Reducer
+  return reducerAction[action.type]
+    ? reducerAction[action.type](state, action)
+    : state;
+};
+export default Reducer;
 ```
 
 `项目的入口文件index.js`
