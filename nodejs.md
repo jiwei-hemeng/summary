@@ -232,6 +232,14 @@ router.post("/reguser", (req, res) => {
 
 ## 配置session 中间件
 
+**安装**
+
+```shell
+npm install express-session
+```
+
+**使用**
+
 ```js
 const session = require("express-session");
 app.use(
@@ -242,6 +250,21 @@ app.use(
     // store: {}
   })
 );
+```
+
+**清除session**
+
+> req.session.destroy()
+
+```js
+app.post('/user/logout',(req,res)=>{
+  // 清空session信息
+  req.session.destroy()
+  res.send({
+    status: 200,
+    message: "退出登录成功"
+  })
+})
 ```
 
 ## mysql
