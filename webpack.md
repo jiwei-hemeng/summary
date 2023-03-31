@@ -1,5 +1,7 @@
 ## webpack 学习
 
+### 基本使用
+
 **加入npm包管理器**
 
 ```shell
@@ -38,7 +40,7 @@ npm i webpack webpack-cli -D
 npm run build
 ```
 
-**webpack的配置文件**
+### webpack的配置文件
 
 > [参考文档](https://webpack.js.org/configuration)
 
@@ -59,7 +61,7 @@ module.exports = {
 }
 ```
 
-**打包css**
+### 打包css
 
 安装相关插件
 
@@ -82,7 +84,7 @@ module.exports = {
 }
 ```
 
-**打包图片**
+### 打包图片
 
 安装相关插件
 
@@ -114,7 +116,7 @@ module.exports = {
 }
 ```
 
-**打包less**
+### 打包less
 
 安装相关插件
 
@@ -149,7 +151,7 @@ module.exports = {
 }
 ```
 
-**hmtlWebpackPlugin**
+### hmtlWebpackPlugin
 
 安装依赖
 
@@ -173,7 +175,7 @@ module.exports = {
 }
 ```
 
-**清除dist**
+### 重新打包时清除dist目录
 
 安装依赖
 
@@ -194,7 +196,7 @@ module.exports = {
 }
 ```
 
-**babel**
+### babel
 
 > [官网地址](https://webpack.js.org/loaders/babel-loader/#install)
 >
@@ -253,7 +255,7 @@ module.exports = {
 }
 ```
 
-**开启源码map**
+### 开启源码map
 
 ```js
 // webpack.config.js
@@ -264,7 +266,7 @@ module.exports = {
 }
 ```
 
-**启动开发服务**
+### 启动开发服务
 
 安装依赖
 
@@ -299,7 +301,7 @@ module.exports = {
 }
 ```
 
-**可以省略的扩展名**
+### 可以省略的扩展名
 
 > webpack 默认只能省略`.js`、`.json`的扩展名
 
@@ -317,7 +319,7 @@ module.exports = {
 }
 ```
 
-**使用ESLint**
+### 使用ESLint
 
 安装
 
@@ -368,7 +370,7 @@ module.exports = {
 npx eslint --init
 ```
 
-**压缩 js 文件**
+### 压缩 js 文件
 
 > 使用 uglifyjs-webpack-plugin 将js压缩，减少打包后的 vendor.js , bundle.js 等js的文件大小
 
@@ -390,7 +392,7 @@ module.exports = {
 }
 ```
 
-**webpack配置---实现某文件夹下的文件不打包**
+### webpack配置---实现某文件夹下的文件不打包
 
 安装插件
 
@@ -413,5 +415,62 @@ plugins: [
     }
   ])
 ]
+```
+
+### 使用多个进程线程可以帮助加快构建速度
+
+```js
+// 使用parallel-webpack插件
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
+
+module.exports = {
+  plugins: [
+    new ParallelUglifyPlugin({
+      // 设置并行数，根据电脑核数设置
+      workerCount: os.cpus().length,
+      // 其他配置项
+    }),
+  ],
+};
+```
+
+```js
+// 使用HappyPack插件
+const HappyPack = require('happypack');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'happypack/loader?id=js',
+      },
+    ],
+  },
+  plugins: [
+    new HappyPack({
+      id: 'js',
+      threadPool: happyThreadPool,
+      loaders: ['babel-loader'],
+    }),
+  ],
+};
+```
+
+### 不打包第三方包
+
+```js
+// webpack.config.js
+module.exports = {
+  entry: './main.jsx',
+  output: {
+    filename: 'bundle.js'
+  },
+  externals: {
+    "echarts": "echarts",
+  }
+}
+
 ```
 
