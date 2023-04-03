@@ -474,3 +474,57 @@ module.exports = {
 
 ```
 
+## vite
+
+### vite raect 项目的配置
+
+```shell
+# 打包体积可视化面板
+yarn add rollup-plugin-visualizer -D
+# 配置cdn方法
+yarn add rollup-plugin-external-globals -D
+```
+
+配置(vite.config.js)
+
+```js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
+import externalGlobals from 'rollup-plugin-external-globals'
+export default defineConfig({
+  plugins: [
+    react(),
+    visualizer({ open: true }),
+  ],
+  build: {
+    rollupOptions: {
+      external: ["react", "react-dom"],
+      plugins: [
+        externalGlobals({
+          react: "React",
+          "react-dom": "ReactDOM"
+        })
+      ]
+    }
+  },
+});
+```
+
+vite 配置路径别名
+
+```js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+export default defineConfig({
+  resolve: {
+    alias: {
+      "@": "/src/", //格式一定要写对喽不然没有代码提示或者报错
+    },
+  },
+  plugins: [
+    react(),
+  ],
+});
+```
+
