@@ -476,6 +476,12 @@ module.exports = {
 
 ## vite
 
+### 使用vite 构建 react 项目
+
+```shell
+npm create vite@latest
+```
+
 ### vite raect 项目的配置
 
 ```shell
@@ -526,5 +532,21 @@ export default defineConfig({
     react(),
   ],
 });
+```
+
+### 配置public 目录
+
+```js
+import react from "@vitejs/plugin-react";
+export default ({ mode }) => {
+  return {
+    resolve: {
+      alias: {
+        "@": "/src/", //格式一定要写对喽不然没有代码提示或者报错
+      },
+    },
+    base: mode === "production" ? "/vite-react-app" : "/",
+    plugins: [react()],
+};
 ```
 
