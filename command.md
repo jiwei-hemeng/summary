@@ -97,33 +97,6 @@ git branch -r -d origin/dev
 git push origin --delete dev
 ```
 
-###  免密远程登陆及免密远程拷贝设置
-
-> chmod 文件读写权限：
->
-> 三个数代表： - 所有者 - 用户组 - 其它用户 
->
-> 读写权限： wrx 分别对应读、写、执行，用数字表示 4、2、1
-
-```shell
-# 生成公钥
-ssh-keygen -t rsa
-# 进入shh 文件夹
-cd ~/.ssh/
-# 将RSA密钥添加到authorized_keys文件
-cat id_rsa.pub >>authorized_keys
-# 配置ssh文件的权限
-chmod 600 authorized_keys
-# 登录并上传公钥
-scp authorized_keys root@192.168.112.131:/root/.ssh
-# 去登录
-ssh 192.168.112.131
-# 本地文件拷贝到远程主机
-scp anaconda-ks.cfg root@192.168.112.131:/tmp
-# 远程主机文件拷贝到本地
-scp  root@192.168.112.130:/tmp/anaconda-ks.cfg  /root
-```
-
 ### 在vscode中配置GIT终端
 
 ![1953033-20210812175755860-640591619](https://jiwei-hemeng.github.io/summary/assets/images/1953033-20210812175755860-640591619.png)
@@ -199,8 +172,12 @@ cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 "mkdir ~/.ssh; cat >> ~/.ssh/auth
 scp -r -P 22 D:\etc\liLianInfo\unpackage\dist\dev\mp-weixin root@192.168.5.128:/home/root/path
 # 下载整个目录
 scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
-# 安装yum
-sudo apt-get install yum
+
+```
+
+### ubantu 的相关命令
+
+```shell
 # 解决liunx ifconfig 命令找不到
 sudo apt-get install net-tools
 # 设置root用户的密码
@@ -213,6 +190,21 @@ find / -name ifconfig -print
 sudo apt-get install openssh-server
 # 安装nodejs
 sudo apt-get install -y nodejs
+```
+
+### linux 命令
+
+> chmod 文件读写权限：
+>
+> 三个数代表： - 所有者 - 用户组 - 其它用户 
+>
+> 读写权限： wrx 分别对应读、写、执行，用数字表示 4、2、1
+
+```shell
+# 生成公钥
+ssh-keygen -t rsa
+# 配置ssh文件的权限
+chmod 600 authorized_keys
 # 删除非空目录
 rm -rf [目录名]
 # 将2.txt 文件的内容追加到1.txt 文件内容的后面
@@ -226,6 +218,7 @@ tar -xzvf test.tar.gz a.c
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
+
 移动 HEAD 指向的分支 （若指定了 --soft，则到此停止）；
 ```shell
 # 它本质上是撤销了上一次 git commit 命令
