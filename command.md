@@ -97,42 +97,6 @@ git branch -r -d origin/dev
 git push origin --delete dev
 ```
 
-### 工作中想将dev分支合并到master分支，操作如下
-
-**首先切换到master分支上**
-
-```shell
-git  checkout master
-```
-
-**如果是多人开发的话 需要把远程master上的代码pull下来**
-
-```shell
-git pull origin master
-# 如果是自己一个开发就没有必要了，为了保险起见还是pull
-```
-
-**然后我们把dev分支的代码合并到master上**
-
-```shell
-git  merge dev
-```
-
-**然后查看状态及执行提交命令**
-
-```shell
-git status
-
-On branch master
-Your branch is ahead of 'origin/master' by 12 commits.
-  (use "git push" to publish your local commits)
-nothing to commit, working tree clean
-
-//上面的意思就是你有12个commit，需要push到远程master上 
-> 最后执行下面提交命令
-git push origin master
-```
-
 ###  免密远程登陆及免密远程拷贝设置
 
 > chmod 文件读写权限：
@@ -228,7 +192,7 @@ setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 # 远程登陆
 ssh root@192.168.5.128 -p 22
 # 把本机生成的公钥添加到远程服务器
-ssh-copy-id -i /root/.ssh/id_dsa.pub root@192.168.5.128
+ssh-copy-id -i ~/.ssh/id_dsa.pub root@192.168.5.128
 # 也可以使用第二种，方式添加
 cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 "mkdir ~/.ssh; cat >> ~/.ssh/authorized_keys"
 # 将本地的文件或者文件夹上传到服务器 -r 选项表示上传文件夹
@@ -255,6 +219,10 @@ rm -rf [目录名]
 cat 2.txt >> 1.txt
 # 用2.txt 文件的内容替换1.txt 文件内容
 cat 2.txt > 1.txt
+# 压缩文件
+tar -czvf test.tar.gz a.c
+# 解压文件
+tar -xzvf test.tar.gz a.c
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
