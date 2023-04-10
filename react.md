@@ -1045,3 +1045,49 @@ npm run analyze
 ```js
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
+
+### 深入学习React的合成事件
+
+#### 为什么使用合成事件
+
++ 浏览器兼容，统一行为，比如事件对象有统一的属性和方法，又比如，移除不想要的点击事件（Firefox右键点击会生成点击事件），再比如无论注册onMouseLeave还是onMouseOut都会映射成原生的mouseout事件；
+
++ 多平台适配，ReactNative也能使用；
+
++ 实现事件委托，避免大量创建事件监听；
+
++ 事件池机制，避免频繁创建和销毁SyntheticEvent对象，释放过程将SyntheticEvent对象的大部分属性置为null，提升旧浏览器的性能。
+
+#### 事件优先级
+
++ 离散事件（DiscreteEvent），非连续触发，包括click、input、keydown、focusin等，优先级为0；
+
++ 用户阻塞事件（UserBlockingEvent），连续触发，包括drag、mousemove、touchmove、scroll等，优先级为1；
+
++ 连续事件（ContinuousEvent），包括load、progress、playing、error等音视频相关的事件，优先级为2。
+
+#### 总结
+
+React在浏览器原生事件的基础上实现了一套合成事件。
+
+React 16.x及以前的合成事件：
+
++ 事件委托到document；
+
++ 部分事件还是会绑定到当前元素；
+
++ 存在React事件和原生事件的映射关系，比如onMouseLeave会映射成原生的mouseout事件；
+
++ 事件池机制。
+
+React 17的合成事件：
+
++ 事件委托到root；
+
++ React capture阶段的合成事件提前到原生事件capture阶段执行；
+
+  ![react_capture](./assets/images/react_capture.png)
+
++ 移除事件池机制；
+
++ 事件有优先级。
