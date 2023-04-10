@@ -2,13 +2,13 @@
 
 > 建议阅读迁移 https://v3.cn.vuejs.org/guide/migration/array-refs.html
 
-**setup函数的特性**
+### setup函数的特性
 
 + setup函数是vue3.0新特性，与之对应的是vue2.0的BeforeCreate 和Created 两个生命周期。由于在setup函数中vue实例并没有创建出来，所以该函数没有this
 + setup 函数有props、ctx两个参数。其中props对应vue2.0的props(响应式的，不能解构)，ctx 对应this(非响应式的，可以解构)
 + 在setup中return回去的数据在视图中才能用到
 
-**ref 和 reactive 的异同点**
+### ref 和 reactive 的异同点
 
 + 相同的
   + 都是为数据添加响应式状态
@@ -17,12 +17,12 @@
   + reactive 创建出来的是复杂数据类型
   + 从ref返回的引用将自动解包，因此模板中使用不需要.value。在setup中访问必须需要`.value`
 
-**toRef 和 toRefs的区别**
+### toRef 和 toRefs的区别
 
 + toRef 用于为源响应式对象上的属性新建一个ref，从而保持对其源对象属性的响应式连接。接受两个参数：源相应对象和属性名，返回一个ref数据。获取数据值的时候需要加上.value;toRef后的ref数据不是原始数据的拷贝，而是引用，改变结果数据的值也会同时改变原始数据
 + toRefs 用于将响应式对象转化为结果对象，其中结果对象的每个属性都是指向原始对象相应属性的ref.toRef需要结合reactive 使用
 
-**计算属性(案例)**
+### 计算属性(案例)
 
 ```js
 import { computed } from "vue";
@@ -41,7 +41,7 @@ export default {
 }
 ```
 
-**watch 和 watchEffect**
+### watch 和 watchEffect
 
 + watch 是需要传入侦听的数据源，而 watchEffect 是自动收集数据源作为依赖。
 + watch 可以访问侦听状态变化前后的值，而 watchEffect 没有。
@@ -77,7 +77,7 @@ export default {
 }
 ```
 
-**通过ref获取和操作DOM**
+### 通过ref获取和操作DOM
 
 单个DOM案例
 
@@ -141,7 +141,7 @@ export default {
 </script>
 ```
 
-**vue3.0 jsx语法**
+### vue3.0 jsx语法
 
 ```js
 import { defineComponent } from "vue";
@@ -165,7 +165,7 @@ const Button = defineComponent({
 export default Button;
 ```
 
-**vue3.0 插槽**
+### vue3.0 插槽
 
 > v-slot:default 可以简写为 #default
 
@@ -203,7 +203,7 @@ export default Button;
 </todo-list>
 ```
 
-**关于 Suspense 组件**
+### 关于 Suspense 组件
 
 > 相关链接 https://v3.cn.vuejs.org/guide/migration/suspense.html#%E4%BA%8B%E4%BB%B6
 
@@ -232,7 +232,7 @@ export default Button;
 </router-view>
 ```
 
-**挂载全局的属性和方法**
+### 挂载全局的属性和方法
 
 方法一：
 
@@ -255,7 +255,7 @@ import { inject } from "vue"
 const $title = inject($title)
 ```
 
-**vuex在setup函数中的使用**
+### vuex在setup函数中的使用
 
 获取状态
 
@@ -289,7 +289,7 @@ setup() {
 }
 ```
 
-**表单输入绑定v-model**
+### 表单输入绑定v-model
 
 `v-model` 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
 
@@ -342,7 +342,7 @@ export default {
 }
 ```
 
-**v-model用于自定义组件时**
+### v-model用于自定义组件时
 
 > [相关链接](https://v3.cn.vuejs.org/guide/migration/v-model.html#%E6%A6%82%E8%A7%88)
 
@@ -388,7 +388,7 @@ app.directive("abs", (el, binding) => {
 })
 ```
 
-**自定义修饰符**
+### 自定义修饰符
 
 > [相关链接](https://v3.cn.vuejs.org/guide/component-custom-events.html#%E5%A4%84%E7%90%86-v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6)
 
@@ -423,7 +423,7 @@ app.component('my-component', {
 })
 ```
 
-**proxy与defineProperty的区别**
+### proxy与defineProperty的区别
 
 Object.defineProperty只能监听到对象的读取或写入，Proxy除了可以监听读写还可以监听对象属性的删除、对象当中方法的调用
 
@@ -466,7 +466,7 @@ module.exports = {
 }
 ```
 
-**父子组件生命周期的执行顺序**
+### 父子组件生命周期的执行顺序
 
 + 父子组件在加载的时候，执行的先后顺序为
 
@@ -484,14 +484,14 @@ module.exports = {
 
   父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
 
-**vue 的渲染过程**
+### vue 的渲染过程
 
 + 把模板编译成render函数
 + 实例进行挂载，根据根节点render函数的调用，递归生成虚拟DOM
 + 对比虚拟DOM，渲染真实的DOM
 + 组件内部的data发生变化，组件和子组件的data作为props重新调用render函数生成虚拟DOM，使用diff算法对比新旧虚拟DOM，将变化的DOM更新
 
-**语法糖**
+### 语法糖
 
 > [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
 
@@ -543,7 +543,7 @@ const handleClick = function (data) {
 
  如果在父组件中通过`ref='xxx'`的方法来获取子组件实例，子组件使用了`script setup`语法糖,那么子组件的数据需要用expose的方式导出，否则会因为获取不到数据而报错。 
 
-**跨组件通讯mitt.js**
+### 跨组件通讯mitt.js
 
 >  `Vue2`中怎么实现跨组件通讯呢,很多人第一想法就是`event bus`。但是`Vue3`移除了`$on`,`$once`,`$off`导致不能使用这个方法。但是`Vue`官方给大家推荐了`mitt.js`,它的原理就是`event bus`。 
 
@@ -625,6 +625,57 @@ export default {
     }
   },
 }
+</script>
+```
+
+##  expose / ref 的使用
+
+子组件可以通过 expose 暴露自身的方法和数据。
+
+父组件通过 ref 获取到子组件并调用其方法或访问数据。
+
+```html
+<!-- Parent.vue -->
+<template>
+  <div>父组件：拿到子组件的message数据：{{ msg }}</div>
+  <button @click="childFun">调用子组件的方法</button>
+  <hr />
+  <Child ref="childRef" />
+</template>
+<script setup>
+import { ref, onMounted } from "vue";
+import Child from "@/components/Child.vue";
+const childRef = ref(null); // 通过 模板ref 绑定子组件
+const msg = ref("");
+onMounted(() => {
+  // 在加载完成后，将子组件的 message 赋值给 msg
+  msg.value = childRef.value.message;
+});
+function childFun() {
+  // 调用子组件的 changeMessage 方法
+  childRef.value.changeMessage("前端诡刺");
+  // 重新将 子组件的message 赋值给 msg
+  msg.value = childRef.value.message;
+}
+</script>
+```
+
+```html
+<!-- Child.vue -->
+<template>
+  <div>子组件：{{ message }}</div>
+</template>
+<script setup>
+import { ref } from "vue";
+const message = ref("前端菜鸟");
+function changeMessage(data) {
+  message.value = data;
+}
+//使用 defineExpose 向外暴露指定的数据和方法
+defineExpose({
+  message,
+  changeMessage,
+});
 </script>
 ```
 
