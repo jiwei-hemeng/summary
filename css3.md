@@ -1333,3 +1333,66 @@ hidden 属性是一个标准的 HTML 属性，可以添加到元素中以指示�
 }
 ```
 
+## keyframes 关键帧
+
+### 定义动画
+
+```css
+@keyframes fadeOut {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.3;
+    color: red;
+  }
+  40% {
+    opacity: 0.5;
+    color: aqua;
+  }
+  60% {
+    opacity: 1;
+    color: green;
+  }
+  80% {
+    opacity: 0.5;
+    color: palegreen;
+  }
+  90% {
+    opacity: 0.3;
+    color: blue;
+  }
+  100% {
+    opacity: 0;
+    color: cadetblue;
+  }
+}
+```
+
+### 使用动画
+
+> animation-duration 动画的时长  animation-delay 延时动画  暂停动画 animation-play-state:paused
+>
+> 运行动画 animation-play-state:running;  循环次数 animation-iteration-count: infinite;
+
+```css
+.fadeout {
+  animation: fadeOut 1s infinite;
+}
+```
+
+### 监听动画的事件
+
+```js
+var textDom = document.querySelector(".fadeOut");
+textDom.addEventListener("animationstart", function () {
+  console.log('animationstart')
+}, false);
+textDom.addEventListener("animationend", function () {
+  console.log('animationend')
+}, false);
+textDom.addEventListener("animationiteration", function () {
+  console.log('animationiteration');
+}, false);
+```
+
