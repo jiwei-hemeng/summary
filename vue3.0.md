@@ -628,7 +628,7 @@ export default {
 </script>
 ```
 
-##  expose / ref 的使用
+### expose / ref 的使用
 
 子组件可以通过 expose 暴露自身的方法和数据。
 
