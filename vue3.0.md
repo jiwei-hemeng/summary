@@ -350,7 +350,9 @@ prop：`value` -> `modelValue`
 
 event：`input` -> `update:modelValue`；
 
-**自定义指令**
+> 总结： vue中的v-model:title   相当于 title 的 prop 和  update:title 的 event
+
+### 自定义指令
 
 定义
 
