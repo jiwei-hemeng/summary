@@ -681,3 +681,11 @@ defineExpose({
 </script>
 ```
 
+### vue-router 在script setup 中的使用
+
+```js
+import { useRouter } from "vue-router";
+const router = useRouter();
+router.push([path]);
+```
+
