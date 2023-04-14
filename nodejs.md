@@ -278,29 +278,40 @@ cnpm install mysql
 创建*db.js* 
 
 ```js
-const mysql = require("mysql");
-module.exports = (sql, params) => {
+// @ts-nocheck
+import mysql from "mysql";
+export default function db(sql, params = undefined) {
   return new Promise((resolve, reject) => {
-    const conn = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "",
-      port:3306, // 端口号
-      database: "heroes_manager", // 数据库名，不是表名
-      timezone: "08:00", // 设置时区
+    const connection = mysql.createConnection({
+      host: "10.10.10.252",
+      user: "hais",
+      password: "hais123",
+      database: "hais",
+      port: "8006",
+      timezone: "08:00",
     });
-    // 3. 连接到mysql服务器
-    conn.connect();
-    // 4. 完成增删改查
-    conn.query(sql, params, (err, result) => {
-      // 将数据库返回的结果转为json
-      results = results.map(v => Object.assign({}, v));
-      resolve([err, result])
+    connection.connect();
+    connection.query(sql, params, (error, results) => {
+      if (error) {
+        console.log("异常信息:", error.sqlMessage)
+        console.log("执行的sql:", error.sql)
+        reject(error.sqlMessage);
+      }
+      try {
+        if(results instanceof Array) {
+          results = results.map(v => Object.assign({}, v));
+          resolve(JSON.parse(JSON.stringify(results)))
+        } else {
+          resolve(results)
+        } 
+      } catch(err) {
+        console.log("err.name", err.name)
+        reject(err)
+      }
     });
-    // 5. 关闭连接
-    conn.end();
-  })
-};
+    connection.end();
+  });
+}
 ```
 
 使用
