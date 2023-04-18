@@ -188,6 +188,8 @@ npm install vuex
 
 > Store 是用 `defineStore()` 定义的，它的第一个参数要求是一个**独一无二的**名字：这个**名字** ，也被用作 *id* ，是必须传入的， Pinia 将用它来连接 store 和 devtools。为了养成习惯性的用法，将返回的函数命名为 *use...* 是一个符合组合式函数风格的约定。
 
+## 基本使用
+
 ```js
 import { ref } from "vue";
 import { defineStore } from "pinia";
@@ -228,5 +230,32 @@ function setToken() {
     <button @click="setToken">设置token</button>
   </div>
 </template>
+```
+
+## 在普通js 中使用pinia
+
+在`@/stores/index` 文件中
+
+```js
+import { createPinia } from "pinia";
+const pinia = createPinia();
+export default pinia;
+```
+
+在`main.js` 中
+
+```js
+import { createApp } from "vue";
+import pinia from "@/stores"
+const app = createApp(App);
+app.use(pinia)
+```
+
+普通js 中
+
+```js
+import { useToken } from "@/stores/useInfo";
+import pinia from "@/stores";
+const store = useToken(pinia);
 ```
 
