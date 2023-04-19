@@ -121,25 +121,31 @@ ES6func()  // 1, 2
 
 ```js
 let person = {
-    name: "hemeng",
-    age: 24,
+  name: "hemeng",
+  age: 24,
 };
 person = new Proxy(person, {
-    get(target, key) {
-        console.log("xhg", target, key);
-        return target[key];
-    },
-    set(target, key, value) {
-        if (key === "age" && typeof value !== "number") {
-            throw Error("age字段必须为Number类型");
-        }
-        return Reflect.set(target, key, value);
-    },
+  get(target, key) {
+    return Reflect.get(target, key);
+  },
+  set(target, key, value) {
+    if (key === "age" && typeof value !== "number") {
+      throw Error("age字段必须为Number类型");
+    }
+    return Reflect.set(target, key, value);
+  },
+  deleteProperty(target, key) {
+    console.log("删除");
+    return Reflect.deleteProperty(target, key);
+  },
 });
 console.log("姓名", person.name);
-person.age = 20;
+person.age = 44;
 console.log("年龄", person.age);
-person.cls = "1-2"; // 不是响应式的不能修改
+person.cls = "1-2";
+console.log(person.cls);
+delete person.cls;
+console.log(person);
 ```
 
 ### Reflect
@@ -357,5 +363,4 @@ const showName = (data) => {
 }
 showName('fatfish')
 ```
-
 
