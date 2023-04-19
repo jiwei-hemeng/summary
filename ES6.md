@@ -135,7 +135,6 @@ person = new Proxy(person, {
     return Reflect.set(target, key, value);
   },
   deleteProperty(target, key) {
-    console.log("删除");
     return Reflect.deleteProperty(target, key);
   },
 });
