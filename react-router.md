@@ -95,11 +95,13 @@ navigate("/getUser?id=666")
 
 ### 获取query 参数
 
-如，页面/#/login?url=/invoices
+如，页面`/#/login?url=/invoices&tt=bb&aa=ii`
 
 ```js
 import { useSearchParams } from "react-router-dom";
-const [getSearchArr, searchParams] = useSearchParams();
-const url = getSearchArr.get("url");
+const [getSearchArr] = useSearchParams();
+for (let key of getSearchArr.keys()) {
+  console.log(key, getSearchArr.get(key));
+}
 ```
 
