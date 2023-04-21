@@ -85,3 +85,21 @@ function App({ token }) {
 export default App;
 ```
 
+### 编程式导航
+
+```js
+import { useNavigate } from "react-router-dom";
+const navigate = useNavigate();
+navigate("/getUser?id=666")
+```
+
+### 获取query 参数
+
+如，页面/#/login?url=/invoices
+
+```js
+import { useSearchParams } from "react-router-dom";
+const [getSearchArr, searchParams] = useSearchParams();
+const url = getSearchArr.get("url");
+```
+
