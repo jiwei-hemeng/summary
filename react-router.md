@@ -99,9 +99,9 @@ navigate("/getUser?id=666")
 
 ```js
 import { useSearchParams } from "react-router-dom";
-const [getSearchArr] = useSearchParams();
-for (let key of getSearchArr.keys()) {
-  console.log(key, getSearchArr.get(key));
+const [searchParams] = useSearchParams();
+for (let key of searchParams.keys()) {
+  console.log(key, searchParams.get(key));
 }
 ```
 
