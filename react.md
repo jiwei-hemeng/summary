@@ -1102,3 +1102,13 @@ setState一定是异步操作吗? 其实`在React 18之前`分成两种情况：
 
 `在React18之后`，默认所有的操作都被放到了批处理中（也就是默认所有操作都是异步处理的）
 
+在React 18之后, 如果希望代码可以同步会拿到，则需要执行特殊的flushSync操作:
+
+```JS
+import { flushSync } from 'react-dom';
+flushSync(() => {
+  this.setState({ message: "你好啊" })
+})
+console.log(this.state.message) // 你好啊 这里获取就是同步的
+```
+
