@@ -550,3 +550,16 @@ export default ({ mode }) => {
 };
 ```
 
+### vite 批量获取模块
+
+```js
+async function getModules() {
+  const modules = import.meta.glob("../pages/*.jsx");
+  for (const path in modules) {
+    const module = await modules[path]();
+    console.log("module", module);
+  }
+}
+getModules();
+```
+
