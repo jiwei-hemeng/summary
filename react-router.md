@@ -127,6 +127,9 @@ import { router } from "@/router";
 import Index from "@/pages/index";
 import Home from "@/pages/expenses";
 import Login from "@/pages/login";
+const NotFound = () => {
+  return <div>一朝一夕日复日，半醉半醒浮生梦</div>
+}
 function App() {
   const [routerList, setRouterList] = useState([]);
   async function getRouter() {
@@ -136,7 +139,7 @@ function App() {
     const routerlist = result.map((item) => {
       return {
         ...item,
-        path: item.path.replace("/index/", ""),
+        path: item.path,
         element: router[item.name],
       };
     });
@@ -162,6 +165,7 @@ function App() {
           })}
         </Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
