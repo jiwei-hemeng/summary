@@ -215,6 +215,9 @@ cat 2.txt > 1.txt
 tar -czvf test.tar.gz a.c
 # 解压文件
 tar -xzvf test.tar.gz a.c
+# 建立软连接
+ln -s /usr/local/node/node-v18.12.0-linux-x64/bin/node /usr/local/bin/node
+ln -s /usr/local/node/node-v18.12.0-linux-x64/bin/npm /usr/local/bin/npm
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
