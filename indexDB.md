@@ -182,7 +182,7 @@ function read (id = "global", tableName = "global") {
 
 ```js
 /**
- * 通过索引和游标分页查询记录
+ * 通过索引查询
  * @param {string} storeName 仓库名称
  * @param {string} indexName 索引名称
  * @param {string} indexValue 索引值
