@@ -39,10 +39,12 @@ request.onupgradeneeded = function (event) {
 + autoIncrement：boolean类型，键生成器，是否自动生成，默认false
 
 ```js
-const routersStore = db.createObjectStore("routers", {
-  keyPath: "id",
-  autoIncrement: true,
-});
+if (!db.objectStoreNames.contains("routers")) {
+  const routersStore = db.createObjectStore("routers", {
+    keyPath: "id",
+    autoIncrement: true,
+  });
+}
 ```
 
 ### createIndex
