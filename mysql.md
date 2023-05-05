@@ -57,14 +57,24 @@ use company;
 ```mysql
 # create table <表名>
 create table user;
-CREATE TABLE `rpt_oe_exposure_for_hundred_bed_rate_monthly` (
-  `year_id` year NOT NULL COMMENT '统计年度',
-  `month_id` tinyint unsigned NOT NULL COMMENT '统计月份',
-  `exposure_cases` int(11) NOT NULL DEFAULT '0' COMMENT '职业暴露发生例次数',
-  `inpatient_days` int(11) NOT NULL DEFAULT '0' COMMENT '患者住院日数',
-  `bed_rate` float(10,2) DEFAULT NULL COMMENT '每百床日职业暴露发生率',
-  PRIMARY KEY (year_id,month_id) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+CREATE TABLE `test_a` (
+`id` char(32) NOT NULL COMMENT '主键ID',
+`work_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增列',
+`creator_id` char(32) DEFAULT NULL COMMENT '创建人',
+`create_time` datetime DEFAULT NULL COMMENT '创建时间',
+`modifier_id` char(32) DEFAULT NULL COMMENT '修改人',
+`modify_time` datetime DEFAULT NULL COMMENT '修改时间',
+`status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态:1 启动 0 停用',
+`deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记：0、未删除 1、已删除',
+`handle_mission` tinyint(1) unsigned zerofill DEFAULT NULL COMMENT '手动完成，0，正常上刊任务；1，手动完成任务',
+`signed_customer` varchar(64) DEFAULT NULL COMMENT '签约客户',
+# 主键索引
+PRIMARY KEY (`id`) USING BTREE,
+# 唯一索引
+UNIQUE KEY `index_id` (`id`) USING BTREE,
+# 索引
+KEY `index_signed_customer` (`signed_customer`) USING BTREE,
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4
 ```
 
 获取数据库表结构
