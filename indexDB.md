@@ -181,18 +181,21 @@ function read (id = "global", tableName = "global") {
 ## 查询索引
 
 ```js
-const getDataByIndex = (
-  query = { key: "path", value: null },
-  tableName = "routers"
-) => {
+/**
+ * 通过索引和游标分页查询记录
+ * @param {object} db 数据库实例
+ * @param {string} storeName 仓库名称
+ * @param {string} indexName 索引名称
+ * @param {string} indexValue 索引值
+ */
+function getDataByIndex(db, storeName, indexName, indexValue) {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([tableName], "readonly");
-    const store = transaction.objectStore(tableName);
-    const index = store.index(query.key);
-    const request = index.getAll(query.value);
+    const transaction = db.transaction([storeName], "readonly");
+    const store = transaction.objectStore(storeName);
+    const index = store.index(indexName);
+    const request = index.getAll(indexValue);
     request.onsuccess = function (e) {
       const result = e.target.result;
-      console.log("result", result);
       if (result) {
         resolve(result);
       } else {
@@ -201,6 +204,63 @@ const getDataByIndex = (
     };
   });
 };
+```
+
+## 通过索引和游标分页查询
+
+```js
+/**
+ * 通过索引和游标分页查询记录
+ * @param {string} storeName 仓库名称
+ * @param {string} indexName 索引名称
+ * @param {string} indexValue 索引值
+ * @param {number} page 页码
+ * @param {number} pageSize 查询条数
+ */
+function cursorGetDataByIndexAndPage(
+  storeName,
+  indexName,
+  indexValue,
+  page,
+  pageSize
+) {
+  return new Promise((resolve, reject) => {
+    let list = [];
+    let counter = 0; // 计数器
+    let advanced = true; // 是否跳过多少条查询
+    // 仓库对象
+    const store = db.transaction(storeName, "readwrite").objectStore(storeName);
+    const request = store
+      .index(indexName) // 索引对象
+      .openCursor(IDBKeyRange.only(indexValue)); // 指针对象
+    request.onsuccess = function (e) {
+      let cursor = e.target.result;
+      if (page > 1 && advanced) {
+        advanced = false;
+        cursor.advance((page - 1) * pageSize); // 跳过多少条
+        return;
+      }
+      if (cursor) {
+        // 必须要检查
+        list.push(cursor.value);
+        counter++;
+        if (counter < pageSize) {
+          cursor.continue(); // 遍历了存储对象中的所有内容
+        } else {
+          cursor = null;
+          resolve(list);
+          console.log("分页查询结果", list);
+        }
+      } else {
+        resolve(list);
+        console.log("分页查询结果", list);
+      }
+    };
+    request.onerror = function (e) {
+      reject(e);
+    };
+  });
+}
 ```
 
 # WebSQL
