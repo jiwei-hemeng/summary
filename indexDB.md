@@ -203,7 +203,7 @@ const getDataByIndex = (
 };
 ```
 
-# mysql
+# WebSQL
 
 > 1. WebSQL也是一种在[浏览器](https://www.baidu.com/s?wd=浏览器&from=1012015a&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1Y4PhRYuj9BnHbYrH79ry790ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EnH6vnWcLPHb1n1f1PjD4PHTYPs)里存储数据的技术,跟IndexedDB不同的是,IndexedDB更像是一个[NoSQL数据库](https://www.baidu.com/s?wd=NoSQL数据库&from=1012015a&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1Y4PhRYuj9BnHbYrH79ry790ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EnH6vnWcLPHb1n1f1PjD4PHTYPs),而WebSQL更像是[关系型数据库](https://www.baidu.com/s?wd=关系型数据库&from=1012015a&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1Y4PhRYuj9BnHbYrH79ry790ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EnH6vnWcLPHb1n1f1PjD4PHTYPs),使用SQL查询数据。
 
