@@ -183,12 +183,11 @@ function read (id = "global", tableName = "global") {
 ```js
 /**
  * 通过索引和游标分页查询记录
- * @param {object} db 数据库实例
  * @param {string} storeName 仓库名称
  * @param {string} indexName 索引名称
  * @param {string} indexValue 索引值
  */
-function getDataByIndex(db, storeName, indexName, indexValue) {
+function getDataByIndex(storeName, indexName, indexValue) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([storeName], "readonly");
     const store = transaction.objectStore(storeName);
