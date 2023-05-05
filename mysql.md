@@ -116,6 +116,13 @@ update student set age=20 where id=1;
 alter table student add address varchar(40) default null;
 ```
 
+修改字段
+
+```sql
+# alter table [表名] modify [字段名] [类型] comment '是否发送OA';
+alter table msg_type_config modify oa_flag tinyint(3) unsigned comment '是否发送OA';
+```
+
 删除字段  (删除列) :
 
 ```mysql
