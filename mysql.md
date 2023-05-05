@@ -131,6 +131,10 @@ alter table student add address varchar(40) default null;
 ```sql
 # alter table [表名] modify [字段名] [类型] comment '是否发送OA';
 alter table msg_type_config modify oa_flag tinyint(3) unsigned comment '是否发送OA';
+# 修改表名
+alter table test_a rename to test_b;
+# 修改表注释
+alter table test_a comment 'test_a字段注释';
 ```
 
 删除字段  (删除列) :
