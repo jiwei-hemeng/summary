@@ -249,7 +249,7 @@ push(a, 1, 2, 3);
 
 ## TypeScript 内置方法
 
-### Uppercase
+### Uppercase 化为大写
 
 使用`Uppercase`方法将其全部转化为大写。
 
@@ -261,7 +261,7 @@ type UppercaseRole = "ADMIN" | "USER" | "GUEST";
 type UppercaseRole = Uppercase<Role>; // "ADMIN" | "USER" | "GUEST"
 ```
 
-### Lowercase
+### Lowercase 转化为小写
 
 使用`Lowercase`方法将其全部转化为小写。
 
@@ -273,7 +273,7 @@ type LowercaseRole = "admin" | "user" | "guest";
 type LowercaseRole = Lowercase<Role>; *// "admin" | "user" | "guest"*
 ```
 
-### Capitalize
+### Capitalize 首字母大写
 
 将所有属性的首字母大写
 
@@ -285,7 +285,7 @@ type CapitalizeRole = "Admin" | "User" | "Guest";
 type CapitalizeRole = Capitalize<Role>; // "Admin" | "User" | "Guest"
 ```
 
-### Uncapitalize
+### Uncapitalize 取消首字母大写
 
 与`Capitalize`相反，将所有属性取消首字母大写。
 
@@ -297,7 +297,7 @@ type UncapitalizeRole = "admin" | "user" | "guest";
 type UncapitalizeRole = Uncapitalize<Role>; // "admin" | "user" | "guest"
 ```
 
-### Partial
+### Partial 可选属性
 
 将定义的接口中的属性设置为可选属性。
 
@@ -317,7 +317,7 @@ interface PartialUser {
 type PartialUser = Partial<User>;
 ```
 
-###  Required
+###  Required 设置为必需
 
 与Partial相反，Required可以将接口中的可选属性设置为必需。
 
@@ -337,7 +337,7 @@ interface RequiredUser {
 type RequiredUser = Required<User>;
 ```
 
-### Readonly
+### Readonly 设置为只读
 
 将属性设置为只读
 
@@ -354,7 +354,7 @@ const user: ReadonlyUser = { role: "ADMIN" };
 user.role = "USER"; // 将属性'role'设置为只读后，再次对'role'设值就会报错
 ```
 
-### Record
+### Record 映射一个类型的属性到另一个类型
 
 构造一个对象类型，其属性key是`Keys`,属性value是`Tpye`。被用于映射一个类型的属性到另一个类型。
 
@@ -371,7 +371,7 @@ interface Addresses {
 type AddressesRecord = Record<"home" | "office", Address>;
 ```
 
-### Pick
+### Pick 取出几个想要的类型
 
 就是从一个复合类型中，取出几个想要的类型的组合，例如：
 
@@ -390,7 +390,7 @@ interface UserPartial {
 type UserPartial = Pick<User, "name" | "age">;
 ```
 
-### Omit
+### Omit 剔除某些属性
 
 `Omit`是TypeScript3.5新增的一个辅助类型，它的作用主要是：以一个类型为基础支持剔除某些属性，然后返回一个新类型。
 
@@ -409,7 +409,7 @@ interface UserPartial {
 type UserPartial = Omit<User, "password">;
 ```
 
-### Exclude
+### Exclude  属性排除
 
 将类型中其中一些属性排除，并创建排除属性后的新类型。
 
@@ -421,7 +421,7 @@ type NonAdminRole = "USER" | "GUEST";
 type NonAdmin = Exclude<Role, "ADMIN">; // "USER" | "GUEST"
 ```
 
-### Extract
+### Extract 分配给联合的类型中提取所有联合成员来创建新类型
 
 它通过从可分配给联合的类型中提取所有联合成员来创建新类型。
 
@@ -435,7 +435,7 @@ type AdminRole = "ADMIN";
 type Admin = Extract<Role, "ADMIN">; // "ADMIN"
 ```
 
-### NonNullable
+### NonNullable 从类型中排除`null`和`undefined`来创建新类型
 
 通过从类型中排除`null`和`undefined`来创建新类型。
 
