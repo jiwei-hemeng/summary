@@ -288,3 +288,6 @@ top
 kill [pid]
 ```
 
+### 谷歌浏览器长截屏
+
+按 f12 ,  再按 ctrl+shift+P ,输入 Capture full size screenshot
