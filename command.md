@@ -47,6 +47,8 @@ git remote rm origin
 git diff --check
 # 修改提交信息(commit message)
 git commit --amend --only -m 'xxxxxxx'
+# 强制推送
+git push -f origin mian
 ```
 
 ### **Git 配置命令**
