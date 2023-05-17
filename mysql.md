@@ -186,10 +186,48 @@ mysqldump -uroot -p  company > 123.sql
 mysqldump -uroot -p company admin > outfile.sql
 ```
 
-查看第n行后的m条记录
+**查看第n行后的m条记录**
 
 ```mysql
 # select * from <表名> limit row,rows;
 select * from student limit n,m;
+```
+
+**模糊查询**
+
+​	like
+
+   %表示任意多个任意字符
+
+   _ 表示一个任意字符
+
+```sql
+select * from t_student where c_name like '孙';
+select * from t_student where c_name like '孙%';
+select * from t_student where c_name like '孙_';
+```
+
+**范围查询**
+
+in 表示在一个非连续的范围内 , 可以使用 or 实现
+
+```
+select * from t_students where id in(1,3,8);
+select * from t_students where id =1 or id =3 or id =8);
+```
+
+**空判断**
+
+```sql
+# 判断空值
+select * from t_student where c_age is null;
+# 判断非空值
+select * from t_student where c_age is not null;
+```
+
+**多字段排序**
+
+```sql
+select * from t_student order by c_age desc,c_id asc;
 ```
 
