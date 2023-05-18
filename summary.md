@@ -1334,7 +1334,17 @@ const regex = /world/g;
 console.log(strText.replaceAll(regex, "china")); // hello china,i love china
 ```
 **验证数字类型**
+
 ```js
 const reg = /^(([1-9]{1}\d*)|(0{1}))((.\d{1,})?)$/;
 reg.test(123.2323) // result: true
 ```
+
+**验证特殊字符**
+
+```js
+const reg = /^[\u0391-\uFFE5\w]+$/;
+reg.test('123'); // result: true
+reg.test("12@33"); // result: false
+```
+
