@@ -259,3 +259,21 @@ import pinia from "@/stores";
 const store = useToken(pinia);
 ```
 
+## Pinia 函数式的计算属性
+
+```js
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
+
+export const useToken = defineStore("token", () => {
+  const token = ref(sessionStorage.getItem("token"));
+  // 计算属性
+  const isLogin = computed(() => !!token.value);
+  function setToken(value) {
+    token.value = value;
+    sessionStorage.setItem("token", value);
+  }
+  return { token, isLogin, setToken };
+});
+```
+
