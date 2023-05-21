@@ -565,8 +565,12 @@ input[type="number"]::-webkit-outer-spin-button {
 **解决办法**
 
 + 可以将<li>代码写成一排
+
 + 浮动li中float: left;
+
 + 在ul中用font-size: 0(谷歌不支持);可以使用letter-space: -3px;
+
+  > letter-space: 字间距
 
 ##  行内元素什么时候会显示间隙
 
@@ -1396,3 +1400,6 @@ textDom.addEventListener("animationiteration", function () {
 }, false);
 ```
 
+### word-space与letter-space
+
+word-space 是单词的字间距；latter-space: 是字符的字间距
