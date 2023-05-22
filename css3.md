@@ -367,9 +367,20 @@ item-2 = 600 - 600 * 0.076 * 2 = 508
 
 > 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
 
-设置元素的首字母、首行的样式 `::first-letter`、`::first-line`
+### 设置元素的首字母、首行的样式 `::first-letter`、`::first-line`
 
-在元素的内容之前或之后插入内容 `::after`、 `::before`
+```css
+p:first-of-type::first-letter {
+    color: #666;
+    float: left;
+    font-family: "Georgio";
+    font-size: 4em;
+    line-height: 4vh;
+    padding-right: 4px;
+}
+```
+
+### 在元素的内容之前或之后插入内容 `::after`、 `::before`
 
 ### 选择用户选择的元素部分 `::selection`
 
@@ -426,22 +437,12 @@ h5:has(+ p) { font-size: 1rem; }
 
 **注意**上面代码中 `:has` 伪类的参数，选择符`>`直接写在了参数的最前面，而不是 `a:has(a > img)` 这样的写法。可以理解为 `:has()` 伪类的参数的最前面有一个看不见的 `:scope` 伪类，因此，`a:has(a > img)`这样的写法是不合法的。
 
-# 其他
+# css 新特性
 
-## 首字下沉
-
-> 使用 first-letter 伪元素来装饰你的第一个字母，不需要使用 span 和 .dropcap 类名。
-
-```css
-p:first-of-type::first-letter {
-    color: #666;
-    float: left;
-    font-family: "Georgio";
-    font-size: 4em;
-    line-height: 4vh;
-    padding-right: 4px;
-}
-```
+> + CSS实现圆角（border-radius）,阴影（box-shadow）,边框图片border-image
+> + 对文字加特效（text-shadow）,强制文本换行（word-wrap）,线性渐变（linear-gradient）
+> + 旋转，缩放，定位，倾斜
+> + 查询（@media）,多栏布局（flex）
 
 ## 平滑滚动
 
@@ -560,13 +561,6 @@ img {
 **方法三：**
 
 父盒子给 display: flex;align-items: center;justify-content: center;
-
-## C3新特性
-
-- CSS实现圆角（border-radius）,阴影（box-shadow）,边框图片border-image
-- 对文字加特效（text-shadow）,强制文本换行（word-wrap）,线性渐变（linear-gradient）
-- 旋转，缩放，定位，倾斜
-- 查询（@media）,多栏布局（flex）
 
 ## less 中的混入(mixin)
 
