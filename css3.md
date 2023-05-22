@@ -182,8 +182,6 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 
 ## 让flex布局的最后一行左对齐
 
-**方案一：行数固定解决办法**
-
 **对应的html**
 
 ```html
@@ -211,45 +209,6 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 }
 .list:not(:nth-child(4n)) {
   margin-right: calc(4% / 3);
-}
-```
-
-**方案二：每一行列数不固定**
-
-**对应的html**
-
-```html
-<div class="container">
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <!--比div少一个-->
-  <i></i><i></i><i></i><i></i><i></i> 
-</div>
-```
-
-**对应的css**
-
-```css
-.container {
-  display: flex;
-  jusify-content: space-between;
-  flex-wrap: wrap;
-  margin-right: -10px;
-}
-.list {
-  width: 100px;
-  height: 100px;
-  background-color: skyblue;
-  margin: 15px 10px 0 0;
-}
-.container>i {
-  /* 此处必须和list宽度保持一致 */
-  width: 100px;
-  margin-right: 10px;
 }
 ```
 
