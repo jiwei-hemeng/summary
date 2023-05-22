@@ -1,3 +1,5 @@
+# css 中的函数
+
 ## css的calc()函数
 
 **在less或sass中经常会遇到**
@@ -126,14 +128,304 @@ div {
 - SASS 变量代码经过编译后，变量也就消失了。因此，我们不能在 CSS 运行时更改变量值。
 - 预处理器中的变量范围归结为嵌套的大括号块。然而，因为 CSS 变量是属性，所以它们的作用域是基于 DOM 的。这意味着 CSS 变量是按元素解析的，而不是按作用域解析的
 
-## 文本选择颜色
+# 媒体查询
+
+## 关于媒体查询
+
+H5的新特性，为了移动端的使用而新增的特性，使用 @media 查询，你可以针对不同的媒体类型定义不同的样式，响应式布局就是使用媒体查询的原理
+
+```css
+@media only screen and (min-width: 320px) and (max-width: 767px) {}
+/* 横屏、竖屏 显示 */
+@media screen and (orientation: landscape) {}
+@media screen and (orientation: portrait) {}
+/* 当前的系统主题 */
+@media (prefers-color-scheme: dark) { //... } 
+@media (prefers-color-scheme: light) { //... }
+/* 像素比 */
+@media screen and (-webkit-min-device-pixel-ratio: 2) {}
+@media screen and (-webkit-min-device-pixel-ratio: 3) {}
+```
+
+# flex 布局
+
+## 关于flex布局
+
++ flex-direction：设置主轴的方向
++ justify-content：设置主轴上的子元素排列方式
++ flex-wrap：设置子元素是否换行  
++ align-content：设置侧轴上的子元素的排列方式（多行）
++ align-items：设置侧轴上的子元素排列方式（单行）
++ flex-flow：复合属性，相当于同时设置了 flex-direction 和 flex-wrap
+
+### 让flex布局的最后一行左对齐
+
+**方案一：行数固定解决办法**
+
+**对应的html**
+
+```html
+<div class="container">
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+</div>
+```
+
+**对应的css**
+
+```css
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.list {
+  width: 24%;
+  height: 100px;
+  background-color: skyblue;
+  margin-top: 15px;
+}
+.list:not(:nth-child(4n)) {
+  margin-right: calc(4% / 3);
+}
+```
+
+**方案二：每一行列数不固定**
+
+**对应的html**
+
+```html
+<div class="container">
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <div class="list"></div>
+  <!--比div少一个-->
+  <i></i><i></i><i></i><i></i><i></i> 
+</div>
+```
+
+**对应的css**
+
+```css
+.container {
+  display: flex;
+  jusify-content: space-between;
+  flex-wrap: wrap;
+  margin-right: -10px;
+}
+.list {
+  width: 100px;
+  height: 100px;
+  background-color: skyblue;
+  margin: 15px 10px 0 0;
+}
+.container>i {
+  /* 此处必须和list宽度保持一致 */
+  width: 100px;
+  margin-right: 10px;
+}
+```
+
+## flex属性 是哪些属性的简写
+
+> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0% 的简写。
+
+ **flex-grow**
+
+该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
+
+**flex-shrink**
+
+该属性用来设置，当父元素的宽度小于所有子元素的宽度的和时（即子元素会超出父元素），子元素如何缩小自己的宽度的。 `flex-shrink`的默认值为1，当父元素的宽度小于所有子元素的宽度的和时，子元素的宽度会减小。值越大，减小的越厉害。如果值为0，表示不减小。
+
+**flex-basis**
+
+该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
+
+## flex 计算
+
+第一步中：
+
+- `auto`：使用子元素的尺寸
+- 长度：使用此固定长度
+- 百分比：根据其包含块（即伸缩父容器）的主尺寸计算。如果包含块的主尺寸未定义（即父容器的主尺寸取决于子元素），则计算结果和设为 `auto` 一样
+
+第二步中：
+
+如果经过第一步填充之后，父元素还有剩余宽度，则执行 flex-grow 计算，如果内容超出，则根据 flex-shrink 计算。
+
+### 实例一：拉伸
+
+```html
+<style>
+.parent {
+  display: flex;
+  width: 600px;
+}
+
+.parent > div {
+  height: 100px;
+}
+
+.item-1 {
+  width: 140px;
+  flex: 2 1 0%;
+  background: blue;
+}
+
+.item-2 {
+  width: 100px;
+  flex: 2 1 auto;
+  background: darkblue;
+}
+
+.item-3 {
+  flex: 1 1 200px;
+  background: lightblue;
+}
+</style>
+<div  class="parent">
+  <div  class="item-1"></div>
+  <div  class="item-2"></div>
+  <div  class="item-3"></div>
+</div>
+```
+
+第一步：
+
+- 主轴上父容器总尺寸为 600px
+- 子元素的总基准值是：0% + auto + 200px = 300px
+
+第二步：
+
+- 剩余空间为 600px - 300px = 300px，有剩余空间，需要拉伸
+- 伸缩放大系数之和为： 2 + 2 + 1 = 5
+- 剩余空间分配如下：
+
+```
+item-1 和 item-2 各分配 2/5，各得 120px
+item-3 分配 1/5，得 60px
+```
+
+- 各项目最终宽度为：
+
+```ini
+item-1 = 0% + 120px = 120px
+item-2 = auto + 120px = 220px
+item-3 = 200px + 60px = 260px
+```
+
+### 实例二：缩小
+
+```html
+<style>
+.item-4 {
+    width: 100px;
+    flex: 2 1 0;
+    background: blue;
+}
+.item-5 {
+    width: 600px;
+    flex: 2 2 auto;
+    background: lightblue;
+}
+</style>
+<div  class="parent">
+    <div  class="item-4"></div>
+    <div  class="item-5"></div>
+</div>
+```
+
+ **第一步，计算基准值：**
+
+子元素的总基准值是：100px + 600px = 700px，大于600px，需要缩小；
+
+**第二步，计算缩放：**
+
+设缩小因子为x；
+
+```ini
+100 * x + 600 * 2x = 700 - 600 // result x = 0.076
+```
+
+各项目最终宽度为：
+
+```ini
+item-1 = 100 - 100 * 0.076 = 92.4
+item-2 = 600 - 600 * 0.076 * 2 = 508
+```
+
+# 伪元素
+
+## 伪类，伪元素
+
+>  CSS3 规范中有一部分要求，为了区分伪类和伪元素，伪元素使用两个冒号 (::)， 伪类使用一个冒号 (:)
+
+**伪类**
+
+> 概念: 为处于某个状态的已有元素添加对应的样式，这个状态是根据用户行为而动态改变的
+
+设置鼠标悬停在元素上时的样式： `:hover`
+
+为已访问和未访问链接设置不同的样式： `:link`、`:visited`、`:active`
+
+设置元素获得焦点时的样式： `:focus`
+
+选择每个被选中的元素： `:checked`
+
+表单元素验证是否必填、通过和不通过: `:required`、 `:valid`、`:invalid`
+
+选择页面中为空的元素：`:empty`
+
+不包含：`:not()`
+
+**伪元素**
+
+> 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
+
+设置元素的首字母、首行的样式 `::first-letter`、`::first-line`
+
+在元素的内容之前或之后插入内容 `::after`、 `::before`
+
+选择用户选择的元素部分 `::selection`
 
 ```css
 ::selection {
     background-color: #ccc;
     color: #666;
 }
+/* 禁用用户选择 */
+
 ```
+
+伪类选择器 `:focus-within`
+
+> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
+
+```html
+<div class="warp">
+  <label for="name">姓名</label>
+  <input type="text" name="" id="name" />
+</div>
+<style>
+  .warp {
+    width: 100%;
+    height: 100px;
+  }
+  .warp:focus-within {
+    border: 1px dashed skyblue;
+  }
+</style>
+```
+
+# 其他
+
+
 
 ## 首字下沉
 
@@ -335,105 +627,6 @@ img {
 + 给父盒子添加overflow：hidden  让他溢出隐藏
 + 给父盒子设定padding值 
 
-## 关于flex布局
-
-+ flex-direction：设置主轴的方向
-+ justify-content：设置主轴上的子元素排列方式
-+ flex-wrap：设置子元素是否换行  
-+ align-content：设置侧轴上的子元素的排列方式（多行）
-+ align-items：设置侧轴上的子元素排列方式（单行）
-+ flex-flow：复合属性，相当于同时设置了 flex-direction 和 flex-wrap
-
-### 让flex布局的最后一行左对齐
-
-**方案一：行数固定解决办法**
-
-**对应的html**
-
-```html
-<div class="container">
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-</div>
-```
-
-**对应的css**
-
-```css
-.container {
-  display: flex;
-  flex-wrap: wrap;
-}
-.list {
-  width: 24%;
-  height: 100px;
-  background-color: skyblue;
-  margin-top: 15px;
-}
-.list:not(:nth-child(4n)) {
-  margin-right: calc(4% / 3);
-}
-```
-
-**方案二：每一行列数不固定**
-
-**对应的html**
-
-```html
-<div class="container">
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <div class="list"></div>
-  <!--比div少一个-->
-  <i></i><i></i><i></i><i></i><i></i> 
-</div>
-```
-
-**对应的css**
-
-```css
-.container {
-  display: flex;
-  jusify-content: space-between;
-  flex-wrap: wrap;
-  margin-right: -10px;
-}
-.list {
-  width: 100px;
-  height: 100px;
-  background-color: skyblue;
-  margin: 15px 10px 0 0;
-}
-.container>i {
-  /* 此处必须和list宽度保持一致 */
-  width: 100px;
-  margin-right: 10px;
-}
-```
-
-## 关于媒体查询
-
-H5的新特性，为了移动端的使用而新增的特性，使用 @media 查询，你可以针对不同的媒体类型定义不同的样式，响应式布局就是使用媒体查询的原理
-
-```css
-@media only screen and (min-width: 320px) and (max-width: 767px) {}
-/* 横屏、竖屏 显示 */
-@media screen and (orientation: landscape) {}
-@media screen and (orientation: portrait) {}
-/* 当前的系统主题 */
-@media (prefers-color-scheme: dark) { //... } 
-@media (prefers-color-scheme: light) { //... }
-/* 像素比 */
-@media screen and (-webkit-min-device-pixel-ratio: 2) {}
-@media screen and (-webkit-min-device-pixel-ratio: 3) {}
-```
-
 ## 怎么让Chrome支持小于12px 的文字
 
 > 谷歌Chrome最小字体是12px，不管你设置成8px还是10px，在浏览器中只会显示12px，那么如何解决这个坑爹的问题呢？
@@ -527,26 +720,6 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-```
-
-## 伪类选择器 `:focus-within`
-
-> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
-
-```html
-<div class="warp">
-    <label for="name">姓名</label>
-    <input type="text" name="" id="name" />
-</div>
-<style>
-    .warp {
-        width: 100%;
-        height: 100px;
-    }
-    .warp:focus-within {
-        border: 1px dashed skyblue;
-    }
-</style>
 ```
 
 ## 标准盒模型和怪异盒模型的区别
@@ -1064,167 +1237,6 @@ clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70
     }
   }
 </style>
-```
-
-## 伪类，伪元素
-
->  CSS3 规范中有一部分要求，为了区分伪类和伪元素，伪元素使用两个冒号 (::)， 伪类使用一个冒号 (:)
-
-**伪类**
-
-> 概念: 为处于某个状态的已有元素添加对应的样式，这个状态是根据用户行为而动态改变的
-
-设置鼠标悬停在元素上时的样式： `:hover`
-
-为已访问和未访问链接设置不同的样式： `:link`、`:visited`、`:active`
-
-设置元素获得焦点时的样式： `:focus`
-
-选择每个被选中的元素： `:checked`
-
-表单元素验证是否必填、通过和不通过: `:required`、 `:valid`、`:invalid`
-
-选择页面中为空的元素：`:empty`
-
-不包含：`:not()`
-
-**伪元素**
-
-> 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
-
-设置元素的首字母、首行的样式 `::first-letter`、`::first-line`
-
-在元素的内容之前或之后插入内容 `::after`、 `::before`
-
-选择用户选择的元素部分 `::selection`
-
-## flex属性 是哪些属性的简写
-
-> flex: 1就是flex-grow: 1; flex-shrink; 1; flex-basis: 0% 的简写。
-
- **flex-grow**
-
-该属性用来设置当父元素的宽度大于所有子元素的宽度的和时（即父元素会有剩余空间），子元素如何分配父元素的剩余空间。 `flex-grow`的默认值为0，意思是该元素不索取父元素的剩余空间，如果值大于0，表示索取。值越大，索取的越厉害。
-
-**flex-shrink**
-
-该属性用来设置，当父元素的宽度小于所有子元素的宽度的和时（即子元素会超出父元素），子元素如何缩小自己的宽度的。 `flex-shrink`的默认值为1，当父元素的宽度小于所有子元素的宽度的和时，子元素的宽度会减小。值越大，减小的越厉害。如果值为0，表示不减小。
-
-**flex-basis**
-
-该属性用来设置元素的宽度，其实，width也可以设置宽度。如果元素上同时设置了width和flex-basis，那么width 的值就会被flex-basis覆盖掉。
-
-## flex 计算
-
-第一步中：
-
-- `auto`：使用子元素的尺寸
-- 长度：使用此固定长度
-- 百分比：根据其包含块（即伸缩父容器）的主尺寸计算。如果包含块的主尺寸未定义（即父容器的主尺寸取决于子元素），则计算结果和设为 `auto` 一样
-
-第二步中：
-
-如果经过第一步填充之后，父元素还有剩余宽度，则执行 flex-grow 计算，如果内容超出，则根据 flex-shrink 计算。
-
-### 实例一：拉伸
-
-```html
-<style>
-.parent {
-  display: flex;
-  width: 600px;
-}
-
-.parent > div {
-  height: 100px;
-}
-
-.item-1 {
-  width: 140px;
-  flex: 2 1 0%;
-  background: blue;
-}
-
-.item-2 {
-  width: 100px;
-  flex: 2 1 auto;
-  background: darkblue;
-}
-
-.item-3 {
-  flex: 1 1 200px;
-  background: lightblue;
-}
-</style>
-<div  class="parent">
-  <div  class="item-1"></div>
-  <div  class="item-2"></div>
-  <div  class="item-3"></div>
-</div>
-```
-
-第一步：
-
-- 主轴上父容器总尺寸为 600px
-- 子元素的总基准值是：0% + auto + 200px = 300px
-
-第二步：
-
-- 剩余空间为 600px - 300px = 300px，有剩余空间，需要拉伸
-- 伸缩放大系数之和为： 2 + 2 + 1 = 5
-- 剩余空间分配如下：
-
-```
-item-1 和 item-2 各分配 2/5，各得 120px
-item-3 分配 1/5，得 60px
-```
-
-- 各项目最终宽度为：
-
-```ini
-item-1 = 0% + 120px = 120px
-item-2 = auto + 120px = 220px
-item-3 = 200px + 60px = 260px
-```
-
-### 实例二：缩小
-
-```html
-<style>
-.item-4 {
-    width: 100px;
-    flex: 2 1 0;
-    background: blue;
-}
-.item-5 {
-    width: 600px;
-    flex: 2 2 auto;
-    background: lightblue;
-}
-</style>
-<div  class="parent">
-    <div  class="item-4"></div>
-    <div  class="item-5"></div>
-</div>
-```
-
- **第一步，计算基准值：**
-
-子元素的总基准值是：100px + 600px = 700px，大于600px，需要缩小；
-
-**第二步，计算缩放：**
-
-设缩小因子为x；
-
-```ini
-100 * x + 600 * 2x = 700 - 600 // result x = 0.076
-```
-
-各项目最终宽度为：
-
-```ini
-item-1 = 100 - 100 * 0.076 = 92.4
-item-2 = 600 - 600 * 0.076 * 2 = 508
 ```
 
 ## css中涉及到的百分比的参照对象总结
