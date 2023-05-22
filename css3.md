@@ -130,21 +130,43 @@ div {
 
 # 媒体查询
 
-## 关于媒体查询
-
 H5的新特性，为了移动端的使用而新增的特性，使用 @media 查询，你可以针对不同的媒体类型定义不同的样式，响应式布局就是使用媒体查询的原理
 
 ```css
 @media only screen and (min-width: 320px) and (max-width: 767px) {}
-/* 横屏、竖屏 显示 */
+```
+
+## 横屏、竖屏 显示
+
+```css
 @media screen and (orientation: landscape) {}
 @media screen and (orientation: portrait) {}
-/* 当前的系统主题 */
+```
+
+## 当前的系统主题
+
+```css
 @media (prefers-color-scheme: dark) { //... } 
 @media (prefers-color-scheme: light) { //... }
-/* 像素比 */
+```
+
+## 像素比
+
+```css
 @media screen and (-webkit-min-device-pixel-ratio: 2) {}
 @media screen and (-webkit-min-device-pixel-ratio: 3) {}
+```
+
+## CSS 视口 - viewport
+
+**布局视口 layout viewport** 一般移动设备的浏览器都默认设置了一个布局视口，用于解决早期的PC端页面在手机上显示的问题，iOS, Android基本都将这个视口分辨率设置为 980px，所以PC上的网页大多都能在手机上呈现，只不过元素看上去很小
+
+**视觉视口 visual viewport** 它是用户正在看到的网站的区域，在移动端就是设备的宽
+
+**理想视口 ideal viewport** 为了使网站在移动端有最理想的浏览和阅读宽度而设定
+
+```html
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 ```
 
 # flex 布局
@@ -1275,18 +1297,6 @@ clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70
 ## 隐藏元素 - display:none或visibility:hidden 的区别
 
 visibility:hidden可以隐藏某个元素，但隐藏的元素仍需占用与未隐藏之前一样的空间。也就是说，该元素虽然被隐藏了，但仍然会影响布局。
-
-## CSS 视口 - viewport
-
-**布局视口 layout viewport** 一般移动设备的浏览器都默认设置了一个布局视口，用于解决早期的PC端页面在手机上显示的问题，iOS, Android基本都将这个视口分辨率设置为 980px，所以PC上的网页大多都能在手机上呈现，只不过元素看上去很小
-
-**视觉视口 visual viewport** 它是用户正在看到的网站的区域，在移动端就是设备的宽
-
-**理想视口 ideal viewport** 为了使网站在移动端有最理想的浏览和阅读宽度而设定
-
-```html
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-```
 
 ## H5标签中的 hidden 属性
 
