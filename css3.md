@@ -798,37 +798,6 @@ input[type="number"]::-webkit-outer-spin-button {
 + 使用margin负值
 + 使用word-spacing或者letter-spacing
 
-## 关于1px的问题
-
-> 在移动端web开发中, UI设计稿中设置的边框为1px,在开发过程中前端会设置border: 1px;但是在某些机型上测试，1px会比较粗。
-
-**方案一: transform: scale(0.5)**
-
-```css
-div {
-  border: 1px;
-  -webkit-transform: scaleY(0.5);
-}
-```
-
-**方案二： 媒体查询以用设备像素比缩放**
-
-```css
-.border {
-  border: 1px solid #999;
-}
-@media screen and (-webkit-min-device-pixel-ratio: 2) {
-  .border {
-    border: 0.5px solid #999;
-  }
-}
-@media screen and (-webkit-min-device-pixel-ratio: 3) {
-  .border {
-    border: 0.33 solid #999;
-  }
-}
-```
-
 ## css 的阴影和渐变
 
 **渐变**
