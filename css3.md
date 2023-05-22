@@ -899,7 +899,36 @@ p {
 
 ## CSS 实现文本两端对齐
 
-> 注意：必须指定宽度
+```css
+p {text-align:  justify;}
+```
+
+缺点： 文本的最后一行或者单独一行设置是无效的；
+
+**解决方案**： 内部添加一个内联块元素，宽度设置width:100%,让最后一行变成倒数第二行，问题就解决了，但是这样增加了额外的元素，理想的方法使用伪元素
+
+```html
+<p class="content">
+  Shanghai is the largest city by population in the People's 
+</p>
+<style>
+  .content{
+    width:600px;
+    height:200px;
+    border: 3px solid red;
+    text-align:justify;
+  }
+  .content::after{
+    content:"";
+	display:inline-block;
+	width:100%;
+	height:0;
+	visibility:hidden;
+  }
+</style>
+```
+
+也可以使用 **text-align-last **，但是它的兼容性不好。
 
 ```css
 .laterr {
