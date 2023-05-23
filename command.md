@@ -174,7 +174,8 @@ cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.128 "mkdir ~/.ssh; cat >> ~/.ssh/auth
 scp -r -P 22 D:\etc\liLianInfo\unpackage\dist\dev\mp-weixin root@192.168.5.128:/home/root/path
 # 下载整个目录
 scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
-
+# 压缩传输
+scp -r -C -P 22 root@192.168.5.128:/home/root/path D:/path
 ```
 
 ### ubantu 的相关命令
