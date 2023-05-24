@@ -444,12 +444,16 @@ h5:has(+ p) { font-size: 1rem; }
 > + 旋转，缩放，定位，倾斜
 > + 查询（@media）,多栏布局（flex）
 
+## css3 如何同时实现缩放和位移
+
+```css
+transform: translate(-24%) scale(0.6);
+```
+
 ## 平滑滚动
 
 ```css
-html {
-    scorll-behavior: smooth !important;
-}
+scorll-behavior: smooth !important;
 ```
 
 ## 投影
