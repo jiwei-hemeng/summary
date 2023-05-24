@@ -363,6 +363,52 @@ item-2 = 600 - 600 * 0.076 * 2 = 508
 
 不包含：`:not()`
 
+### has()伪类的语法和作用
+
+例如：
+
+```css
+a:has(img) { display: block; }
+```
+
+表示如果 `<a>` 元素里面有 `<img>` 元素，则这个 `<a>` 元素就会匹配。
+
+`:has()`伪类支持所有的CSS选择符，例如：
+
+```css
+a:has(> img) { display: block; }
+```
+
+表示匹配子元素是 `<img>` 元素的 `<a>` 元素会被匹配，而关系更远的后代元素则不考虑。
+
+```css
+h5:has(+ p) { font-size: 1rem; }
+```
+
+表示匹配后面跟随 `<p>` 元素的 `<h5>` 元素。
+
+**注意**上面代码中 `:has` 伪类的参数，选择符`>`直接写在了参数的最前面，而不是 `a:has(a > img)` 这样的写法。可以理解为 `:has()` 伪类的参数的最前面有一个看不见的 `:scope` 伪类，因此，`a:has(a > img)`这样的写法是不合法的。
+
+### 伪类选择器 `:focus-within`
+
+> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
+
+```html
+<div class="warp">
+  <label for="name">姓名</label>
+  <input type="text" name="" id="name" />
+</div>
+<style>
+  .warp {
+    width: 100%;
+    height: 100px;
+  }
+  .warp:focus-within {
+    border: 1px dashed skyblue;
+  }
+</style>
+```
+
 ## 伪元素
 
 > 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
@@ -390,52 +436,6 @@ p:first-of-type::first-letter {
     color: #666;
 }
 ```
-
-### 伪类选择器 `:focus-within`
-
-> 它表示一个元素获得焦点，或，该元素的后代元素获得焦点。划重点，它或它的后代获得焦点。这也就意味着，它或它的后代获得焦点，都可以触发 `:focus-within`。
-
-```html
-<div class="warp">
-  <label for="name">姓名</label>
-  <input type="text" name="" id="name" />
-</div>
-<style>
-  .warp {
-    width: 100%;
-    height: 100px;
-  }
-  .warp:focus-within {
-    border: 1px dashed skyblue;
-  }
-</style>
-```
-
-### has()伪类的语法和作用
-
-例如：
-
-```css
-a:has(img) { display: block; }
-```
-
-表示如果 `<a>` 元素里面有 `<img>` 元素，则这个 `<a>` 元素就会匹配。
-
-`:has()`伪类支持所有的CSS选择符，例如：
-
-```css
-a:has(> img) { display: block; }
-```
-
-表示匹配子元素是 `<img>` 元素的 `<a>` 元素会被匹配，而关系更远的后代元素则不考虑。
-
-```css
-h5:has(+ p) { font-size: 1rem; }
-```
-
-表示匹配后面跟随 `<p>` 元素的 `<h5>` 元素。
-
-**注意**上面代码中 `:has` 伪类的参数，选择符`>`直接写在了参数的最前面，而不是 `a:has(a > img)` 这样的写法。可以理解为 `:has()` 伪类的参数的最前面有一个看不见的 `:scope` 伪类，因此，`a:has(a > img)`这样的写法是不合法的。
 
 # css 新特性
 
