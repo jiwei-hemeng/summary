@@ -450,6 +450,29 @@ p:first-of-type::first-letter {
 transform: translate(-24%) scale(0.6);
 ```
 
+## 什么是 [aspect-ratio](https://so.csdn.net/so/search?q=aspect&spm=1001.2101.3001.7020)?
+
+> 对于一个响应式的网站，在缩放的时候，需要保持图片和视频的纵横比,传统的 CSS 只能通过 `宽高自己计算纵横比`，或者 `保持原始纵横比`. 现在可以使用 `aspect-ratio` 属性来设置固定的纵横比.
+
+任何一个具有宽高的元素都可以使用它
+
+```css
+aspect-ratio: 16 / 9;  // 纵横比为 16:9
+aspect-ratio: 5 / 4;  // 纵横比为 5:4
+```
+
+`"/"` 和后面的高度比可以省略，默认为 `1` ：
+
+```css
+aspect-ratio: 4;  // 纵横比为 4:1
+```
+
+aspect-ratio 属性值也可以设置为 auto，在缩放的时候，保持一定的纵横比：
+
+```css
+aspect-ratio: auto;  // 保持原有的纵横比
+```
+
 ## 平滑滚动
 
 ```css
