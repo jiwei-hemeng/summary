@@ -654,10 +654,21 @@ img {
 > 谷歌Chrome最小字体是12px，不管你设置成8px还是10px，在浏览器中只会显示12px，那么如何解决这个坑爹的问题呢？
 
 ```css
-p span{
-    font-size:10px;
-    -webkit-transform:scale(0.8);
-    display:block;
+ div {
+   height: 40px;
+   width: 100px;
+   /* scale(0.5) 只是视觉上的缩放，它占据的空间依然不变 */
+   overflow: hidden;
+}
+div p {
+  margin: 0;
+  /* 此处设置18px 其实际效果是9px */
+  font-size: 18px;
+  width: 200%;
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  /* 任意字符均可换行 */
+  word-break: break-all;
 }
 ```
 
