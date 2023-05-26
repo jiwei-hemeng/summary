@@ -966,7 +966,7 @@ p {text-align:  justify;}
 </style>
 ```
 
-也可以使用 **text-align-last **，但是它的兼容性不好。
+也可以使用 **text-align-last**，但是它的兼容性不好。
 
 ```css
 .laterr {
