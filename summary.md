@@ -79,6 +79,29 @@ document.ondrop = function(e){
 
 Window. opener 属性是一个可读可写的属性，使用 window.open 打开的两个窗口之间存在着关系“父子”关系。子窗口可以通过 window.opener 指向父窗口，访问父窗口的对象。优点：取值方便。只要 opener 指向父窗口，就可以访问所有对象。不仅可以访问值，还可以访问父窗口的方法。值长度无限制。缺点：两窗口要存在着关系。就是需要使用 open 打开窗口，不能跨域。
 
+### postMessage 通信
+
+a.html
+
+```js
+const targetWindow = window.open("/b.html");
+window.addEventListener("message", (e) => {
+  console.log("来自b 的消息")
+  e.source.postMessage("来自a 的消息", "/");
+});
+```
+
+b.html
+
+```js
+window.addEventListener("message", (e) => {
+  console.log("来自a 的消息", e);
+});
+window.addEventListener("load", (e) => {
+  window.opener.postMessage("b 页面加载完成了", "/");
+});
+```
+
 ### hash模式与history模式
 
 **hash模式**
