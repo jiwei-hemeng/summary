@@ -310,7 +310,7 @@ netsh interface portproxy show v4tov4 | find "192.168.1.1"
 > 语法： netsh interface portproxy add v4tov4 listenaddress=[外网IP] listenport=[外网端口] connectaddress=[内网IP] connectport=[内网端口]
 
 ```shell
-netsh interface portproxy add v4tov4 listenaddress=2.2.2.2 listenport=8080 connectaddress=192.168.1.50 connectport=80
+netsh interface portproxy add v4tov4 listenaddress=2.2.2.2 listenport=80 connectaddress=192.168.1.110 connectport=8080
 ```
 
  **删除一个端口映射** 
@@ -318,6 +318,6 @@ netsh interface portproxy add v4tov4 listenaddress=2.2.2.2 listenport=8080 conne
 > 语法：  netsh interface portproxy delete v4tov4 listenaddress=[外网IP] listenport=[外网端口] 
 
 ```shell
-netsh interface portproxy delete v4tov4 listenaddress=2.2.2.2 listenport=8080
+netsh interface portproxy delete v4tov4 listenaddress=2.2.2.2 listenport=80
 ```
 
