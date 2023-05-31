@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
       img {
         width: 100%;
         display: block;
@@ -14,13 +18,16 @@
   </head>
 
   <body>
-    <input type="file" name="" id="file" />
-    <button id="grayscale">灰度图</button>
-    <button id="sepia">复古效果</button>
-    <button id="red">红色蒙版</button>
-    <button id="brightness">亮度效果</button>
-    <button id="invert">反转效果</button>
-    <img src="" alt="">
+    <input type="file" name="" id="file" accept="image/*" />
+    <div>
+      <button id="grayscale">灰度图</button>
+      <button id="sepia">复古效果</button>
+      <button id="red">红色蒙版</button>
+      <button id="brightness">亮度效果</button>
+      <button id="invert">反转效果</button>
+    </div>
+
+    <img src="" alt="" />
     <script>
       // 灰度图（grayscale）就是取红、绿、蓝三个像素值的算术平均值，这实际上将图像转成了黑白形式。
       function grayscale(pixels) {
@@ -83,61 +90,61 @@
       const file = document.querySelector("#file");
       let context = null;
       let app = null;
-      const img = document.querySelector("img")
+      const img = document.querySelector("img");
       document.querySelector("#grayscale").addEventListener("click", () => {
-        if(!context) {
-          return alert("请选择图片")
+        if (!context) {
+          return alert("请选择图片");
         }
         let imageData = context.getImageData(0, 0, app.width, app.height);
         imageData = grayscale(imageData);
         context.putImageData(imageData, 0, 0);
         const base64 = app.toDataURL("image/jpeg", 1);
         console.log("base64Data", base64);
-        img.setAttribute("src", base64)
+        img.setAttribute("src", base64);
       });
       document.querySelector("#sepia").addEventListener("click", () => {
-        if(!context) {
-          return alert("请选择图片")
+        if (!context) {
+          return alert("请选择图片");
         }
         let imageData = context.getImageData(0, 0, app.width, app.height);
         imageData = sepia(imageData);
         context.putImageData(imageData, 0, 0);
         const base64 = app.toDataURL("image/jpeg", 1);
-        img.setAttribute("src", base64)
+        img.setAttribute("src", base64);
         console.log("base64Data", base64);
       });
       document.querySelector("#red").addEventListener("click", () => {
-        if(!context) {
-          return alert("请选择图片")
+        if (!context) {
+          return alert("请选择图片");
         }
         let imageData = context.getImageData(0, 0, app.width, app.height);
         imageData = red(imageData);
         context.putImageData(imageData, 0, 0);
         const base64 = app.toDataURL("image/jpeg", 1);
-        img.setAttribute("src", base64)
+        img.setAttribute("src", base64);
         console.log("base64Data", base64);
       });
       document.querySelector("#brightness").addEventListener("click", () => {
-        if(!context) {
-          return alert("请选择图片")
+        if (!context) {
+          return alert("请选择图片");
         }
         let imageData = context.getImageData(0, 0, app.width, app.height);
         imageData = brightness(imageData);
         context.putImageData(imageData, 0, 0);
         const base64 = app.toDataURL("image/jpeg", 1);
         console.log("base64Data", base64);
-        img.setAttribute("src", base64)
+        img.setAttribute("src", base64);
       });
       document.querySelector("#invert").addEventListener("click", () => {
-        if(!context) {
-          return alert("请选择图片")
+        if (!context) {
+          return alert("请选择图片");
         }
         let imageData = context.getImageData(0, 0, app.width, app.height);
         imageData = invert(imageData);
         context.putImageData(imageData, 0, 0);
         const base64 = app.toDataURL("image/jpeg", 1);
         console.log("base64Data", base64);
-        img.setAttribute("src", base64)
+        img.setAttribute("src", base64);
       });
       file.addEventListener("change", (e) => {
         if (e.target.files.length > 0) {
