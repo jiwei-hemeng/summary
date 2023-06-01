@@ -167,3 +167,42 @@ jobs:
           remote_key: ${{ secrets.MY_UBUNTU_RSA_PRIVATE_KEY }} # 能够远程到服务器的电脑私钥
 ```
 
+### SCP发布到自有服务器上
+
+```yml
+name: Deploy CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+      - name: Build Project
+        run: |
+          yarn install
+          yarn run build
+
+      - name: SSH Deploy
+        uses: easingthemes/ssh-deploy@v2.2.11
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}  # 服务器SSH登录的私钥
+          ARGS: '-avzr --delete'
+          SOURCE: 'build'
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }} # 服务器的ip地址
+          REMOTE_USER: 'root'
+          TARGET: '/www/wwwroot/blog'  # 服务器 部署目录
+```
+
