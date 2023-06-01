@@ -233,3 +233,47 @@ jobs:
           destination-repo: git@gitee.com:jiwei-hemeng/summary.git
 ```
 
+### Github Actions 实现 Node.js 项目的 CICD 环境搭建
+
+```yml
+# workflow 工作流的名字，自定义
+name: Express App
+
+# 配置触发条件
+on:
+  push: # 监听到 main 分支的 push 动作
+    branches:
+      - main
+
+# 工作流的任务集配置
+jobs:
+  # 定义一个 job，id 为 build
+  build:
+    # 指定任务执行的运行器。latest 表示是 GitHub 提供的最新稳定映像，但可能不是操作系统供应商提供的最新版本。
+    runs-on: ubuntu-latest
+
+    # 定义 job 的具体步骤
+    steps: # 每一个 step 或者是执行一个 action，或者是执行一个命令
+      - name: Checkout # step 的名字，方便作日志排查
+        uses: actions/checkout@v3  # uses 表示该步骤使用一个 action 。斜线前面的 'actions' 表示这是官方的action
+
+      - name: Deploy to Server # 执行部署任务
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest 
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          pass: ${{ secrets.SERVER_PASS }}
+
+          # 由于网路情况，很容易超时，设置为60s
+          connect_timeout: 60s
+
+          # 将工作目录下的文件全部拷贝到部署服务器的工作目录
+          scp: |
+            ./* => /www/github-actions-express
+          # 完成拷贝后在部署服务器执行的命令：进入项目目录，安装生产依赖，并使用 pm2 管理
+          last_ssh: |
+            cd /www/github-actions-express
+            npm ci
+            node app.config.js
+```
+
