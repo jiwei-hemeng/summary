@@ -206,3 +206,30 @@ jobs:
           TARGET: '/www/wwwroot/blog'  # 服务器 部署目录
 ```
 
+### 同步到 gitee 的仓库
+
+```yml
+name: Deploy GitHub Pages
+# 触发条件：在 push 到 main 分支后触发
+on:
+  push:
+    branches:
+      - main
+# 任务
+jobs:
+  build-and-deploy:
+    # 服务器环境：最新版 Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      # 3、同步到 gitee 的仓库
+      - name: Sync to Gitee
+        uses: wearerequired/git-mirror-action@master
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }} # 对应gitee 上设置的公钥的私钥
+        with:
+          # 注意替换为你的 GitHub 源仓库地址
+          source-repo: git@github.com:jiwei-hemeng/summary.git
+          # 注意替换为你的 Gitee 目标仓库地址
+          destination-repo: git@gitee.com:jiwei-hemeng/summary.git
+```
+
