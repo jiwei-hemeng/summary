@@ -158,11 +158,20 @@ reg.test("12@33"); // result: false
 const reg = /[\u4E00-\u9FA5]/g;
 reg.test("汉字"); // result: true
 reg.test("hanzi"); // result: false
-"我是中国人".match(reg); // result: ["我","是","中","国","人"]
+"我是".match(reg); // result: ['我', '是']
 ```
 
 ```js
 const regs = /[\u4E00-\u9FA5]{1,}/g
-"你好啊，中国！！".match(regs); result: ['你好啊', '中国']
+"你好啊，中国！！".match(regs); // result: ['你好啊', '中国']
+```
+
+### 常用的正则
+
+```js
+// 手机号校验规则
+const moblieReg = /^1(3|4|5|6|7|8|9)\d{9}$/;
+// 座机号校验规则
+const phone = /^0{1,2}\d{2,3}-?\d{7,8}$/;
 ```
 
