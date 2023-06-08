@@ -124,3 +124,10 @@ eventEmitter.emit("sysLanguageChange", "ZH");
 // 关闭订阅
 eventEmitter.off("sysLanguageChange", sysLanguageChange)
 ```
+
+### 进程和线程
+
+- 进程是cpu资源分配的最小单位（是能拥有资源和独立运行的最小单位），比作**车间**
+- 线程是cpu调度的最小单位（线程是建立在进程的基础上的一次程序运行单位，一个进程中可以有多个线程）比作**车间中的工人**
+
+**单线程与多线程**，都是指**在一个进程内**的单和多。（所以核心还是得属于一个进程才行）

@@ -183,4 +183,3 @@ pathion = pathion.replace(/(^\s*)|(\s*$)/g, ""); // result: '12  23'
 // 或者可以使用
 pathion = pathion.trim(); // result: '12  23'
 ```
-
