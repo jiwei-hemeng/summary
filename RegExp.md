@@ -175,3 +175,12 @@ const moblieReg = /^1(3|4|5|6|7|8|9)\d{9}$/;
 const phone = /^0{1,2}\d{2,3}-?\d{7,8}$/;
 ```
 
+### 去除字符串首尾空格
+
+```js
+let pathion = "  12  23  ";
+pathion = pathion.replace(/(^\s*)|(\s*$)/g, ""); // result: '12  23'
+// 或者可以使用
+pathion = pathion.trim(); // result: '12  23'
+```
+
