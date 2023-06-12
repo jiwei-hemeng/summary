@@ -689,3 +689,28 @@ const router = useRouter();
 router.push([path]);
 ```
 
+### deep()深度选择器的用法
+
+在vue3中项目中，使用深度选择器可能会出现如下错误：
+[@vue/compiler-sfc] the >>> and /deep/ combinators have been deprecated. Use :deep() instead.
+翻译是>>>和/deep/已经被弃用，要用:deep()代替
+
+```css
+:deep(.class) {
+}
+div :deep(.cdiv) {
+    color: red;
+}
+```
+
+在scss下的父元素里用:deep()语法
+
+```html
+<style lang=scss>
+.pClassName {
+ 	:deep(.class){
+	}
+}
+</style>
+```
+
