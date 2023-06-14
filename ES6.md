@@ -363,3 +363,40 @@ const showName = (data) => {
 showName('fatfish')
 ```
 
+### import maps
+
+`import map`直译过来是 **导入映射**，它与模块的使用有关，一般我们在项目中导入模块，会调用`require`方法，或者使用`import`语句或方法，引入的模块通常使用npm之类的包管理器进行管理。但是`import map`提供了一种支持，让我们可以直接在页面上管理模块，不需要通过打包构建。
+
+`import maps`已经成为了一个 Web 标准，并且在2021年7月正式通过了 W3C 的标准化流程；但是由于这个特性比较新，很多浏览器不支持，后面我们详细聊聊兼容情况。
+
+**import maps 怎么使用**
+
+在`import maps`中，可以使用一个 `JavaScript` 对象来定义模块标识符与对应 `URL` 的映射关系，例如：
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "lodash": "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js",
+      "react": "/node_modules/react/index.js"
+    }
+  }
+</script>
+```
+
+在上述示例中，定义了 `lodash` 模块的 `URL` 为 https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js，而 `react` 模块的 `URL` 则为相对路径 `/node_modules/react/index.js`。
+
+通过`importmap`，可以在模块中使用字符串形式的模块名称来导入其他模块，而不必关心实际模块资源的 `URL`，例如：
+
+```html
+<script type="module">
+  import _ from "lodash";
+  import React from "react";
+</script>
+```
+
+**import maps 有何优势**
+
++ 动态加载模块
++ 模块依赖关系管理
++ 减少网络请求
