@@ -1413,11 +1413,11 @@ word-space 是单词的字间距；latter-space: 是字符的字间距
 
 [attribute="value"] 选择器用于选取带有指定属性和值的元素
 
-```a[target="_blank"] { 
-
+```css
+[title="flower"]{ 
   background-color: yellow;
-
 }
+```
 
 [attribute~="value"] 选择器选取属性值包含指定词的元素。
 
