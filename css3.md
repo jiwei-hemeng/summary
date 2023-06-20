@@ -1295,13 +1295,50 @@ hidden 属性是一个标准的 HTML 属性，可以添加到元素中以指示�
 
 ## 打印相关的css
 
+### 媒体查询
+
+```css
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 3.7cm 2.6cm 3.5cm;
+  } 
+}
+```
+
+## 去除页眉
+
+```css
+@page { margin-top: 0; }
+```
+
+### 去除页脚
+
+```css
+@page { margin-bottom: 0; }
+```
+
+### 页眉页脚全部去掉
+
+```css
+@page { margin : 0; }
+```
+
+### 设置纸张及其方向 portrait：纵向；  landscape: 横向; auto 自动选择
+
+```css
+@page { size: A4 portrait;}
+```
+
+### 完整案例
+
 ```css
 @media print {
   @page {
     size: A4 portrait;
     margin: 3.7cm 2.6cm 3.5cm; /* 国家标准公文页边距 GB/T 9704-2012 */
   }
-
+  @page { margin : 0; }
   h1 {
     page-break-before: always;
   }
@@ -1421,7 +1458,7 @@ a[target="_blank"] {
 
 [attribute~="value"] 选择器选取属性值包含指定词的元素。
 
-> **提示：**值必须是完整单词！
+> **提示:**值必须是完整单词！
 
 ```css
 [title~="flower"] {
@@ -1433,7 +1470,7 @@ a[target="_blank"] {
 
 [attribute|="value"] 选择器用于选取指定属性以指定值开头的元素。
 
-> **提示：**值必须是完整单词！
+> **提示:**值必须是完整单词！
 
 ```css
 [class|="top"] {
