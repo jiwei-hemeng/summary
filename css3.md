@@ -1408,3 +1408,60 @@ textDom.addEventListener("animationiteration", function () {
 ### word-space与letter-space
 
 word-space 是单词的字间距；latter-space: 是字符的字间距
+
+### CSS 属性选择器
+
+[attribute="value"] 选择器用于选取带有指定属性和值的元素
+
+```css
+a[target="_blank"] { 
+  background-color: yellow;
+}
+```
+
+[attribute~="value"] 选择器选取属性值包含指定词的元素。
+
+> **提示：**值必须是完整单词！
+
+```css
+[title~="flower"] {
+  border: 5px solid yellow;
+}
+```
+
+> 上面的例子会匹配以下属性的元素：title="flower"、title="summer flower" 以及 title="flower new"，但不匹配：title="my-flower" 或 title="flowers"。
+
+[attribute|="value"] 选择器用于选取指定属性以指定值开头的元素。
+
+> **提示：**值必须是完整单词！
+
+```css
+[class|="top"] {
+  background: yellow;
+}
+```
+
+[attribute^="value"] 选择器用于选取指定属性以指定值开头的元素。
+
+```css
+[class^="top"] {
+  background: yellow;
+}
+```
+
+[attribute*="value"] 选择器选取属性值包含指定词的元素。
+
+```css
+[class*="te"] {
+  background: yellow;
+}
+```
+
+[attribute$="value"] 选择器用于选取指定属性以指定值结尾的元素。
+
+```css
+[class$="test"] {
+  background: yellow;
+}
+```
+
