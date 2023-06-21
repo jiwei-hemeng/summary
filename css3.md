@@ -674,7 +674,7 @@ div p {
 
 ## 文字溢出时显示点点点
 
-**单行**
+### 单行
 
 ```css
 overflow: hidden;
@@ -682,12 +682,17 @@ text-overflow: ellipsis;
 white-space: nowrap;
 ```
 
-**多行**
+text-overflow : clip | ellipsis
+
+clip : 不显示省略标记（...），而是简单的裁切ellipsis : 当对象内文本溢出时显示省略标记（...）
+
+### 多行
 
 ```css
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 3;  //这里是在第二行有省略号
+word-break: break-all;
 overflow: hidden;
 ```
 

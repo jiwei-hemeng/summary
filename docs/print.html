@@ -1,64 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>局部打印</title>
-  <style type="text/css">
-    .content {
-      width: 960px;
-      margin: 0 auto;
-      height: 660px;
-      background-color: blanchedalmond;
-      box-sizing: border-box;
-      padding: 10px;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    img {
-      width: 100%;
-    }
-
-    @media print {
-      .noprint {
-        display: none;
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>局部打印</title>
+    <style type="text/css">
+      .content {
+        margin: 0 auto;
+        background-color: blanchedalmond;
+        box-sizing: border-box;
       }
-    }
 
-    @page {
-      /* 布局 */
-      margin: 0mm;
-      size: auto;
-    }
-  </style>
-</head>
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-<body>
-  <!--startprint-->
-  <div class="content">
-    <button class="noprint">预览</button>
-    <button class="noprint" onclick="doPrint()">打印</button>
-    <h2>这里是需要打印的内容</h2>
-    <img src="../assets/images/1953033-20210812175755860-640591619.png" alt="">
-  </div>
-  <!--endprint-->
-  <script>
-    function doPrint() {
-      let bdhtml = window.document.body.innerHTML;
-      let sprnstr = "<!--startprint-->";
-      let eprnstr = "<!--endprint-->";
-      let prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
-      prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
-      window.document.body.innerHTML = prnhtml;
-      window.print();
-    }
-  </script>
-</body>
+      img {
+        width: 100%;
+      }
 
+      @media print {
+        .noprint {
+          display: none;
+        }
+        @page {
+          color: red;
+          size: A4 auto;
+          margin: 40px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!--startprint-->
+    <div class="content">
+      <button class="noprint">预览</button>
+      <button class="noprint" onclick="doPrint()">打印</button>
+      <h2>这里是需要打印的内容</h2>
+      <img
+        src="../assets/images/1953033-20210812175755860-640591619.png"
+        alt=""
+      />
+      <img
+        src="../assets/images/1953033-20210812175755860-640591619.png"
+        alt=""
+      />
+      <img
+        src="../assets/images/1953033-20210812175755860-640591619.png"
+        alt=""
+      />
+      <img
+        src="../assets/images/1953033-20210812175755860-640591619.png"
+        alt=""
+      />
+      <img
+        src="../assets/images/1953033-20210812175755860-640591619.png"
+        alt=""
+      />
+    </div>
+    <!--endprint-->
+    <script>
+      function doPrint() {
+        let bdhtml = window.document.body.innerHTML;
+        let sprnstr = "<!--startprint-->";
+        let eprnstr = "<!--endprint-->";
+        let prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr) + 17);
+        prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML = prnhtml;
+        window.print();
+      }
+    </script>
+  </body>
 </html>
