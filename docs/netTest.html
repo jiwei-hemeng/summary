@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <p id="downlink"></p>
+  <p id="effectiveType"></p>
+  <p id="rtt"></p>
+  <script>
+    const downlink = document.querySelector("#downlink");
+    const rtt = document.querySelector("#rtt");
+    const effectiveType = document.querySelector("#effectiveType");
+    const connection = navigator.connection
+    downlink.innerHTML = `下载速度：${connection.downlink}MB`
+    effectiveType.innerHTML = `网络类型：${connection.effectiveType.toUpperCase()}`
+    rtt.innerHTML = `网络延时：${connection.rtt}ms`
+    connection.onchange = (e) => {
+      downlink.innerHTML = `下载速度：${e.target.downlink}MB`
+      effectiveType.innerHTML = `网络类型：${e.target.effectiveType.toUpperCase()}`
+      rtt.innerHTML = `网络延时：${e.target.rtt}ms`
+    }
+  </script>
+</body>
+
+</html>
