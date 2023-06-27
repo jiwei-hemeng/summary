@@ -299,7 +299,7 @@ setup() {
 
 + select 字段将 `value` 作为 prop 并将 `change` 作为事件
 
-**在 `setup` 中访问路由和当前路由**
+## 在 `setup` 中访问路由和当前路由
 
 > [相关链接](https://next.router.vuejs.org/zh/guide/advanced/composition-api.html)
 
