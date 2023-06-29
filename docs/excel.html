@@ -3,11 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Excel识别</title>
+    <title>Excel</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      div {
+        margin: 10px 0;
+      }
+      #table {
+        border-collapse:collapse;
+      }
+      th,td {
+        border: 1px solid #afddff;
+      }
+    </style>
   </head>
   <body>
     <input type="file" id="file" accept=".xlsx, .xls" />
+    <div>
+      <button id="download">下载</button>
+    </div>
+    <table id="table">
+      <thead>
+        <tr>
+          <th>第一列A</th>
+          <th>第二列A</th>
+          <th>第三列A</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1-1A</td>
+          <td>1-2A</td>
+          <td>1-3A</td>
+        </tr>
+        <tr>
+          <td>2-1A</td>
+          <td>2-2A</td>
+          <td>2-3A</td>
+        </tr>
+      </tbody>
+    </table>
     <script>
       document.querySelector("#file").addEventListener("change", (file) => {
         const { files } = file.target;
@@ -24,7 +59,7 @@
               if (
                 Object.prototype.hasOwnProperty.call(workbook.Sheets, sheet)
               ) {
-                data[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+                data[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
               }
             }
             console.log(data);
@@ -34,6 +69,23 @@
             return;
           }
         };
+      });
+      document.querySelector("#download").addEventListener("click", () => {
+        debugger
+        let wb = XLSX.utils.table_to_book(document.getElementById("table"));
+        let wb_out = XLSX.write(wb, {
+          bookType: "xlsx",
+          bookSST: true,
+          type: "array",
+        });
+        const alink = document.createElement("a");
+        const fd = new FileReader();
+        fd.readAsDataURL(new Blob([wb_out], { type: "application/octet-stream" }))
+        fd.addEventListener("load", (e) => {
+          alink.setAttribute("href", e.target.result);
+          alink.setAttribute("download", "统计表.xlsx")
+          alink.click();
+        })
       });
     </script>
   </body>
