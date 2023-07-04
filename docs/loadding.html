@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .app {
+        width: 100%;
+        height: 100vh;
+        background-color: #ffffff;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .loading26 {
+        width: 90px;
+        height: 90px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: space-between;
+        animation: loading26-eff 3s linear infinite;
+      }
+      @keyframes loading26-eff {
+        0% {
+          transform: scale(1) rotate(0);
+        }
+        20% {
+          transform: scale(1) rotate(72deg);
+        }
+        40% {
+          transform: scale(0.5) rotate(144deg);
+        }
+        60% {
+          transform: scale(0.5) rotate(216deg);
+        }
+        80% {
+          transform: scale(1) rotate(288deg);
+        }
+        100% {
+          transform: scale(1) rotate(360deg);
+        }
+      }
+      .round26 {
+        width: 40px;
+        height: 40px;
+        display: block;
+        border-radius: 20px 20px 20px 20px;
+        box-sizing: border-box;
+      }
+      .round26:nth-of-type(1) {
+        background-color: #50de68;
+        animation: round-eff261 3s linear infinite;
+      }
+      .round26:nth-of-type(2) {
+        background-color: #3dc453;
+        animation: round-eff262 3s linear infinite;
+      }
+      .round26:nth-of-type(3) {
+        background-color: #14be71;
+        animation: round-eff263 3s linear infinite;
+      }
+      .round26:nth-of-type(4) {
+        background-color: #78de35;
+        animation: round-eff264 3s linear infinite;
+      }
+      @keyframes round-eff261 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 20px 0 20px;
+        }
+        60% {
+          border-radius: 20px 20px 0 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff262 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 20px 20px 0;
+        }
+        60% {
+          border-radius: 20px 20px 20px 0;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff263 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 0 20px 20px;
+        }
+        60% {
+          border-radius: 20px 0 20px 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff264 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 0 20px 20px 20px;
+        }
+        60% {
+          border-radius: 0 20px 20px 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="loading26">
+        <span class="round26"></span>
+        <span class="round26"></span>
+        <span class="round26"></span>
+        <span class="round26"></span>
+      </div>
+    </div>
+  </body>
+</html>
