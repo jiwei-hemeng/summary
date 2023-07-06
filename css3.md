@@ -1355,7 +1355,7 @@ page-break-after有以下几个选择项：
 
 ```css
 .pageBreakAfter {
-  page-break-after: "always";
+  page-break-after: always;
 }
 ```
 
