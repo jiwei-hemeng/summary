@@ -746,11 +746,80 @@ Vue 提供了样式穿透`:deep()` 他的作用就是用来改变 属性选择�
 </style>
 ```
 
-##  vue(SFC)单文件组件添加name属性 
+# vue3 setup语法糖中组件name定义的几种方法
 
-> 方便vue 调试工具调试
+ 1、写两个script标签，经测试是可以这么定义的，keep-alive有效： 
+
+```html
+<script setup>
+  import {ref} from 'vue'
+  const randomText = ref(Math.random())
+</script>
+<script>
+  import {defineComponent} from 'vue'
+  export default defineComponent({
+    name: 'systemInfo'
+  })
+</script>
+```
+
+ 这种方法比较繁琐，要写两遍script，一个有setup，一个不带。 
+
+ 2、vite-plugin-vue-setup-extend 插件 
+
+ ①、安装 
+
+```shell
+npm install vite-plugin-vue-setup-extend -D
+```
+
+ ②、在vite.config.ts文件引入vite-plugin-vue-setup-extend 
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+export default defineConfig({
+  plugins: [vue(), vueSetupExtend()]
+})
+```
+
+ ③、.vue(SFC)单文件组件添加name属性 
 
 ```html
 <script setup name="systemInfo"></script>
+```
+
+ 这种方式最优雅。 
+
+ 3、unplugin-vue-define-options插件，Element Plus就是使用这个插件来对组件命名的 
+
+ ①、安装 
+
+```shell
+npm install unplugin-vue-define-options -D
+```
+
+ ②、在vite.config.ts文件引入vite-plugin-vue-setup-extend 
+
+```js
+//vite.config.ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import DefineOptions from 'unplugin-vue-define-options/vite';
+export default defineConfig({
+  plugins: [vue(), DefineOptions()],
+});
+```
+
+ ③、使用 
+
+```html
+<script setup>
+  defineOptions({
+    name: 'MyMenuItem',
+  });
+</script>
 ```
 
