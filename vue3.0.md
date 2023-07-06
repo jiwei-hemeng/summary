@@ -746,3 +746,11 @@ Vue 提供了样式穿透`:deep()` 他的作用就是用来改变 属性选择�
 </style>
 ```
 
+##  vue(SFC)单文件组件添加name属性 
+
+> 方便vue 调试工具调试
+
+```html
+<script setup name="systemInfo"></script>
+```
+
