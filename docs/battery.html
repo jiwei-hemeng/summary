@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>电池API</title>
+  </head>
+  <body>
+    <script>
+      navigator.getBattery().then(function (battery) {
+        console.log("battery", battery)
+        // 添加事件，当设备电量改变时触发
+        battery.addEventListener("levelchange", function () {
+          console.log("电量改变: " + battery.level);
+        });
+
+        // 添加事件，当设备充电状态改变时触发
+        battery.addEventListener("chargingchange", function () {
+          console.log("充电状态改变: " + battery.charging);
+        });
+
+        // 添加事件，当设备完全充电需要时间改变时触发
+        battery.addEventListener("chargingtimechange", function () {
+          console.log("完全充电需要时间: " + battery.chargingTime);
+        });
+
+        // 添加事件，当设备完全放电需要时间改变时触发
+        battery.addEventListener("dischargingtimechange", function () {
+          console.log("完全放电需要时间: " + battery.dischargingTime);
+        });
+      });
+    </script>
+  </body>
+</html>

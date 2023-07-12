@@ -808,8 +808,9 @@ console.log(arr);    // result [1, 2, 3, 4, 5]
 > 注意： 使用完成后一定要调用revokeObjectURL 方法解除内存的占用
 
 ```js
-const blob = window.URL.createObjectURL(this.$refs.file.files[0])
-window.URL.revokeObjectURL(blob)
+const blobUrl = window.URL.createObjectURL(this.$refs.file.files[0]);
+// 删除映射，释放内存
+window.URL.revokeObjectURL(blobUrl)
 ```
 
 ### 加入收藏夹
