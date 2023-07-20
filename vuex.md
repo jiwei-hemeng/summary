@@ -194,7 +194,7 @@ npm install vuex
 import { ref } from "vue";
 import { defineStore } from "pinia";
 export const useToken = defineStore("token", () => {
-  const token = ref(sessionStorage.getItem("token"));
+  let token = ref(sessionStorage.getItem("token"));
   function setToken(value) {
     token.value = value;
     sessionStorage.setItem("token", value)
@@ -266,7 +266,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useToken = defineStore("token", () => {
-  const token = ref(sessionStorage.getItem("token"));
+  let token = ref(sessionStorage.getItem("token"));
   // 计算属性
   const isLogin = computed(() => !!token.value);
   function setToken(value) {

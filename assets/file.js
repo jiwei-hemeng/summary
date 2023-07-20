@@ -1,3 +1,4 @@
+// @ts-nocheck
 // base64 文件转为file 对象
 export function base64UrlToFile(base64Url, filename) {
   const arr = base64Url.split(",");

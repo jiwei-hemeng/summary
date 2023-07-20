@@ -493,58 +493,6 @@ module.exports = {
 + 对比虚拟DOM，渲染真实的DOM
 + 组件内部的data发生变化，组件和子组件的data作为props重新调用render函数生成虚拟DOM，使用diff算法对比新旧虚拟DOM，将变化的DOM更新
 
-### 语法糖
-
-> [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
-
- 虽然`Composition API`用起来已经非常方便了，但是我们还是有很烦的地方，比如 
-
-+ 组件引入了还要注册
-+ 属性和方法都要在`setup`函数中返回，有的时候仅一个`return`就十几行甚至几十行
-
- `Vue3`官方提供了`script setup`语法糖 
-
- 只需要在`script`标签中添加`setup`，组件只需引入不用注册，属性和方法也不用返回，`setup`函数也不需要，甚至`export default`都不用写了，不仅是数据，计算属性和方法，甚至是自定义指令也可以在我们的`template`中自动获得。 
-
-但是这么过瘾的语法糖，还是稍微添加了一点点心智负担，因为没有了`setup`函数，那么`props`，`emit`，`attrs`怎么获取呢，就要介绍一下新的语法了。
-
-setup script`语法糖提供了三个新的`API`来供我们使用：`defineProps`、`defineEmit`和`useContext
-
-+  **defineProps** 用来接收父组件传来的值`props` 
-+  **defineEmit** 用来声明触发的事件表 
-+  **useContext** 用来获取组件上下文`context` 
-
-```html
-// 子组件
-<div class="hello">
-  <button @click="btn">点击</button>
-</div>
-<script setup>
-// 获取父组件传来的 props
-const props = defineProps({
-  msg: String,
-});
-const emit = defineEmits(["change", "delete", "handle"]);
-const btn = () => {
-  emits('handle', '张三')
-}
-</script>
-// 父级组件中
-<div class="home">
-  <HelloWorld @handle="handleClick" open-type="add" />
-</div>
-<script setup>
-import HelloWorld from '@/components/HelloWorld'
-const handleClick = function (data) {
-  console.log(data)
-}
-</script>
-```
-
-`script setup语法糖请注意`
-
- 如果在父组件中通过`ref='xxx'`的方法来获取子组件实例，子组件使用了`script setup`语法糖,那么子组件的数据需要用expose的方式导出，否则会因为获取不到数据而报错。 
-
 ## 跨组件通讯mitt.js
 
 >  `Vue2`中怎么实现跨组件通讯呢,很多人第一想法就是`event bus`。但是`Vue3`移除了`$on`,`$once`,`$off`导致不能使用这个方法。但是`Vue`官方给大家推荐了`mitt.js`,它的原理就是`event bus`。 
@@ -630,7 +578,88 @@ export default {
 </script>
 ```
 
+## 语法糖
+
+> [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
+
+ 虽然`Composition API`用起来已经非常方便了，但是我们还是有很烦的地方，比如 
+
++ 组件引入了还要注册
++ 属性和方法都要在`setup`函数中返回，有的时候仅一个`return`就十几行甚至几十行
+
+ `Vue3`官方提供了`script setup`语法糖 
+
+ 只需要在`script`标签中添加`setup`，组件只需引入不用注册，属性和方法也不用返回，`setup`函数也不需要，甚至`export default`都不用写了，不仅是数据，计算属性和方法，甚至是自定义指令也可以在我们的`template`中自动获得。 
+
+但是这么过瘾的语法糖，还是稍微添加了一点点心智负担，因为没有了`setup`函数，那么`props`，`emit`，`attrs`怎么获取呢，就要介绍一下新的语法了。
+
+setup script`语法糖提供了三个新的`API`来供我们使用：`defineProps`、`defineEmit`和`useContext
+
++  **defineProps** 用来接收父组件传来的值`props` 
++  **defineEmit** 用来声明触发的事件表 
++  **useContext** 用来获取组件上下文`context` 
+
+```html
+// 子组件
+<div class="hello">
+  <button @click="btn">点击</button>
+</div>
+<script setup>
+// 获取父组件传来的 props
+const props = defineProps({
+  msg: String,
+  foo: { type: String, required: true },
+});
+const emit = defineEmits(["change", "delete", "handle"]);
+const btn = () => {
+  emits('handle', '张三')
+}
+</script>
+// 父级组件中
+<div class="home">
+  <HelloWorld @handle="handleClick" open-type="add" />
+</div>
+<script setup>
+import HelloWorld from '@/components/HelloWorld'
+const handleClick = function (data) {
+  console.log(data)
+}
+</script>
+```
+
+复杂的 prop 类型
+
+```js
+<script setup lang="ts">
+interface Book {
+  title: string
+  author: string
+  year: number
+}
+const props = defineProps<{
+  book: Book
+}>()
+</script>
+```
+
+## Props 解构默认值
+
+当使用基于类型的声明时，我们失去了为 props 声明默认值的能力。这可以通过 `withDefaults` 编译器宏解决：
+
+```ts
+export interface Props {
+  msg?: string
+  labels?: string[]
+}
+const props = withDefaults(defineProps<Props>(), {
+  msg: 'hello',
+  labels: () => ['one', 'two']
+})
+```
+
 ## expose / ref 的使用
+
+> 如果在父组件中通过`ref='xxx'`的方法来获取子组件实例，子组件使用了`script setup`语法糖,那么子组件的数据需要用expose的方式导出，否则会因为获取不到数据而报错。
 
 子组件可以通过 expose 暴露自身的方法和数据。
 
