@@ -593,11 +593,10 @@ export default {
 
 但是这么过瘾的语法糖，还是稍微添加了一点点心智负担，因为没有了`setup`函数，那么`props`，`emit`，`attrs`怎么获取呢，就要介绍一下新的语法了。
 
-setup script`语法糖提供了三个新的`API`来供我们使用：`defineProps`、`defineEmit`和`useContext
+setup script`语法糖提供了三个新的`API`来供我们使用：`defineProps`、`defineEmit
 
 +  **defineProps** 用来接收父组件传来的值`props` 
 +  **defineEmit** 用来声明触发的事件表 
-+  **useContext** 用来获取组件上下文`context` 
 
 ```html
 // 子组件
@@ -608,7 +607,7 @@ setup script`语法糖提供了三个新的`API`来供我们使用：`defineProp
 // 获取父组件传来的 props
 const props = defineProps({
   msg: String,
-  foo: { type: String, required: true },
+  foo: { type: String, required: true, default: 'Hello, World!' },
 });
 const emit = defineEmits(["change", "delete", "handle"]);
 const btn = () => {
