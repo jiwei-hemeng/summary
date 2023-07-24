@@ -255,50 +255,6 @@ import { inject } from "vue"
 const $title = inject($title)
 ```
 
-## vuex在setup函数中的使用
-
-获取状态
-
-```js
-import { computed } from "vue";
-import { useStore } from "vuex";
-setup() {
-    const store = useStore();
-    const state = store.state;
-    const userInfo = computed(() => {
-        return {
-            userName: state.user.userName,
-        		age: state.user.age,
-        }
-    })
-    return {
-        userInfo
-    }
-}
-```
-
-修改状态
-
-```js
-setup() {
-    const store = useStore();
-    // 同步修改 提交Mutation
-    store.commit("setAcAge", 2)
-    // 异步修改 提交action
-    store.dispatch("setAcAge", 2);
-}
-```
-
-## 表单输入绑定v-model
-
-`v-model` 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
-
-+ text 和 textarea 元素使用 `value` property 和 `input` 事件
-
-+ checkbox 和 radio 使用 `checked` property 和 `change` 事件；
-
-+ select 字段将 `value` 作为 prop 并将 `change` 作为事件
-
 ## 在 `setup` 中访问路由和当前路由
 
 > [相关链接](https://next.router.vuejs.org/zh/guide/advanced/composition-api.html)
@@ -341,6 +297,16 @@ export default {
   },
 }
 ```
+
+## 表单输入绑定v-model
+
+`v-model` 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
+
++ text 和 textarea 元素使用 `value` property 和 `input` 事件
+
++ checkbox 和 radio 使用 `checked` property 和 `change` 事件；
+
++ select 字段将 `value` 作为 prop 并将 `change` 作为事件
 
 ## v-model用于自定义组件时
 
