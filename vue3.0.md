@@ -578,7 +578,7 @@ export default {
 </script>
 ```
 
-## 语法糖
+## setup 语法糖
 
 > [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
 
@@ -606,7 +606,7 @@ setup script`语法糖提供了三个新的`API`来供我们使用：`defineProp
 <script setup>
 // 获取父组件传来的 props
 const props = defineProps({
-  msg: String,
+  openType: String,
   foo: { type: String, required: true, default: 'Hello, World!' },
 });
 const emit = defineEmits(["change", "delete", "handle"]);
