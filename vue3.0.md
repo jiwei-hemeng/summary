@@ -687,10 +687,6 @@ vue中的scoped 通过在DOM结构以及css样式上加`唯一不重复的标记
 
 ### deep()深度选择器的用法
 
-在vue3中项目中，使用深度选择器可能会出现如下错误：
-[@vue/compiler-sfc] the >>> and /deep/ combinators have been deprecated. Use :deep() instead.
-翻译是>>>和/deep/已经被弃用，要用:deep()代替
-
 Vue 提供了样式穿透`:deep()` 他的作用就是用来改变 属性选择器的位置
 
 ```html
