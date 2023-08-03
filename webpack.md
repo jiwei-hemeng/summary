@@ -474,6 +474,47 @@ module.exports = {
 
 ```
 
+### webpack开启cpu多线程提升打包效率
+
+> 如果小项目，文件不多，无需开启多进程打包，反而会变慢，因为开启进程是需要花费时间的
+>
+> [文档地址](https://webpack.docschina.org/loaders/thread-loader/)
+
+安装 thread-loader
+
+```shell
+npm i thread-loader -D
+```
+
+配置
+
+```js
+const Os = require('os');
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: [
+          {
+            loader: "thread-loader",
+            options: { 
+              workers: Os.cpus().length
+            }
+          },
+          {
+            loader: "babel-loader",
+            options: { 
+              cacheDirectory: true,
+            }
+          },
+        ]
+      },
+    ],
+  },
+};
+```
+
 ## vite
 
 ### 使用vite 构建 react 项目
