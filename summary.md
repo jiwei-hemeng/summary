@@ -618,6 +618,26 @@ async function clipboardReadText() {
 copyToClipboard("哈哈哈")
 ```
 
+### URLSearchParams
+
+**获取url参数**
+
+```js
+const url = new URL(`http://www.programmer.com?a=1&b=2`);
+const searchParams = new URLSearchParams(url.search);
+const keys = searchParams.keys()
+for(let key of keys){
+  console.log(key); // result: a,b
+}
+```
+
+**设置url参数**
+
+```js
+const formData = {id: 12, name: 'zsf'};
+let query = new URLSearchParams(formData).toString(); // 'id=12&name=zsf'
+```
+
 ### 让当前的元素滚动到浏览器窗口的可视区域内
 
 ```js
