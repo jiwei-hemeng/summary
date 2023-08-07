@@ -1,4 +1,4 @@
-### 关于*var* 、 *const* 、*let* 的区别
+## 关于*var* 、 *const* 、*let* 的区别
 
 |       | 初始值   | 更改值 | 重新声明 | 变量提升 | 块级作用域 | window调用 |
 | ----- | -------- | ------ | -------- | -------- | ---------- | ---------- |
@@ -6,7 +6,7 @@
 | const | 必须有   | ×      | ×        | ×        | √          | ×          |
 | let   | 可有可无 | √      | ×        | ×        | √          | ×          |
 
-### 箭头函数与普通函数的异同？
+## 箭头函数与普通函数的异同？
 
 箭头函数没有自己的 this 值和 arguments 对象。因此，我们不应该将其用作事件处理程序、对象文字的方法、原型方法，或者当我们有使用参数对象的函数时。
 
@@ -14,7 +14,7 @@
 + 普通函数有arguments；而箭头函数没有必须使用剩余参数 *...* 
 + 箭头函数不能用于构造函数: 普通函数可以用于构造函数
 
-### Set 新的数据类型
+## Set 新的数据类型
 
 > `Set`是ES6引入的一种类似Array的新的数据结构，Set实例的成员类似于数组item成员
 >
@@ -25,7 +25,7 @@ var arr = [1,2,3,4,5,6];
 var newArr = [...new Set(...arr)];
 ```
 
-### Map 新的数据类型
+## Map 新的数据类型
 
 >  `Map`是ES6引入的一种类似`Object`的新的数据结构。
 > `Map`可以理解为是`Object`的超集，**打破了以传统键值对形式定义对象，对象的key不再局限于字符串，也可以是Object**。可以更加全面的描述对象的属性。 
@@ -44,7 +44,7 @@ myMap.keys() // 返回键名的遍历器
 myMap.values() // 返回值的遍历器
 ```
 
-### Symbol 数据类型
+## Symbol 数据类型
 
 > synbol, 表示独一无二的值，每个symbol类型的值都不相同。特点不能使用new 关键字调用它
 
@@ -55,7 +55,7 @@ console.log(tepeof sy) // "symbol"
 sy == sy1; // false
 ```
 
-### **es6中的class**
+### es6中的class
 
 ```js
 class Person {
@@ -77,13 +77,13 @@ let s1 = new Student('若川')
 s1.doSth();
 ```
 
-### **模板字符串**
+## 模板字符串
 
 ```js
 let str = `bhjdc ${item}`
 ```
 
-### **promise的异步封装**
+## promise的异步封装
 
 > 用来解决回调地狱
 
@@ -102,7 +102,7 @@ export function formatStatus() {
 }
 ```
 
-### 函数默认值
+## 函数默认值
 
 > ES6 之前，函数的形参是无法给默认值的，只能在函数内部通过变通的方法实现。
 
@@ -113,7 +113,7 @@ function ES6func(a=1, b=2) {
 ES6func()  // 1, 2
 ```
 
-### 关于ES6的 `Proxy`
+## 关于ES6的 `Proxy`
 
 > `Proxy`是ES6新增的一个构造函数，可以理解为JS语言的一个代理。
 >
@@ -147,7 +147,7 @@ delete person.cls;
 console.log(person);
 ```
 
-### Reflect
+## Reflect
 
 > **Reflect** 是一个内置的对象，它提供拦截 JavaScript 操作的方法。与大多数全局对象不同`Reflect`并非一个构造函数，所以不能通过[new运算符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)对其进行调用，或者将`Reflect`对象作为一个函数来调用。`Reflect`的所有属性和方法都是静态的（就像[`Math`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math)对象）。
 
@@ -157,7 +157,7 @@ console.log(person);
 + Reflect.has(target, key)  检测一个对象是否存在特定属性,返回一个[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean)，如果存在，则返回`true`
 + Reflect.deleteProperty(target, key) 允许用于删除属性, 如果删除成功，则返回`true`
 
-### **async** 函数
+## async 函数
 
 > 可以像执行同步代码一样的写异步代码，async 函数必须是基于Promise
 
@@ -204,7 +204,7 @@ async function async1() {
 }
 ```
 
-### Generator 函数
+## Generator 函数
 
 > Generator函数是ES6提供的一种异步编程的解决方案，可以先理解为一个状态机，封装了多个内部状态，执行Generator函数返回一个遍历器对象，通过遍历遍历器对象，可以依次获取到Generator函数内部的每个状态。
 
@@ -224,7 +224,7 @@ console.log(Generator.next()) // { value: "ending", done: true}
 
 调用Generator函数后并不执行， 返回的也不是函数运行的结果而是一个指向内部状态的指针对象，也就是遍历器对象。
 
-### super 关键字
+## super 关键字
 
 > super 关键字既可以当作函数使用，也可以当作对象使用 
 
@@ -264,7 +264,7 @@ let b = new B();
 
 上面案例中，子类B当中的`super.c()` ， 就是将`super`当作一个对象使用。
 
-###  有条件地向对象添加属性
+## 有条件地向对象添加属性
 
 ```js
 const condition = true;
@@ -275,7 +275,7 @@ const person = {
 };
 ```
 
-### Object.create()介绍
+## Object.create()介绍
 
 > Object.create(null) 创建的对象是一个空对象，在该对象上没有继承 Object.prototype 原型链上的属性或者方法. 例如：toString(), hasOwnProperty()等方法
 
@@ -340,7 +340,7 @@ b.sayName();  // a
 ```
 > 划重点：相对于构造函数的继承Object.create继承实现了将A,B的原型完美分隔 。双方不会互相影响。这是Object.create亮点所在
 
-### 可选的链接运算符
+## 可选的链接运算符
 
 > 可选的链接运算符 (?.) 访问对象的属性或调用函数。如果对象是 undefined 或 null，它返回 undefined 而不是抛出错误。
 
@@ -363,7 +363,7 @@ const showName = (data) => {
 showName('fatfish')
 ```
 
-### import maps
+## import maps
 
 `import map`直译过来是 **导入映射**，它与模块的使用有关，一般我们在项目中导入模块，会调用`require`方法，或者使用`import`语句或方法，引入的模块通常使用npm之类的包管理器进行管理。但是`import map`提供了一种支持，让我们可以直接在页面上管理模块，不需要通过打包构建。
 
@@ -400,3 +400,95 @@ showName('fatfish')
 + 动态加载模块
 + 模块依赖关系管理
 + 减少网络请求
+
+## ESM 和 CommonJS
+
+### 相同点
+
++ ESM 和 CommonJS 都有缓存
+
+  > 这一点两种模块方案一致，都会缓存模块，模块加载一次后会缓存起来，后续再次加载会用缓存里的模块
+
+### 不同点
+
++ 不同点：this 的指向不同
+
++ `_filename`，`__dirname` 在 `CommonJS `中存在，在 `ESM` 中不存在
+
+  > ESM 中不能直接使用 `__filename` 和 `__dirname`。
+
++ ESM 模块解析是发生在 **编译阶段**, 而 CommonJS模块解析发生在 **执行阶段**
++ CommonJS 不同，ESM 中 `import` 的不是对象， `export` 的也不是对象
+
+## JavaScript 的执行过程
+
+JavaScript 执行过程分为两个阶段:
+
++ **编译阶段** 在编译阶段 JS 引擎主要做了三件事：
+
+  + 词法分析
+  + 语法分析
+  + 字节码生成
+
++ **执行阶段** 会分情况创建各种类型的执行上下文，例如：**全局执行上下文** (只有一个)、**函数执行上下文**。而执行上下文的创建分为两个阶段：
+
+  + 创建阶段 会做如下事情
+
+    > 变量提升 和 函数提升 就是在 **创建阶段** 做的
+
+    + 绑定 this
+    + 为函数和变量分配内存空间
+    + 初始化相关变量为 undefined
+
+  + 执行阶段
+
+## JavaScript 的常见报错类型
+
++ RangeError 栈溢出；
+
+  > RangeError: Maximum call stack size exceeded
+
+  ```js
+  functiona () {
+    b()
+  }
+  functionb () {
+    a()
+  }
+  a()
+  // out: 
+  // RangeError: Maximum call stack size exceeded
+  ```
+
++ ReferenceError 打印一个不存在的值
+
+  > ReferenceError: hello is not defined
+
+  ```js
+  hello
+  // out: 
+  // ReferenceError: hello is not defined
+  ```
+
++ `SyntaxError` 当语法不符合 JS 规范时，就会报这种错误
+
+  ```js
+  console.log(1));
+  // out:
+  // console.log(1));
+  //               ^
+  // SyntaxError: Unexpected token ')'
+  ```
+
++ `TypeError` 当一个基础类型当作函数来用时，就会报这个错误
+
+  > TypeError: a is not a function
+
+  ```js
+  vara = 1;
+  a()
+  // out:
+  // TypeError: a is not a function
+  ```
+
+  
