@@ -55,7 +55,7 @@ console.log(tepeof sy) // "symbol"
 sy == sy1; // false
 ```
 
-### es6中的class
+## es6中的class
 
 ```js
 class Person {
