@@ -373,7 +373,7 @@ showName('fatfish')
 
 `import maps`已经成为了一个 Web 标准，并且在2021年7月正式通过了 W3C 的标准化流程；但是由于这个特性比较新，很多浏览器不支持，后面我们详细聊聊兼容情况。
 
-**import maps 怎么使用**
+### import maps 怎么使用
 
 在`import maps`中，可以使用一个 `JavaScript` 对象来定义模块标识符与对应 `URL` 的映射关系，例如：
 
@@ -399,11 +399,26 @@ showName('fatfish')
 </script>
 ```
 
-**import maps 有何优势**
+### import maps 有何优势
 
 + 动态加载模块
 + 模块依赖关系管理
 + 减少网络请求
+
+### import maps 兜底映射
+
+```json
+{
+  "imports": {
+    "jquery": [
+      "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js",
+      "/node_modules/jquery/dist/jquery.js"
+    ]
+  }
+}
+```
+
+先加载CDN的资源，如果挂了，就加载本地node_modules里的资源（回退策略只会生效一次，之后便会缓存所有的功能）。
 
 ## ESM 和 CommonJS
 
