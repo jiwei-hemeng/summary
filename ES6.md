@@ -62,19 +62,23 @@ class Person {
   constructor(age) {
     this.age = age
   }
+  eat() {
+    console.log('eatting');
+  }
 }
 class Student extends Person {
-    constructor(name){
-        // 如果有super必须写在最强面
-      	super()
-        this.name = name
-    }
-    doSth(){
-        console.log(this.name)
-    }
+  constructor(name, age){
+    // 如果有super必须写在最强面
+    super(age)
+    this.name = name
+  }
+  doSth(){
+    console.log(this.name)
+  }
 }
-let s1 = new Student('若川')
+let s1 = new Student('若川', 22)
 s1.doSth();
+s1.eat(); 
 ```
 
 ## 模板字符串
