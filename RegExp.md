@@ -146,8 +146,18 @@ reg.test(123.2323) // result: true
 
 ### 验证特殊字符
 
+正则1
+
 ```js
 const reg = /\$|\@|\#|\~|\!|\%|\^|\&|\*|\￥|\(|\)/;
+reg.test('123'); // result: false
+reg.test("12@33"); // result: true
+```
+
+正则2
+
+```js
+const reg = /\W{1,}/;
 reg.test('123'); // result: false
 reg.test("12@33"); // result: true
 ```
