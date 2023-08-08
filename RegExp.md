@@ -147,9 +147,9 @@ reg.test(123.2323) // result: true
 ### 验证特殊字符
 
 ```js
-const reg = /^[\u0391-\uFFE5\w]+$/;
-reg.test('123'); // result: true
-reg.test("12@33"); // result: false
+const reg = /\$|\@|\#|\~|\!|\%|\^|\&|\*|\￥|\(|\)/;
+reg.test('123'); // result: false
+reg.test("12@33"); // result: true
 ```
 
 ### 匹配汉字
