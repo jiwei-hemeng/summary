@@ -1112,3 +1112,19 @@ flushSync(() => {
 console.log(this.state.message) // 你好啊 这里获取就是同步的
 ```
 
+### React Diff 过程详解
+在传统的diff算法中复杂度会达到O(n^3)。React中定义了三种策略，在对比时，根据策略只需遍历一次树就可以完成对比，将复杂度降到了O(n)，具体如下：
++ tree diff
+  两个树对比时，只会比较同一层级的节点，会忽略掉跨层级
++ 在对比两个组件时，首先会判断它们两个的类型是否相同，如果不同，则将该组件判断为 dirty component，从而替换整个组件下的所有子节点
++ 对于同一层级的一组节点，会使用具有唯一性的key来区分是否需要创建，删除，或者是移动。React diff 提供了三种节点操作，分别为：
+  - INSERT_MARKUP（插入）
+    新的 component 类型不在老集合里， 即是全新的节点，需要对新节点执行插入操作
+
+  - MOVE_EXISTING（移动）
+
+    在老集合有新 component 类型，且 element 是可更新的类型,这种情况下 prevChild=nextChild，就需要做移动操作，可以复用以前的 DOM 节点。
+
+  - REMOVE_NODE（删除）
+    老 component 类型，在新集合里也有，但对应的 element 不同则不能直接复用和更新，需要执行删除操作，或者老 component 不在新集合里的，也需要执行删除操作
+
