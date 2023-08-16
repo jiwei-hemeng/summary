@@ -574,6 +574,12 @@ setup script`语法糖提供了三个新的`API`来供我们使用：`defineProp
 const props = defineProps({
   openType: String,
   foo: { type: String, required: true, default: 'Hello, World!' },
+  messageType: {
+    // 自定义类型校验函数
+    validator(value) {
+      return ['success', 'warning', 'danger'].includes(value)
+    }
+  },
 });
 const emit = defineEmits(["change", "delete", "handle"]);
 const btn = () => {
