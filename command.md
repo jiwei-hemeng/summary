@@ -66,6 +66,15 @@ cat ~/.ssh/id_rsa.pub
 ssh -T git@github.com -i github
 # 测试是否连接到码云, 现在带上私钥
 ssh -T git@gitee.com -i mayun
+#查看git配置
+git config --list
+git config -l
+#查看系统配置
+git config --system --list
+#查看当前用户（global）全局配置
+git config --list --global
+#查看当前仓库配置信息
+git config --local  --list
 ```
 
 ### **关于分支的命令**
