@@ -149,6 +149,8 @@ mklink /j D:\systemconfig D:\system\systemconfig
 MRT
 # 查看系统配置
 dxdiag
+# 查看系统服务
+services.msc
 ```
 
 ### cmd 安装jdk并配置环境变量
