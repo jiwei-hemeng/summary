@@ -833,3 +833,10 @@ export default defineConfig({
   + Vue 使用解析器（Parser）将模板字符串解析为 AST。
   + Vue 使用优化器（Optimizer）标记静态节点。这个步骤不是必须的，但是它可以提高后续的 patch 过程。
   + Vue 使用代码生成器（Code Generator）将 AST 转换为渲染函数。
+
+## Vue 渲染流程
+
++ 解析语法，生成AST
++ 根据AST结果，完成data数据初始化
++ 根据AST结果和DATA数据绑定情况，生成虚拟DOM
++ 将虚拟DOM 生成真正的DOM插入到页面中，进行页面渲染。
