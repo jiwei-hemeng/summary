@@ -651,6 +651,8 @@ img {
 
 ## 怎么让Chrome支持小于12px 的文字
 
+### 方法一：css3 的 transform: scale
+
 > 谷歌Chrome最小字体是12px，不管你设置成8px还是10px，在浏览器中只会显示12px，那么如何解决这个坑爹的问题呢？
 
 ```css
@@ -670,6 +672,14 @@ div p {
   /* 任意字符均可换行 */
   word-break: break-all;
 }
+```
+
+### 方法二： svg 图标
+
+```html
+<svg width="48" height="9">
+    <text y="8" style="font-size: 8px;">你好，世界！</text>
+</svg>
 ```
 
 ## 文字溢出时显示点点点
