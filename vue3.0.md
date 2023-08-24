@@ -901,7 +901,7 @@ setupI18n(app);
 ```js
 import { createI18n, useI18n } from 'vue-i18n';
 const { locale, t } = useI18n();
-locale = 'zh_CN' // 设置成中文
+locale.value = 'zh_CN' // 设置成中文
 t('header.home')) // 获取结果
 ```
 
