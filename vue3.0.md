@@ -1,4 +1,4 @@
-# vue3.0 新特征
+vue3.0 新特征
 
 > 建议阅读迁移 https://v3.cn.vuejs.org/guide/migration/array-refs.html
 
@@ -840,3 +840,68 @@ export default defineConfig({
 + 根据AST结果，完成data数据初始化
 + 根据AST结果和DATA数据绑定情况，生成虚拟DOM
 + 将虚拟DOM 生成真正的DOM插入到页面中，进行页面渲染。
+
+## vue3中引入vue-i18n, 国际化方案
+
+下载安装
+
+```shell
+npm install vue-i18n
+```
+
+在 main.js 所在目录建立 locales 文件夹，该文件对外暴露了全局注册接口，以及对message的配置（建议）
+
+如果需要国际化的message不是太多，可以直接将条目信息配置在getMessage.js文件中
+
+**setupI18n.js**
+
+```js
+import { createI18n, useI18n } from 'vue-i18n'		//引入vue-i18n组件
+import messages from './getMessage'
+//注册i8n实例并引入语言文件
+const localeData = {
+  legacy: false, // composition API
+  locale: 'zh-CN',
+  messages,
+}
+export function setupI18n(app) {
+  const i18n = createI18n(localeData);
+  app.use(i18n);
+}
+```
+
+**getMessage.js**
+
+```js
+export default {
+  en: {
+    header: {
+      home: 'Home',
+      news: 'News',
+    }     
+  },
+  zh_CN: {
+    header: {
+      home: '首页',
+      news: '新闻动态',
+    }   
+  }
+}
+```
+
+在***main.js***中导入实例
+
+```js
+import { setupI18n } from '/@/locales/setupI18n';
+setupI18n(app);
+```
+
+**使用语言**
+
+```js
+import { createI18n, useI18n } from 'vue-i18n';
+const { locale, t } = useI18n();
+locale = 'zh_CN' // 设置成中文
+t('header.home')) // 获取结果
+```
+
