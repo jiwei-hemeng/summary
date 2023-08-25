@@ -246,7 +246,7 @@ lsof -i:3000
 git reset --soft HEAD~
 ```
 
-重置 index 以便和 HEAD 相匹配 （若未指定 --hard，则到此停止）；
+重置 index 以便和 HEAD 相匹配 （若未指定 --hard，则到此停止）；**默认的可以不用带该参数**
 ```shell
 # 它依然会撤销一上次提交，但还会取消所有暂存。 于是，我们回滚到了所有 git add 和 git commit 的命令执行之前。
 git reset --mixed HEAD~
