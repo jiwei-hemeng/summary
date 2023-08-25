@@ -47,6 +47,8 @@ git remote rm origin
 git diff --check
 # 修改提交信息(commit message)
 git commit --amend --only -m 'xxxxxxx'
+# 修改上次提交的用户名和邮箱
+git commit --amend --author="name <email>" --no-edit
 # 强制推送到main分支
 git push -f origin mian
 ```
