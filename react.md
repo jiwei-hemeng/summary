@@ -580,7 +580,7 @@ import 'lib-flexible'
 
 让我们从最简单的 Hooks 使用开始。
 
-**useState**
+#### **useState**
 
 ```js
 import React, { useState } from 'react';
@@ -603,7 +603,7 @@ function Example() {
 
 `useState` 就是一个 Hooks，以前的函数组件是无状态的，但是有了 Hooks 后我们可以在函数中通过 `useState` 来获取 state 属性（count）以及修改 state 属性的方法（setCount）。
 
-**useEffect**
+#### useEffect
 
 在 Hooks 出现之前函数组件是不能访问生命周期钩子的，所以提供了 `useEffect` Hooks 来解决钩子问题，以往的所有生命周期钩子都被合并成了 `useEffect`，并且其解决了之前所提的关于生命周期钩子的问题。
 
@@ -628,6 +628,13 @@ function Example() {
 ```
 
 可以看到无论是初始化渲染还是更新渲染，`useEffect` 总是会确保在组件渲染完毕后再执行，这就相当于组合了初始化和更新渲染时的生命周期钩子。并且由于闭包的特性，`useEffect` 可以访问到函数组件中的各种属性和方法。
+
+**总结：** 
+
++ 当 useEffect 没有传递第二个参数时，组件挂载完成和组件更新时都会执行，可以看作是类组件中 componentDidMount 和 componentDidUpdate 的结合
++ 当 useEffect 的第二个参数是一个空数组时，会在组件挂载完成后执行。可以看作是类组件中 componentDidMount 。
++ 当 useEffect 的第二个参数是一个非空数组时，会在组件挂载完成后执行一次，后续当数组中的任意数据发生改变时，都会重新执行。类似于 Vue 中 watch 搭配立即侦听。
++ 当 useEffect 的第一个参数中，返回了一个函数。返回的这个函数会在当前组件销毁前执行。模拟类组件 componentWillUnmount
 
 **useRef**
 
@@ -655,6 +662,13 @@ export default function UseRefExample() {
 
 + createRef 每次渲染都会返回一个新的引用，而useRef 每次渲染都会返回相同的引用。
 + createRef 只能在class 组件中使用；useRef 只能在function组件中使用；
+
+#### useMemo
+
+> 类似于vue 的计算属性，可以把 useMemo 作为性能优化的手段，但不要把它当成语义上的保证
+> [官网地址](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
+
+把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
 
 ### react-spring
 
@@ -1033,17 +1047,6 @@ yarn add source-map-explorer
 **然后分析 bundle(包) 运行生产构建然后运行分析脚本。**
 ```shell
 npm run analyze
-```
-
-### useMemo
-
-> 类似于vue 的计算属性，可以把 useMemo 作为性能优化的手段，但不要把它当成语义上的保证
-> [官网地址](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
-
-把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
-
-```js
-const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
 
 ### 深入学习React的合成事件
