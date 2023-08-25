@@ -670,6 +670,117 @@ export default function UseRefExample() {
 
 把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
 
+#### useImperativeHandle
+
+>  react hook组件中父组件调用子组件的方法 [官网连接](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
+
+```js
+import React, {
+  useRef,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from "react";
+function Son(props, ref) {
+  const inputRef = useRef(null);
+  const [inputValue, setInputValue] = useState("");
+  useImperativeHandle(
+    ref,
+    () => {
+      const handleRefs = {
+        onFocus() {
+          inputRef.current.focus();
+        },
+        onChangeValue(value) {
+          setInputValue(value);
+        },
+      };
+      return handleRefs;
+    },
+    []
+  );
+  return (
+    <div>
+      <input placeholder="请输入内容" ref={inputRef} value={inputValue} />
+    </div>
+  );
+}
+const ForwarSon = forwardRef(Son);
+const Index = () => {
+  let inputRef = useRef(null);
+
+  const handerClick = () => {
+    const { onFocus, onChangeValue } = inputRef.current;
+    onFocus();
+    onChangeValue("let us learn React!");
+  };
+
+  return (
+    <div style={{ marginTop: "50px" }}>
+      <ForwarSon ref={inputRef} />
+      <button onClick={handerClick}>操控子组件</button>
+    </div>
+  );
+};
+export default Index;
+```
+
+#### useContext
+
+`useContext` 是一个 React Hook，可以让你读取和订阅组件中的 [context](https://react.docschina.org/learn/passing-data-deeply-with-context)。
+
+```js
+import { createContext, useContext, useState } from 'react';
+const ThemeContext = createContext('light');
+export default function MyApp() {
+  const [theme, setTheme] = useState('light');
+  return (
+    <>
+      <ThemeContext.Provider value={theme}>
+        <Form />
+      </ThemeContext.Provider>
+      <Button onClick={() => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+      }}>
+        Toggle theme
+      </Button>
+    </>
+  )
+}
+
+function Form({ children }) {
+  return (
+    <Panel title="Welcome">
+      <Button>Sign up</Button>
+      <Button>Log in</Button>
+    </Panel>
+  );
+}
+
+function Panel({ title, children }) {
+  const theme = useContext(ThemeContext);
+  const className = 'panel-' + theme;
+  return (
+    <section className={className}>
+      <h1>{title}</h1>
+      {children}
+    </section>
+  )
+}
+
+function Button({ children, onClick }) {
+  const theme = useContext(ThemeContext);
+  const className = 'button-' + theme;
+  return (
+    <button className={className} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+```
+
+
+
 ### react-spring
 
 > React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
@@ -941,59 +1052,6 @@ import Zmage from "react-zmage";
 // Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
 <a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
 ```
-### react hook组件中父组件调用子组件的方法
-> [官网连接](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
-```js
-import React, {
-  useRef,
-  useImperativeHandle,
-  useState,
-  forwardRef,
-} from "react";
-function Son(props, ref) {
-  const inputRef = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-  useImperativeHandle(
-    ref,
-    () => {
-      const handleRefs = {
-        onFocus() {
-          inputRef.current.focus();
-        },
-        onChangeValue(value) {
-          setInputValue(value);
-        },
-      };
-      return handleRefs;
-    },
-    []
-  );
-  return (
-    <div>
-      <input placeholder="请输入内容" ref={inputRef} value={inputValue} />
-    </div>
-  );
-}
-const ForwarSon = forwardRef(Son);
-const Index = () => {
-  let inputRef = useRef(null);
-
-  const handerClick = () => {
-    const { onFocus, onChangeValue } = inputRef.current;
-    onFocus();
-    onChangeValue("let us learn React!");
-  };
-
-  return (
-    <div style={{ marginTop: "50px" }}>
-      <ForwarSon ref={inputRef} />
-      <button onClick={handerClick}>操控子组件</button>
-    </div>
-  );
-};
-export default Index;
-```
-
 ### 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
