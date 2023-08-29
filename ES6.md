@@ -513,4 +513,21 @@ JavaScript 执行过程分为两个阶段:
   // TypeError: a is not a function
   ```
 
-  
+
+## for in 和 for of
+
+### for in 的缺点
+
++ for…in所遍历的为对象的可遍历属性的属性名
++ for…in不但把自身的属性名遍历出来，还将其原型上的属性遍历出来了
++ 数组的键名为数字，但是for…in循环的时候是以字符串作为键名，如"1"、"2"、"3"等。
++ 某些情况下，for…in循环会以任意顺序遍历键名。
+
+### for…of
+
+> for…of语法是ES6新引入的语法，for…of语法用于遍历可迭代（iterable）对象，js中的可迭代对象包括字符串String、数组Array、集合Set、字典Map、arguments 对象、DOM NodeList 对象等等，for…of语法用于遍历这些对象本身的元素
+
+```js
+for (variable element of iterable){}
+```
+

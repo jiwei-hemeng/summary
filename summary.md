@@ -578,13 +578,14 @@ console.log("test", getURLParameters(str)) // reslut: test {sear: 'aaa', keyword
 **方法三**
 
 ```js
-function getearcgParams() {
-  const searchPar = new URLSearchParams(location.search)
+function getearcgParams(url) {
+  const urlSearch = new URL(url);
+  const searchPar = new URLSearchParams(urlSearch.search)
   const searchObj = {}
   for (const [key, value] of searchPar.entries()) {
     searchObj[key] = value
   }
-  return searchObj
+  return searchObjss
 }
 ```
 
@@ -626,8 +627,8 @@ copyToClipboard("哈哈哈")
 const url = new URL(`http://www.programmer.com?a=1&b=2`);
 const searchParams = new URLSearchParams(url.search);
 const keys = searchParams.keys()
-for(let key of keys){
-  console.log(key); // result: a,b
+for(const [key, value] of keys){
+  console.log(key, value); // result: a,b
 }
 ```
 
