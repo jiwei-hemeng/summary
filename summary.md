@@ -626,9 +626,8 @@ copyToClipboard("哈哈哈")
 ```js
 const url = new URL(`http://www.programmer.com?a=1&b=2`);
 const searchParams = new URLSearchParams(url.search);
-const keys = searchParams.keys()
-for(const [key, value] of keys){
-  console.log(key, value); // result: a,b
+for(let [key, value] of searchParams.entries()) {
+  console.log(key, value)
 }
 ```
 
