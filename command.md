@@ -242,6 +242,8 @@ lsof -i:3000
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
 
+#### git reset 三棵树
+
 移动 HEAD 指向的分支 （若指定了 --soft，则到此停止）；
 ```shell
 # 它本质上是撤销了上一次 git commit 命令
@@ -259,6 +261,18 @@ git reset --mixed HEAD~
 # 撤销了最后的提交（git commit ）、git add 和工作目录中的所有工作。
 git reset --hard HEAD~
 ```
+
+#### HEAD 说明：
+
+- HEAD 表示当前版本
+- HEAD^ 上一个版本
+- HEAD^^ 上上一个版本
+
+可以使用 ～数字表示
+
+- HEAD~0 表示当前版本
+- HEAD~1 上一个版本
+- HEAD~2 上上一个版本
 
 ###  nrm
 
