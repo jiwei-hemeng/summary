@@ -19,10 +19,10 @@
 
 ```js
 function warp () {
-    let num = 1
-    return function () {
-        console.log(num)
-    }
+  let num = 1
+  return function () {
+    console.log(num)
+  }
 }
 const p = warp()
 p()
