@@ -15,18 +15,6 @@ git log
 git status
 # 将本地仓库推送到远程仓库
 git push -u origin master
-# 保存当前未commit的代码并添加备注
-git stash save "备注的内容"
-# 列出stash的所有记录
-git stash list
-# 删除stash的所有记录
-git stash clear
-# 应用最近一次的stash
-git stash apply
-# 应用最近一次的stash，随后删除该记录
-git stash pop
-# 删除最近的一次stash
-git stash drop
 # 撤回未提交的更改
 git checkout src/view/index/index.vue
 # 比较文件
@@ -77,7 +65,24 @@ git config --list --global
 git config --local  --list
 ```
 
-### **关于分支的命令**
+### git 缓存命令
+
+```shell
+# 保存当前未commit的代码并添加备注
+git stash save "备注的内容"
+# 列出stash的所有记录
+git stash list
+# 删除stash的所有记录
+git stash clear
+# 应用最近一次的stash
+git stash apply
+# 应用最近一次的stash，随后删除该记录
+git stash pop
+# 删除最近的一次stash
+git stash drop
+```
+
+### 关于分支的命令
 
 ```shell
 # 查看当前分支
