@@ -144,14 +144,16 @@ function debounce(fn, wait = 50) {
   };
 }
 // 节流
-function throttle(fn, wait = 200) {
+function throttle(fn, wait = 50) {
   let canRun = true;
   return function () {
-    if (!canRun) return (canRun = false);
-    setTimeout(() => {
-      fn.apply(this, arguments);
-      canRun = true;
-    }, wait);
+    if (canRun) {
+      setTimeout(() => {
+        fn.apply(this, arguments);
+        canRun = true;
+      }, wait);
+      canRun = false;
+    }
   };
 }
 ```
