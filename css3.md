@@ -966,17 +966,17 @@ p {text-align:  justify;}
 </p>
 <style>
   .content{
-    width:600px;
-    height:200px;
+    width: 600px;
+    height: 200px;
     border: 3px solid red;
-    text-align:justify;
+    text-align: justify;
   }
   .content::after{
-    content:"";
-	display:inline-block;
-	width:100%;
-	height:0;
-	visibility:hidden;
+    content: "";
+	display: inline-block;
+	width: 100%;
+	height: 0;
+	visibility: hidden;
   }
 </style>
 ```
