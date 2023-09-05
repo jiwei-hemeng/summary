@@ -953,7 +953,9 @@ p {
 ## CSS 实现文本两端对齐
 
 ```css
-p {text-align:  justify;}
+p {
+  text-align:  justify;
+}
 ```
 
 缺点： 文本的最后一行或者单独一行设置是无效的；
