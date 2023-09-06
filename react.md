@@ -1054,6 +1054,8 @@ import Zmage from "react-zmage";
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
 
+####  案例一：localStorage 
+
 **定义**
 
 ```js
@@ -1078,7 +1080,6 @@ import React, { useState, useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
 export default function CustomDataStoreHook() {
   const [name, setName] = useLocalStorage("name");
-
   return (
     <div>
       <h2>CustomDataStoreHook: {name}</h2>
@@ -1087,6 +1088,67 @@ export default function CustomDataStoreHook() {
   )
 }
 ```
+#### 案例二：scoll
+
+**定义**
+
+```js
+import { useState, useEffect } from 'react';
+// 获取横向，纵向滚动条位置
+const getPosition = () => {
+  return {
+    x: document.body.scrollLeft,
+    y: document.body.scrollTop,
+  };
+};
+export default function useScroll() {
+  // 定一个 position 这个 state 保存滚动条位置
+  const [position, setPosition] = useState(getPosition());
+  useEffect(() => {
+    const handler = () => {
+      setPosition(getPosition(document));
+    };
+    // 监听 scroll 事件，更新滚动条位置
+    document.addEventListener("scroll", handler);
+    return () => {
+      // 组件销毁时，取消事件监听
+      document.removeEventListener("scroll", handler);
+    };
+  }, []);
+  return position;
+};
+```
+
+**使用**
+
+```js
+import React, { useCallback } from 'react';
+import useScroll from './useScroll';
+
+function ScrollTop() {
+  const { y } = useScroll();
+
+  const goTop = useCallback(() => {
+    document.body.scrollTop = 0;
+  }, []);
+
+  const style = {
+    position: "fixed",
+    right: "10px",
+    bottom: "10px",
+  };
+  // 当滚动条位置纵向超过 300 时，显示返回顶部按钮
+  if (y > 300) {
+    return (
+      <button onClick={goTop} style={style}>
+        Back to Top
+      </button>
+    );
+  }
+  return null;
+}
+```
+
 ### 分析 Bundle (包) 大小
 
 **安装依赖**
