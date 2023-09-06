@@ -1543,3 +1543,49 @@ a[target="_blank"] {
 }
 ```
 
+## css 居中
+
+### 行内元素、行内块元素
+
+水平方向 通过 text-align: center； 垂直方向：通过 vertical-align: middle; 
+
+### 块元素
+
++ flex 布局  实现垂直水平居中
+
++ magin: 0 auto;  水平居中
+
++ 定位 + calc (**已知宽高**)
+
+  ```css
+  .parent {
+    position: relative;
+  }
+  .child {
+    position: absolute;
+    left: calc(50% - 150px);
+    top: calc(50% - 150px);
+  }
+  ```
+
++ 定位 (**未知宽高**)
+
+  ```css
+  .parent {
+    position: relative;
+  }
+  .child {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  ```
+
+  
+
+
+
+
+
+​		

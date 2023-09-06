@@ -585,7 +585,7 @@ function getearcgParams(url) {
   for (const [key, value] of searchPar.entries()) {
     searchObj[key] = value
   }
-  return searchObjss
+  return searchObj;
 }
 ```
 
