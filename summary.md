@@ -372,11 +372,11 @@ box.style.backgroundColor = "red"
 
 ```js
 document.querySelector("ul").addEventListener("click", function (e) {
-    if (e.target.tagName === "LI") {
-        console.log("事件源", e.target); // 用于指向事件源
-        console.log("事件源的父元素", e.target.parentNode); // 得到的结果是伪元素
-        console.log("事件源的子元素", e.target.childNodes); // 得到的结果是伪元素
-    }
+  if (e.target.tagName === "LI") {
+    console.log("事件源", e.target); // 用于指向事件源
+    console.log("事件源的父元素", e.target.parentNode); // 得到的结果是伪元素
+    console.log("事件源的子元素", e.target.childNodes); // 得到的结果是伪元素
+  }
 });
 ```
 
@@ -464,92 +464,6 @@ JSON.stringify转为字符串再JSON.parse
 + 无法拷贝Map、Set、 RegExp 这些特殊数据类型
 + 循环引用会报错
 
-### **创建对象的方式**
-
-字面量的方式 
-
-```js
-var obj = {}
-```
-
-*new Object()*  的方式创建对象
-
-```js
-var obj = new Obect()
-```
-
-自定义构造函数创建对象
-
-```js
-function  CreateHero ( name, age, height ) {
-    this.name = name;
-    this.age = age;
-    this.height = height;
- }
-```
-
-工厂的方式创建对象
-
-```js
-function  create ( name, age, height ) {
-   var  Ob = new Object()
-   Ob.name = name;
-   Ob.age = age;
-   Ob.height = height;
-   Ob.eat = function () {}
-   return Ob;
-}
-```
-
-### ES5对ES6中的let和const的实现
-
-**let的实现**
-
-```js
-function outputNum(count){
-//块级作用域
-  (function(){
-    for(var i = 0; i < count; i ++){
-      console.log(i)
-    }
-  })();
-  console.log(i) // i is not defined
-}
-outputNum(5)
-```
-
-**const的实现**
-
-```jsx
-var __const = function __const(data, value) {
-  window.data = value // 把要定义的data挂载到window下，并赋值value
-  Object.defineProperty(window, data, { // 利用Object.defineProperty的能力劫持当前对象，并修改其属性描述符
-    enumerable: false,
-    configurable: false,
-    get: function () {
-      return value
-    },
-    set: function (data) {
-      if (data !== value) { // 当要对当前属性进行赋值时，则抛出错误！
-        throw new TypeError('Assignment to constant variable.')
-      } else {
-        return value
-      }
-    }
-  })
-}
-__const('a', 10)
-console.log(a)
-delete a
-console.log(a)
-for (let item in window) { // 因为const定义的属性在global下也是不存在的，所以用到了enumerable: false来模拟这一功能
-  if (item === 'a') { // 因为不可枚举，所以不执行
-    console.log(window[item])
-  }
-}
-a = 20 // 报错
-```
-
 ### 获取URL参数的对象
 
 **方法一**
@@ -594,14 +508,14 @@ function getearcgParams(url) {
 
 ```js
 export function fnParamsToUrl(obj) {
-      let aUrl = []
-      let fnAdd = function(key, value) {
-        return key + '=' + value
-      }
-      for (var k in obj) {
-        aUrl.push(fnAdd(k, obj[k]))
-      }
-      return encodeURIComponent(aUrl.join('&'))
+  let aUrl = []
+  let fnAdd = function(key, value) {
+    return key + '=' + value
+  }
+  for (var k in obj) {
+    aUrl.push(fnAdd(k, obj[k]))
+  }
+  return encodeURIComponent(aUrl.join('&'))
  }
 ```
 
@@ -781,49 +695,6 @@ console.log(arr);    // result [1, 2, 3, 4, 5]
 
  如果返回值大于0，则sort()函数自动将a排列到b之后；
 
-### javascript中Object常用方法使用总结
-
-- Object构造函数继承
-
-    只有构造函数才有prototype属性
-
-    js每个对象都有一个__proto__属性 === 构造函数的prototype属性
-
-    ```js
-    function conObj () {}
-    conObj.prototype.age = '12'
-    let newPreObj = new conObj()
-    console.log(newPreObj.age) // 12
-    console.log(newPreObj.__proto__ === conObj.prototype) // true
-    ```
-
-- Object.assgin()
-
-    用于将一个或者多个对象的可枚举的值从源对象复制到目标对象。返回目标对象
-
-    ```js
-    let target = {name: 'xiaomin'};
-    let source = {age: '14',name:'hua'};
-    const finalObj = Object.assign(target, source)
-    console.log(target, finalObj) // {name: 'hua', age: '14'}
-    ```
-
-- Object.defineProperty()
-
-    用于直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象
-
-- Object.keys()、Object.values()
-
-    Object.keys()返回一个指定对象可枚举属性的属性名组成的数组
-
-     Object.values()返回一个指定对象可枚举属性的属性值组成的数组
-
-    ```js
-    let myObj = {name:'xioamin', age:'12'};
-    console.log(Object.keys(myObj)); // ["name", "age"]
-    console.log(Object.values(myObj)); // ["xiaomin", "12"]
-    ```
-
 ### 获取文件对象的blob地址
 
 > 注意： 使用完成后一定要调用revokeObjectURL 方法解除内存的占用
@@ -986,8 +857,8 @@ function generateMixed(n) {
 
 ```js
 function test() {
-    console.log(a);
-    var a = 123;
+  console.log(a);
+  var a = 123;
 }
 test(); // undefined
 // 它的实际执行顺序如下：
@@ -1018,7 +889,7 @@ console.log(a)
 ```js
 console.log(bar)
 function bar() {
-    console.log(123)
+  console.log(123)
 }
 // result: f bar() {console.log(123) }
 执行顺序相当于：
@@ -1042,50 +913,6 @@ foo = function() {
 // result: 1
 ```
 
-### 防抖与节流
-
-**防抖**
-
-> 只有最后一次出发生效
-
-```js
-var timer = null
-function debounce(){
-    if(timer) clearTimeout(timer);
-    timer = setTimeout(()=>{
-        // 在这里可以获取搜索建议
-    },150)
-}
-debounce()
-```
-
-**节流**
-
-> 减少事件的触发频率，选择性的执行事件
-
-```js
-let canRun = true;
-document.getElementById("throttle").onscroll = function(){
-  if(!canRun){
-    // 判断是否已空闲，如果在执行中，则直接return
-    return;
-  }
-  canRun = false;
-  setTimeout(function(){
-    console.log("函数节流");
-    canRun = true;
-  }, 200);
-}
-```
-
-**防抖与节流的异同**
-
-防抖与节流都是希望在同一时间内，不要重复触发请求。
-
-防抖主要是在规定的时间内只触发一次，如果再次调用，事件重新计时
-
-节流是要是在规定的时间内只触发一次
-
 ### 数组扁平化的方式
 
 **方法一：**
@@ -1100,9 +927,9 @@ console.log(arr.flat(Infinity))
 
 ```js
 const newArr = (arr)=>{
-     return arr.reduce((pre,cur)=>{
-          return pre.concat(Array.isArray(cur) ? newArr(cur) : cur)
-     },[])
+  return arr.reduce((pre,cur)=>{
+    return pre.concat(Array.isArray(cur) ? newArr(cur) : cur)
+  },[])
 }
 console.log(newArr(arr),"reduce方法")
 ```
