@@ -1547,7 +1547,11 @@ a[target="_blank"] {
 
 ### 行内元素、行内块元素
 
-水平方向 通过 text-align: center； 垂直方向：通过 vertical-align: middle; 
++ 水平方向 
+  + text-align: center；
++  垂直方向：
+  +  vertical-align: middle; 
+  +  行高等于高
 
 ### 块元素
 
