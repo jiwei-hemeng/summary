@@ -905,3 +905,213 @@ locale.value = 'zh_CN' // 设置成中文
 t('header.home')) // 获取结果
 ```
 
+## vue中的diff算法
+
+[原文链接](https://www.qinglite.cn/doc/72016477726b75f95)
+
+数据改变会触发 **setter**，然后调用 Dep.notify(), 并且通过`Dep.notify`去通知所有`订阅者Watcher` **，** 订阅者们就会调用`patch方法` **，** 给真实 DOM 打补丁，更新相应的视图。
+
+![vue中的diff算法](./assets/images/db35549fbd731c73c67e5b260e9aff9b.webp)
+
+接下来我们来分析几个核心函数吧：
+
+### patch 函数
+
+diff的入口函数；
+
+```js
+function patch(oldVnode, newVnode) { // 传入新、旧节点
+  // 比较是否为一个类型的节点
+  if (sameVnode(oldVnode, newVnode)) {
+    // 是：继续进行深层比较
+    patchVnode(oldVnode, newVnode)
+  } else {
+    // 否
+    const oldEl = oldVnode.el // 旧虚拟节点的真实DOM节点
+    const parentEle = api.parentNode(oldEl) // 获取父节点
+    createEle(newVnode) // 创建新虚拟节点对应的真实DOM节点
+    if (parentEle !== null) {
+      api.insertBefore(parentEle, newVnode.el, api.nextSibling(oldEl)) // 将新元素添加进父元素
+      api.removeChild(parentEle, oldVnode.el)  // 移除以前的旧元素节点
+      // 设置null，释放内存
+      oldVnode = null
+    }
+  }
+  return newVnode
+}
+```
+
+### sameVNode 函数
+
+主要用来判断两个节点是否完全相同，那么满足什么条件才能判断两个节点完全相同呢？
+
+```js
+function sameVnode(oldVnode, newVnode) {
+  return (
+    oldVnode.key === newVnode.key && // key值是否一样
+    oldVnode.tagName === newVnode.tagName && // 标签名是否一样
+    oldVnode.isComment === newVnode.isComment && // 是否都为注释节点
+    isDef(oldVnode.data) === isDef(newVnode.data) && // 是否都定义了data
+    sameInputType(oldVnode, newVnode) // 当标签为input时，type必须是否相同
+  )
+}
+```
+
+### patchVNode 函数
+
+**此阶段我们已经找到了需要去对比的节点，那么该方法主要做了什么呢？**
+
+- 拿到真实的dom节点`el`（即`oldVnode`）
+
+- 判断当前`newVnode`和`oldVnode`是否指向同一个对象，如果是则直接return
+
+- 如果是文本节点，且文本有变化，则直接调用api 将文本替换；若文本没有变化，则继续对比新旧节点的子节点`children`
+
+- 如果`oldVnode`有子节点而`newVnode`没有，则删除`el`的子节点
+
+- 如果`oldVnode`没有子节点而`newVnode`有，则将`newVnode`的子节点真实化之后添加到`el`
+
+- 如果两者都有子节点，则执行`updateChildren`函数比较子节点，这一步很重要---**diff的核心**
+
+```js
+function patchVnode(oldVnode, newVnode) {
+  const el = newVnode.el = oldVnode.el // 获取真实DOM对象
+  // 获取新旧虚拟节点的子节点数组
+  const oldCh = oldVnode.children, newCh = newVnode.children
+  // 如果新旧虚拟节点是同一个对象，则终止
+  if (oldVnode === newVnode) return
+  // 如果新旧虚拟节点是文本节点，且文本不一样
+  if (oldVnode.text !== null && newVnode.text !== null && oldVnode.text !== newVnode.text) {
+    // 则直接将真实DOM中文本更新为新虚拟节点的文本
+    api.setTextContent(el, newVnode.text)
+  } else {
+    if (oldCh && newCh && oldCh !== newCh) {
+      // 新旧虚拟节点都有子节点，且子节点不一样
+      // 对比子节点，并更新
+      /*  diff核心！！*/  
+      updateChildren(el, oldCh, newCh) 
+    } else if (newCh) {
+      // 新虚拟节点有子节点，旧虚拟节点没有
+      // 创建新虚拟节点的子节点，并更新到真实DOM上去
+      createEle(newVnode)
+    } else if (oldCh) {
+      // 旧虚拟节点有子节点，新虚拟节点没有
+      // 直接删除真实DOM里对应的子节点
+      api.removeChild(el)
+    }
+  }
+}
+```
+
+### updateChildren函数
+
+此方法就是diff算法的核心部分，当发现新旧虚拟节点的的子节点都存在时候，我们就需要通过一些方法来判断哪些节点是需要移动的，哪些节点是可以直接复用的，来提高我们整个diff的效率；
+
+#### vue2 -- 首尾指针法
+
+通过在新旧子节点的首尾定义四个指针，然后不断的对比找到可复用的节点，同时判断需要移动的节点。
+
+```js
+function vue2Diff(prevChildren, nextChildren, parent) {
+  // 在新旧首尾，分别定义四个指针
+  let oldStartIndex = 0,
+    oldEndIndex = prevChildren.length - 1
+    newStartIndex = 0,
+    newEndIndex = nextChildren.length - 1;
+  let oldStartNode = prevChildren[oldStartIndex],
+    oldEndNode = prevChildren[oldEndIndex],
+    newStartNode = nextChildren[newStartIndex],
+    newEndNode = nextChildren[newEndIndex];
+   // 不断向内收缩
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+      if (oldStartNode.key === newStartNode.key) {
+        ...
+      } else if (oldEndNode.key === newEndNode.key) {
+        ...
+      } else if (oldStartNode.key === newEndNode.key) {
+        ...
+      } else if (oldEndNode.key === newStartNode.key) {
+        ...
+      }
+  }
+}
+```
+
+#### vue3 -- 最长递增子序列
+
++ 从头对比找到有相同的节点 patch ，发现不同，立即跳出。
+
+* 如果第一步没有patch完，立即，从后往前开始patch ,如果发现不同立即跳出循环。
+
++ 如果新的节点大于老的节点数 ，对于剩下的节点全部以新的vnode处理（这种情况说明已经patch完相同的vnode）。
+
++ 对于老的节点大于新的节点的情况 ， 对于超出的节点全部卸载（这种情况说明已经patch完相同的vnode）。
++ 不确定的元素（这种情况说明没有patch完相同的vnode） 与 3 ，4对立关系。
+
+前面的逻辑跟vue2还是比较像，逐渐向中间收缩，那么关键点就在判断哪些节点是需要变动的
+
+首先，我们以**新节点**的数量创建一个 `source` 数组，并用 **-1** 填满；
+
+![第一步](./assets/images/1511ca4f0268caa0bdb7f9340392c817.webp)
+
+这个`source`数组就是用来做新旧节点的对应关系的，我们将**新节点**在**旧列表**的位置存储在该数组中，我们再根据`source`计算出它的`最长递增子序列`用于移动DOM节点。
+
+其次，我们先建立一个对象存储当前**新列表**中的`节点`与`index`的关系
+
+```js
+const newVNodeMap = {
+    c: '1', 
+    d: '2',
+    b: '3',
+    i: '4'
+}
+```
+
+然后再去**旧列表**中去找相同的节点，并记录其`index`的位置。
+
+在找节点时，**如果旧节点在新列表中没有的话，直接删除就好**。除此之外，我们还需要一个数量表示记录我们已经`patch`过的节点，如果数量已经与**新列表**剩余的节点数量一样，那么剩下的`旧节点`我们就直接删除了就可以了。
+
+![第二步](D:\summary\assets\images\2d1a915fe3d252d436dddb74e9b09845.webp)
+
+```js
+function vue3Diff(prevChildren, nextChildren, parent) {
+  //...
+  if (move) {
+    // 需要移动
+    const seq = lis(source); // [0, 1]
+    let j = seq.length - 1;  // 最长子序列的指针
+    // 从后向前遍历
+    for (let i = nextLeft - 1；i >= 0; i--) {
+      let pos = nextStart + i, // 对应新列表的index
+        nextNode = nextChildren[pos], // 找到vnode
+        nextPos = pos + 1，    // 下一个节点的位置，用于移动DOM
+        refNode = nextPos >= nextChildren.length ? null : nextChildren[nextPos].el, //DOM节点
+        cur = source[i];      // 当前source的值，用来判断节点是否需要移动
+      if (cur === -1) {
+        // 情况1，该节点是全新节点
+        mount(nextNode, parent, refNode)
+      } else if (cur === seq[j]) {
+        // 情况2，是递增子序列，该节点不需要移动
+        // 让j指向下一个
+        j--
+      } else {
+        // 情况3，不是递增子序列，该节点需要移动
+        parent.insetBefore(nextNode.el, refNode)
+      }
+    }
+  } else {
+  // 不需要移动
+  for (let i = nextLeft - 1；i >= 0; i--) {
+      let cur = source[i];              // 当前source的值，用来判断节点是否需要移动
+    
+      if (cur === -1) {
+       let pos = nextStart + i,         // 对应新列表的index
+          nextNode = nextChildren[pos], // 找到vnode
+          nextPos = pos + 1，           // 下一个节点的位置，用于移动DOM
+          refNode = nextPos >= nextChildren.length ? null : nextChildren[nextPos].el, //DOM节点
+          mount(nextNode, parent, refNode)
+      }
+    }
+}
+```
+
