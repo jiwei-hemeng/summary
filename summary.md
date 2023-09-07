@@ -913,6 +913,12 @@ foo = function() {
 // result: 1
 ```
 
+### null 和 undefined 的区别
+
++ undefined表示变量声明过但并未赋过值； 而null 表示赋值为空
++ undefined 转为数字类型是NAN；而null 转为数字类型是0
++ undefined是所有没有赋值变量的默认值，自动赋值; 而null 主动释放一个变量引用的对象，表示一个变量不再指向任何对象地址
+
 ### 数组扁平化的方式
 
 **方法一：**
