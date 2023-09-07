@@ -107,21 +107,20 @@
 
 + 闭包使用不当
 
-+ 被遗忘的定时器或事件回调函数
++ 被遗忘的定时器
 
-   当dom元素被移除时，因为是周期定时器的缘故，定时器回调函数始终没法被回收，这也致使了定时器会一直对数据serverData保持引用，好的作法是在不须要时中止定时器 
-
-  ```js
-  var serverData = loadData();
-  setInterval(function () {
-      var dom = document.getElementById('renderer');
-      if (dom) {
-          dom.innerHTML = JSON.stringify(serverData);
-      }
-  }, 3000);
+   ```js
+  let name = 'yuanyuan'; 
+  setInterval(() => {
+    console.log(name); 
+  }, 100);
   ```
+  
+   只要定时器一直运行，回调函数中引用的 `name` 就会一直占用内存。垃圾回收程序当然知道这一点，因而就不会清理外部变量
+  
++ 未清理的 DOM 引用
 
-   另外在使用事件监听时，若是再也不须要监听记得移除监听事件 
+  DOM 元素的生命周期正常情况下取决于是否挂载在 DOM 树上，当元素从 DOM 树上移除时，就可以被销毁回收了。但如果某个 DOM 元素在 JS 中也持有它的引用，想要彻底删除这个元素，就需要把两个引用都清除，这样才能正常回收它。
 
   ```js
   var element = document.getElementById('button');
@@ -129,7 +128,11 @@
     element.innerHTML = 'text';
   };
   element.addEventListener('click', onclick);
-  element.removeEventListener('click', onclick);
+  function removeBtn() {
+    element.removeEventListener('click', onclick);
+    document.body.removeChild(document.getElementById('button'))
+    element = null; 
+  }
   ```
 
   
