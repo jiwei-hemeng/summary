@@ -87,17 +87,17 @@ class Total extends React.Component {
 }
 // 获取共享的数据
 const mapStateToProps = (state, ownProps) => {
-    return {
-        sum: state.sum
-    }
+  return {
+    sum: state.sum
+  }
 }
 // 操作共享的数据
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add: () => {
       dispatch({
-          type: 'add',
-          value: 1
+        type: 'add',
+        value: 1
       })
     }
   }
