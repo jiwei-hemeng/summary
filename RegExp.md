@@ -86,8 +86,8 @@ function toHumpName(str) {
 
 ```js
 const strText = "Hello China";
-const regex = /[A-Z]/g; // 大写字母正则表达式
-console.log(strText.match(regex)); // [ 'H', 'C' ]
+const regex = /[a-zA-Z]{1,}/g; // 大写字母正则表达式
+console.log(strText.match(regex)); // [ 'Hello', 'China' ]
 ```
 
 ### test()
