@@ -193,3 +193,15 @@ pathion = pathion.replace(/(^\s*)|(\s*$)/g, ""); // result: '12  23'
 // 或者可以使用
 pathion = pathion.trim(); // result: '12  23'
 ```
+
+### 获取路由参数
+
+```js
+function getURLQuery(url) {
+  const queryObj = {}
+  url.replace(/([^?&=]+)=([^&]+)/g, (_, k, v) => queryObj[k] = v)
+  return queryObj;
+}
+getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
+```
+
