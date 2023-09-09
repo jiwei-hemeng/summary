@@ -464,61 +464,6 @@ JSON.stringify转为字符串再JSON.parse
 + 无法拷贝Map、Set、 RegExp 这些特殊数据类型
 + 循环引用会报错
 
-### 获取URL参数的对象
-
-**方法一**
-
-```js
-export function getURLParameters(url) {
-    const str = url.match(/([^?=&]+)(=([^&]*))/g) || []
-    return str.reduce((a, v) => ((a[decodeURIComponent(v.slice(0, v.indexOf('=')))] = decodeURIComponent(v.slice(v.indexOf('=') + 1))), a), {})
-}
-```
-
-**方法二**
-
-```js
-function getURLParameters(url) {
-  const hash = decodeURIComponent(url).split("?");
-  if (hash.length >= 2) {
-    const json = "{\"" + hash[1].replace(/&/g, "\",\"").replace(/\=/g, "\":\"") + "\"}";
-    return JSON.parse(json)
-  }
-  return {}
-}
-const str = "http://wwww.baidu.com?sear=aaa&keyword=bbbb";
-console.log("test", getURLParameters(str)) // reslut: test {sear: 'aaa', keyword: 'bbbb'}
-```
-
-**方法三**
-
-```js
-function getearcgParams(url) {
-  const urlSearch = new URL(url);
-  const searchPar = new URLSearchParams(urlSearch.search)
-  const searchObj = {}
-  for (const [key, value] of searchPar.entries()) {
-    searchObj[key] = value
-  }
-  return searchObj;
-}
-```
-
-### 将键值对拼接成URL带参数
-
-```js
-export function fnParamsToUrl(obj) {
-  let aUrl = []
-  let fnAdd = function(key, value) {
-    return key + '=' + value
-  }
-  for (var k in obj) {
-    aUrl.push(fnAdd(k, obj[k]))
-  }
-  return encodeURIComponent(aUrl.join('&'))
- }
-```
-
 ### 复制到剪切板
 
 [相关连接](https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html)
