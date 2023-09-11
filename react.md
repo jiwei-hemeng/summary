@@ -687,7 +687,7 @@ function Son(props, ref) {
   useImperativeHandle(
     ref,
     () => {
-      const handleRefs = {
+      return {
         onFocus() {
           inputRef.current.focus();
         },
@@ -695,7 +695,6 @@ function Son(props, ref) {
           setInputValue(value);
         },
       };
-      return handleRefs;
     },
     []
   );
