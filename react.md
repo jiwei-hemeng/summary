@@ -779,282 +779,11 @@ function Button({ children, onClick }) {
 }
 ```
 
-### react-spring
-
-> React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
-
-**环境安装和配置**
-
-```shell
-npm i react-spring
-```
-
-**使用**
-
-```js
-// App.js:
-import React, { useState } from 'react';
-import { useSpring, animated } from 'react-spring';
-const App = () => {
-  const animation = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 1 }
-  });
-  const colorAnimation = useSpring({
-    from: { color: 'blue' },
-    to: { color: `rgb(255,0,0)` }
-  });
-  const multiAnimation = useSpring({
-    from: { opacity: 0, color: 'red' },
-    to: [
-        { opacity: 1, color: '#ffaaee' },
-        { opacity: 1, color: 'red' },
-        { opacity: .5, color: '#008000' },
-        { opacity: .8, color: 'black' }
-    ]
-  });
-  return (
-    <div>
-      <animated.h1 style={animation}>Hello World</animated.h1>
-      <animated.h1 style={colorAnimation}>Hello World</animated.h1>
-      <animated.h1 style={multiAnimation}>Hello World</animated.h1>
-    </div>
-  )
-};
-export default App;
-```
-
-### 闭包陷阱
-
-> [相关连接](https://mp.weixin.qq.com/s/Zq1-XLHuh6-edGcTmPojjQ)
-
- 初使用Hooks时，比较常见的一个错误就是闭包。 
-
-```js
-const IntervalDemo = () => {
-    const [count, setCount] = useState(0);
-    useEffect(() => {
-        let timer = setInterval(() => {
-            setCount(count + 1);
-        }, 1000);
-        return ()=>{
-            clearInterval(timer)
-        }
-    }, []);
-    return <div>{count}</div>;
-};
-```
-
- 事实上每次更新之后count的值都不会变化，其原因跟 
-
-```js
-for (var i = 0; i < 10; ++i) {
-    setTimeout(function () {
-        console.log(i);
-    }, 1000);
-}
-```
-
- 一种解决办法是使用函数式的setCount，可以获取到最新的count值。 
-
-```js
-const IntervalDemo2 = () => {
-    const [count, setCount] = useState(0);
-    useEffect(() => {
-        let timer = setInterval(() => {
-            setCount((c) => c + 1); // 可以拿到上一轮的值
-        }, 1000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-    return <div>{count}</div>;
-};
-```
-
-最简单的做法是使用外部自由变量来保存。
-
-```js
-let globalCount = 0
-const IntervalDemo2 = () => {
-    const [count, setCount] = useState(0);
-    useEffect(() => {
-        let timer = setInterval(() => {
-            globalCount++
-            console.log(globalCount)
-            setCount(globalCount);
-        }, 1000);
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-    return <div>{count}</div>;
-};
-```
-
- 官方的做法是使用useRef 
-
-```js
-const IntervalDemo3 = () => {
-    const [count, setCount] = useState(0);
-    const countRef = useRef(0);
-    useEffect(() => {
-        let timer = setInterval(() => {
-            countRef.current += 1;
-            setCount(countRef.current);
-        }, 1000);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
-    return <div>{count}</div>;
-};
-```
-
-### render Hook
-
-> 在某些场景下可能期望获取组件的实例，方便调用组件上面的一些方法，最经典的场景是调用Form.validate()表单组件的字段校验。
-
-在Class组件的使用中
-
-```js
-class Form extends React.Component {
-    validate = () => {
-        console.log("validate form");
-    };
-    render() {
-        return <div>form</div>;
-    }
-}
-```
-
- 可以通过ref获取组件实例然后调用组件方法 
-
-```js
-const Parent = () => {
-    const ref = useRef(null)
-    useEffect(()=>{
-        const instance = ref.current
-        instance.validate()
-    },[])
-    return (
-      <Form ref={ref}></Form>
-    );
-};
-```
-
- 在函数组件中，并不存在组件instance这一说法，也无法直接设置ref属性，直接在函数组件上使用ref会出现警告 
-
->  Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()? 
-
-  为了实现与类组件的功能，需要使用借助forwardRef和useImperativeHandle 
-
-```js
-const Form2 = forwardRef((props, ref)=>{
-      // 实现ref获取到实例相关的接口
-    useImperativeHandle(ref, ()=>{
-        return {
-            validate(){
-                console.log('validate')
-            }
-        }
-    })
-    return (<div>form</div>)
-})
-```
-
- 但是现在有了Hook，我们可以将组件和操作组件的方法通过hook暴露出来，无需再通过ref了。 
-
-```js
-const useForm = () => {
-    const validate = () => {
-        console.log("validate form");
-    };
-    const render = () => {
-        return <div>form</div>;
-    };
-    return {
-        render,
-        validate,
-    };
-};
-const FormDemo = ()=>{
-    const {render, validate} = useForm()
-    useEffect(() => {
-        validate()
-    }, []);
-
-    return render()
-}
-```
-
- 相较于ref获取类组件实例，这种实现看起来更加简单清晰，一切皆是函数。 
-
- 借助这种包含渲染render功能的hook和JSX的强大表现力，可以实现很多有趣的组件，如弹窗。 
-
-```js
-const Modal = ({ visible, children }) => {
-    return <dialog open={visible}>{children}</dialog>;
-};
-const useModal = (content) => {
-    const [visible, setVisible] = useState(false);
-    const modal = <Modal visible={visible}>{content}</Modal>;
-
-    const toggleModal = () => {
-        setVisible(!visible);
-    };
-    return {
-        modal,
-        toggleModal,
-    };
-};
-```
-
- 使用起来很方便。 
-
-```js
-const ModalDemo = () => {
-    const { modal, toggleModal } = useModal(<h1>hi model</h1>);
-    return (
-        <div>
-            {modal}
-            <button onClick={toggleModal}>toggle</button>
-        </div>
-    );
-};
-```
-
-### react-zmage
-
-> [官网地址](https://github.com/Caldis/react-zmage)
-
-安装
-
-```shell
-npm i react-zmage --save
-```
-
-使用
-
-```js
-import Zmage from "react-zmage";
-<img src="图片源连接"/>
-👆 to 👇
-<Zmage src="图片源连接"/>
-```
-
-也可以通过函数调用来唤出图片
-
-```js
-// Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
-<a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
-```
-### 自定义hook
+#### 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
 
-####  案例一：localStorage 
+#####  案例一：localStorage 
 
 **定义**
 
@@ -1074,7 +803,9 @@ function useLocalStorage(key) {
 
 export default useLocalStorage;
 ```
+
 **使用**
+
 ```js
 import React, { useState, useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
@@ -1088,7 +819,8 @@ export default function CustomDataStoreHook() {
   )
 }
 ```
-#### 案例二：scoll
+
+##### 案例二：scoll
 
 **定义**
 
@@ -1149,6 +881,76 @@ function ScrollTop() {
 }
 ```
 
+### react-spring
+
+> React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
+
+**环境安装和配置**
+
+```shell
+npm i react-spring
+```
+
+**使用**
+
+```js
+// App.js:
+import React, { useState } from 'react';
+import { useSpring, animated } from 'react-spring';
+const App = () => {
+  const animation = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 }
+  });
+  const colorAnimation = useSpring({
+    from: { color: 'blue' },
+    to: { color: `rgb(255,0,0)` }
+  });
+  const multiAnimation = useSpring({
+    from: { opacity: 0, color: 'red' },
+    to: [
+        { opacity: 1, color: '#ffaaee' },
+        { opacity: 1, color: 'red' },
+        { opacity: .5, color: '#008000' },
+        { opacity: .8, color: 'black' }
+    ]
+  });
+  return (
+    <div>
+      <animated.h1 style={animation}>Hello World</animated.h1>
+      <animated.h1 style={colorAnimation}>Hello World</animated.h1>
+      <animated.h1 style={multiAnimation}>Hello World</animated.h1>
+    </div>
+  )
+};
+export default App;
+```
+
+### react-zmage
+
+> [官网地址](https://github.com/Caldis/react-zmage)
+
+安装
+
+```shell
+npm i react-zmage --save
+```
+
+使用
+
+```js
+import Zmage from "react-zmage";
+<img src="图片源连接"/>
+👆 to 👇
+<Zmage src="图片源连接"/>
+```
+
+也可以通过函数调用来唤出图片
+
+```js
+// Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
+<a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
+```
 ### 分析 Bundle (包) 大小
 
 **安装依赖**
