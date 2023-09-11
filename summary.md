@@ -282,13 +282,6 @@ onchange 事件也可用于单选框与复选框改变后触发的事件。
 - *document.querySelect()*  通过选择器获取元素
 - *document.querrySelectAll()*  通过选择器获取一类元素，得到伪数组
 
-### this 指向问题
-
-- 在普通函数中，this指向 *window*
-- 在事件处理程序中，this 指向  *事件源*
-- 在构造函数中，this 指向 创建的对象
-- 在对象的方法中，this 指向当前方法所属的对象
-
 ### **原生javascript的dom操作**
 
 **获取dom元素**

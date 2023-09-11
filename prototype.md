@@ -1,3 +1,12 @@
+## this 指向问题
+
+> this 是在调用的时候才会确定指代谁；而作用域是在定义的时候就决定；this  指代的是某个对象或者window
+
+- 在普通函数中，this指向 *window*
+- 在事件处理程序中，this 指向  *事件源*
+- 在构造函数中，this 指向 创建的对象
+- 在对象的方法中，this 指向当前方法所属的对象
+
 ## Bind、Call() 和apply的区别
 
 - apply()方法 接收两个参数，一个是函数运行的作用域（this），另一个是参数数组，会立即执行
@@ -198,5 +207,4 @@ instance_of(per, Person)
 ## 完整的原型图
 
 ![完整的原型图](https://user-images.githubusercontent.com/62381906/164414464-35968d69-3ddd-4936-9b26-b96fb1357b38.jpg)
-
 
