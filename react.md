@@ -1,14 +1,14 @@
-### 原理
+# 原理
 
 - 虚拟`dom` 它是一个js对象，它和页面真实dom一一对应。react会在页面加载时自动在内存中生成虚拟dom，根据虚拟dom会在页面生成真实的dom
 - diff算法，它会一层一层、一级一级的比较，如果发现不同将不会在继续进行比较，而是直接更新其组件、及其后代组件
 
-### 特点
+# 特点
 
 - 数据驱动视图的更新
 - 组件化开发
 
-### react和vue的异同
+# react和vue的异同
 
 + 相同点
   + 虚拟DOM
@@ -19,7 +19,7 @@
   + vue和react的生命周期钩子函数不同
   + vue本质是是MVVM框架；react是组件化
 
-### 鉴权路由 **AuthRoute**
+# 鉴权路由 **AuthRoute**
 
 ```js
 import React, { Component } from 'react'
@@ -46,7 +46,7 @@ export default class AuthRoute extends Component {
 }
 ```
 
-### 关于ref的使用步骤
+# 关于ref的使用步骤
 
 > 1 调用 *React.createRef()* 方法创建ref对象	2 将创建好的 ref 对象添加到文本框中	3 通过ref对象获取到文本框的值
 
@@ -72,7 +72,7 @@ class App extends React.Component {
 }
 ```
 
-### 组件之间的传值
+# 组件之间的传值
 
 + 父传子
   + 父组件：传入一个自定义属性
@@ -81,11 +81,11 @@ class App extends React.Component {
   + 父组件：定义并传入一个方法
   + 子组件：通过props调用该方法
 
-### 数据的双向绑定原理
+# 数据的双向绑定原理
 
 react没有v-modle，但是其可以使用value实现从数据到视图的绑定，onChange事件可以实现从视图到数据的绑定，从而实现了数据的双向绑定
 
-### react的生命周期
+# react的生命周期
 
 - 创建时
   - *constructor()*
@@ -107,7 +107,7 @@ react没有v-modle，但是其可以使用value实现从数据到视图的绑定
   - *componentWillUnmount()*
     - 组件卸载完成时调用的函数
 
-### 路由的使用
+# 路由的使用
 
 > 现代的前端应用大多数是SPA（单页应用程序），也就是只有一个HTML页面的应用程序。因为它的用户体验更好、对服务器压力更小，所以更受欢迎。为了有效的使用单个页面来管理多页面的功能，前端路由应运而生。
 >
@@ -177,7 +177,7 @@ history.push({
 })
 ```
 
-### setState() 修改state
+# setState() 修改state
 
 > 用来修改state，且更新数据是异步的。如果立即获取修改后的state，需要使用第二个参数。如果触发多次setstate() 它会先缓存起来，最后进行合并，也就是说只会执行一次DOM更新
 
@@ -189,7 +189,7 @@ this.setState({
 })
 ```
 
-### React 封装组件步骤及校验和默认值
+# React 封装组件步骤及校验和默认值
 
 安装校验规则
 
@@ -249,7 +249,7 @@ export default withRouter(SearchHeader)
 
 ```
 
-### React 局部样式 - CSS Modules
+# React 局部样式 - CSS Modules
 
 > 在react中写局部样式不能像vue那样给style组件加个scoped属性就行了
 
@@ -302,7 +302,7 @@ export default HouseItem
 <a className={[styles.alink, styles.delAlink].join(' ')} href="javascript:;">删除</a>
 ```
 
-### 组件之间的数据通讯
+# 组件之间的数据通讯
 
 **父组件向子组件传值**
 
@@ -390,7 +390,7 @@ class Child extends React.Component{
 }
 ```
 
-### react中的反向代理
+# react中的反向代理
 
 安装
 
@@ -429,7 +429,7 @@ componentDidMount = () => {
 }
 ```
 
-### context 跨组件传递
+# context 跨组件传递
 
 > **使用步骤：** 1 . 调用React.createContext() 得到 Provider Consumer  2 . Provider包裹住祖宗并写上value值 3 . 哪个孙子要用 Consumer 包裹就可以使用
 
@@ -484,7 +484,7 @@ class Sunzi extends React.Component {
 ReactDOM.render(<Zuzong />, document.getElementById('root'))
 ```
 
-### 重写webpack配置(以antd—moblie为例)
+# 重写webpack配置(以antd—moblie为例)
 
 ```po
 yarn add react-app-rewired customize-cra babel-plugin-import -S
@@ -522,7 +522,7 @@ module.exports = override(
 );
 ```
 
-### px2rem适配的配置
+# px2rem适配的配置
 
 > 相关链接 https://www.cnblogs.com/beyonds/p/12988329.html
 
@@ -574,13 +574,13 @@ module.exports = override(
 import 'lib-flexible'
 ```
 
-### Hooks 基础
+# Hooks 基础
 
 > 相关链接 [react 官网链接](https://react.docschina.org/docs/hooks-intro.html)  [腾讯IMWeb前端团队](https://mp.weixin.qq.com/s/_uCquHuFaAk8W2bVjaC7Sg)
 
 让我们从最简单的 Hooks 使用开始。
 
-#### **useState**
+## **useState**
 
 ```js
 import React, { useState } from 'react';
@@ -603,7 +603,7 @@ function Example() {
 
 `useState` 就是一个 Hooks，以前的函数组件是无状态的，但是有了 Hooks 后我们可以在函数中通过 `useState` 来获取 state 属性（count）以及修改 state 属性的方法（setCount）。
 
-#### useEffect
+## useEffect
 
 在 Hooks 出现之前函数组件是不能访问生命周期钩子的，所以提供了 `useEffect` Hooks 来解决钩子问题，以往的所有生命周期钩子都被合并成了 `useEffect`，并且其解决了之前所提的关于生命周期钩子的问题。
 
@@ -636,7 +636,7 @@ function Example() {
 + 当 useEffect 的第二个参数是一个非空数组时，会在组件挂载完成后执行一次，后续当数组中的任意数据发生改变时，都会重新执行。类似于 Vue 中 watch 搭配立即侦听。
 + 当 useEffect 的第一个参数中，返回了一个函数。返回的这个函数会在当前组件销毁前执行。模拟类组件 componentWillUnmount
 
-**useRef**
+## **useRef**
 
 ```js
 import React, { useRef } from "react";
@@ -663,14 +663,14 @@ export default function UseRefExample() {
 + createRef 每次渲染都会返回一个新的引用，而useRef 每次渲染都会返回相同的引用。
 + createRef 只能在class 组件中使用；useRef 只能在function组件中使用；
 
-#### useMemo
+## useMemo
 
 > 类似于vue 的计算属性，可以把 useMemo 作为性能优化的手段，但不要把它当成语义上的保证
 > [官网地址](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
 
 把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
 
-#### useImperativeHandle
+## useImperativeHandle
 
 >  react hook组件中父组件调用子组件的方法 [官网连接](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
 
@@ -725,7 +725,7 @@ const Index = () => {
 export default Index;
 ```
 
-#### useContext
+## useContext
 
 `useContext` 是一个 React Hook，可以让你读取和订阅组件中的 [context](https://react.docschina.org/learn/passing-data-deeply-with-context)。
 
@@ -779,11 +779,11 @@ function Button({ children, onClick }) {
 }
 ```
 
-#### 自定义hook
+## 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
 
-#####  案例一：localStorage 
+###  案例一：localStorage 
 
 **定义**
 
@@ -820,7 +820,7 @@ export default function CustomDataStoreHook() {
 }
 ```
 
-##### 案例二：scoll
+### 案例二：scoll
 
 **定义**
 
@@ -881,7 +881,7 @@ function ScrollTop() {
 }
 ```
 
-### react-spring
+# react-spring
 
 > React Spring具有基于钩子和基于组件的API，这里将专门针对所有动画使用具有基本状态的钩子，建议先学习React Hooks相关知识。
 
@@ -926,7 +926,7 @@ const App = () => {
 export default App;
 ```
 
-### react-zmage
+# react-zmage
 
 > [官网地址](https://github.com/Caldis/react-zmage)
 
@@ -951,7 +951,7 @@ import Zmage from "react-zmage";
 // Zmage.browsing 函数接受的参数与 <Zmage/> 组件完全一致
 <a onClick={() => Zmage.browsing({ src:imagePath })}>任意元素</a>
 ```
-### 分析 Bundle (包) 大小
+# 分析 Bundle (包) 大小
 
 **安装依赖**
 ```shell
@@ -969,9 +969,9 @@ yarn add source-map-explorer
 npm run analyze
 ```
 
-### 深入学习React的合成事件
+# 深入学习React的合成事件
 
-#### 为什么使用合成事件
+## 为什么使用合成事件
 
 + 浏览器兼容，统一行为，比如事件对象有统一的属性和方法，又比如，移除不想要的点击事件（Firefox右键点击会生成点击事件），再比如无论注册onMouseLeave还是onMouseOut都会映射成原生的mouseout事件；
 
@@ -981,7 +981,7 @@ npm run analyze
 
 + 事件池机制，避免频繁创建和销毁SyntheticEvent对象，释放过程将SyntheticEvent对象的大部分属性置为null，提升旧浏览器的性能。
 
-#### 事件优先级
+## 事件优先级
 
 + 离散事件（DiscreteEvent），非连续触发，包括click、input、keydown、focusin等，优先级为0；
 
@@ -989,7 +989,7 @@ npm run analyze
 
 + 连续事件（ContinuousEvent），包括load、progress、playing、error等音视频相关的事件，优先级为2。
 
-#### 总结
+## 总结
 
 React在浏览器原生事件的基础上实现了一套合成事件。
 
@@ -1015,7 +1015,7 @@ React 17的合成事件：
 
 + 事件有优先级。
 
-### setState一定是异步?
+## setState一定是异步?
 
 setState一定是异步操作吗? 其实`在React 18之前`分成两种情况：
 
@@ -1035,7 +1035,7 @@ flushSync(() => {
 console.log(this.state.message) // 你好啊 这里获取就是同步的
 ```
 
-### React Diff 过程详解
+# React Diff 过程详解
 在传统的diff算法中复杂度会达到O(n^3)。React中定义了三种策略，在对比时，根据策略只需遍历一次树就可以完成对比，将复杂度降到了O(n)，具体如下：
 + tree diff
   两个树对比时，只会比较同一层级的节点，会忽略掉跨层级
@@ -1051,6 +1051,6 @@ console.log(this.state.message) // 你好啊 这里获取就是同步的
   - REMOVE_NODE（删除）
     老 component 类型，在新集合里也有，但对应的 element 不同则不能直接复用和更新，需要执行删除操作，或者老 component 不在新集合里的，也需要执行删除操作
 
-### 高阶函数的缺点是啥
+# 高阶函数的缺点是啥
 
 需要对原组件进行包裹,如果大量使用 HOC,将会产生非常多的嵌套,会让调试变得困难;而且 HOC 可以劫持 pros,在不遵守约定的情况下可能会造成 props 的冲突。
