@@ -34,7 +34,7 @@ var newArr = [...new Set(arr)];
 let myMap = new Map()
 const obj = {p: "123"}
 myMap.set(obj, "ok")
-myMap.size() // 1
+myMap.size // 1
 myMap.get(obj) // "ok"
 myMap.has(obj) // true
 map.delete(obj) // true
