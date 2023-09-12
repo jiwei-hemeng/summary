@@ -13,6 +13,60 @@
 - call()方法 第一个参数和apply()方法的一样，但是传递给函数的参数必须列举出来，会立即执行
 - Bind()和call很相似，第一个参数是this的指向，从第二个参数开始是接收的参数列表，不会立即执行
 
+### Apply 实现
+
+```js
+Function.prototype.apply = function (context, params) {
+  if(typeof context === 'undefined' || context === null) {
+    context = window;
+  }
+  let self = this, result;
+  let key = Symbol("KEY");
+  context[key] = self;
+  if(params) {
+    result = context[key](...params);
+  } else {
+    result = context[key]();  
+  }
+  delete context[key]
+  return result;
+}
+```
+
+### Bind 实现
+
+```js
+Function.prototype.bind = function (context, ...params) {
+  if(typeof context === 'undefined' || context === null) {
+    context = window;
+  }
+  let self = this;
+  return function (...args) {
+    self.apply(context, params.concat(args))
+  };
+}
+```
+
+### Call 实现
+
+```js
+Function.prototype.call = function (context, ...params) {
+  if(typeof context === 'undefined' || context === null) {
+    context = window;
+  }
+  let self = this, result;
+  let key = Symbol("KEY");
+  context[key] = self;
+  if(params) {
+    result = context[key](...params);
+  } else {
+    result = context[key]();  
+  }
+  delete context[key]
+  return result;
+}
+```
+
 ##  构造函数的成员
 
 实例成员：构造函数内部的成员，只能通过实例对象调用
@@ -161,7 +215,7 @@ console.log(obj); // result: {uname: "zsf", age: 22, score: 98}
 obj.say(); // hello, 我是父类的方法
 obj.hi(); // hi, 我是子类的方法
 ```
-### instanceof底层是如何工作的
+## instanceof底层是如何工作的
 
 ```js
 function instance_of(L, R) {//L 表示左表达式，R 表示右表达式 
@@ -182,7 +236,7 @@ function instance_of(L, R) {//L 表示左表达式，R 表示右表达式
 instance_of(per, Person)
 ```
 
-### new 操作符具体干了什么
+## new 操作符具体干了什么
 
 + 创建了一个空对象
 
