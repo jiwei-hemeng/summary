@@ -194,3 +194,55 @@ eventEmitter.off("sysLanguageChange", sysLanguageChange)
    + 在XMLHttpRequest在连接后是通过浏览器新开一个线程请求
 
    - 将检测到状态变更时，如果设置有回调函数，异步线程就**产生状态变更事件**，将这个回调再放入事件队列中。再由JavaScript引擎执行。
+
+## web work
+
+js采用的是单线程模型,所有任务只能在一个线程上完成，一次只能做一件事。前面的任务没做完，后面的任务只能等着。随着电脑计算能力的增强，尤其是多核 CPU 的出现，单线程带来很大的不便，无法充分发挥计算机的计算能力。相对的webwork就是为js创造多线程的环境,允许主线程创建webwork线程,将未处理的一些任务分给后者 运行.在js主线程运行的同时,work线程在后台运行,两者互不打扰,等到webwork线程的任务结束后,把结果返回给主线程。
+
+### web work的注意点
+
++ 同源限制：分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
++ DOM限制：Worker 线程所在的全局对象，与主线程不一样，无法读取主线程所在网页的 DOM 对象，也无法使用document、window、parent这些对象。但是，Worker 线程可以navigator对象和location对象
++ 通信联系：Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成
++ 脚本限制:Worker 线程不能执行`alert()`方法和`confirm()`方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求。
++ 文件限制: Worker 线程无法读取本地文件，即不能打开本机的文件系统（`file://`），它所加载的脚本，必须来自网络
+
+### 使用
+
+#### 主线程
+
+```js
+var worker = new Worker('work.js');
+// 发送消息
+worker.postMessage('Hello World');
+worker.postMessage({method: 'echo', args: ['Work']});
+// 接收消息
+worker.addEventListener("message", function (e) {
+  console.log("接收到的消息", e.data)
+});
+// 关闭 Worker
+worker.terminate();
+```
+
+#### Worker 线程
+
+```js
+// 监听来自主线程的消息
+self.addEventListener('message', function (e) {
+  var data = e.data;
+  switch (data.cmd) {
+    case 'start':
+      self.postMessage('WORKER STARTED: ' + data.msg);
+      break;
+    case 'stop':
+      self.postMessage('WORKER STOPPED: ' + data.msg);
+      self.close(); // Terminates the worker.
+      break;
+    default:
+      self.postMessage('Unknown command: ' + data.msg);
+  };
+}, false);
+// 关闭 Worker
+self.close();
+```
+
