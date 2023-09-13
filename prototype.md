@@ -43,8 +43,11 @@ Function.prototype.bind = function (context, ...params) {
     context = window;
   }
   let self = this;
+  let key = Symbol("KEY");
+  context[key] = self;
   return function (...args) {
-    self.apply(context, params.concat(args))
+    context[key](params.concat(args));
+    delete context[key];
   };
 }
 ```
