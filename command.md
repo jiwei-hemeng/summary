@@ -37,6 +37,8 @@ git commit --amend --only -m 'xxxxxxx'
 git commit --amend --author="name <email>" --no-edit
 # 强制推送到main分支
 git push -f origin mian
+# 查看上次提交的内容
+git show
 ```
 
 ### **Git 配置命令**
