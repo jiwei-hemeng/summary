@@ -1115,3 +1115,33 @@ function vue3Diff(prevChildren, nextChildren, parent) {
 }
 ```
 
+## 响应式原理
+
+1. Object.defineProperty - get ，用于 依赖收集
+2. Object.defineProperty - set，用于 依赖更新
+3. 每个 data 声明的属性，都拥有一个的专属依赖收集器 subs
+4. 依赖收集器 subs 保存的依赖是 watcher
+5. watcher 可用于 进行视图更新
+
+## watch 原理
+
+### 监听的数据改变的时，watch 如何工作
+
+watch 在一开始初始化的时候，会 **读取** 一遍 监听的数据的值，于是，此时 那个数据就收集到 watch 的 watcher 了
+
+然后 你给 watch 设置的 handler ，watch 会放入 watcher 的更新函数中
+
+当 数据改变时，通知 watch 的 watcher 进行更新，于是 你设置的 handler 就被调用了
+
+### 设置 immediate 时，watch 如何工作
+
+当你设置了 immediate 时，就不需要在 数据改变的时候 才会触发。
+
+而是在 **初始化 watch** 时，在读取了 监听的数据的值 之后，便**立即调用**一遍你设置的监听回调，然后传入刚读取的值
+
+### 设置了 deep
+
+因为**读取**了监听的data 的属性，watch 的 watcher 被**收集**在 这个属性的 收集器中
+
+在**读取** data 属性的时候，发现设置了 deep 而且值是一个对象，会递归遍历这个值，把内部所有属性逐个**读取**一遍，于是 属性和 它的对象值内每一个属性 都会**收集**到 watch 的 watcher
+
