@@ -141,6 +141,10 @@ console.log(strText.replaceAll(regex, "china")); // hello china,i love china
 
 ```js
 const reg = /^(([1-9]{1}\d*)|(0{1}))((.\d{1,})?)$/;
+// 小数点后只能包含两位小数
+const reg = /^(([1-9]{1}\d*)|(0{1}))((.\d{1,2})?)$/;
+// 包含负数
+const reg = /^(-{0,1}([1-9]{1}\d*)|(0{1}))((.\d{1,})?)$/;
 reg.test(123.2323) // result: true
 ```
 
