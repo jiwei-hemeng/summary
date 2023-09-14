@@ -1145,3 +1145,21 @@ watch 在一开始初始化的时候，会 **读取** 一遍 监听的数据的�
 
 在**读取** data 属性的时候，发现设置了 deep 而且值是一个对象，会递归遍历这个值，把内部所有属性逐个**读取**一遍，于是 属性和 它的对象值内每一个属性 都会**收集**到 watch 的 watcher
 
+## $nextTick
+
+> nextTick与setTimeout都是异步函数 不同的是`nextTick比setTimeout优先执行
+
+### $nextTick
+
+nextTick 在vue 源码中是利用 **Promise.resolve()** 实现的。
+
+**Promise与setTimeout的区别** ，本质是 **Event Loop中微任务** 与宏任务的区别。
+
+nextTick: `在下次 DOM 更新循环结束之后执行延迟回调`。在修改数据之后立即使用这个方法，获取更新后的 DOM。一般使用在DOM操作上的，Vue在更新data之后并不会立即更新DOM上的数据，就是说**如果我们修改了data中的数据，再马上获取DOM上的值，我们取得的是旧值**。
+
+官网的原话是在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM。我们把获取DOM上值的操作放进`$nextTick`里，就可以得到更新后得数据。
+
+### setTimeout
+
+setTimeout：只是延迟执行，在延迟执行的方法里，DOM有可能会更新也有可能没有更新。常规做法就是延迟500ms或者1s
+
