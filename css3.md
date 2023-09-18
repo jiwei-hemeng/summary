@@ -1586,7 +1586,13 @@ a[target="_blank"] {
   }
   ```
 
-  
+
+## css 权重
+
++ 内联样式(Specificity of Inline styles)：只对应用于特定元素的样式有效，其权重值最高，为1000。
++ ID选择器(Specificity of ID selectors)：每个ID选择器对应的权重值为100。
++ 类、属性、伪类选择器(Specificity of class， attributes and pseudo-classes selectors)：每个类、属性或伪类选择器对应的权重值为10。
++ 标签、伪元素选择器(Specificity of type and pseudo-elements selectors)：每个标签或伪元素选择器对应的权重值为1。
 
 
 
