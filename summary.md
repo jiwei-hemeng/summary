@@ -261,6 +261,23 @@ input输入框的onchange事件，要在 input 失去焦点的时候才会触发
 
 onchange 事件也可用于单选框与复选框改变后触发的事件。
 
+### js 触屏事件
+
+```js
+window.addEventListener("touchstart", (e) => {
+  console.log('开始触屏', e)
+})
+window.addEventListener("touchend", (e) => {
+  console.log('触屏结束', e)
+})
+window.addEventListener("touchmove", (e) => {
+  console.log('手指移动位置', e.targetTouches[0].clientX, e.targetTouches[0].clientY);
+})
+window.addEventListener("touchcancel", (e) => {
+  console.log('touchcancel', e)
+})
+```
+
 ### 简单数据类型和复杂数据类型的存储方式？
 
 - 数据类型
