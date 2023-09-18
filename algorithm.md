@@ -6,7 +6,7 @@
 
 **动画演示：**
 
-![冒泡排序（Bubble Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Bubble.webp)
+![冒泡排序（Bubble Sort）](./assets/images/Bubble.webp)
 
 **代码**
 
@@ -37,7 +37,7 @@ function bubbleSort(arr) {
 
 **动画演示：**
 
-![选择排序（Selection Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Selection.webp)
+![选择排序（Selection Sort）](./assets/images/Selection.webp)
 
 **代码**
 
@@ -70,7 +70,7 @@ function selectionSort(arr) {
 
 **动画演示：**
 
-![插入排序（Insertion Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Insertion.webp)
+![插入排序（Insertion Sort）](./assets/images/Insertion.webp)
 
 **代码**
 
@@ -105,7 +105,7 @@ function insertionSort(arr) {
 
 **动图演示**
 
-![希尔排序（Shell Sort）](https://jiwei-hemeng.github.io/summary/assets/images/Shell.webp)
+![希尔排序（Shell Sort）](./assets/images/Shell.webp)
 
 **代码**
 
