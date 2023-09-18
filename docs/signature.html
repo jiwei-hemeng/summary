@@ -1,136 +1,102 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>电子签名</title>
+    <style>
+      .g_btn {
+        display: flex;
+        height: 60px;
+        justify-content: center;
+        align-items: center;
+      }
+      .g_btn button {
+        height: 32px;
+        padding: 0 20px;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>签名</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-
-    #canvas {
-      border: 1px solid black;
-      margin: 0 auto;
-    }
-
-    .g_btn {
-      display: flex;
-      height: 60px;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .g_btn #imgInfo {
-      margin-left: 20px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <canvas id="canvas"></canvas>
+      .g_btn #saveImage {
+        margin-left: 20px;
+        outline: 0 none;
+        color: #fff;
+        border: 0;
+        padding: 3px 20px;
+        border-radius: 3px;
+        background-color: #1677ff;
+        box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" style="border: 1px solid #d3d3d3">
+      Your browser does not support the HTML5 canvas tag.
+    </canvas>
     <div class="g_btn">
       <button id="clear">清空画布</button>
-      <button id="imgInfo">保存签名</button>
+      <button id="saveImage">保存签名</button>
     </div>
-    <div class="imgs" id="imgs"></div>
-  </div>
-  <script>
-    // 获取屏幕宽度
-    let width = document.body.clientWidth - 2;
-    // 获取canvas
-    let myCanvas = document.getElementById("canvas");
-    myCanvas.width = width;
-    //获取2d对象
-    let ctx = myCanvas.getContext("2d");
-    //清空画布
-    let clear = document.getElementById("clear");
-    // 保存签名
-    let imgInfo = document.getElementById("imgInfo");
-    // 保存的盒子
-    let imgs = document.getElementById("imgs");
-    //控制线条是否画
-    let isMouseMove = false;
-    //线条位置
-    let lastX, lastY;
-    window.onload = function () {
-      initCanvas();
-    };
-    //初始化
-    function initCanvas() {
-      let offset = myCanvas.getBoundingClientRect();
-      var start = (e) => {
-        e.preventDefault();
-        isMouseMove = true;
-        drawLine(
-          e.changedTouches[0].clientX - offset.left,
-          e.changedTouches[0].clientY - offset.top,
-          false
-        );
-      };
-      let move = (e) => {
-        if (isMouseMove) {
-          drawLine(
-            e.changedTouches[0].clientX - offset.left,
-            e.changedTouches[0].clientY - offset.top,
-            true
-          );
-        }
-      };
-      let end = (e) => {
-        isMouseMove = false;
-      };
-      let cancel = (e) => {
-        isMouseMove = false;
-      };
-
-      myCanvas.addEventListener("touchstart", start);
-      myCanvas.addEventListener("touchmove", move);
-      myCanvas.addEventListener("touchend", end);
-      myCanvas.addEventListener("touchcancel", cancel);
-    }
-    //画线
-    function drawLine(x, y, isT) {
-      if (isT) {
-        ctx.beginPath();
-        ctx.lineWidth = 2; //设置线宽状态
-        ctx.strokeStyle = "black"; //设置线的颜色状态
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        ctx.closePath();
+    <script>
+      let width = document.body.clientWidth - 2;
+      let height = (width / 9) * 6;
+      const canvas = document.getElementById("myCanvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      let painting = false;
+      function startDraw(e) {
+        painting = true;
+        draw(e);
       }
-      // 每次移动都要更新坐标位置
-      lastX = x;
-      lastY = y;
-    }
 
-    //清空画图
-    function clearCanvas() {
-      imgs.innerHTML = "";
-      ctx.beginPath();
-      ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-      ctx.closePath(); //可加入，可不加入
-    }
-    //保存图片
-    function saveImgInfo() {
-      var images = myCanvas.toDataURL("image/png");
-      const alink = document.createElement("a");
-      alink.setAttribute("href", images);
-      alink.setAttribute("download", Date.now() + ".png");
-      document.body.appendChild(alink);
-      alink.click();
-      document.body.removeChild(alink);
-    }
-    clear.addEventListener("click", clearCanvas);
-    imgInfo.addEventListener("click", saveImgInfo);
-  </script>
-</body>
+      function endDraw() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function touchend() {
+        painting = false;
+        ctx.beginPath();
+      }
 
+      function draw(e) {
+        if (!painting) return;
+        ctx.lineWidth = 5;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "black";
+        ctx.lineTo(e.clientX, e.clientY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX, e.clientY);
+      }
+      function touchStart(e) {
+        painting = true;
+        draw(e.targetTouches[0]);
+      }
+      function touchmove(e) {
+        draw(e.targetTouches[0]);
+      }
+      // pc
+      canvas.addEventListener("mousedown", startDraw);
+      canvas.addEventListener("mouseup", endDraw);
+      canvas.addEventListener("mousemove", draw);
+      // 移动
+      canvas.addEventListener("touchstart", touchStart);
+      canvas.addEventListener("touchmove", touchmove);
+      canvas.addEventListener("touchend", touchend);
+      document.getElementById("clear").addEventListener("click", () => {
+        ctx.beginPath();
+        ctx.clearRect(0, 0, width, height);
+      });
+      document.getElementById("saveImage").addEventListener("click", () => {
+        // canvas.
+        const images = canvas.toDataURL("image/png");
+        const alink = document.createElement("a");
+        alink.setAttribute("href", images);
+        alink.setAttribute("download", Date.now() + ".png");
+        document.body.appendChild(alink);
+        alink.click();
+        document.body.removeChild(alink);
+      });
+    </script>
+  </body>
 </html>
