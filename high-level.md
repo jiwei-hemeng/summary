@@ -104,9 +104,9 @@ class EventEmitter {
     if (!callback) {
       // 如果没有callback,就删掉整个事件
       this.events[name] = undefined;
-    }
-    this.events[name] = this.events[name].filter((item) => item !== callback);
-
+    } else {
+      this.events[name] = this.events[name].filter((item) => item !== callback);
+	}
   }
   emit(name, ...args) {
     if (!this.events[name]) return
