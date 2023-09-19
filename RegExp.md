@@ -203,7 +203,7 @@ pathion = pathion.trim(); // result: '12  23'
 ```js
 function getURLQuery(url) {
   const queryObj = {}
-  url.replace(/([^?&=]+)=([^&]+)/g, (_, k, v) => queryObj[k] = v)
+  url.replace(/([^?&=]+)=([^&]*)/g, (_, k, v) => queryObj[k] = v)
   return queryObj;
 }
 getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
