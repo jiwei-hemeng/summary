@@ -53,25 +53,13 @@ dateStr = dateStr.replace(reg, '$1-$2-$3')  // "2018-04-18"
 
 ```js
 function toHumpName(str) {
-  let reg = /(_|\-)(\w)/g;
-  return str.replace(reg, ($0, $1, $2) => {
-    return $2.toUpperCase();
+  let reg = /[_-](\w)/g;
+  return str.replace(reg, (_, char) => {
+    return char.toUpperCase();
   })
 }
 let str = "border_top_color";
 console.log(toHumpName(str)); // result: borderTopColor
-```
-
-也可以使用其他方法
-
-```js
-function toHumpName(str) {
-  let arr = str.split("_");
-  for(let i = 1; i < arr.length; i++) {
-    arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
-  }
-  return arr.join("");
-}
 ```
 
 ## 断言
