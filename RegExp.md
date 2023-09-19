@@ -209,3 +209,12 @@ function getURLQuery(url) {
 getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
 ```
 
+### 数字千分位按照`,`分割
+
+```js
+function ThousandNum(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+ThousandNum(12344556666.66); // '12,344,556,666.66'
+```
+
