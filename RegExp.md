@@ -74,6 +74,16 @@ function toHumpName(str) {
 }
 ```
 
+## 断言
+
+### 先行断言(?=)
+
+`x(?=y)`，如果x后面跟的是y，则匹配x。如字符串`xyz`中的x会被匹配，而后面的`y`是不会被匹配的。
+
+### 后行断言(?!)
+
+表示后面不能跟相应的内容. `(?!\d)`表示后面不能再跟数字了
+
 ## JavaScript 正则表达式的方法
 
 ### match()
@@ -211,10 +221,13 @@ getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
 
 ### 数字千分位按照`,`分割
 
+[相关链接](https://blog.csdn.net/qq_37152533/article/details/108485385)
+
 ```js
 function ThousandNum(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-ThousandNum(12344556666.66); // '12,344,556,666.66'
+ThousandNum(123456789); // '123,456,789'
 ```
 
+`(?=(\d{3})+(?!\d))`代表的是：后面需要跟3的倍数个数字，且在这（`3`的倍数个数字）之后不能再有数字了。
