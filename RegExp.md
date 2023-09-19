@@ -213,7 +213,7 @@ getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
 
 ```js
 function ThousandNum(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 ThousandNum(123456789); // '123,456,789'
 ```
