@@ -53,7 +53,7 @@ dateStr = dateStr.replace(reg, '$1-$2-$3')  // "2018-04-18"
 
 ```js
 function toHumpName(str) {
-  let reg = /(\_|\-)(\w)/g;
+  let reg = /(_|\-)(\w)/g;
   return str.replace(reg, ($0, $1, $2) => {
     return $2.toUpperCase();
   })
