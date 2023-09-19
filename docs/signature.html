@@ -84,7 +84,7 @@
         function mousedown(e) {
           e.preventDefault();
           isMouseMove = true;
-          drawLine(e.clientX - offset.left, e.clientY - offset.top, false);
+          drawLine(e.offsetX, e.offsetY, false);
         }
         function move(e) {
           if (isMouseMove) {
@@ -97,7 +97,8 @@
         }
         function mousemove(e) {
           if (isMouseMove) {
-            drawLine(e.clientX - offset.left, e.clientY - offset.top, true);
+            // drawLine(e.clientX - offset.left, e.clientY - offset.top, true);
+            drawLine(e.offsetX, e.offsetY, true);
           }
         }
         function end(e) {

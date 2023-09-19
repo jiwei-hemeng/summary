@@ -895,6 +895,29 @@ const newArr = (arr)=>{
 console.log(newArr(arr),"reduce方法")
 ```
 
+### screenX、clientX、pageX 和 offsetX的区别
+
+1、screenX 和screenY
+参照点：电脑屏幕左上角
+screenX：鼠标点击位置相对于电脑屏幕左上角的水平偏移量
+screenY：鼠标点击位置相对于电脑屏幕左上角的垂直偏移量
+
+2、clientX和clientY
+参照点：浏览器内容区域左上角
+clientX：鼠标点击位置相对于浏览器可视区域的水平偏移量（不会计算水平滚动的距离）
+clientY：鼠标点击位置相对于浏览器可视区域的垂直偏移量（不会计算垂直滚动条的距离）
+
+3、pageX和pageY
+参照点：网页的左上角
+pageX：鼠标点击位置相对于网页左上角的水平偏移量，也就是clientX加上水平滚动条的距离
+pageY：鼠标点击位置相对于网页左上角的垂直平偏移量，也就是clientY加上垂直滚动条的距离
+
+4、offsetX和offsetY
+offsetX：鼠标点击位置相对于触发事件对象的水平距离
+offsetY：鼠标点击位置相对于触发事件对象的垂直距离
+
+![screenX、clientX、pageX 和 offsetX的区别](./assets/images/1703406-20221030143056014-930212584.png)
+
 ## JQuery
 
 ### jQuery获取元素的兄弟节点的几种方法
