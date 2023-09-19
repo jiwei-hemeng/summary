@@ -64,7 +64,7 @@
       let imgs = document.getElementById("imgs");
       // 控制线条是否画
       let isMouseMove = false;
-      //线条位置
+      // 上次线条位置
       let lastX, lastY;
       window.onload = function () {
         initCanvas();
@@ -110,6 +110,43 @@
           isMouseMove = false;
         }
 
+        //画线
+        function drawLine(x, y, isT) {
+          if (isT) {
+            ctx.beginPath();
+            ctx.lineWidth = 2; //设置线宽状态
+            ctx.strokeStyle = "blue"; //设置线的颜色状态
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.closePath();
+          }
+          // 每次移动都要更新坐标位置
+          lastX = x;
+          lastY = y;
+        }
+
+        //清空画图
+        function clearCanvas() {
+          imgs.innerHTML = "";
+          ctx.beginPath();
+          ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+          ctx.closePath(); //可加入，可不加入
+        }
+        //保存图片
+        function exportImage() {
+          var images = myCanvas.toDataURL("image/png");
+          const alink = document.createElement("a");
+          alink.setAttribute("href", images);
+          alink.setAttribute("download", Date.now() + ".png");
+          document.body.appendChild(alink);
+          alink.click();
+          document.body.removeChild(alink);
+          clearCanvas();
+        }
+        // 移动端
         myCanvas.addEventListener("touchstart", start);
         myCanvas.addEventListener("touchmove", move);
         myCanvas.addEventListener("touchend", end);
@@ -118,44 +155,9 @@
         myCanvas.addEventListener("mousedown", mousedown);
         myCanvas.addEventListener("mouseup", mouseup);
         myCanvas.addEventListener("mousemove", mousemove);
+        clear.addEventListener("click", clearCanvas);
+        saveImage.addEventListener("click", exportImage);
       }
-      //画线
-      function drawLine(x, y, isT) {
-        if (isT) {
-          ctx.beginPath();
-          ctx.lineWidth = 2; //设置线宽状态
-          ctx.strokeStyle = "blue"; //设置线的颜色状态
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          ctx.moveTo(lastX, lastY);
-          ctx.lineTo(x, y);
-          ctx.stroke();
-          ctx.closePath();
-        }
-        // 每次移动都要更新坐标位置
-        lastX = x;
-        lastY = y;
-      }
-
-      //清空画图
-      function clearCanvas() {
-        imgs.innerHTML = "";
-        ctx.beginPath();
-        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-        ctx.closePath(); //可加入，可不加入
-      }
-      //保存图片
-      function exportImage() {
-        var images = myCanvas.toDataURL("image/png");
-        const alink = document.createElement("a");
-        alink.setAttribute("href", images);
-        alink.setAttribute("download", Date.now() + ".png");
-        document.body.appendChild(alink);
-        alink.click();
-        document.body.removeChild(alink);
-      }
-      clear.addEventListener("click", clearCanvas);
-      saveImage.addEventListener("click", exportImage);
     </script>
   </body>
 </html>
