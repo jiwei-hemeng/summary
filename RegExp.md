@@ -231,3 +231,20 @@ ThousandNum(123456789); // '123,456,789'
 ```
 
 `(?=(\d{3})+(?!\d))`代表的是：后面需要跟3的倍数个数字，且在这（`3`的倍数个数字）之后不能再有数字了。
+
+完整
+
+```js
+function ThousandNum(num) {
+  const arr = num.split(".");
+  let result = arr[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // 处理小数部分
+  if(arr.length === 2) {
+    result += ".";
+    result += arr[1].replace(/(?<=((?<!\d)(\d{3})+))\B/g, ",");
+  }
+  return result;
+}
+ThousandNum('123444444.88887779'); // '123,444,444.888,877,79'
+```
+
