@@ -494,3 +494,39 @@ for(let key of arr) {console.log(key)} // 1,2,3
 
   + 对于==，将高级转化为基础类型，进行“值”比较
   + 因为类型不同，===结果为false
+
+## 比较一个对象是否相等
+
+```js
+function isObject(obj) {
+  return typeof obj === "object";
+}
+function isEqual(obj1, obj2) {
+  if (!isObject(obj1) || !isObject(obj2)) {
+    return obj1 === obj2;
+  }
+  //判断是否两个参数是同一个变量
+  if (obj1 === obj2) {
+    return true;
+  }
+  //判断keys数是否相等
+  const obj1Keys = Object.keys(obj1);
+  const obj2Keys = Object.keys(obj2);
+  if (obj1Keys.length !== obj2Keys.length) {
+    return false;
+  }
+  //深度比较每一个key
+  for (let key in obj1) {
+    if (!isEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+  return true;
+}
+const a = {a1: 1, b2: {C1: 23}}
+const b = {a1: 1, b2: {C1: 23}}
+const c= {a1: 1, b2: {C1: 33}}
+isEqual(a,b); // true
+isEqual(a,c); // false
+```
+
