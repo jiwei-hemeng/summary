@@ -258,3 +258,9 @@ regex.test('112345672345A'); // false
 regex.test('112345672345A@'); // true
 ```
 
+### 电子邮箱
+
+```js
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+```
+
