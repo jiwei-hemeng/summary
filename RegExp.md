@@ -248,3 +248,11 @@ function ThousandNum(num) {
 ThousandNum('123444444.88887779'); // '123,444,444.888,877,79'
 ```
 
+### 密码强度校验
+
+```js
+const regex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,18}$/;
+regex.test('112345672345A'); // false
+regex.test('112345672345A@'); // true
+```
+
