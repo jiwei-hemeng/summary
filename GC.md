@@ -59,23 +59,23 @@
 
  该算法将新生代分为两部分，一部分叫做from（对象区域），另一部分叫做to（空闲区域），新加入的对象首先存放在from区域；
 
-![Scavenge算法](https://jiwei-hemeng.github.io/summary/assets/images/1155527-20220320222512252-618938289.png) 
+![Scavenge算法](./assets/images/1155527-20220320222512252-618938289.png) 
 
  from区域写满的时候，对from区域开始进行垃圾回收。首先对from区域的垃圾进行标记(红色代表标记为垃圾)； 
 
-![Scavenge算法](https://jiwei-hemeng.github.io/summary/assets/images/1155527-20220320222532461-104056076.png)
+![Scavenge算法](./assets/images/1155527-20220320222532461-104056076.png)
 
  将存活的对象复制到to区域中，并且有序地排列起来，复制后的to区域就没有内存碎片了； 
 
-![Scavenge算法](https://jiwei-hemeng.github.io/summary/assets/images/1155527-20220320222624767-871994632.png)
+![Scavenge算法](./assets/images/1155527-20220320222624767-871994632.png)
 
  清空from区域； 
 
-![ 清空from区域](https://jiwei-hemeng.github.io/summary/assets/images/1155527-20220320222646324-832514264.png)
+![ 清空from区域](./assets/images/1155527-20220320222646324-832514264.png)
 
  from区域和to区域进行反转，也就是原来的from区域变为to区域，原来的to区域变成from区域。 
 
-![ from区域和to区域进行反转，也就是原来的from区域变为to区域，原来的to区域变成from区域](https://jiwei-hemeng.github.io/summary/assets/images/1155527-20220320222902040-547647537.png)
+![ from区域和to区域进行反转，也就是原来的from区域变为to区域，原来的to区域变成from区域](./assets/images/1155527-20220320222902040-547647537.png)
 
  Scavenge算法在时间效率上有着优异的表现，缺点是只能使用堆内存中的一半，如果存储容量过大，就会导致每次清理的时间过长，效率低，因此经过两次垃圾回收之后依然存活的对象会晋升为老生代对象，另外还有一种情况，如果复制一个对象到空闲区时，空闲区空间占用超过了 25%，那么这个对象会被直接晋升到老生代空间中，设置为 25% 的比例的原因是，当完成 `Scavenge` 回收后，空闲区将翻转成对象区域，继续进行对象内存的分配，若占比过大，将会影响后续内存分配。 
 
