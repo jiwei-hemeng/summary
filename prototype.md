@@ -264,5 +264,5 @@ instance_of(per, Person)
 
 ## 完整的原型图
 
-![完整的原型图](https://user-images.githubusercontent.com/62381906/164414464-35968d69-3ddd-4936-9b26-b96fb1357b38.jpg)
+![完整的原型图](./assets/images/164414464-35968d69-3ddd-4936-9b26-b96fb1357b38.jpg)
 
