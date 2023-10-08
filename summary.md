@@ -918,6 +918,21 @@ offsetY：鼠标点击位置相对于触发事件对象的垂直距离
 
 ![screenX、clientX、pageX 和 offsetX的区别](./assets/images/1703406-20221030143056014-930212584.png)
 
+### requestAnimationFrame
+
+> **`window.requestAnimationFrame()`** 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的[回调函数](https://so.csdn.net/so/search?q=回调函数&spm=1001.2101.3001.7020)更新动画。该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行。
+>
+> 语法：requestAnimationFrame(callback);
+>
+> 应用：用于渲染大量dom
+
+```js
+const rAF = requestAnimationFrame(() => {
+    console.log("requestAnimationFrame执行了")
+});
+cancelAnimationFrame(rAF); // 取消执行
+```
+
 ## JQuery
 
 ### jQuery获取元素的兄弟节点的几种方法
