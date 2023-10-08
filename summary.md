@@ -933,6 +933,26 @@ const rAF = requestAnimationFrame(() => {
 cancelAnimationFrame(rAF); // 取消执行
 ```
 
+### 触底加载更多原理
+
+```js
+const scollBox = document.querySelector("ul");
+const body = document.body;
+let page = 0;
+window.addEventListener("scroll", (e) => {
+  // 页面滚动的距离
+  const scrollTop =
+    document.documentElement.scrollTop || document.body.scrollTop;
+  // 页面可视高度 + 页面滚动的出去的高度 + 偏移值 大于 页面dom文档的高度
+  if (window.innerHeight + scrollTop + 200 >= body.scrollHeight) {
+    for (let i = 0; i < 10; i++) {
+      scollBox.innerHTML += `<li>${i + page * 10}</li>`;
+    }
+    page++;
+  }
+});
+```
+
 ## JQuery
 
 ### jQuery获取元素的兄弟节点的几种方法
