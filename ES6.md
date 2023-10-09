@@ -499,7 +499,7 @@ for(let key of arr) {console.log(key)} // 1,2,3
 
 ```js
 function isObject(obj) {
-  return typeof obj === "object";
+  return typeof obj === "object" || obj === null;
 }
 function isEqual(obj1, obj2) {
   if (!isObject(obj1) || !isObject(obj2)) {
@@ -517,6 +517,9 @@ function isEqual(obj1, obj2) {
   }
   //深度比较每一个key
   for (let key in obj1) {
+    if(!obj2.hasOwnProperty(key)) {
+      return false
+	}
     if (!isEqual(obj1[key], obj2[key])) {
       return false;
     }
