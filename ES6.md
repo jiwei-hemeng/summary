@@ -499,7 +499,7 @@ for(let key of arr) {console.log(key)} // 1,2,3
 
 ```js
 function isObject(obj) {
-  return typeof obj === "object" || obj === null;
+  return typeof obj === "object" && obj !== null;
 }
 function isEqual(obj1, obj2) {
   if (!isObject(obj1) || !isObject(obj2)) {
