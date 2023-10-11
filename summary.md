@@ -939,18 +939,17 @@ cancelAnimationFrame(rAF); // 取消执行
 const scollBox = document.querySelector("ul");
 const body = document.body;
 let page = 0;
-window.addEventListener("scroll", (e) => {
+function scrollBotton() {
   // 页面滚动的距离
   const scrollTop =
     document.documentElement.scrollTop || document.body.scrollTop;
   // 页面可视高度 + 页面滚动的出去的高度 + 偏移值 大于 页面dom文档的高度
   if (window.innerHeight + scrollTop + 200 >= body.scrollHeight) {
-    for (let i = 0; i < 10; i++) {
-      scollBox.innerHTML += `<li>${i + page * 10}</li>`;
-    }
+    console.log("触底了");
     page++;
   }
-});
+}
+window.addEventListener("scroll", scrollBotton);
 ```
 
 ## JQuery
