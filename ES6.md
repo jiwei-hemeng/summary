@@ -456,28 +456,47 @@ showName('fatfish')
 
 ## for in 和 for of
 
-### for in 的缺点
+- for in：适用于遍历对象、数组；
 
-+ for…in所遍历的为对象的可遍历属性的属性名
-+ for…in不但把自身的属性名遍历出来，还将其原型上的属性遍历出来了
-+ 数组的键名为数字，但是for…in循环的时候是以字符串作为键名，如"1"、"2"、"3"等。
-+ 某些情况下，for…in循环会以任意顺序遍历键名。
+  - 输出的值为key值；
 
-### for…of
+    ```js
+    const arr = [1,2,3];
+    for(let key in arr) {console.log(key)} // 0,1,2
+    ```
 
-> for…of语法是ES6新引入的语法，for…of语法用于遍历可迭代（iterable）对象，js中的可迭代对象包括字符串String、数组Array、集合Set、字典Map、arguments 对象、DOM NodeList 对象等等，for…of语法用于遍历这些对象本身的元素
+  - 会遍历原型链上的属性；
 
-```js
-for (variable element of iterable){}
-```
+    ```js
+    let arr=[1,2,3,4,5];
+    Array.prototype.test=321;
+    for (const key in arr) {
+      console.log(key);  // 0，1，2，3，4，test
+    }
+    ```
 
-### 区别
+  - 不能保证返回对象属性的顺序。换句话说，所有可枚举的属性都会返回一次，但返回的顺序可能会因浏览器而异；
 
-```js
-const arr = [1,2,3];
-for(let key in arr) {console.log(key)} // 0,1,2
-for(let key of arr) {console.log(key)} // 1,2,3
-```
+- for of：适用于遍历数组等内置迭代器的数据 **(不能遍历对象)**
+
+  - 输出的值为value值；
+
+    ```js
+    const arr = [1,2,3];
+    for(let key of arr) {console.log(key)} // 1,2,3
+    ```
+
+  - 不会遍历原型链上的属性；
+
+    ```js
+    let arr=[1,2,3,4,5];
+    Array.prototype.test=321;
+    for (const key of arr) {
+      console.log(key);  // 1，2，3，4，5
+    }
+    ```
+
+  - 按照可迭代对象的next()方法产生值的顺序迭代元素；
 
 ## ===和==的区别
 
