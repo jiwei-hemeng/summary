@@ -936,7 +936,6 @@ cancelAnimationFrame(rAF); // 取消执行
 ### 触底加载更多原理
 
 ```js
-const scollBox = document.querySelector("ul");
 const body = document.body;
 let page = 0;
 function scrollBotton() {
