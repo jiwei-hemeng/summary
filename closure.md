@@ -139,7 +139,7 @@ function debounce(fn, wait = 50) {
   return function () {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      fn.apply(this, arguments);
+      fn.call(this, ...arguments);
     }, wait);
   };
 }
@@ -149,7 +149,7 @@ function throttle(fn, wait = 50) {
   return function () {
     if (canRun) {
       setTimeout(() => {
-        fn.apply(this, arguments);
+        fn.call(this, ...arguments);
         canRun = true;
       }, wait);
       canRun = false;
