@@ -1163,3 +1163,26 @@ nextTick: `在下次 DOM 更新循环结束之后执行延迟回调`。在修改
 
 setTimeout：只是延迟执行，在延迟执行的方法里，DOM有可能会更新也有可能没有更新。常规做法就是延迟500ms或者1s
 
+## 自定义hook
+
+### 监测页面触底
+
+> 使用场景：触底加载更多
+
+```js
+import { onMounted, onUnmounted } from 'vue';
+export const useScrollToBottom = (callback = () => { }) => {
+  const handleScrolling = () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+      callback();
+    }
+  }
+  onMounted(() => {
+    window.addEventListener('scroll', handleScrolling);
+  });
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScrolling);
+  });
+}
+```
+
