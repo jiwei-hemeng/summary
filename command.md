@@ -115,6 +115,15 @@ git branch -r -d origin/dev
 git push origin --delete dev
 ```
 
+### git 版本升级
+
+```shell
+# 下周安装包
+winget install --id Git.Git -e --source winget
+# 通过 git 命令升级
+git update-git-for-windows
+```
+
 ### 在vscode中配置GIT终端
 
 ![1953033-20210812175755860-640591619](./assets/images/1953033-20210812175755860-640591619.png)
