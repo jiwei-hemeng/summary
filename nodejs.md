@@ -801,6 +801,14 @@ export default function() {return aaa}
 
 ## NodeRSA
 
+### 安装
+
+```shell
+npm install node-rsa --save-dev
+```
+
+### 使用
+
 ```js
 import NodeRSA from "node-rsa"
 const key = new NodeRSA({ b: 512 });
@@ -823,5 +831,49 @@ key.importKey(privatePem);
 console.log("正在解密中...")
 const rowText = key.decrypt(cioherText, "utf8");
 console.log("解密后是：", rowText);
+```
+
+## RES 加密
+
+### 安装
+
+```shell
+npm install crypto-js --save-dev
+```
+
+### 使用
+
+```js
+import CryptoJS from "crypto-js";
+// AES 密钥以及偏移量
+const key = CryptoJS.enc.Utf8.parse("1@qq.com");
+const iv = CryptoJS.enc.Utf8.parse("2@qq.com");
+// AES 加密
+function AESencrypt(message) {
+  let result;
+  let src = CryptoJS.enc.Utf8.parse(message);
+  result = CryptoJS.AES.encrypt(src, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+  return result.ciphertext.toString().toUpperCase();
+};
+// AES解密
+function AESdecrypt(secret) {
+  let encryptedHexStr = CryptoJS.enc.Hex.parse(secret);
+  let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+  let decrypt = CryptoJS.AES.decrypt(srcs, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+  let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+  return decryptedStr;
+};
+const secret = AESencrypt("加密字符串----啦啦啦啦啦");
+console.log("加密结果：" + secret);
+const decryptedStr = AESdecrypt(secret);
+console.log("解密结果：" + decryptedStr);
 ```
 
