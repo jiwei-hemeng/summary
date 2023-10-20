@@ -115,6 +115,31 @@ git branch -r -d origin/dev
 git push origin --delete dev
 ```
 
+### git checkout 与 git switch, git resotre 的关系
+
+**git switch**
+
+```shell
+# 创建并且切换dev分支
+git switch -c dev
+# 切换dev分支
+git switch dev
+```
+
+**git restore**
+
+```shell
+# 放弃工作区的更改，相当于git checkout . 命令
+git restore .
+git restore -- worktree .
+# 从暂存区退回到工作区
+git restore --staged .
+# 用 HEAD 的文件同时重置缓存去和工作区的所有文件
+git restore --staged --worktree .
+# 用 dev2 分支的 READEME.md 替换当前工作区
+git restore --source dev2 READEME.md 
+```
+
 ### git 版本升级
 
 ```shell
