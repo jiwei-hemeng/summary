@@ -124,6 +124,8 @@ git push origin --delete dev
 git switch -c dev
 # 切换dev分支
 git switch dev
+# 切换到某一个commit但是不创建新的分支
+git switch --detach a434bda
 ```
 
 **git restore**
