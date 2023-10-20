@@ -552,3 +552,11 @@ isEqual(a,b); // true
 isEqual(a,c); // false
 ```
 
+## 校验数据类型
+
+```js
+export function getTypeOf(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+}
+```
+
