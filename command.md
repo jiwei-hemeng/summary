@@ -131,7 +131,7 @@ git switch dev
 ```shell
 # 放弃工作区的更改，相当于git checkout . 命令
 git restore .
-git restore -- worktree .
+git restore --worktree .
 # 从暂存区退回到工作区
 git restore --staged .
 # 用 HEAD 的文件同时重置缓存去和工作区的所有文件
