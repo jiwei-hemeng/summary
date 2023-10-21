@@ -9,7 +9,6 @@ const ws = new WebSocket("wss://echo.websocket.org");
 ws.onopen = function(evt) {
   console.log("建立连接成功");
   ws.send("hello webscoket");
-  ws.close(); // 关闭连接
 }
 ws.onmessage = function(evt) {
   console.log("接收到的消息", evt.data);
@@ -31,7 +30,6 @@ ws.send(JSON.stringify(message));    // 复杂的数据结构要先进行序列�
 **断开连接**
 ```js
 ws.close()
-
 ```
 
 ### socketIo
