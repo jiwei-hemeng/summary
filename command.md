@@ -15,8 +15,6 @@ git log
 git status
 # 将本地仓库推送到远程仓库
 git push -u origin master
-# 撤回未提交的更改
-git checkout src/view/index/index.vue
 # 比较文件
 git diff src/view/index/index.vue
 # 清除本地库的缓存
