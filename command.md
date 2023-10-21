@@ -143,7 +143,7 @@ git restore --source dev2 READEME.md
 ### git 版本升级
 
 ```shell
-# 下周安装包
+# 下载安装包
 winget install --id Git.Git -e --source winget
 # 通过 git 命令升级
 git update-git-for-windows
