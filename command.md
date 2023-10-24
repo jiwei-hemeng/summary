@@ -213,6 +213,32 @@ setx Path "%PATH%;%JAVA_HOME%\bin";
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%"; 
 ```
 
+### npm 如何优雅的升级版本
+
+#### 升级主版本号Major
+
+```shell
+npm version major
+```
+
+当前版本号是 1.0.0，执行该命令后版本号变成2.0.0。
+
+#### 升级次版本号Minor
+
+```shell
+npm version minor
+```
+
+当前版本号是 1.0.0，执行该命令后版本号变成1.1.0。
+
+#### 升级修订号Patch
+
+```shell
+npm version patch
+```
+
+当前版本号是 1.0.0，执行该命令后版本号变成1.0.1。
+
 ### ssh 远程操作
 
 ```shell
