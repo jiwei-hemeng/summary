@@ -140,6 +140,15 @@ git restore --staged --worktree .
 git restore --source dev2 READEME.md 
 ```
 
+### git 别名
+
+```shell
+# 定义别名
+git config --global alias.lg "log --pretty='%C(red)%h%Creset%C(yellow)%d%Creset %s %C(cyan)(%ar)%Creset'"
+# 使用别名
+git lg
+```
+
 ### git 版本升级
 
 ```shell
