@@ -677,8 +677,16 @@ div p {
 ### 方法二： svg 图标
 
 ```html
-<svg width="48" height="9">
-    <text y="8" style="font-size: 8px;">你好，世界！</text>
+<svg width="48">
+  <text y="8" style="font-size: 8px;">
+    你好，世界！
+  </text>
+  <text y="18" style="font-size: 8px;">
+    你好，世界！
+  </text>
+  <text y="28" style="font-size: 8px;">
+    你好，世界！
+  </text>
 </svg>
 ```
 
