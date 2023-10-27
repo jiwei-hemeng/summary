@@ -367,6 +367,17 @@ nrm add npmName http://registry.com
 nrm del npmName
 ```
 
+### yarn
+
+```shell
+# 查看yarn全局缓存目录
+yarn cache dir
+# 清除缓存
+yarn cache clean
+# 设置缓冲目录
+yarn config set cache-folder
+```
+
 ### Termux
 
 [Github地址](https://github.com/termux/termux-app/releases)
