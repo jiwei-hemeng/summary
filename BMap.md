@@ -66,6 +66,8 @@ label.setStyle({
 label.addEventListener('click',(e)=>{console.log("地图覆盖物点击了")});
 map.addOverlay(label); // 添加覆盖物
 map.clearOverlays(); // 清除所有覆盖物
+map.getZoom(); // 获取地图等级
+map.enableScrollWheelZoom(); // 启用滚轮放大缩小,默认禁用
 ```
 
 ## 地址解析

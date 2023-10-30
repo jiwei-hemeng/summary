@@ -376,6 +376,8 @@ yarn cache dir
 yarn cache clean
 # 设置缓冲目录
 yarn config set cache-folder
+# 切换淘宝镜像源
+yarn config set registry https://registry.npm.taobao.org
 ```
 
 ### Termux
