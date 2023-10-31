@@ -1,5 +1,7 @@
 # 百度地图相关
 
+[官方文档](https://lbsyun.baidu.com/index.php?title=jspopularGL)
+
 ## 获取当前城市
 
 ```js
@@ -77,5 +79,23 @@ const myGeo = new window.BMap.Geocoder();
 myGeo.getPoint("北京市昌平区沙河高教园", (point)=>{
 	console.log("得到的地图坐标", point)
 }, "北京")
+```
+
+## 自定义Marker图标
+
+```js
+const map = new BMapGL.Map('container');
+const point = new BMapGL.Point(116.404, 39.915);
+map.centerAndZoom(point, 15);
+// 创建小车图标
+const myIcon = new BMapGL.Icon("/jsdemo/img/car.png", new BMapGL.Size(52, 26));
+// 自定义点的位置
+const pt = new BMapGL.Point(116.417, 39.909);
+// 创建Marker标注，使用小车图标
+const marker = new BMapGL.Marker(pt, {
+    icon: myIcon
+});
+// 将标注添加到地图
+map.addOverlay(marker);
 ```
 
