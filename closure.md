@@ -132,8 +132,11 @@ console.log(checkEmail("exy@163.com")); // true
 
 ### 防抖与节流
 
+**防抖**
+
+> [lodash 防抖](https://www.lodashjs.com/docs/lodash.debounce#_debouncefunc-wait0-options)
+
 ```js
-// 防抖
 function debounce(fn, wait = 50) {
   let timer;
   return function () {
@@ -143,7 +146,13 @@ function debounce(fn, wait = 50) {
     }, wait);
   };
 }
-// 节流
+```
+
+**节流**
+
+> [lodash 节流](https://www.lodashjs.com/docs/lodash.throttle#_throttlefunc-wait0-options)
+
+```js
 function throttle(fn, wait = 50) {
   let canRun = true;
   return function () {

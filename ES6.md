@@ -517,6 +517,8 @@ showName('fatfish')
 
 ## 比较一个对象是否相等
 
+> [lodash  isEqual 函数](https://www.lodashjs.com/docs/lodash.isEqual#_isequalvalue-other) 
+
 ```js
 function isObject(obj) {
   return typeof obj === "object" && obj !== null;
