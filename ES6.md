@@ -403,6 +403,7 @@ showName('fatfish')
 
 + ESM 模块解析是发生在 **编译阶段**, 而 CommonJS模块解析发生在 **执行阶段**
 + CommonJS 不同，ESM 中 `import` 的不是对象， `export` 的也不是对象
++ ESM 模块输出的是值的引用，CommaonJS 模块输出的是值的拷贝
 
 ## JavaScript 的常见报错类型
 
