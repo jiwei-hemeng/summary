@@ -43,7 +43,9 @@ export function getCurrentCity() {
 
 ```js
 map.addControl(new window.BMap.NavigationControl());    // 平移缩放控件
-map.addControl(new window.BMap.ScaleControl());     // 比例尺控件
+map.addControl(new window.BMap.ScaleControl({
+    anchor: BMAP_ANCHOR_TOP_RIGHT
+}));     // 比例尺控件
 map.addControl(new window.BMap.OverviewMapControl());  // 缩略地图
 map.addControl(new window.BMap.MapTypeControl());  // 地图类型
 map.addControl(new window.BMap.GeolocationControl());  // 地图定位
@@ -97,5 +99,14 @@ const marker = new BMapGL.Marker(pt, {
 });
 // 将标注添加到地图
 map.addOverlay(marker);
+```
+
+## 隐藏版权信息
+
+```css
+/* 去掉版权信息 */
+:deep(.anchorBL) {
+  display: none;
+}
 ```
 
