@@ -37,6 +37,8 @@ git commit --amend --author="name <email>" --no-edit
 git push -f origin mian
 # 查看上次提交的内容
 git show
+# 显示某一特定用户（例如，用户 Agil）在两个指定的日期之间的提交记录
+git log --oneline --since="2022-04-22" --until="2022-04-24" --author="Agil"
 ```
 
 ### **Git 配置命令**
