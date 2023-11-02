@@ -298,6 +298,19 @@ export default {
 }
 ```
 
+## 路由拦截器
+
+```js
+router.beforeEach((to) => {
+  document.title = to.meta.title;
+  if (to.meta.requiresAuth && !store.isLogin) {
+    console.log("没有访问权限");
+    // 去授权页面
+    return { name: 'Login' };
+  }
+});
+```
+
 ## 表单输入绑定v-model
 
 `v-model` 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
