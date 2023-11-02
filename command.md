@@ -46,6 +46,8 @@ git show
 git config --global user.name 'userName'
 # 设置邮箱
 git config --global user.email 'example@xx.com'
+# 设置log 的时间格式
+git config --global log.date format:'%Y-%m-%d %H:%M:%S'
 # 配置SSH
 ssh-keygen -t rsa -C "你的邮箱地址"
 # 查看你的 public key
