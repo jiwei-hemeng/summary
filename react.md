@@ -785,6 +785,42 @@ function Button({ children, onClick }) {
 }
 ```
 
+## useReducer
+
+> `useReducer` 是 React 中的一个 Hook，用于管理和处理组件的状态。它常用于替代 `useState` 来管理复杂的状态逻辑，尤其是当状态之间有关联或需要多次触发更新时。`useReducer` 的核心思想是通过一个函数来管理状态，并定义一些操作（通常称为“action”）来描述状态的改变。这种方式更适合处理复杂的状态逻辑，因为它可以将状态的更新逻辑集中到一个地方，使代码更易于维护。
+
+```js
+import React, { useReducer } from 'react';
+// 初始状态
+const initialState = 0;
+// reducer 函数，接受当前状态和操作，返回新状态
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment':
+      return state + 1;
+    case 'decrement':
+      return state - 1;
+    default:
+      return state;
+  }
+};
+function Counter() {
+  // 使用 useReducer 来管理状态
+  const [count, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>
+    </div>
+  );
+}
+export default Counter;
+```
+
+`useReducer` 的优势在于它可以处理更复杂的状态逻辑，允许你根据不同的操作类型进行状态更新。这使得代码更具可维护性，尤其适用于处理多个相关状态之间的复杂交互。
+
 ## 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
