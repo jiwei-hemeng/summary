@@ -141,54 +141,65 @@ const Bar = () => import(/* webpackChunkName: "group-foo" */ './Bar.vue')
 const Baz = () => import(/* webpackChunkName: "group-foo" */ './Baz.vue')
 ```
 
-### vue路由钩子大致可以分为三类
+### *vue-router*  导航守卫用
 
-- 全局钩子,主要包括beforeEach和aftrEach
-- 单个路由里面的钩子,主要用于写某个指定路由跳转时需要执行的逻辑
-- 组件路由
+- 全局守卫
 
-### $nextTick的使用
+  - 全局前置守卫
 
-> 应用场景：1. 在create钩子函数中操作Dom 2. 修改data的值以后马上获取这个DOM元素的值
+    ```js
+    router.beforeEach((to, from) => {});
+    ```
 
-当你修改data的值以后马上获取这个DOM元素的值，是不能马上获取到新值的，你需要使用$nextTick这个回调函数的，让修改后的data值渲染更新到DOM元素之后获取，才能成功。
+  - 全局解析守卫
 
-### *vue-router*  提供的导航守卫用来控制组件是否允许访问
+    ```js
+    router.beforeResolve((to, form) => {});
+    ```
 
-- 全局前置守卫
+  - 全局后置钩子
 
-  ```js
-  const router = new VueRouter({ ... })
-  router.beforeEach((to, from, next) => {
-    // to 表示去哪 from 表示来源 next表示放行
-  })
-  ```
-
-- 全局后置守卫
-
-  你也可以注册全局后置钩子，然而和守卫不同的是，这些钩子不会接受 `next` 函数也不会改变导航本身：
-
-  ```js
-  router.afterEach((to, from) => {
-    // ...
-  })
-  ```
+    ```js
+    router.afterEach((to, form) => {});
+    ```
 
 - 路由独享的守卫
 
-  ```js
-  const router = new VueRouter({
-    routes: [
+  - beforeEnter
+
+    ```js
+    const routes = [
       {
-        path: '/foo',
-        component: Foo,
-        beforeEnter: (to, from, next) => {
-          // ...
-        }
-      }
+        path: '/users/:id',
+        component: UserDetails,
+        beforeEnter: (to, from) => {
+          return false
+        },
+      },
     ]
-  })
-  ```
+    ```
+
+- 组件级的守卫
+
+  - `beforeRouteEnter`
+  - `beforeRouteUpdate`
+  - `beforeRouteLeave`
+
+
+```js
+const UserDetails = {
+  template: `...`,
+  beforeRouteEnter(to, from) {
+    // 在渲染该组件的对应路由被验证前调用
+  },
+  beforeRouteUpdate(to, from) {
+    // 在当前路由改变，但是该组件被复用时调用
+  },
+  beforeRouteLeave(to, from) {
+    // 在导航离开渲染该组件的对应路由时调用
+  },
+}
+```
 
 ### 不打包第三方包
 
@@ -1609,7 +1620,6 @@ import "@/utils/permission.js"
 - 调用全局的 afterEach 钩子。
 - 触发 DOM 更新。
 - 调用 beforeRouteEnter 守卫中传给 next 的回调函数，创建好的组件实例会作为回调函数的参数传入。
-
 
 
 
