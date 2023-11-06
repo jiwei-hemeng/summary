@@ -444,6 +444,8 @@ function a2(a = 1, b, c){}; // result: 0
 
 **递归的方法实现**
 
+[lodash深拷贝cloneDeep函数](https://www.lodashjs.com/docs/lodash.cloneDeep#_clonedeepvalue)
+
 ```js
 function deepCopy(target) {
   let newObj = Array.isArray(target) ? [] : {};

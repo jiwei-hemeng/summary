@@ -112,6 +112,8 @@ map.addOverlay(marker);
 
 # echarts
 
+[echarts配置文档](https://echarts.apache.org/zh/option.html#title)
+
 ## 基本使用
 
 ```html
