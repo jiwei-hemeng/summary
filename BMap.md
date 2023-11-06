@@ -110,3 +110,31 @@ map.addOverlay(marker);
 }
 ```
 
+# echarts
+
+## 基本使用
+
+```html
+<div id="container"></div>
+<script>
+  import * as echarts from "echarts";
+  const myChart = echarts.init(document.getElementById("container"));
+  const option = {}; // 配置项
+  myChart.setOption(option);
+</script>
+```
+
+## 地图
+
+```js
+import chinaJson from "@/utils/china.json";
+echarts.registerMap("china", chinaJson); //注册可用的地图
+const option = {
+  geo: {
+    show: true,
+    center: [105.194115019531, 35.582111640625], //设置中心点
+    map: "china",
+  }
+}; // 配置项
+```
+
