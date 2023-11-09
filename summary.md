@@ -519,7 +519,7 @@ element.scrollIntoViewIfNeeded()
 **scrollIntoView**  只接受一个参数，但接受两种类型的参数，分别是Boolean型参数和Object型参数; 
 
 + Boolean型参数，顾名思义，参数可以使true和false。如果为true，元素的顶端将和其所在滚动区的可视区域的顶端对齐。若为false，元素的底端将和其所在滚动区的可视区域的底端对齐
-+ Object型参数，这个对象有两个选项，也就是对象里面的key。block与之前的Boolean型参数一致，不过值不再是true和false，是更语义化的start和end。另一个选项是behavior，MDN上给出三个可取的值，分别是auto、instant与smooth。这个选项决定页面是如何滚动的
++ Object型参数，这个对象有两个选项，也就是对象里面的key。block与之前的Boolean型参数一致，不过值不再是true和false，是更语义化的start、center、end。另一个选项是behavior，MDN上给出三个可取的值，分别是auto、instant与smooth。这个选项决定页面是如何滚动的
 
   ```js
   element.scrollIntoView({ behavior: 'smooth', block: 'end' }); // 平滑的滚动
