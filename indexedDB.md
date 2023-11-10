@@ -28,75 +28,49 @@
 ## 打开数据库
 
 ```js
-let request = window.indexedDB.open("MyTestDatabase");
 let db = null;
-// 成功
-request.onsuccess = (event) => {
-  db = event.target.result;
-  const result = event.target.result
-  createStore(result);
+function createStore(db) {
+  // 相当于创建数据库表
+  if (!db.objectStoreNames.contains("tableName")) {
+    const routersStore = db.createObjectStore("tableName", {
+      keyPath: "id",  // 设置主键
+      autoIncrement: true, // 设置主键自增加
+    });
+    routersStore.createIndex("name", "name", { unique: false });
+    routersStore.createIndex("path", "path", { unique: false });
+    routersStore.createIndex("moduleType", "moduleType", { unique: false });
+  }
 }
-// 错误
-request.onerror = function (event) {console.log("error", event);
-}
-```
+function getIndexDB(dbName = "myDB") {
+  return new Promise((resolve, reject) => {
+    // 使用 IndexedDB 的第一步是打开数据库
+    const request = window.indexedDB.open(dbName);
+    request.onerror = function (event) {
+      reject(event);
+    };
+    request.onsuccess = function (event) {
+      // 成功处理
+      db = event.target.result;
+      createStore(db);
+      resolve();
+    };
 
-除了成功和错误的事件之外，还有一个 `onupgradeneeded` 事件， 它表示当你创建一个新的数据库或者增加已存在的数据库的版本号时会被触发。
-
-```js
-window.indexedDB.open(this.dbName, 2);
-request.onupgradeneeded = function (event) {
-  db = event.target.result;
-  createStore(db);
-  resolve(db);
-};
-```
-
-## 创建对象仓库
-
-### createObjectStore
-
-这个 api 是为数据库创建一个对象仓库，所谓对象仓库你可以把它理解为一张数据表。createObjectStore(name, options)函数接收两个参数，第一个参数为仓库的名字，第二个参数是个对象，是可选参数，其中包括以下的属性：
-
-+ keyPath：主键
-+ autoIncrement：boolean类型，键生成器，是否自动生成，默认false
-
-```js
-if (!db.objectStoreNames.contains("routers")) {
-  const routersStore = db.createObjectStore("routers", {
-    keyPath: "id",
-    autoIncrement: true,
+    // 通过 监听[数据库升级事件]拿到 数据库实例
+    request.onupgradeneeded = function (event) {
+      db = event.target.result;
+      createStore(db);
+      resolve();
+    };
   });
 }
-```
-
-### createIndex
-我们知道 indexDB 是可以通过索引来高效查找数据的，为对象仓库创建索引使用createIndex, createIndex(name,keypath,options)接受三个参数
-
-+ name：索引的名称，可为空
-+ keypath：索引对应的keyPath
-+ options：可选，比如：unique：boolean类型，如果为 true，则索引将不允许单个键的重复值
-
-```js
-const routersStore = db.createObjectStore("routers", {
-  keyPath: "id",
-  autoIncrement: true,
-});
-routersStore.createIndex("name", "name", { unique: true });
-routersStore.createIndex("path", "path", { unique: false });
-routersStore.createIndex("moduleType", "moduleType", { unique: false });
 ```
 
 ## 新增数据
 
 ```js
-function save(data, tableName = "global") {
-  !data.id && (data.id = "global");
-  const request = db
-    .transaction([tableName], "readwrite")
-    .objectStore(tableName)
-    .add(data);
+function save(data, tableName = "tableName") {
   return new Promise((resolve, reject) => {
+    const request = db.transaction([tableName], "readwrite").objectStore(tableName).add(data);
     request.onsuccess = function (event) {
       console.log("数据写入成功");
       resolve(event);
@@ -106,58 +80,55 @@ function save(data, tableName = "global") {
       reject(event);
     };
   });
-};
+}
 ```
 
 ## 删除数据
 
 ```js
-function remove(id = "global", tableName = "global"){
-  const request = db
-    .transaction([tableName], "readwrite")
-    .objectStore(tableName)
-    .delete(id);
-
+function remove(id, tableName = "tableName") {
   return new Promise((resolve, reject) => {
-    request.onsuccess = function (event) {
-      console.log("数据删除成功");
-      resolve(true);
-    };
-    request.onerror = function (event) {
-      console.log("数据删除失败");
-      reject(event);
-    };
+    if (id) {
+      const request = db.transaction([tableName], "readwrite").objectStore(tableName).delete(id);
+      request.onsuccess = function () {
+        console.log("数据删除成功");
+        resolve(true);
+      };
+      request.onerror = function (event) {
+        console.log("数据删除失败");
+        reject(event);
+      };
+    } else {
+      reject("主键不能为空");
+    }
   });
-};
+}
 ```
 
 ## 修改
 
 ```JS
-function update(data, tableName = "global") {
-  !data.id && (data.id = "global");
-  const request = db
-    .transaction([tableName], "readwrite")
-    .objectStore(tableName)
-    .put(data);
-
+function update(data, tableName = "tableName") {
   return new Promise((resolve, reject) => {
-    request.onsuccess = function (event) {
-      console.log("数据更新成功");
-      resolve(event);
-    };
-    request.onerror = function (event) {
-      console.log("数据更新失败");
-      reject(event);
-    };
+    if (data.id) {
+      const request = db.transaction([tableName], "readwrite").objectStore(tableName).put(data);
+      request.onsuccess = function (event) {
+        resolve(event);
+      };
+      request.onerror = function (event) {
+        reject(event);
+      };
+    } else {
+      reject("主键id不能为空");
+    }
   });
-};
+}
 ```
 
-## 查询
+## 通过主键查询
 
 ```js
-function read (id = "global", tableName = "global") {
+function read(id, tableName = "tableName") {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([tableName]);
     var objectStore = transaction.objectStore(tableName);
@@ -166,19 +137,18 @@ function read (id = "global", tableName = "global") {
       console.log("事务失败");
       reject(event);
     };
-    request.onsuccess = function (event) {
+    request.onsuccess = function () {
       if (request.result) {
         resolve(request.result);
       } else {
-        console.log("未获得数据记录");
         resolve(null);
       }
     };
   });
-};
+}
 ```
 
-## 查询索引
+## 通过索引查询
 
 ```js
 /**
@@ -187,7 +157,7 @@ function read (id = "global", tableName = "global") {
  * @param {string} indexName 索引名称
  * @param {string} indexValue 索引值
  */
-function getDataByIndex(storeName, indexName, indexValue) {
+function getDataByIndex(indexName, indexValue, storeName = "tableName") {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([storeName], "readonly");
     const store = transaction.objectStore(storeName);
@@ -202,7 +172,36 @@ function getDataByIndex(storeName, indexName, indexValue) {
       }
     };
   });
-};
+}
+```
+
+## 通过索引删除
+
+```js
+function removeDataByIndex(indexName, indexValue, storeName = "tableName") {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([storeName], "readwrite");
+    const store = transaction.objectStore(storeName);
+    const index = store.index(indexName);
+    const request = index.getAll(indexValue);
+    request.onsuccess = function (e) {
+      const result = e.target.result;
+      let all = [];
+      result.map((item) => {
+        if ((item[indexName] = indexValue)) {
+          all.push(remove(item.id, storeName));
+        }
+      });
+      Promise.all(all)
+        .then(() => {
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    };
+  });
+}
 ```
 
 ## 通过索引和游标分页查询
@@ -217,11 +216,11 @@ function getDataByIndex(storeName, indexName, indexValue) {
  * @param {number} pageSize 查询条数
  */
 function cursorGetDataByIndexAndPage(
-  storeName,
   indexName,
   indexValue,
   page,
-  pageSize
+  pageSize,
+  storeName = "tableName"
 ) {
   return new Promise((resolve, reject) => {
     let list = [];
@@ -260,6 +259,36 @@ function cursorGetDataByIndexAndPage(
     };
   });
 }
+```
+
+## 查询所有
+
+```js
+function readAll(tableName = "tableName") {
+  return new Promise((resolve) => {
+    const objectStore = db.transaction(tableName).objectStore(tableName);
+    const result = [];
+    objectStore.openCursor().onsuccess = function (event) {
+      const cursor = event.target.result;
+      if (cursor) {
+        const otherIf = {
+          db: cursor.source.transaction.db.name,
+          table: cursor.source.name
+        };
+        result.push({ value: cursor.value, otherIf });
+        cursor.continue();
+      } else {
+        resolve(result);
+      }
+    };
+  });
+}
+```
+
+## 删除数据表
+
+```js
+window.indexedDB.deleteDatabase('myDB')
 ```
 
 # WebSQL
