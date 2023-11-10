@@ -140,3 +140,10 @@ const option = {
 }; // 配置项
 ```
 
+## 销毁实例
+
+```js
+const myChart = echarts.init(document.getElementById("container"));
+myChart.dispose();
+```
+
