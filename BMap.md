@@ -101,6 +101,28 @@ const marker = new BMapGL.Marker(pt, {
 map.addOverlay(marker);
 ```
 
+## GPS坐标转百度坐标
+
+```js
+function translate(x, y) {
+  return new Promise((resolve, reject) => {
+    const BMapGL = window.BMapGL;
+    const point = new BMapGL.Point(x,y);
+    const convertor = new BMapGL.Convertor();
+    const pointArr = [];
+    pointArr.push(point);
+    convertor.translate(pointArr, window.COORDINATES_WGS84, window.COORDINATES_BD09, (data) => {
+      if(data.status === 0 ) {
+        resolve(data.points)
+      } else {
+        reject(data)
+      }  
+    })
+  })
+}
+await translate(116.32715863448607,  39.990912172420714); // [{"lng": 116.33993794568, "lat":39.9979082195}]
+```
+
 ## 隐藏版权信息
 
 ```css
