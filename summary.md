@@ -935,6 +935,20 @@ const rAF = requestAnimationFrame(() => {
 cancelAnimationFrame(rAF); // 取消执行
 ```
 
+**使用**
+
+```js
+const frame = ref(0)
+function updateFrame() {
+  requestAnimationFrame(() => {
+    // 每一帧的时候递增
+    frame.value++;
+    updateFrame();
+  })
+}
+updateFrame()
+```
+
 ### 触底加载更多原理
 
 ```js
