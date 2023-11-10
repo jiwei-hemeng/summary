@@ -195,6 +195,8 @@ trackAni.cancel();
 
 ## 地图
 
+[获取地图数据](https://datav.aliyun.com/portal/school/atlas/area_selector)
+
 ```js
 import chinaJson from "@/utils/china.json";
 echarts.registerMap("china", chinaJson); //注册可用的地图
