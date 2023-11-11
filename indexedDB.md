@@ -41,7 +41,8 @@ function createStore(db) {
     routersStore.createIndex("moduleType", "moduleType", { unique: false });
   }
 }
-function getIndexDB(dbName = "myDB") {
+// 初始化indexedDB
+function initIndexDB(dbName = "myDB") {
   return new Promise((resolve, reject) => {
     // 使用 IndexedDB 的第一步是打开数据库
     const request = window.indexedDB.open(dbName);
@@ -289,6 +290,34 @@ function readAll(tableName = "tableName") {
 
 ```js
 window.indexedDB.deleteDatabase('myDB')
+```
+
+## 在vue 项目中使用
+
+### 配置
+
+```js
+import { createApp } from "vue";
+import App from "@/App.vue";
+import IndexDB from "@/utils/indexDB.js";
+import "@/assets/main.css";
+IndexDB.initIndexDB().then(() => {
+  const app = createApp(App);
+  app.mount("#app");
+});
+```
+
+### 使用
+
+```js
+import IndexDB from "@/utils/indexDB.js";
+const allData = await IndexDB.readAll(); // 测试查询所有数据
+const timeList = await IndexDB.getDataByIndex("moduleType", "timeStarp"); // 测试通过索引查询
+// 测试通过索引分页效果
+const cursorList = await IndexDB.cursorGetDataByIndexAndPage("moduleType", "routers", 3, 2);
+console.log("all-data", allData);
+console.log("timeList", timeList);
+console.log("cursorList", cursorList);
 ```
 
 # WebSQL
