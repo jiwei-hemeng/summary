@@ -313,7 +313,7 @@ tar -xzvf test.tar.gz a.c
 ln -s /usr/local/node/node-v18.12.0-linux-x64/bin/node /usr/local/bin/node
 ln -s /usr/local/node/node-v18.12.0-linux-x64/bin/npm /usr/local/bin/npm
 # 检查文件系统的磁盘空间占用情况
-df -h
+df -h --total
 # lsof 命令用于查看端口占用情况
 lsof -i:3000
 ```
