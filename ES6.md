@@ -563,3 +563,15 @@ export function getTypeOf(obj) {
 }
 ```
 
+## 使用 Object.groupBy 分组
+
+```js
+const people = [
+  { name: "Alice", age: 28 },
+  { name: "Bob", age: 30 },
+  { name: "Eve", age: 28 },
+];
+const peopleGroup = Object.groupBy(people, person => person.age);
+console.log("peopleGroup", peopleGroup);
+```
+
