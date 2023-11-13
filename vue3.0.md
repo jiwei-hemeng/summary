@@ -1199,3 +1199,39 @@ export const useScrollToBottom = (callback = () => { }) => {
 }
 ```
 
+## vue 依赖收集器原理
+
+```js
+class Dep {
+  constructor() {
+    this.deps = new Set();  
+  }
+  depend() {
+    if (active) {
+      this.deps.add(active);
+    }
+  }
+  notify() {
+    this.deps.forEach(dep => dep());
+  }
+}
+function ref (initValue) {
+  let value = initValue;
+  // 获取dep实例
+  let dep = new Dep();
+
+  return Object.defineProperty({}, "value", {
+    get() {
+      // 添加依赖
+      dep.depend();
+      return value;
+    },
+    set(newValue) {
+      value = newValue;
+      // 通知依赖更新
+      dep.notify();
+    },
+  });
+};
+```
+
