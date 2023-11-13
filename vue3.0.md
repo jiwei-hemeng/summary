@@ -1235,3 +1235,12 @@ function ref (initValue) {
 };
 ```
 
+## 编译虚拟 DOM 时优化
+
+> [文档地址](https://cn.vuejs.org/guide/extras/rendering-mechanism.html#compiler-informed-virtual-dom)
+
++ ### 静态提升
+
++ ### 更新类型标记
+
++ ### 树结构打平
