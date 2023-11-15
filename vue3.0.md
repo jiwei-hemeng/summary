@@ -10,11 +10,16 @@ vue3.0 新特征
 
 ## ref 和 reactive 的异同点
 
+> [探寻Vue3中ref的神奇之处，为什么说它比reactive更强大？](https://mp.weixin.qq.com/s/SUbubs9jPDqI1EyAie-AVw)
+
 + 相同的
   + 都是为数据添加响应式状态
 + 不同点
-  + ref 创建出来的是简单数据类型的相应数据
-  + reactive 创建出来的是复杂数据类型
+  + ref 既可以代理简单数据类型，又可以代理复杂数据类型
+    + ref还是调用了reactive来完成对复杂数据类型的代理
+  + reactive 只能代理复杂数据类型
+  + 使用 reactive 重新分配一个新对象会导致丢失响应性，而 ref 不会受到此影响。
+    + 这是因为新分配的值会经过 `toReactive` 处理，然后再赋给 `_value`，而 `get` 方法返回的就是 `_value`，也就是这个值已经经过响应式处理的数据。
   + 从ref返回的引用将自动解包，因此模板中使用不需要.value。在setup中访问必须需要`.value`
 
 ## toRef 和 toRefs的区别
@@ -1244,3 +1249,6 @@ function ref (initValue) {
 + ### 更新类型标记
 
 + ### 树结构打平
+
+
+
