@@ -31,20 +31,15 @@ vue3.0 新特征
 ## 计算属性(案例)
 
 ```js
-import { computed } from "vue";
-export default {
-  setup() {
-    const user = computed(() => {
-      return {
-        userName: state.user.userName,
-        age: state.user.age,
-      };
-    });
-    return {
-      user,
-    }
-  }
-}
+import { computed, ref } from "vue";
+const firstName = "";
+const lastName = "";
+const fullName = computed(() => {
+  return firstName.value + lastName.value;
+})
+console.log("fullName", fullName); // result: ""
+firstName.value = "firstName";
+console.log("fullName", fullName); // result: "firstName"
 ```
 
 ## watch 和 watchEffect
