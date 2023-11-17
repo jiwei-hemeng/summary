@@ -821,7 +821,7 @@ key.setOptions({ encryptionScheme: "pkcs1" });
 const privatePem = key.exportKey("pkcs8-private-pem");
 // 公钥
 const publicPem = key.exportKey("pkcs8-public-pem");
-fs.writeFileSync(path.join(path.join(), 'publicPem.txt'), privatePem)
+fs.writeFileSync(path.join(path.join(), 'publicPem.txt'), publicPem)
 fs.writeFileSync(path.join(path.join(), 'privatePem.txt'), privatePem)
 ```
 
