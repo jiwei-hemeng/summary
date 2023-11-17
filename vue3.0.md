@@ -32,14 +32,14 @@ vue3.0 新特征
 
 ```js
 import { computed, ref } from "vue";
-const firstName = "";
-const lastName = "";
+const firstName = "firstName";
+const lastName = "lastName";
 const fullName = computed(() => {
-  return firstName.value + lastName.value;
+  return firstName.value + " " + lastName.value;
 })
-console.log("fullName", fullName); // result: ""
-firstName.value = "firstName";
-console.log("fullName", fullName); // result: "firstName"
+console.log("fullName", fullName); // result: "firstName lastName"
+firstName.value = "firstName1";
+console.log("fullName", fullName); // result: "firstName1 lastName"
 ```
 
 ## watch 和 watchEffect

@@ -809,28 +809,54 @@ npm install node-rsa --save-dev
 
 ### 使用
 
+**生成密钥**
+
 ```js
-import NodeRSA from "node-rsa"
+import NodeRSA from "node-rsa";
+import fs from "fs";
+import path from "path";
 const key = new NodeRSA({ b: 512 });
 key.setOptions({ encryptionScheme: "pkcs1" });
 // 私钥
 const privatePem = key.exportKey("pkcs8-private-pem");
 // 公钥
 const publicPem = key.exportKey("pkcs8-public-pem");
-console.log("=================私钥:===============")
-console.log(privatePem)
-console.log("=================公钥================")
-console.log(publicPem)
+fs.writeFileSync(path.join(path.join(), 'publicPem.txt'), privatePem)
+fs.writeFileSync(path.join(path.join(), 'privatePem.txt'), privatePem)
+```
+
+**加密与解密**
+
+```js
+import NodeRSA from "node-rsa";
+import fs from "fs";
+import path from "path";
+const key = new NodeRSA({ b: 512 });
+key.setOptions({ encryptionScheme: "pkcs1" });
+
+/**
+ * 加密函数
+ * @param {string} data 需要加密的字符串
+ * @returns {string} 加密后的结果
+ */
+export function encrypt(data) {
+  key.importKey(fs.readFileSync(path.join(path.join(), "publicPem.txt")));
+  return key.encrypt(data, "base64");
+}
+/**
+ * 解密函数
+ * @param {string} cioherText 需要解密的字符串
+ * @returns {string} 解密后的结果
+ */
+export function decrypt(cioherText) {
+  key.importKey(fs.readFileSync(path.join(path.join(), "privatePem.txt")));
+  return key.decrypt(cioherText, "utf8");
+}
+
 const data = "我是加密前的数据";
-// const encrypt = new NodeRSA(privatePem)
-key.importKey(publicPem)
-console.log("正在加密中...")
-const cioherText = key.encrypt(data, "base64");
-console.log("加密后是：", cioherText);
-key.importKey(privatePem);
-console.log("正在解密中...")
-const rowText = key.decrypt(cioherText, "utf8");
-console.log("解密后是：", rowText);
+const rowText = encrypt(data);
+console.log("加密后是：", rowText);
+console.log("解密后是：", decrypt(rowText));
 ```
 
 ## RES 加密
