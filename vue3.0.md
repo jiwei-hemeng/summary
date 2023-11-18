@@ -51,31 +51,36 @@ console.log("fullName", fullName); // result: "firstName1 lastName"
 案例
 
 ```js
-import { reactive, toRefs, watchEffect, watch } from "vue";
-export default {
-  setup() {
-    const userInfo = reactive({
-      name: "小娜",
-      age: 10
-    })
-    watchEffect(() => {
-      console.log("改变了", testmr.age);
-    });
-    watch(
-      () => userInfo.age,
-      (newVal, oldVal) => {
-        console.log("watch监听数据的变化", newVal, oldVal);
-      },
-      {
-        deep: true,
-        immediate: true,
-      }
-    );
-    return {
-      ...toRefs(userInfo)
-    }
+import { reactive, watchEffect, watch } from "vue";
+const userInfo = reactive({
+  name: "小娜",
+  age: 10
+})
+watchEffect(() => {
+  // 自动收集数据源作为依赖
+  console.log("改变了", testmr.age);
+});
+watch(
+  () => userInfo.age,
+  (newVal, oldVal) => {
+    console.log("watch监听数据的变化", newVal, oldVal);
+  },
+  {
+    deep: true,
+    immediate: true,
   }
-}
+);
+```
+
+默认情况下，用户创建的侦听器回调，都会在 Vue 组件更新**之前**被调用。这意味着你在侦听器回调中访问的 DOM 将是被 Vue 更新之前的状态。如果想在侦听器回调中能访问被 Vue 更新**之后**的 DOM，你需要指明 `flush: 'post'` 选项：
+
+```js
+watch(source, callback, {
+  flush: 'post'
+})
+watchEffect(callback, {
+  flush: 'post'
+})
 ```
 
 ## 通过ref获取和操作DOM
