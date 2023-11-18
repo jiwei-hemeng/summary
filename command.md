@@ -393,12 +393,16 @@ yarn config set registry https://registry.npm.taobao.org
 termux-change-repo
 # ssh 登录
 ssh u0_a238@192.168.1.113 -p 8022
-# 安装openssh
+# 安装 openssh
 pkg install openssh
+# 安装 openssl
+pkg install openssl
 # 更改密码
-password
+passwd
 # 开启sshd服务
 sshd
+# 生成主机密钥
+ssh-keygen -A
 # 查看IP
 ifconfig
 # 查看用户名
