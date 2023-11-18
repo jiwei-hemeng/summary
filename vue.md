@@ -1272,5 +1272,35 @@ vue 框架能够对数据的更新快速做出响应依赖于三个重要的类�
 - track()实现依赖收集、层级依赖追踪、依赖清理（解决嵌套副作用）。
 - trigger()当某个依赖值发生变化时触发的, 根据依赖值的变化类型, 会收集与依赖相关的不同副作用处理对象, 然后逐个触发他们的 run 函数, 通过执行副作用函数获得与依赖变化后对应的最新值
 
+```js
+const weakMap = new WeakMap();
+let activeEffect;
+const track = ((target,key)=>{
+  if(!activeEffect){
+      return;
+    }
+    // 从weakMap中获取当前target对象
+    let depsMap = weakMap.get(target);
+    if(!depsMap){
+      weakMap.set(target,(depsMap=new Map()))
+    }
+    // 从Map中属性key获取当前对象指定属性
+    let deps = depsMap.get(key)
+    if(!deps){
+      // 副作用函数存储
+      depsMap.set(target,(deps=new Set()))
+    }
+    deps.add(activeEffect)  
+})
+const trigger = ((target,key)=>{
+  // 从weakMap中获取当前target对象
+  const depsMap = weakMap.get(target);
+    if(!depsMap) return;
+    // 从Map中获取指定key对象属性的副作用函数集合
+    const effects = depsMap.get(key);
+    effects&&effects.forEach(fn=>fn())
+})
+```
 
+**WeakMap与Map的区别是？** 区别就是垃圾回收器是否回收的问题，WeakMap对象对key是弱引用，如果target对象没有任何引用，可以被垃圾回收器回收，这就需要它了。相对于WeakMap，不管target是否引用，Map都不会被垃圾回收，容易造成内存泄露。
 
