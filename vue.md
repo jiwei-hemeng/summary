@@ -1,1625 +1,1255 @@
-## Vue学习笔记
+vue3.0 新特征
 
-### vue 插槽slot向父组件传值
+> 建议阅读迁移 https://v3.cn.vuejs.org/guide/migration/array-refs.html
 
-**子组件，里面有slot插槽，并在slot上绑定了text值**
+## setup函数的特性
+
++ setup函数是vue3.0新特性，与之对应的是vue2.0的BeforeCreate 和Created 两个生命周期。由于在setup函数中vue实例并没有创建出来，所以该函数没有this
++ setup 函数有props、ctx两个参数。其中props对应vue2.0的props(响应式的，不能解构)，ctx 对应this(非响应式的，可以解构)
++ 在setup中return回去的数据在视图中才能用到
+
+## ref 和 reactive 的异同点
+
+> [探寻Vue3中ref的神奇之处，为什么说它比reactive更强大？](https://mp.weixin.qq.com/s/SUbubs9jPDqI1EyAie-AVw)
+
++ 相同的
+  + 都是为数据添加响应式状态
++ 不同点
+  + ref 既可以代理简单数据类型，又可以代理复杂数据类型，reactive 只能代理复杂数据类型
+    + ref还是调用了reactive来完成对复杂数据类型的代理
+  + 使用 reactive 重新分配一个新对象会导致丢失响应性，而 ref 不会受到此影响。
+    + 这是因为新分配的值会经过 `toReactive` 处理，然后再赋给 `_value`，而 `get` 方法返回的就是 `_value`，也就是这个值已经经过响应式处理的数据。
+  + 从ref返回的引用将自动解包，因此模板中使用不需要.value。在setup中访问必须需要`.value`
+
+> 在 `ref` 的内部逻辑中分离 `_rawValue` 和 `_value` 使得能够明确区分原始值和经过响应式处理的值
+
+## toRef 和 toRefs的区别
+
++ toRef 用于为源响应式对象上的属性新建一个ref，从而保持对其源对象属性的响应式连接。接受两个参数：源相应对象和属性名，返回一个ref数据。获取数据值的时候需要加上.value;toRef后的ref数据不是原始数据的拷贝，而是引用，改变结果数据的值也会同时改变原始数据
++ toRefs 用于将响应式对象转化为结果对象，其中结果对象的每个属性都是指向原始对象相应属性的ref.toRef需要结合reactive 使用
+
+## 计算属性(案例)
+
+```js
+import { computed, ref } from "vue";
+const firstName = "firstName";
+const lastName = "lastName";
+const fullName = computed(() => {
+  return firstName.value + " " + lastName.value;
+})
+console.log("fullName", fullName); // result: "firstName lastName"
+firstName.value = "firstName1";
+console.log("fullName", fullName); // result: "firstName1 lastName"
+```
+
+## watch 和 watchEffect
+
++ watch 是需要传入侦听的数据源，而 watchEffect 是自动收集数据源作为依赖。
++ watch 可以访问侦听状态变化前后的值，而 watchEffect 没有。
++ watch 是属性改变的时候执行，而 watchEffect 是默认会执行一次，然后属性改变也会执行
+
+案例
+
+```js
+import { reactive, watchEffect, watch } from "vue";
+const userInfo = reactive({
+  name: "小娜",
+  age: 10
+})
+watchEffect(() => {
+  // 自动收集数据源作为依赖
+  console.log("改变了", testmr.age);
+});
+watch(
+  () => userInfo.age,
+  (newVal, oldVal) => {
+    console.log("watch监听数据的变化", newVal, oldVal);
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+```
+
+默认情况下，用户创建的侦听器回调，都会在 Vue 组件更新**之前**被调用。这意味着你在侦听器回调中访问的 DOM 将是被 Vue 更新之前的状态。如果想在侦听器回调中能访问被 Vue 更新**之后**的 DOM，你需要指明 `flush: 'post'` 选项：
+
+```js
+watch(source, callback, {
+  flush: 'post'
+})
+watchEffect(callback, {
+  flush: 'post'
+})
+```
+
+## 通过ref获取和操作DOM
+
+单个DOM案例
+
+```html
+<template>
+  <input type="number" name="userName" id="" ref="dom" />
+</template>
+<script>
+import { ref, nextTick } from "vue";
+export default {
+  name: "refDom",
+  setup() {
+    // 单个dom获取
+    const dom = ref(null);
+    // 下次Dom树更新时
+    nextTick(() => {
+      console.log("单个dom", dom.value);
+    });
+    return {
+      dom,
+    };
+  },
+};
+</script>
+```
+
+多个DOM(案例)
+
+> [官网链接](https://v3.cn.vuejs.org/guide/migration/array-refs.html)
+
+```html
+<template>
+  <ul>
+    <li v-for="(item, index) in arr" :key="index" :ref="setRef">
+      {{ item }}
+    </li>
+  </ul>
+</template>
+
+<script>
+import { ref, nextTick } from "vue";
+export default {
+  name: "refDom",
+  setup() {
+    const arr = ref([1, 2, 3]);
+    // 存储dom数组
+    const myRef = ref([]);
+    const setRef = (el) => {
+      myRef.value.push(el);
+    };
+    // 下次Dom树更新时
+    nextTick(() => {
+      console.dir(myRef.value);
+    });
+    return {
+      arr,
+      setRef,
+    };
+  },
+};
+</script>
+```
+
+## vue3.0 jsx语法
+
+```js
+import { defineComponent } from "vue";
+const Button = defineComponent({
+  props: {
+    type: { type: String, default: () => "primary" },
+  },
+  setup(props, { slots, emit }) {
+    return () => (
+      <button
+        class={`mybtn-${props.type}`}
+        onClick={() => {
+          emit("addchage", "hahhah");
+        }}
+      >
+        {slots.default()}
+      </button>
+    );
+  },
+});
+export default Button;
+```
+
+## vue3.0 插槽
+
+> v-slot:default 可以简写为 #default
+
+```html
+<Suspense>
+    <template v-slot:default>
+      <div>
+        <AsyncShow />
+      </div>
+    </template>
+    <template v-slot:fallback>
+      <h1>Loading...</h1>
+    </template>
+  </Suspense>
+```
+
+作用域插槽
+
+```html
+<!-- 子组件-->
+<ul>
+  <li v-for="( item, index ) in items">
+    <slot :item="item"></slot>
+  </li>
+</ul>
+<!-- 父组件-->
+<todo-list>
+  <template v-slot:default="slotProps">
+    <i class="fas fa-check"></i>
+    <span class="green">{{ slotProps.item }}</span>
+  </template>
+  <template v-slot:other="otherSlotProps">
+    ...
+  </template>
+</todo-list>
+```
+
+## 关于 Suspense 组件
+
+> 相关链接 https://v3.cn.vuejs.org/guide/migration/suspense.html#%E4%BA%8B%E4%BB%B6
+
++ Suspense是Vue3.0推出的一个内置特殊组件，用来定义具有异步请求数据的组建的显示。如果使用Suspense，要setup函数中需要返回一个promise
++ Suspense组件内置了两个具名插槽slot,一个是default，用来显示异步组件请求成功的内容；一个是fallback用来显示异步组件请求响应前页面显示的内容
++ default插槽可以有多个组件，但是需要有一个根节点
+
+```html
+<router-view v-slot="{ Component }">
+  <template v-if="Component">
+    <transition mode="out-in">
+      <keep-alive>
+        <suspense>
+          <template #default>
+            <component :is="Component"></component>
+          </template>
+          <template #fallback>
+            <div>
+              Loading...
+            </div>
+          </template>
+        </suspense>
+      </keep-alive>
+    </transition>
+  </template>
+</router-view>
+```
+
+## 挂载全局的属性和方法
+
+方法一：
+
+```js
+// main.js
+app.config.globalProperties.$title = "vue3.0 测试";
+// used.vue
+import { getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
+console.log("$title", proxy, proxy.$title);
+```
+
+方法二(推荐)：
+
+```js
+// main.js
+app.provide($title, "vue3.0 测试")
+// used.vue
+import { inject } from "vue"
+const $title = inject($title)
+```
+
+## 在 `setup` 中访问路由和当前路由
+
+> [相关链接](https://next.router.vuejs.org/zh/guide/advanced/composition-api.html)
+
+因为我们在 `setup` 里面没有访问 `this`，所以我们不能再直接访问 `this.$router` 或 `this.$route`。作为替代，我们使用 `useRouter` 函数：
+
+```js
+import { useRouter, useRoute } from 'vue-router'
+export default {
+  setup() {
+    const router = useRouter()
+    const route = useRoute()
+    function pushWithQuery(query) {
+      router.push({
+        name: 'search',
+        query: {
+          ...route.query,
+        },
+      })
+    }
+  },
+}
+```
+
+`route` 对象是一个响应式对象，所以它的任何属性都可以被监听，但你应该**避免监听整个 `route`** 对象
+
+```js
+import { useRoute } from 'vue-router'
+export default {
+  setup() {
+    const route = useRoute()
+    const userData = ref()
+    // 当参数更改时获取用户信息
+    watch(
+      () => route.params,
+      async newParams => {
+        userData.value = await fetchUser(newParams.id)
+      }
+    )
+  },
+}
+```
+
+## 路由拦截器
+
+```js
+router.beforeEach((to) => {
+  document.title = to.meta.title;
+  if (to.meta.requiresAuth && !store.isLogin) {
+    console.log("没有访问权限");
+    // 去授权页面
+    return { name: 'Login' };
+  }
+});
+```
+
+## 表单输入绑定v-model
+
+`v-model` 在内部为不同的输入元素使用不同的 property 并抛出不同的事件：
+
++ text 和 textarea 元素使用 `value` property 和 `input` 事件
+
++ checkbox 和 radio 使用 `checked` property 和 `change` 事件；
+
++ select 字段将 `value` 作为 prop 并将 `change` 作为事件
+
+## v-model用于自定义组件时
+
+> [相关链接](https://v3.cn.vuejs.org/guide/migration/v-model.html#%E6%A6%82%E8%A7%88)
+
+prop：`value` -> `modelValue`
+
+event：`input` -> `update:modelValue`；
+
+> 总结： vue中的v-model:title   相当于 title 的 prop 和  update:title 的 event
+
+## 自定义指令
+
+定义
+
+```js
+app.directive("permission", {
+  mounted(el, binding) {
+    // 获取到的角色权限
+    const permissionList = ["B0.1add", "B0.2remove", "B0.3export"];
+    const name = binding.value;
+    const index = persissionList.indexOf(name);
+    if(index === -1) {
+      el.style.display = "none";
+    }
+  }
+})
+```
+
+使用
+
+```html
+<!-- 拥有该权限 -->
+<button v-permission="B0.1add">新增</button>
+<!-- 没有该权限 -->
+<button v-permission="C0.1remove">删除</button>
+```
+
+动态指令参数
+
+```js
+const app = Vue.createApp({
+  template: `<div class="box" v-abs:left="100px"></div>`
+})
+app.directive("abs", (el, binding) => {
+  el.style[binding.arg] = binding.value;
+})
+```
+
+## 自定义修饰符
+
+> [相关链接](https://v3.cn.vuejs.org/guide/component-custom-events.html#%E5%A4%84%E7%90%86-v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6)
+
+让我们创建一个示例自定义修饰符 `capitalize`，它将 `v-model` 绑定提供的字符串的第一个字母大写。
+
+```html
+<my-component v-model.capitalize="myText"></my-component>
+```
+
+```js
+app.component('my-component', {
+  props: {
+    modelValue: String,
+    modelModifiers: {
+      default: () => ({})
+    }
+  },
+  emits: ['update:modelValue'],
+  methods: {
+    emitValue(e) {
+      let value = e.target.value
+      if (this.modelModifiers.capitalize) {
+        value = value.charAt(0).toUpperCase() + value.slice(1)
+      }
+      this.$emit('update:modelValue', value)
+    }
+  },
+  template: `<input
+    type="text"
+    :value="modelValue"
+    @input="emitValue">`
+})
+```
+
+## proxy与defineProperty的区别
+
+Object.defineProperty只能监听到对象的读取或写入，Proxy除了可以监听读写还可以监听对象属性的删除、对象当中方法的调用
+
+**多页面应用程序**
+
+配置 `vue.config.js`
+
+```javascript
+module.exports = {
+    pages: {
+        index1: {
+            // page 的入口
+            entry: “src/views/index1/main.js”,
+            // 模板来源
+            template: “src/views/index1/index.html”,
+            // 在 dist/index.html 的输出
+            filename: “index1.html”,
+            // 当使用 title 选项时，
+            // template 中的 title 标签需要是 <%= htmlWebpackPlugin.options.title %>
+            title: “IndexPage”,
+            // 在这个页面中包含的块，默认情况下会包含
+            // 提取出来的通用 chunk 和 vendor chunk。
+            chunks: [“chunk-vendors”, “chunk-common”, “index1”]
+        },
+        index2: {
+            // page 的入口
+            entry: “src/views/index2/main.js”,
+            // 模板来源
+            template: “src/views/index2/index.html”,
+            // 在 dist/index.html 的输出
+            filename: “index2.html”,
+            // 当使用 title 选项时，
+            // template 中的 title 标签需要是 <%= htmlWebpackPlugin.options.title %>
+            title: “jhd”,
+            // 在这个页面中包含的块，默认情况下会包含
+            // 提取出来的通用 chunk 和 vendor chunk。
+            chunks: [“chunk-vendors”, “chunk-common”, “index2”]
+        }
+    },
+}
+```
+
+## 父子组件生命周期的执行顺序
+
++ 父子组件在加载的时候，执行的先后顺序为
+
+  父beforeCreate->父created->父beforeMount->子beforeCreate->子created->子beforeMount->子mounted->父mounted。
+
++ 子组件更新过程
+
+  父beforeUpdate->子beforeUpdate->子updated->父updated
+
++ 父组件更新过程
+
+  父beforeUpdate->父updated
+
++ 销毁过程
+
+  父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
+
+## vue 的渲染过程
+
++ 把模板编译成render函数
++ 实例进行挂载，根据根节点render函数的调用，递归生成虚拟DOM
++ 对比虚拟DOM，渲染真实的DOM
++ 组件内部的data发生变化，组件和子组件的data作为props重新调用render函数生成虚拟DOM，使用diff算法对比新旧虚拟DOM，将变化的DOM更新
+
+## 跨组件通讯mitt.js
+
+>  `Vue2`中怎么实现跨组件通讯呢,很多人第一想法就是`event bus`。但是`Vue3`移除了`$on`,`$once`,`$off`导致不能使用这个方法。但是`Vue`官方给大家推荐了`mitt.js`,它的原理就是`event bus`。 
+
+安装
+
+```shell
+npm i mitt -s
+```
+
+封装一个hook
+
+```js
+//mitt.js
+import mitt from 'mitt'
+const emitter = mitt();
+export default emitter;
+```
+
+ 子组件1 
 
 ```html
 <template>
   <div>
-    <slot name="icon" :text="text"></slot>
+    我是子组件1
+    <h1>{{msg}}</h1>
   </div>
 </template>
+
 <script>
- export default{
-  data(){
-    return {
-      text:"我是子组件"
-    }
-  }
-}
-</script>
-```
-**父组件通过slot-scope就可以拿到子组件slot上绑定的值，并且2.5.0版本可以用于任意元素上**
-
-```html
-<template>
-  <div id="app">
-    <car v-model="index">
-      <!-- 这里的 data 是个形参，可以随便写 -->
-      <div slot="icon" slot-scope="data">
-        {{data.text}}
-      </div>
-    </car>    
-  </div>
-</template>
-```
-
-###  **单页面应用和多页面应用区别及优缺点** 
-
-> 单页面应用（SPA），通俗一点说就是指只有一个主页面的应用，浏览器一开始要加载所有必须的 html, js, css。所有的页面内容都包含在这个所谓的主页面中。但在写的时候，还是会分开写（页面片段），然后在交互的时候由路由程序动态载入，单页面的页面跳转，仅刷新局部资源。多应用于pc端。
-> 多页面（MPA），就是指一个应用中有多个页面，页面跳转时是整页刷新 
-
-**单页面的优点：**
-用户体验好，快，内容的改变不需要重新加载整个页面，基于这一点spa对服务器压力较小；前后端分离；页面效果会比较炫酷（比如切换页面内容时的专场动画）。
-**单页面缺点：**
-不利于seo；导航不可用，如果一定要导航需要自行实现前进、后退。（由于是单页面不能用浏览器的前进后退功能，所以需要自己建立堆栈管理）；初次加载时耗时多；页面复杂度提高很多。
-
-### vue 指令
-
-```html
-<!-- 方法处理器 -->
-<button v-on:click="doThis"></button>
- 
-<!-- 内联语句 -->
-<button v-on:click="doThat('hello', $event)"></button>
- 
-<!-- 缩写 -->
-<button @click="doThis"></button>
- 
-<!-- 停止冒泡 -->
-<button @click.stop="doThis"></button>
- 
-<!-- 阻止默认行为 -->
-<button @click.prevent="doThis"></button>
- 
-<!-- 阻止默认行为，没有表达式 -->
-<form @submit.prevent></form>
- 
-<!--  串联修饰符 -->
-<button @click.stop.prevent="doThis"></button>
- 
-<!-- 键修饰符，键别名 -->
-<input @keyup.enter="onEnter">
- 
-<!-- 键修饰符，键代码 -->
-<input @keyup.13="onEnter">
- 
-<!-- 点击回调只会触发一次 -->
-<button v-on:click.once="doThis"></button>
- 
-<!-- 对象语法 (2.4.0+) -->
-<button v-on="{ mousedown: doThis, mouseup: doThat }"></button>
-```
-### 对vue核心的理解
-
-+ 数据驱动视图
-  + 数据的改变会驱动视图的自动更新。
-  + 传统的做法是手动改变DOM来使视图更新，而vue只需改变数据
-+ 组件化开发
-  + 可以降低数据之间的耦合度
-  + 代码封装成组件之后更够高度复用，提高代码的可用性
-+ “渐近式框架” & “自底向上逐层应用”
-+ 响应式的数据双向绑定
-
-### Vue的组件传值
-
-- 父-->子
-  - 父组件：v-bind绑定自定义属性
-  - 子组件：组件实例对象中使用Prop对象接收
-- 子--> 父	
-  - 子组件：$emit(‘字定义事件名’，值)
-  - 父组件：v-on绑定该自定义事件
-
-### vue-router 的路由懒加载
-
-首先，可以将异步组件定义为返回一个 Promise 的工厂函数 (该函数返回的 Promise 应该 resolve 组件本身)：
-
-```js
-const Foo = () => Promise.resolve({ /* 组件定义对象 */ })
-```
-
-第二，在 Webpack 2 中，我们可以使用[动态 import](https://github.com/tc39/proposal-dynamic-import)语法来定义代码分块点 (split point)：
-
-```js
-import('./Foo.vue') // 返回 Promise
-```
-
-结合这两者，这就是如何定义一个能够被 Webpack 自动代码分割的异步组件。
-
-```js
-const Foo = () => import('./Foo.vue')
-```
-
-在路由配置中什么都不需要改变，只需要像往常一样使用 `Foo`：
-
-```js
-const router = new VueRouter({
-  routes: [
-    { path: '/foo', component: Foo }
-  ]
-})
-```
-
-### 把组件按组分块
-
-有时候我们想把某个路由下的所有组件都打包在同个异步块 (chunk) 中。只需要使用 [命名 chunk](https://webpack.js.org/guides/code-splitting-require/#chunkname)，一个特殊的注释语法来提供 chunk name (需要 Webpack > 2.4)。
-
-```js
-const Foo = () => import(/* webpackChunkName: "group-foo" */ './Foo.vue')
-const Bar = () => import(/* webpackChunkName: "group-foo" */ './Bar.vue')
-const Baz = () => import(/* webpackChunkName: "group-foo" */ './Baz.vue')
-```
-
-### *vue-router*  导航守卫用
-
-- 全局守卫
-
-  - 全局前置守卫
-
-    ```js
-    router.beforeEach((to, from) => {});
-    ```
-
-  - 全局解析守卫
-
-    ```js
-    router.beforeResolve((to, form) => {});
-    ```
-
-  - 全局后置钩子
-
-    ```js
-    router.afterEach((to, form) => {});
-    ```
-
-- 路由独享的守卫
-
-  - beforeEnter
-
-    ```js
-    const routes = [
-      {
-        path: '/users/:id',
-        component: UserDetails,
-        beforeEnter: (to, from) => {
-          return false
-        },
-      },
-    ]
-    ```
-
-- 组件级的守卫
-
-  - `beforeRouteEnter`
-  - `beforeRouteUpdate`
-  - `beforeRouteLeave`
-
-
-```js
-const UserDetails = {
-  template: `...`,
-  beforeRouteEnter(to, from) {
-    // 在渲染该组件的对应路由被验证前调用
-  },
-  beforeRouteUpdate(to, from) {
-    // 在当前路由改变，但是该组件被复用时调用
-  },
-  beforeRouteLeave(to, from) {
-    // 在导航离开渲染该组件的对应路由时调用
-  },
-}
-```
-
-### 不打包第三方包
-
-我们推荐使用第三方的 CDN 来加载资源，所谓的 CDN 说白了就是一个在线链接。
-
-```html
-<!-- element 依赖了 Vue，所以这里也必须加载 Vue -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.1/lib/theme-chalk/index.css">
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.1/lib/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/dist/echarts.min.js"></script>
-```
-
-在项目的根目录创建 `vue.config.js`
-
-```js
-// 该配置文件必须导出一个对象（Node 中的模块语法）
-module.exports = {
-  // 自定义 VueCLI 中的 webpack 配置
-  configureWebpack: {
-    // 告诉 webpack 使用 script 标签加载的那个资源，而不是去 node_moudles 中打包处理
-    externals: {
-      // 属性名：你加载的那个包名
-      // 属性值：script 标签暴露的全局变量，注意，写到字符串中！！！
-      // 'element-ui': 'ELEMENT'
-      'vue': 'Vue',
-      'element-ui': 'ELEMENT',
-      'echarts': 'echarts'
-    }
-  }
-}
-```
-
-### Vue的生命周期
-
-- BeforeCreate 实例创建之前
-- Created 实例创建完成
-- BeforeMount 渲染模板之前
-- Mounted 渲染模板完成
-- BeforeUpdate 更新组件之前
-- Updated 更新组件之后
-- BeforeDestroy 组件销毁之前
-- Destoryed 组件销毁完毕
-
-- v-module的语法糖原理
-
-  - *v-modle* 默认接受 *input* 事件，相当于 *@input=“事件名”*  默认发送  *:value=“数据 ”*  的数据。
-
-### 模块化开发和组件开发的区别
-
--  组件是具体的
--  组件开发更多的关注UI部分
--  模块是抽象的
--  模块开发侧重于数据的分装
-
-### 对比jQuery、vue有什么不同
-
-jQuery专注于视图层，通过操作Dom去实现页面的一些逻辑渲染；vue专注于数据层，通过数据的双向绑定，最终表现在DOM层面，减少了DOM的操作
-
-### vuex中有几个核心，分别是什么
-
-state唯一数据源，Vue实例中的data遵循相同的规则
-
-getters可以认为是store的计算属性，就像计算属性一样，getters的返回值会根据它的依赖被缓存起来，且只有当它的值改变时才会被重新计算
-
-mutation更改Vuex的store中的状态的唯一方法是提交mutation，非常类似于事件
-
-action类似于mutation，不同在于action提交的是mutation，而不是直接改变状态，action可以包含任意异步操作
-
-module能够将store分隔成模块module
-
-```js
-const moduleA = {
-    state: ()=>({...}),
-    mutation:{...}
-}
-const moduleB = {
-    state: ()=>({...}),
-    mutation:{...}
-}
-const store = new Vuex.Store({
-    module:{
-        a:moduleA,
-        b:moduleB
-    }
-})
-store.state.a    // moduleA的状态
-store.state.b    // moduleB的状态
-```
-
-### Vue实现数据双向绑定的原理:
-
-采用**数据劫持结合发布者-订阅者模式**的方式，通过  **Object.defineProperty()** 来劫持各个属性的setter，getter，在数据变动时发布消息给订阅者，触发相应监听回调
-
-### Vue 自定义过滤器
-
-局部过滤器
-
-```js
-var vm=new Vue({
-    el:"#app",
-    data:{
-        msg:''
-    },
-    filters: {
-      capitalize: function (value) {
-        if (!value) return ''
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
-      }
-    }
-})
-```
-
-全局过滤器
-
-```js
-Vue.filter('capitalize', function (value) {
-  if (!value) return ''
-  value = value.toString()
-  return value.charAt(0).toUpperCase() + value.slice(1)
-})
-```
-
-### 对keep-alive 的了解
-
-keep-alive是 Vue 内置的一个组件，可以使被包含的组件保留状态，或避免重新渲染。
-
-```html
-<keep-alive include='include_components' exclude='exclude_components'>
-  <component>
-    <!-- 该组件是否缓存取决于include和exclude属性 -->
-  </component>
-</keep-alive>
-```
-
-参数解释
-include - 字符串或正则表达式，只有名称匹配的组件会被缓存
-exclude - 字符串或正则表达式，任何名称匹配的组件都不会被缓存
-include 和 exclude 的属性允许组件有条件地缓存。二者都可以用“，”分隔字符串、正则表达式、数组。当使用正则或者是数组时，要记得使用v-bind 。
-
-### **vue常用的修饰符**
-
-+ *prevent* 提交事件不再重载页面；
-+ *stop* 阻止单击事件冒泡，相当于JavaScript中的e.stopPropagation()
-+ *self* 当事件发生在该元素本身而不是子元素的时候会触发；
-+ *capture* 事件侦听，事件发生的时候会调用
-
-### Vue的路由实现：hash模式 和 history模式
-
-+ **hash模式：**
-  + 在浏览器中符号“#”，#以及#后面的字符称之为hash，用window.location.hash读取；
-  + 特点：
-    + hash虽然在URL中，但不被包括在HTTP请求中；用来指导浏览器动作，对服务端安全无用，hash不会重加载页面。
-    + hash 模式下，仅 hash 符号之前的内容会被包含在请求中，如 [http://www.xxx.com](http://www.xxx.com/)，因此对于后端来说，即使没有做到对路由的全覆盖，也不会返回 404 错误。
-+ **history 模式：**
-  + history采用HTML5的新特性；且提供了两个新方法：pushState（），replaceState（）可以对浏览器历史记录栈进行修改，以及popState事件的监听到状态变更。
-  + history 模式下，前端的 URL 必须和实际向后端发起请求的 URL 一致，如 http://www.xxx.com/items/id。后端如果缺少对 /items/id 的路由处理，将返回 404 错误。
-
-### **vue指令有哪些，分别作用是什么**
-
-+ v-html 绑定DOM元素并解析
-+ v-text 绑定元素解析为文本
-+ v-on:事件名=’方法名’  绑定事件  等价于简写方式@click=’方法名’
-+ v-show=’布尔值’  控制节点的显示隐藏
-+ v-if=’布尔值’  控制节点的显示隐藏
-+ v-model=’渲染的数据’  数据的双向绑定，和表单元素配置使用
-+ v-for  DOM遍历  for = ‘item of arr’
-+ v-once  让DOM中的数据只渲染一次，不能再改动
-+ v-bind  绑定DOM属性 :简写方式
-+ v-cloak  当数据真正渲染到DOM上之后才进行显示
-+ v-pre 让DOM中的数据不进行解析
-+ for循环写法繁杂  for..in遍历对象使用，不适合遍历数组forEach 不能和continue break return配合使用  for..of修正以上缺点
-
-###  **methods和computed的作用**
-
-methods方法调用时计算逻辑的过程，相当于js function结算逻辑的过程,computed直接拿到的结果，是一个值，相当于js函数中的return返回值
-
-### **methods,computed和watch的区别**
-
-methods调用一次计算一次，使用计算好的返回值时没有computed性能高。computed计算好的结果会进行缓存，如果没有变动，重复使用时，直接取到缓存的结果拿来使用，不会再进行计算。监听属性配合表单使用，当表单中绑定的属性变化时，会触发监听属性下对应的方法进行操作，当使用固定返回值要使用computed代替watch和methods
-
-### v-show和v-if指令的共同点和不同点
-
-**相同点**
-
-v-show和v-if都能控制元素的显示和隐藏
-
-**不同点**
-
-实现本质方法不同:v-show本质就是通过设置css中的display设置为none;控制隐藏v-if是动态的向DOM树内添加或者删除DOM元素；v-show只编译一次，后面其实就是控制css，而v-if不停的销毁和创建，如果要频繁切换某节点时，故v-show性能更好一点
-
-### **v-for中的key**
-
-v-for的key值需要使用v-bind去绑定唯一的key，当 Vue 正在更新使用 v-for 渲染的元素列表时，需要使用key来给每一个节点做一个唯一标识,Diff算法就可以正确的识别此节点,**key的作用主要是为了高效的更新虚拟DOM**
-
-### v-for 与 v-if 的优先级
-
-v-for的优先级高于v-if
-
-### **vue的优点**
-
-+ 轻量级
-+ 数据的双向绑定
-+ 组件化开发
-+ 视图、数据、结构分离
-+ 虚拟DOM
-
-### **vue和react的区别**
-
-Vue通过getter/setter以及一些函数的劫持，能精确知道数据的变化，不需要特别的优化就能实现很好的性能。React则是通过diff算法比较不同，可能导致大量不必要的VDOM的重新渲染
-
-### Vue 可以在哪个生命周期发送请求
-
-可以在created、beforeMounte、Mounted发送ajax请求，但是我们建议在created发送请求。应为在服务端渲染（ssr）只支持beforeCreated、created两个生命周期钩子函数
-
-### Vue生命周期在beforeMount和mounted 做了什么
-
-在**beforemount**周期钩子函数生成了V-DOM，而mounted 真实的Dom已经生成
-
-### vant组件的进阶（rem适配）
-
-Vant 中的样式默认使用 `px` 作为单位，如果需要使用 `rem` 单位，推荐使用以下两个工具：
-
-+ [postcss-pxtorem](https://github.com/cuth/postcss-pxtorem) 是一款 postcss 插件，用于将 px 单位转化为 rem
-+ [lib-flexible](https://github.com/amfe/lib-flexible) 用于设置 rem 基准值
-
-使用方法：
-
-**（1）使用 [lib-flexible](https://github.com/amfe/lib-flexible) 动态设置 REM 基准值（html 标签的字体大小）**
-
-安装依赖：
-
-```shell
-# yarn add amfe-flexible
-npm i amfe-flexible
-```
-
-然后在 `main.js` 中加载执行该模块：
-
-```js
-import 'amfe-flexible'
-```
-
-**（2）使用 [postcss-pxtorem](https://github.com/cuth/postcss-pxtorem) 将 `px` 转为 `rem`**
-
-安装依赖：
-
-```shell
-# yarn add -D postcss-pxtorem
-# -D 是 --save-dev 的简写
-npm install postcss-pxtorem -D
-```
-
-然后在**项目根目录**中创建 `postcss.config.js` 文件：
-
-```js
-module.exports = {
-  plugins: {
-    'autoprefixer': {
-      browsers: ['Android >= 4.0', 'iOS >= 8']
-    },
-    'postcss-pxtorem': {
-      rootValue: 37.5,
-      propList: ['*']
-    }
-  }
-}
-```
-
-配置完毕，**重新启动服务**。
-
-### 动态路由
-
-概念：不同的路由地址，指向同一个组件，此时需要使用动态路由。
-
-```html
-<!-- 路径传参  路由规则{path:'/article/:id'}-->
-<router-link to="/article/10001"></router-link>
-```
-
-总结：
-
-- 在路由规则中，匹配到不同的地址，指向同一个组件
-- 代码：`{path:'/article/:id', component: ArticleItem}`
-- 数据：模板 `{{$route.params.id}}`  组件  `this.$route.params.id`
-
-### vue-router-属性to
-
-+ 直接使用字符串，简单路径跳转。
-
-  ```html
-  <router-link to="/list"></router-link>
-  ```
-
-+ 也可以使用字符串，进行带参数的跳转。
-
-  ```html
-  <!-- 路径传参  路由规则{path:'/article/:id'}-->
-  <router-link to="/article/10001"></router-link>
-  <!-- 键值对传参 路由规则{path:'/article'}-->
-  <router-link to="/article?id=10001"></router-link>
-  ```
-
-+ 注意：如果有复杂的参数传递，拼接字符串挺麻烦，**to属性支持对象写法**。
-
-### vue-router-属性to的对象写法
-
-+ 普通跳转
-
-  ```html
-  <router-link :to="{path:'/list'}"></router-link>
-  ```
-
-+ 路径传参（对象写法）
-
-  ```js
-  // 路由规则 (命名路由)
-  const routes = [{path:'/article/:id',name:'article',component:ArticleItem}]
-  ```
-
-  ```html
-  <router-link :to="{name:'article',params:{id: 10001}}"></router-link>
-  <!-- /article/10001 -->
-  ```
-
-  获取 使用$route.params.id 
-
-  **特点：**
-
-  只能使用name，不能使用path；参数不会显示在路径上；浏览器强制刷新参数会被清空
-
-+ 键值对传参（对象写法）
-
-  ```js
-  const routes = [{path:'/article',component:ArticleItem}]
-  ```
-
-  ```html
-  <router-link :to="{path:'/article',query:{id: 10001}}"></router-link>
-  <!-- /article?id=10001 -->
-  ```
-
-  获取 使用$route.query.id 
-  
-  **特点：** 参数会显示在路径上，刷新不会清空
-
-### vue-router-编程式导航
-
-+ 导航：可以发生路由跳转（地址hash值得改变）
-  + <router-link /> 这个标签可以实现导航功能,**声明式导航**。
-  + 通过 `$router.push()`  这个函数可以实现导航功能，**编程式导航**。
-
-### md5 在vue项目中的使用
-
-+ 安装
-
-  ```shell
-  npm install --save js-md5
-  ```
-
-+ 在*main.js*导入
-
-  ```js
-  import md5 from 'js-md5';
-  Vue.prototype.$md5 = md5;
-  ```
-
-+ 使用：
-
-  ```js
-  this.$md5('hello world')  // 5eb63bbbe01eeed093cb22bb8f5acdc3
-  ```
-
-### vue 中结合实现头像裁切
-
-**安装**
-
-```shell
-npm install cropperjs
-```
-
-**在 `html` 中**
-
-```html
-<template> 
-  <!-- 用块元素（容器）包装图像或画布元素 -->
-  <div class="updata-photo">
-    <img class="image" :src="image" ref="image">
-  </div>
-  <van-nav-bar
-    class="toolbar"
-    left-text="取消"
-    right-text="确认"
-    @click-left="$emit('close')"
-    @click-right="onConfirm"
-  />
-</template>
-```
-
-**在 `js` 中**
-
-```js
-<script>
-import { updateUserPhoto } from '@/api/user'
-import 'cropperjs/dist/cropper.css'
-import Cropper from 'cropperjs'
+import { ref, onUnmounted } from 'vue'
+import emitter from '../mitt'
 export default {
-  name: 'updataPhoto',
-  methods: {
-    // 将获取裁剪结果的方法包装成promise
-    getCroppedCanvas () {
-      return new Promise(resolve => {
-        this.cropper.getCroppedCanvas().toBlob((file) => {
-          resolve(file)
-        })
-      })
-    },
-    // 点击确认按钮
-    async onConfirm () {
-      this.$toast.loading({
-        message: '保存中',
-        forbidclick: true,
-        duration: 0 // 展示时间，0 表示持续展示
-      })
-      // 获取裁切后的结果
-      const file = await this.getCroppedCanvas()
-      const fd = new FormData()
-      fd.append('photo', file)
-      // 调用上传文件的接口
-      await updateUserPhoto(fd)
-      // 更新父组件中的用户头像
-      this.$emit('update-photo', window.URL.createObjectURL(file))
-      // 关闭弹出层
-      this.$emit('close')
-      this.$toast.success('保存成功')
+  name: '',
+
+  setup() {
+    //初始化
+    const msg = ref('hello')
+    const changeMsg = () => {
+      msg.value = 'world'
     }
-  },
-  props: {
-    file: {
-      required: true
-    }
-  },
-  mounted () {
-    const image = this.$refs.image
-    this.cropper = new Cropper(image, {
-      viewMode: 1,
-      dragMode: 'move',
-      aspectRatio: 1,
-      cropBoxMovable: false,
-      cropBoxResizable: false,
-      background: false,
-      movable: true
+    // 监听事件,更新数据
+    emitter.on('change-msg', changeMsg)
+    // 显式卸载
+    onUnmounted(() => {
+      emitter.off('change-msg', changeMsg)
     })
-  },
-  data () {
     return {
-      image: window.URL.createObjectURL(this.file),
-      cropper: null // 裁切器实例
+      msg,
+      changeMsg,
     }
-  }
+  },
 }
 </script>
 ```
 
-**在 `css` 中**
-
-```less
-.updata-photo {
-  height: 100%;
-}
-/* 确保图像尺寸完全适合容器 */
-.image {
-  display: block;
-  max-width: 100%;
-}
-```
-
-### vue项目中使用RSA加密
-
-+ 安装
-
-  ```shell
-  npm install --save jsencrypt
-  ```
-
-+ 在main.js中
-
-  ```js
-  
-  import JSEncrypt from 'jsencrypt';
-  // 加密
-  Vue.prototype.$getRsaCode = function(str){
-    let pubKey = `-----BEGIN PUBLIC KEY-----
-   rqerewrrrweqrwqewrwqrerwqrsfsafafsafsafqrewqrwqrqwreqer
-    -----END PUBLIC KEY-----`;
-    let encryptStr = new JSEncrypt();
-    encryptStr.setPublicKey(pubKey); // 设置 加密公钥
-    let  data = encryptStr.encrypt(str.toString());  // 进行加密
-    return data;
-  }
-  // 解密
-  Vue.prototype.$decrypt(txt) {
-      let privatekey = `MFwwDQYJKoZIhvcNAQ78k3RiZHWx5AfJqdH9xRNBmD9wGD`
-      const encryptor = new JSEncrypt()
-    	encryptor.setPrivateKey(privateKey)
-      return encryptor.decrypt(txt)
-  }
-  ```
-
-+ 使用加密方法
-
-  ```js
-  let rasUserName = this.$getRsaCode(this.loginForm.userName); // ras 加密 用户名
-  let rasPw = this.$getRsaCode(this.loginForm.password); // ras 加密 密码
-  ```
-
-### vue之watch属性使用方法
-
-+ 用法一：基本数据监听
-
-  ```js
-  new Vue({
-      el: '#myVue',
-      data: {
-          title:'123'
-      },
-      watch: {
-          title: function(val){ //（new, old） new:变化后的值；old：变化前的值
-              console.log(val)  // 打印出title变化后的数据
-          }
-      } 
-  })
-  ```
-
-  这种用法有个特殊的地方：当值第一次绑定的时候，不会执行监听函数，只有值发生改变才会执行
-
-+ 用法二：immediate和handler
-
-  用法一有个不足的地方就是我们在初始值的时候不会执行handler方法。为了解决这个问题我们就需要用到immediate属性了
-
-  ```js
-  new Vue({
-      el: '#myVue',
-      data: {
-          people: {id: 1, name: 'tom'}
-      },
-      watch: {
-          people: {
-              immediate: true
-              handler(val) {
-          		console.log(val)
-  			}
-       	}
-  	} 
-  })
-  ```
-
-  使用场景：父组件向子组件动态传值时，子组件props首次获取到父组件传来的默认值时，也需要执行函数，
-  这时只需要将immediate设为true就行了
-
-+ 用法三：deep
-
-  监听一个对象的变化时，普通的watch方法无法监听到对象内部属性的变化，这时就需要使用deep属性对对象进行深度监听。
-
-  ```js
-  new Vue({
-    el: '#vmyVue',
-    data: {
-      student: {id: 1, name: 'Tom',sex: '男'}
-    },
-    watch: {
-      student: {
-        handler(val) {
-          console.log(val)
-        },
-        deep: true,
-      }
-    }, 
-  })
-  ```
-
-  这种写法有个问题就是会监听对象中的全部的属性变化，只要有一个属性发生变化就会执行handler函数.在实际项目中我们
-  可能只需要监听对象中的某一个属性。这时我们可以使用字符串的形式监听对象属性：
-  下面的代码只会监听对象中的name属性，只有name属性发生变化的时候才会触发handler函数
-
-  ```js
-  new Vue({
-    el: '#vmyVue',
-    data: {
-      student: {id: 1, name: 'Tom',sex: '男'}
-    },
-    watch: {
-      'student.name': {
-          handler(val) {
-          	console.log(val)
-          },
-          deep: true,
-       }
-     } 
-  })
-  ```
-
-
-### mock-server 的使用
-
-> 当我们在做前后端分离的项目时，有时候不一定后端已经将接口写好，但是我们前端希望能够同时开发，这是我们就可以通过工具模拟出一些接口方便我们开发。常用请求方式：DELETE (删除)	GET(获取数据)	PUT(全部修改)	PATCH(局部修改)	POST(添加数据)
-
-+ 安装
-
-  ```shell
-  npm i json-server -g
-  ```
-
-+ 接口数据
-
-  ```json
-  {
-    "brands": [
-      { "id": 1, "name": "宝马", "time": "2019-10-10 10:10:46" },
-      { "id": 2, "name": "奥迪", "time": "2019-12-10 10:10:46" },
-      { "name": "奔驰", "time": "2020-04-13T11:09:55.423Z", "id": 3},
-      { "name": "奥托", "time": "2020-04-13T11:10:03.953Z", "id": 4}
-    ],
-    "heroes": [
-      { "heroName": "德玛西亚", "gender": "女", "cTime": "2020-05-08T00:36:56.530Z","id": 10001 },
-      { "id": 10002, "heroName": "刘三姐", "gender": "女", "cTime": "Fri Apr 17 2020 16:24:42 GMT+0800 (中国标准时间)" },
-      { "id": 10003, "heroName": "超人", "gender": "男","cTime": "2020/10/10 10:10:10"},
-      { "cTime": "2020-04-18T02:59:44.920Z", "heroName": "小乔", "gender": "女","id": 10004}
-    ]
-  }
-  ```
-  
-+ 启动
-
-  ```shell
-  json-server db.json
-  ```
-  
-+ 也可以直接使用npx的方式启动
-
-  ```shell
-  npx json-server --watch --port 3000 db.json  
-  ```
-
-
-### 递归组件的使用
-
-> 有时候我们不知道后端返回数据的深度，而我们需要深度渲染各层的数据，我们就要使用到递归组件。
-
-当我们定义组件是一定要设置name属性，而且递归组件一定要有递归结束，而不能使其无限制的一直递归下去，即递归是有限的。
+组件2
 
 ```html
 <template>
-  <div class="WarpItem">
-    <WarpItem />
+  <div>
+    我是子组件2
   </div>
+  <button @click='changeMsg'>点击修改msg</button>
 </template>
 
 <script>
-  export default {
-    name: "WarpItem",
-    components: {},
-    data() {
-      return {};
-    },
-    watch: {},
-    created() {},
-    methods: {},
-  };
+import { ref } from 'vue'
+import emitter from '../mitt'
+
+export default {
+  name: '',
+
+  setup() {
+    const changeMsg = () => {
+      emitter.emit('change-msg')
+    }
+    return {
+      changeMsg,
+    }
+  },
+}
 </script>
-<style lang="scss" scoped></style>
 ```
 
-递归组件向外传递数据直接用$emit是无法实现的。因为是递归的原因。
+## setup 语法糖
 
-解决办法：用eventBus实现：这种方法用在兄弟组件之间通信很常见。当然也可以用在爷爷组件和孙子组件之间的传递数据。
+> [官网链接](https://cn.vuejs.org/api/sfc-script-setup.html#defineprops-defineemits)
 
-+ 来创建出我们的eventBus，我们把它命名为bus.js
+ 虽然`Composition API`用起来已经非常方便了，但是我们还是有很烦的地方，比如 
 
-  ```js
-  import Vue from 'vue';  
-  export default new Vue();
-  ```
++ 组件引入了还要注册
++ 属性和方法都要在`setup`函数中返回，有的时候仅一个`return`就十几行甚至几十行
 
-+ 在递归组件和使用它的组件同时引入：
+ `Vue3`官方提供了`script setup`语法糖 
 
-  ```js
-  import Bus from 'common/js/bus.js';  
-  ```
+ 只需要在`script`标签中添加`setup`，组件只需引入不用注册，属性和方法也不用返回，`setup`函数也不需要，甚至`export default`都不用写了，不仅是数据，计算属性和方法，甚至是自定义指令也可以在我们的`template`中自动获得。 
 
-+ 在递归组件里面触发事件：
+但是这么过瘾的语法糖，还是稍微添加了一点点心智负担，因为没有了`setup`函数，那么`props`，`emit`，`attrs`怎么获取呢，就要介绍一下新的语法了。
 
-  ```js
-  addCart(event) {  
-      Bus.$emit('getTarget', event.target);   
-  }   
-  ```
+setup script`语法糖提供了三个新的`API`来供我们使用：`defineProps`、`defineEmit
 
-+ 在使用递归组件的父组件里面监听事件：
-
-  ```js
-  created() {  
-      Bus.$on('getTarget', target => {  
-          console.log(target);  
-      });  
-  }
-  ```
-
-  
-
-### vue 插槽
-
-> 组件的插槽，提供的是界面上高度复用。
-
-默认插槽（组件只有一处内容不固定）
++  **defineProps** 用来接收父组件传来的值`props` 
++  **defineEmit** 用来声明触发的事件表 
 
 ```html
-<div id="app">
-    <!-- 组件标签之间的内容，插入定义组件的slot标签位置 -->
-    <page>内容1</page>
-    <page>内容2</page>
-    <page>内容3</page>
+// 子组件
+<div class="hello">
+  <button @click="btn">点击</button>
+</div>
+<script setup>
+// 获取父组件传来的 props
+const props = defineProps({
+  openType: String,
+  foo: { type: String, required: true, default: 'Hello, World!' },
+  messageType: {
+    // 自定义类型校验函数
+    validator(value) {
+      return ['success', 'warning', 'danger'].includes(value)
+    }
+  },
+});
+const emit = defineEmits(["change", "delete", "handle"]);
+const btn = () => {
+  emits('handle', '张三')
+}
+</script>
+// 父级组件中
+<div class="home">
+  <HelloWorld @handle="handleClick" open-type="add" />
+</div>
+<script setup>
+import HelloWorld from '@/components/HelloWorld'
+const handleClick = function (data) {
+  console.log(data)
+}
+</script>
+```
+
+复杂的 prop 类型
+
+```js
+<script setup lang="ts">
+interface Book {
+  title: string
+  author: string
+  year: number
+}
+const props = defineProps<{
+  book: Book
+}>()
+</script>
+```
+
+## Props 解构默认值
+
+当使用基于类型的声明时，我们失去了为 props 声明默认值的能力。这可以通过 `withDefaults` 编译器宏解决：
+
+```ts
+export interface Props {
+  msg?: string
+  labels?: string[]
+}
+const props = withDefaults(defineProps<Props>(), {
+  msg: 'hello',
+  labels: () => ['one', 'two']
+})
+```
+
+## expose / ref 的使用
+
+> 如果在父组件中通过`ref='xxx'`的方法来获取子组件实例，子组件使用了`script setup`语法糖,那么子组件的数据需要用expose的方式导出，否则会因为获取不到数据而报错。
+
+子组件可以通过 expose 暴露自身的方法和数据。
+
+父组件通过 ref 获取到子组件并调用其方法或访问数据。
+
+```html
+<!-- Parent.vue -->
+<template>
+  <div>父组件：拿到子组件的message数据：{{ msg }}</div>
+  <button @click="childFun">调用子组件的方法</button>
+  <hr />
+  <Child ref="childRef" />
+</template>
+<script setup>
+import { ref, onMounted } from "vue";
+import Child from "@/components/Child.vue";
+const childRef = ref(null); // 通过 模板ref 绑定子组件
+const msg = ref("");
+onMounted(() => {
+  // 在加载完成后，将子组件的 message 赋值给 msg
+  msg.value = childRef.value.message;
+});
+function childFun() {
+  // 调用子组件的 changeMessage 方法
+  childRef.value.changeMessage("前端诡刺");
+  // 重新将 子组件的message 赋值给 msg
+  msg.value = childRef.value.message;
+}
+</script>
+```
+
+```html
+<!-- Child.vue -->
+<template>
+  <div>子组件：{{ message }}</div>
+</template>
+<script setup>
+import { ref } from "vue";
+const message = ref("前端菜鸟");
+function changeMessage(data) {
+  message.value = data;
+}
+//使用 defineExpose 向外暴露指定的数据和方法
+defineExpose({
+  message,
+  changeMessage,
+});
+</script>
+```
+
+## 局部样式
+
+### scoped的原理
+
+vue中的scoped 通过在DOM结构以及css样式上加`唯一不重复的标记:data-v-hash的方式`，以保证唯一（而这个工作是由过PostCSS转译实现的），达到样式私有化模块化的目的。
+
++ 给HTML的DOM节点加一个不重复data属性(形如：data-v-123)来表示他的唯一性
++ 在每句css选择器的末尾（编译后的生成的css语句）加一个当前组件的data属性选择器（如[data-v-123]）来私有化样式
++ 如果组件内部包含有其他组件，只会给其他组件的`最外层`标签加上当前组件的data属性
+
+### deep()深度选择器的用法
+
+Vue 提供了样式穿透`:deep()` 他的作用就是用来改变 属性选择器的位置
+
+```html
+<style scoped>
+.wrapper  :deep (.el-tag--warning) {
+    color: #e6a23c;
+}
+</style>
+```
+
+### css module
+
+`<style module>`标签会被编译为 CSS Modules 并且将生成的 CSS 类作为 $style 对象的键暴露给组件
+
+```html
+<template>
+  <div :class="$style.red">
+    弟弟
   </div>
-  <script src="./vue.js"></script>
-  <script>
-    // 组件
-    Vue.component('page',{
-      template: `<div class="page">
-          <header>头部</header>
-          <section>
-            <!-- 默认插槽 -->
-            <slot></slot>
-          </section>
-          <footer>底部</footer>
-        </div>`
-    })
-    const vm = new Vue({
-      el: '#app'
-    })
-  </script>
+</template>
+ 
+<style module>
+  .red {
+    color: red;
+    font-size: 20px;
+  }
+</style>
 ```
 
-具名插槽（如果组件中有多处内容不固定）
+自定义注入名称（多个可以用数组）
 
 ```html
-<div id="app">
-    <!-- 组件标签之间的内容，插入定义组件的slot标签位置 -->
-    <page>
-      <!-- slot="插槽的名字" 把当前标签内的结构插入到名字为content的插槽中 -->
-      <div slot="content">内容1</div>
-      <div slot="footer">底部1</div>
-    </page>
- </div>
+<template>
+  <div :class="[zs.red,zs.border]">
+    弟弟
+  </div>
+</template>
+ 
+<style module="zs">
+  .red {
+    color: red;
+    font-size: 20px;
+  }
+  .border{
+    border: 1px solid #ccc;
+  }
+</style>
+```
+
+## vue3 setup语法糖中组件name定义的几种方法
+
+###  1、写两个script标签，经测试是可以这么定义的，keep-alive有效： 
+
+```html
+<script setup>
+  import {ref} from 'vue'
+  const randomText = ref(Math.random())
+</script>
 <script>
-    // 组件
-    Vue.component('page',{
-        template: `<div class="page">
-            <header>头部</header>
-            <section>
-                <!-- 具名插槽 -->
-                <slot name="content"></slot>
-            </section>
-            <footer>
-                <!-- 具名插槽 -->
-                <slot name="footer"></slot>
-            </footer>
-        </div>`
-    })
-    const vm = new Vue({
-        el: '#app'
-    })
+  import {defineComponent} from 'vue'
+  export default defineComponent({
+    name: 'systemInfo'
+  })
 </script>
 ```
 
-### vue中style scope深度访问方式
+ 这种方法比较繁琐，要写两遍script，一个有setup，一个不带。 
 
-> **使用场景:** 当我们需要覆盖element-ui中的样式时只能通过深度作用选择器
+###  2、vite-plugin-vue-setup-extend 插件 
 
-+ **>>>**
-
-  如果vue的style使用的是css，那么则
-
-  ```css
-  <style lang="css" scoped>
-  .a >>> .b {
-  /* ... */
-  }
-  </style>
-  ```
-
-  但是像scss等预处理器却无法解析>>>，所以我们使用下面的方式.
-
-+ **/deep/**
-
-  ```scss
-  <style lang="scss" scoped>
-  .a{
-  /deep/ .b {
-  /* ... */
-  }
-  }
-  </style>
-  ```
-
-  但是有些开发者反应，在vue-cli3编译时，deep的方式会报错或者警告。
-
-+ **::v-deep**
-
-  ```scss
-  <style lang="scss" scoped>
-  .a{
-  ::v-deep .b {
-  /* ... */
-  }
-  }
-  </style>
-  ```
-
-
-### webpack项目的require.context的作用
-
-> 在我们项目开发中，经常需要import或者export各种大量有规则模块
-
-我们会这样引入组件：
-
-```js
-import A from 'components/A'
-import B from 'components/B'
-import C from 'components/C'
-import D from 'components/D'
-```
-
-也可以使用**require.context**
-
-```js
-require.context(directory, useSubdirectories, regExp)
-```
-
-1. directory: 要查找的文件路径
-2. useSubdirectories: 是否查找子目录
-3. regExp: 要匹配文件的正则
-
-例如：
-
-```js
-const ctx = require.context('./components/', true, /\.js$/)
-console.log(ctx.keys())
-// 相当于Object.keys 结果是["./A.js", "./B.js", "./C.js", "./D.js"]
-```
-
-其实 *ctx.keys()* 就是
-
-```js
-var map = {
-	"./A.js": "./src/components/test/components/A.js",
-	"./B.js": "./src/components/test/components/B.js",
-	"./C.js": "./src/components/test/components/C.js",
-	"./D.js": "./src/components/test/components/D.js"
-};
-
-Object.keys(map)
-```
-
-只不过map是模块内部变量，无法直接访问，所以通过其实提供的keys方法访问
-
-那么如何引入ABCD组件呢？
-
-```js
-const ctx = require.context('./components/', true, /\.js$/)
-const map = {}
-for (const key of ctx.keys()) {
-  map[key] = ctx(key)
-}
-console.log(map)
-```
-
-###  **vue常用工具函数总结**
-
-```js
-// 识别ie--浅识别
-export const isIe = () => {
-    let explorer = window.navigator.userAgent;
-        //判断是否为IE浏览器
-    if (explorer.indexOf("MSIE") >= 0) {
-        return true;
-    }else {
-        return false
-    }
-}
-// 颜色16进制转rgba
-export function hex2Rgba(hex, opacity) {
-	if(!hex) hex = "#2c4dae";
-    return "rgba(" + parseInt("0x" + hex.slice(1, 3)) + "," + parseInt("0x" + hex.slice(3, 5)) + "," + parseInt("0x" + hex.slice(5, 7)) + "," + (opacity || "1") + ")";
-}
-// 去除html标签
-export const htmlSafeStr = (str) => {
-    return str.replace(/<[^>]+>/g, "")
-}
-/* 获取url参数 */
-export const getQueryString = () => {
-    let qs = location.href.split('?')[1] || '',
-        args = {},
-        items = qs.length ? qs.split("&") : [];
-        items.forEach((item,i) => {
-            let arr = item.split('='),
-                name = decodeURIComponent(arr[0]),
-                value = decodeURIComponent(arr[1]);
-                name.length && (args[name] = value)
-        })
-    return args;
-}
-/* 解析url参数 */
-export const paramsToStringify = (params) => {
-    if(params){
-        let query = [];
-        for(let key in params){
-            query.push(`${key}=${params[key]}`)
-        }
-        return `${query.join('&')}`
-    }else{
-        return ''
-    }
-}
-// 将数据转化为数组
-export const toArray = (data) => {
-    return Array.isArray(data) ? data : [data]
-}
-// 带参数跳转url（hash模式）
-export const toPage = (url, params) => {
-    if(params){
-        let query = [];
-        for(let key in params){
-            query.push(`${key}=${params[key]}`)
-        }
-        window.location.href = `./index.html#/${url}?${query.join('&')}`;
-    }else{
-        window.location.href = `./index.html#/${url}`;
-    }
-}
-// 指定字符串 溢出显示省略号
-export const getSubStringSum = (str = "", num = 1) => {
-    let newStr;
-    if(str){
-        str = str + '';
-        if (str.trim().length > num ) {
-            newStr = str.trim().substring(0, num) + "...";
-        } else {
-            newStr = str.trim();
-        }
-    }else{
-        newStr = ''
-    }
-    return newStr;
-}
-```
-
-### vue中纯前端实现导出简单Excel表格的功能
-
-> 在许多的后台系统中少不了导出Excel表格的功能，下面就是我在实际的项目中纯前端使用vue-json-excel插件来实现简单Excel表格的导出功能
-
-**下载**
-
-```bash
-npm install vue-json-excel
-```
-
-**在模板中使用**
-
-```js
-<JsonExcel
-  :data="json_data"
-  :fields="json_fields"
-  name="filename.xls"
->
-  <el-button type="primary" size="small">导出EXCEL</el-button>
-</JsonExcel>
-```
-
-**Excel表格表头的设置**
-
-```js
-import JsonExcel from 'vue-json-excel'
-export default{
-   data(){
-       return{
-          json_fields: {  //导出Excel表格的表头设置
-            '序号': 'type',
-            '姓名': 'userName',
-            '年龄': 'age',
-            '手机号': 'phone',
-            '注册时间': 'createTime',
-          },
-       }
-    }
- }
-```
-
-**Excel表格中的数据**
-
-```js
-export default{
-   data(){
-       return{
-          json_data:[
-            {"userName":"张三","age":18,"gender":"phone":15612345612,"createTime":"2019-10-22"},
-            {"userName":"李四","age":17,"gender":"phone":15612345613,"createTime":"2019-10-23"},
-            {"userName":"王五","age":19,"gender":"phone":15612345615,"createTime":"2019-10-25"},
-            {"userName":"赵六","age":18,"gender":"phone":15612345618,"createTime":"2019-10-15"},     
-          ]
-       }
-   }
-}
-```
-
-### Vue 前端开发——打印功能实现
-
-> 业务场景常见于一些订单记录发票等的一些pdf 打印
-
-**下载安装**
-
-```SHELL
-npm install vue-print-nb --save
-```
-
-**main.js 中导入注册**
+ ①、安装 
 
 ```shell
-import Print from 'vue-print-nb'
-Vue.use(Print);
+npm install vite-plugin-vue-setup-extend -D
 ```
 
-**数据测试**
+ ②、在vite.config.ts文件引入vite-plugin-vue-setup-extend 
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+export default defineConfig({
+  plugins: [vue(), vueSetupExtend()]
+})
+```
+
+ ③、.vue(SFC)单文件组件添加name属性 
 
 ```html
-<el-button type="primary" v-print="'#printDetail'">打印</el-button>
-<div id="printDetail">要打印的内容</div>
+<script setup name="systemInfo"></script>
 ```
 
-### 计算属性
+ 这种方式最优雅。 
 
-计算属性是`vue`实例中的一个配置选项：`computed`
+###  3、unplugin-vue-define-options插件，Element Plus就是使用这个插件来对组件命名的 
 
-> 通常里面都是一个个计算相关的函数，函数里头可以写大量的逻辑，最后返回计算出来的值
->  即我们可以把这些计算的过程写到一个计算属性中去，然后让它动态的计算。
+ ①、安装 
+
+```shell
+npm install unplugin-vue-define-options -D
+```
+
+ ②、在vite.config.ts文件引入vite-plugin-vue-setup-extend 
 
 ```js
-var vm = new Vue({
-    el:'.app',
-    data:{
-        Math:88,
-        English: 77,
-        chemistry:99,
-    },
-    computed:{
-        sum:function(){
-            return this.Math+ this.English+this.chemistry;
-        },
-        average:function(){
-            return Math.round(this.sum/3);
-        }
-    }
+//vite.config.ts
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import DefineOptions from 'unplugin-vue-define-options/vite';
+export default defineConfig({
+  plugins: [vue(), DefineOptions()],
 });
 ```
 
-**计算属性一般就是用来通过其他的数据算出一个新数据，而且它有一个好处就是，它把新的数据缓存下来了，当其他的依赖数据没有发生改变，它调用的是缓存的数据，这就极大的提高了我们程序的性能**
-
-computer 如果是一个对象，有get和set两个选项
-
-和methods的区别：methods可以接受参数，而computer不能；computer可以缓存，而methods不能
-
-### **vue中provide和inject 用法**
-
-> **由于vue有$parent属性可以让子组件访问父组件。但孙组件想要访问祖先组件就比较困难。通过provide/inject可以轻松实现跨级访问祖先组件的数据**
-
-**案例**
-
-在app组件
+ ③、使用 
 
 ```html
-<template>
-  <div
-    id="app"
-  >
-    <router-view
-      v-if="isRouterAlive"
-    />
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'App',
-  components: {
-    MergeTipDialog,
-    BreakNetTip
-  },
-  data () {
-    return {
-      isShow: false,
-      isRouterAlive: true
-  },
-
-  // 父组件中返回要传给下级的数据
-  provide () {
-    return {
-      reload: this.reload
-    }
-  },
-  methods: {
-    reload () {
-      this.isRouterAlive = false
-      this.$nextTick(() => {
-        this.isRouterAlive = true
-      })
-    }
-  }
-}
+<script setup>
+  defineOptions({
+    name: 'MyMenuItem',
+  });
 </script>
 ```
 
-在后代组件
+## Vue.js 编译模板的过程
 
-```html
-<template>
-  <popup-assign
-    :id="id"
-    @success="successHandle"
-  >
-    <div class="confirm-d-tit"><span class="gray-small-btn">{{ name }}</span></div>
-    <strong>将被分配给</strong>
-    <a
-      slot="reference"
-      class="unite-btn"
-    >
-      指派
-    </a>
-  </popup-assign>
-</template>
-<script>
-import PopupAssign from '../PopupAssign'
+主要分为两个阶段：解析（Parse）和生成（Generate）。
+
++ 解析阶段：这个阶段的主要任务是将模板字符串转换为抽象语法树（AST）。抽象语法树是一种以树状的形式表现源代码结构的模型。在 Vue.js 中，解析器会将模板字符串解析为一棵 AST，每个节点都是一个普通的 JavaScript 对象，这个对象描述了元素/文本节点的各种属性。
+
++ 生成阶段：这个阶段的主要任务是将 AST 转换为渲染函数。渲染函数的主要任务是将模板转换为 Virtual DOM，也就是说，渲染函数的返回值是 Virtual DOM。这个过程的主要步骤如下：
+
+  > 这个过程是 Vue.js 的编译设计的精髓，它使得 Vue.js 可以提供类似于原生 JavaScript 的性能，同时还能提供一个简单易用的模板语法。
+
+  + Vue 接收到模板字符串。
+  + Vue 使用解析器（Parser）将模板字符串解析为 AST。
+  + Vue 使用优化器（Optimizer）标记静态节点。这个步骤不是必须的，但是它可以提高后续的 patch 过程。
+  + Vue 使用代码生成器（Code Generator）将 AST 转换为渲染函数。
+
+## Vue 渲染流程
+
++ 解析语法，生成AST
++ 根据AST结果，完成data数据初始化
++ 根据AST结果和DATA数据绑定情况，生成虚拟DOM
++ 将虚拟DOM 生成真正的DOM插入到页面中，进行页面渲染。
+
+## vue3中引入vue-i18n, 国际化方案
+
+下载安装
+
+```shell
+npm install vue-i18n
+```
+
+在 main.js 所在目录建立 locales 文件夹，该文件对外暴露了全局注册接口，以及对message的配置（建议）
+
+如果需要国际化的message不是太多，可以直接将条目信息配置在getMessage.js文件中
+
+**setupI18n.js**
+
+```js
+import { createI18n, useI18n } from 'vue-i18n'		//引入vue-i18n组件
+import messages from './getMessage'
+//注册i8n实例并引入语言文件
+const localeData = {
+  legacy: false, // composition API
+  locale: 'zh-CN',
+  messages,
+}
+export function setupI18n(app) {
+  const i18n = createI18n(localeData);
+  app.use(i18n);
+}
+```
+
+**getMessage.js**
+
+```js
 export default {
-//引用vue reload方法
-  inject: ['reload'],
-  components: {
-    PopupAssign
+  en: {
+    header: {
+      home: 'Home',
+      news: 'News',
+    }     
   },
-methods: {
-    // ...mapActions(['freshList']),
-    async successHandle () {
-      this.reload()
+  zh_CN: {
+    header: {
+      home: '首页',
+      news: '新闻动态',
+    }   
+  }
+}
+```
+
+在***main.js***中导入实例
+
+```js
+import { setupI18n } from '/@/locales/setupI18n';
+setupI18n(app);
+```
+
+**使用语言**
+
+```js
+import { createI18n, useI18n } from 'vue-i18n';
+const { locale, t } = useI18n();
+locale.value = 'zh_CN' // 设置成中文
+t('header.home')) // 获取结果
+```
+
+## vue中的diff算法
+
+[原文链接](https://www.qinglite.cn/doc/72016477726b75f95)
+
+数据改变会触发 **setter**，然后调用 Dep.notify(), 并且通过`Dep.notify`去通知所有`订阅者Watcher` **，** 订阅者们就会调用`patch方法` **，** 给真实 DOM 打补丁，更新相应的视图。
+
+![vue中的diff算法](./assets/images/db35549fbd731c73c67e5b260e9aff9b.webp)
+
+接下来我们来分析几个核心函数吧：
+
+### patch 函数
+
+diff的入口函数；
+
+```js
+function patch(oldVnode, newVnode) { // 传入新、旧节点
+  // 比较是否为一个类型的节点
+  if (sameVnode(oldVnode, newVnode)) {
+    // 是：继续进行深层比较
+    patchVnode(oldVnode, newVnode)
+  } else {
+    // 否
+    const oldEl = oldVnode.el // 旧虚拟节点的真实DOM节点
+    const parentEle = api.parentNode(oldEl) // 获取父节点
+    createEle(newVnode) // 创建新虚拟节点对应的真实DOM节点
+    if (parentEle !== null) {
+      api.insertBefore(parentEle, newVnode.el, api.nextSibling(oldEl)) // 将新元素添加进父元素
+      api.removeChild(parentEle, oldVnode.el)  // 移除以前的旧元素节点
+      // 设置null，释放内存
+      oldVnode = null
+    }
+  }
+  return newVnode
+}
+```
+
+### sameVNode 函数
+
+主要用来判断两个节点是否完全相同，那么满足什么条件才能判断两个节点完全相同呢？
+
+```js
+function sameVnode(oldVnode, newVnode) {
+  return (
+    oldVnode.key === newVnode.key && // key值是否一样
+    oldVnode.tagName === newVnode.tagName && // 标签名是否一样
+    oldVnode.isComment === newVnode.isComment && // 是否都为注释节点
+    isDef(oldVnode.data) === isDef(newVnode.data) && // 是否都定义了data
+    sameInputType(oldVnode, newVnode) // 当标签为input时，type必须是否相同
+  )
+}
+```
+
+### patchVNode 函数
+
+**此阶段我们已经找到了需要去对比的节点，那么该方法主要做了什么呢？**
+
+- 拿到真实的dom节点`el`（即`oldVnode`）
+
+- 判断当前`newVnode`和`oldVnode`是否指向同一个对象，如果是则直接return
+
+- 如果是文本节点，且文本有变化，则直接调用api 将文本替换；若文本没有变化，则继续对比新旧节点的子节点`children`
+
+- 如果`oldVnode`有子节点而`newVnode`没有，则删除`el`的子节点
+
+- 如果`oldVnode`没有子节点而`newVnode`有，则将`newVnode`的子节点真实化之后添加到`el`
+
+- 如果两者都有子节点，则执行`updateChildren`函数比较子节点，这一步很重要---**diff的核心**
+
+```js
+function patchVnode(oldVnode, newVnode) {
+  const el = newVnode.el = oldVnode.el // 获取真实DOM对象
+  // 获取新旧虚拟节点的子节点数组
+  const oldCh = oldVnode.children, newCh = newVnode.children
+  // 如果新旧虚拟节点是同一个对象，则终止
+  if (oldVnode === newVnode) return
+  // 如果新旧虚拟节点是文本节点，且文本不一样
+  if (oldVnode.text !== null && newVnode.text !== null && oldVnode.text !== newVnode.text) {
+    // 则直接将真实DOM中文本更新为新虚拟节点的文本
+    api.setTextContent(el, newVnode.text)
+  } else {
+    if (oldCh && newCh && oldCh !== newCh) {
+      // 新旧虚拟节点都有子节点，且子节点不一样
+      // 对比子节点，并更新
+      /*  diff核心！！*/  
+      updateChildren(el, oldCh, newCh) 
+    } else if (newCh) {
+      // 新虚拟节点有子节点，旧虚拟节点没有
+      // 创建新虚拟节点的子节点，并更新到真实DOM上去
+      createEle(newVnode)
+    } else if (oldCh) {
+      // 旧虚拟节点有子节点，新虚拟节点没有
+      // 直接删除真实DOM里对应的子节点
+      api.removeChild(el)
     }
   }
 }
-</script>
 ```
 
-### **vue项目如何使用animate.css**
+### updateChildren函数
 
-**安装**
+此方法就是diff算法的核心部分，当发现新旧虚拟节点的的子节点都存在时候，我们就需要通过一些方法来判断哪些节点是需要移动的，哪些节点是可以直接复用的，来提高我们整个diff的效率；
 
-```shell
-# 使用npm
-npm i animate.css
-# 使用yarn
-yarn add animate.css
-```
+#### vue2 -- 首尾指针法
 
-**引入**
+通过在新旧子节点的首尾定义四个指针，然后不断的对比找到可复用的节点，同时判断需要移动的节点。
 
 ```js
-import animated from 'animate.css'
-vue.use(animated)
-```
-
-**使用**
-
-```html
-<transition enter-active- leave-active- >
-  <div v-if="isShow">123</div>
-</transition>
-```
-
-### vue 中webscoket的使用
-
-**安装**
-
-```shell
-npm i socket.io-client
-```
-
-**使用**
-
-```js
-import io from 'socket.io-client'
-import { getItem, setItem } from '@/utils/storage'
-export default {
-  name: 'UserChat',
-  data () {
-    return {
-      message: '',
-      socket: null, // WebSocket 通信对象
-      messages: getItem('chat-messages') || [] // 消息列表
-    }
-  },
-  computed: {},
-  watch: {
-    messages () {
-      setItem('chat-messages', this.messages)
-      this.$nextTick(() => {
-        this.scrollToBottom()
-      })
-    }
-  },
-  created () {
-    const socket = io('http://ttapi.research.itcast.cn/')
-    this.socket = socket
-    socket.on('connect', () => {
-      console.log('连接建立成功了')
-    })
-    socket.on('disconnect', () => {
-      console.log('断开连接了')
-    })
-    socket.on('message', data => {
-      this.messages.push(data)
-    })
-  },
-  mounted () {
-    this.scrollToBottom()
-  },
-  methods: {
-    onSend () {
-      const data = {
-        msg: this.message,
-        timestamp: Date.now()
+function vue2Diff(prevChildren, nextChildren, parent) {
+  // 在新旧首尾，分别定义四个指针
+  let oldStartIndex = 0,
+    oldEndIndex = prevChildren.length - 1
+    newStartIndex = 0,
+    newEndIndex = nextChildren.length - 1;
+  let oldStartNode = prevChildren[oldStartIndex],
+    oldEndNode = prevChildren[oldEndIndex],
+    newStartNode = nextChildren[newStartIndex],
+    newEndNode = nextChildren[newEndIndex];
+   // 不断向内收缩
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+      if (oldStartNode.key === newStartNode.key) {
+        ...
+      } else if (oldEndNode.key === newEndNode.key) {
+        ...
+      } else if (oldStartNode.key === newEndNode.key) {
+        ...
+      } else if (oldEndNode.key === newStartNode.key) {
+        ...
       }
-      this.socket.emit('message', data)
-      this.messages.push(data)
-      this.message = ''
+  }
+}
+```
+
+#### vue3 -- 最长递增子序列
+
++ 从头对比找到有相同的节点 patch ，发现不同，立即跳出。
+
+* 如果第一步没有patch完，立即，从后往前开始patch ,如果发现不同立即跳出循环。
+
++ 如果新的节点大于老的节点数 ，对于剩下的节点全部以新的vnode处理（这种情况说明已经patch完相同的vnode）。
+
++ 对于老的节点大于新的节点的情况 ， 对于超出的节点全部卸载（这种情况说明已经patch完相同的vnode）。
++ 不确定的元素（这种情况说明没有patch完相同的vnode） 与 3 ，4对立关系。
+
+前面的逻辑跟vue2还是比较像，逐渐向中间收缩，那么关键点就在判断哪些节点是需要变动的
+
+首先，我们以**新节点**的数量创建一个 `source` 数组，并用 **-1** 填满；
+
+![第一步](./assets/images/1511ca4f0268caa0bdb7f9340392c817.webp)
+
+这个`source`数组就是用来做新旧节点的对应关系的，我们将**新节点**在**旧列表**的位置存储在该数组中，我们再根据`source`计算出它的`最长递增子序列`用于移动DOM节点。
+
+其次，我们先建立一个对象存储当前**新列表**中的`节点`与`index`的关系
+
+```js
+const newVNodeMap = {
+    c: '1', 
+    d: '2',
+    b: '3',
+    i: '4'
+}
+```
+
+然后再去**旧列表**中去找相同的节点，并记录其`index`的位置。
+
+在找节点时，**如果旧节点在新列表中没有的话，直接删除就好**。除此之外，我们还需要一个数量表示记录我们已经`patch`过的节点，如果数量已经与**新列表**剩余的节点数量一样，那么剩下的`旧节点`我们就直接删除了就可以了。
+
+![第二步](D:\summary\assets\images\2d1a915fe3d252d436dddb74e9b09845.webp)
+
+```js
+function vue3Diff(prevChildren, nextChildren, parent) {
+  //...
+  if (move) {
+    // 需要移动
+    const seq = lis(source); // [0, 1]
+    let j = seq.length - 1;  // 最长子序列的指针
+    // 从后向前遍历
+    for (let i = nextLeft - 1；i >= 0; i--) {
+      let pos = nextStart + i, // 对应新列表的index
+        nextNode = nextChildren[pos], // 找到vnode
+        nextPos = pos + 1，    // 下一个节点的位置，用于移动DOM
+        refNode = nextPos >= nextChildren.length ? null : nextChildren[nextPos].el, //DOM节点
+        cur = source[i];      // 当前source的值，用来判断节点是否需要移动
+      if (cur === -1) {
+        // 情况1，该节点是全新节点
+        mount(nextNode, parent, refNode)
+      } else if (cur === seq[j]) {
+        // 情况2，是递增子序列，该节点不需要移动
+        // 让j指向下一个
+        j--
+      } else {
+        // 情况3，不是递增子序列，该节点需要移动
+        parent.insetBefore(nextNode.el, refNode)
+      }
+    }
+  } else {
+  // 不需要移动
+  for (let i = nextLeft - 1；i >= 0; i--) {
+      let cur = source[i];              // 当前source的值，用来判断节点是否需要移动
+    
+      if (cur === -1) {
+       let pos = nextStart + i,         // 对应新列表的index
+          nextNode = nextChildren[pos], // 找到vnode
+          nextPos = pos + 1，           // 下一个节点的位置，用于移动DOM
+          refNode = nextPos >= nextChildren.length ? null : nextChildren[nextPos].el, //DOM节点
+          mount(nextNode, parent, refNode)
+      }
+    }
+}
+```
+
+## 响应式原理
+
+1. Object.defineProperty - get ，用于 依赖收集
+2. Object.defineProperty - set，用于 依赖更新
+3. 每个 data 声明的属性，都拥有一个的专属依赖收集器 subs
+4. 依赖收集器 subs 保存的依赖是 watcher
+5. watcher 可用于 进行视图更新
+
+## watch 原理
+
+### 监听的数据改变的时，watch 如何工作
+
+watch 在一开始初始化的时候，会 **读取** 一遍 监听的数据的值，于是，此时 那个数据就收集到 watch 的 watcher 了
+
+然后 你给 watch 设置的 handler ，watch 会放入 watcher 的更新函数中
+
+当 数据改变时，通知 watch 的 watcher 进行更新，于是 你设置的 handler 就被调用了
+
+### 设置 immediate 时，watch 如何工作
+
+当你设置了 immediate 时，就不需要在 数据改变的时候 才会触发。
+
+而是在 **初始化 watch** 时，在读取了 监听的数据的值 之后，便**立即调用**一遍你设置的监听回调，然后传入刚读取的值
+
+### 设置了 deep
+
+因为**读取**了监听的data 的属性，watch 的 watcher 被**收集**在 这个属性的 收集器中
+
+在**读取** data 属性的时候，发现设置了 deep 而且值是一个对象，会递归遍历这个值，把内部所有属性逐个**读取**一遍，于是 属性和 它的对象值内每一个属性 都会**收集**到 watch 的 watcher
+
+## $nextTick
+
+> nextTick与setTimeout都是异步函数 不同的是`nextTick比setTimeout优先执行
+
+### $nextTick
+
+nextTick 在vue 源码中是利用 **Promise.resolve()** 实现的。
+
+**Promise与setTimeout的区别** ，本质是 **Event Loop中 微任务 与 宏任务 的区别**。
+
+nextTick: `在下次 DOM 更新循环结束之后执行延迟回调`。在修改数据之后立即使用这个方法，获取更新后的 DOM。一般使用在DOM操作上的，Vue在更新data之后并不会立即更新DOM上的数据，就是说  **如果我们修改了data中的数据，再马上获取DOM上的值，我们取得的是旧值**。
+
+官网的原话是在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM。我们把获取DOM上值的操作放进`$nextTick`里，就可以得到更新后得数据。
+
+### setTimeout
+
+setTimeout：只是延迟执行，在延迟执行的方法里，DOM有可能会更新也有可能没有更新。常规做法就是延迟500ms或者1s
+
+## 自定义hook
+
+### 监测页面触底
+
+> 使用场景：触底加载更多
+
+```js
+import { onMounted, onUnmounted } from 'vue';
+export const useScrollToBottom = (callback = () => { }) => {
+  const handleScrolling = () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+      callback();
+    }
+  }
+  onMounted(() => {
+    window.addEventListener('scroll', handleScrolling);
+  });
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScrolling);
+  });
+}
+```
+
+## vue 依赖收集器原理
+
+```js
+class Dep {
+  constructor() {
+    this.deps = new Set();  
+  }
+  depend() {
+    if (active) {
+      this.deps.add(active);
+    }
+  }
+  notify() {
+    this.deps.forEach(dep => dep());
+  }
+}
+function ref (initValue) {
+  let value = initValue;
+  // 获取dep实例
+  let dep = new Dep();
+
+  return Object.defineProperty({}, "value", {
+    get() {
+      // 添加依赖
+      dep.depend();
+      return value;
     },
-
-    scrollToBottom () {
-      const list = this.$refs['message-list']
-      list.scrollTop = list.scrollHeight
-    }
-  }
-}
+    set(newValue) {
+      value = newValue;
+      // 通知依赖更新
+      dep.notify();
+    },
+  });
+};
 ```
 
-### vue 的混入(mixin)
+## 编译虚拟 DOM 时优化
 
-**组件自行混入**(单个组件使用)
+> [文档地址](https://cn.vuejs.org/guide/extras/rendering-mechanism.html#compiler-informed-virtual-dom)
 
-```html
-  <div id="app">
-    <com-a></com-a>
-    <com-b></com-b>
-  </div>
-  <script src="./vue.js"></script>
-  <script>
-    // 待混入的对象
-    const mixin = {
-      mounted () {
-        // 组件容器dom对象
-        const dom = this.$refs.dom
-        // 获取高度,赋值给height数据
-        this.height = dom.offsetHeight
-      }
-    }
-    Vue.component('com-a',{
-      template: `<div ref="dom" style="height:100px">组件A {{height}}</div>`,
-      data() {
-        return {
-          height: 0
-        }
-      },
-      // 获取组件的高度,显示在组件中
-      mixins: [mixin]
-    })
++ ### 静态提升
 
-    Vue.component('com-b',{
-      template: `<div ref="dom" style="height:120px">组件B {{height}}</div>`,
-      data() {
-        return {
-          height: 0
-        }
-      },
-      // 获取组件的高度,显示在组件中
-      mixins: [mixin]
-    })
-    const vm = new Vue({
-      el: '#app'
-    })
-  </script>
-```
++ ### 更新类型标记
 
-**全局混入**
-
-```html
- <div id="app" ref="dom">
-    {{msg}}
-    <com-a></com-a>
-    <com-b></com-b>
-  </div>
-  <script src="./vue.js"></script>
-  <script>
-    Vue.mixin({
-      // 全局混入的时候，关于dom操作，在mouted中遇到问题。
-      // 这样写，所有的组件和vue实例，都会混mounted,都需要dom的ref属性。
-      // 但是其他的选项是可以混入的
-      mounted () {
-        // 组件容器dom对象
-        const dom = this.$refs.dom
-        this.height = dom.offsetHeight
-      },
-      data () {
-        return {
-          msg: '混入数据'
-        }
-      },
-      methods: {
-        say () {
-          return '混入的函数'
-        }
-      }
-    }) 
-    Vue.component('com-a',{
-      template: `<div ref="dom" style="height:100px">组件A {{height}} {{msg}} {{say()}}</div>`,
-      data() {
-        return {
-          height: 0
-        }
-      }
-    })
-
-    Vue.component('com-b',{
-      template: `<div ref="dom" style="height:120px">组件B {{height}} {{msg}}</div>`,
-      data() {
-        return {
-          height: 0
-        }
-      }
-    })
-    const vm = new Vue({
-      el: '#app'
-    })
-  </script>
-```
-
-### js 中如何获取路由对象
-
-**使用router.currentRoute.fullPath**
-
-```js
-import router from "@/route"
-function redireatLogin() {
-  router.replace({
-    name: "login",
-    query: {
-      redireat: router.currentRoute.fullPath
-    }
-  })
-}
-```
-
-### vue 的自定义指令
-
-**vue 自定义指令控制按钮权限**
-
-定义自定义指令
-
-```js
-import Vue from "vue";
-const permissionList = ["B0.1add", "B0.2remove", "B0.3export"];
-Vue.directive("permission", {
-  inserted(el, binding, vnode) {
-    const name = binding.value;
-    const index = persissionList.indexOf(name);
-    if(index === -1) {
-      el.parentNode.removeChild(el);
-    }
-  }
-})
-```
-
-在`main.js`引入项目
-
-```js
-import "@/utils/permission.js"
-```
-
-使用指令
-
-```html
-<!-- 控制添加按钮的权限 -->
-<el-button v-permission="B0.1add">添加</el-button>
-<!-- 控制编辑按钮的权限 -->
-<el-button v-permission="B0.5edit">修改</el-button>
-```
-
-### Vue2 中的 this 为啥能够直接获取到 data 和 methods 
-
-通过 this 直接访问到 data 里面的数据的原因是：data里的属性最终会存储到new Vue的实例（vm）上的 _data对象中，访问 this.xxx，是访问Object.defineProperty代理后的 this._data.xxx。
-
-通过this直接访问到methods里面的函数的原因是：因为methods里的方法通过 bind指定了this为 new Vue的实例(vm)
-
-### 完整的导航解析流程
-> [vue 官网连接](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html#%E5%AE%8C%E6%95%B4%E7%9A%84%E5%AF%BC%E8%88%AA%E8%A7%A3%E6%9E%90%E6%B5%81%E7%A8%8B)
-- 导航被触发。
-- 在失活的组件里调用 beforeRouteLeave 守卫。
-- 调用全局的 beforeEach 守卫。
-- 在重用的组件里调用 beforeRouteUpdate 守卫(2.2+)。
-- 在路由配置里调用 beforeEnter。
-- 解析异步路由组件。
-- 在被激活的组件里调用 beforeRouteEnter。
-- 调用全局的 beforeResolve 守卫(2.5+)。
-- 导航被确认。
-- 调用全局的 afterEach 钩子。
-- 触发 DOM 更新。
-- 调用 beforeRouteEnter 守卫中传给 next 的回调函数，创建好的组件实例会作为回调函数的参数传入。
++ ### 树结构打平
 
 
 
