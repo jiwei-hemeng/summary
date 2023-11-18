@@ -37,7 +37,7 @@ myMap.set(obj, "ok")
 myMap.size // 1
 myMap.get(obj) // "ok"
 myMap.has(obj) // true
-map.delete(obj) // true
+myMap.delete(obj) // true
 myMap.has(obj) // false
 myMap.clear() // 清除所有
 myMap.keys() // 返回键名的遍历器
