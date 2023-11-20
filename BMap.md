@@ -216,3 +216,79 @@ const myChart = echarts.init(document.getElementById("container"));
 myChart.dispose();
 ```
 
+## 折线图
+
+```html
+<div style="width: 600px; height: 400px"></div>
+<script>
+  const mCharts = echarts.init(document.querySelector("div"));
+  const pieData = [
+    {
+      name: "2021-11-11",
+      value: 11231,
+      伙食费: 2130,
+      房贷: 4323,
+    },
+    {
+      name: "2021-11-12",
+      value: 11231,
+      伙食费: 2130,
+      房贷: 4323,
+    },
+    {
+      name: "2021-11-13",
+      value: 11231,
+      伙食费: 2130,
+      房贷: 4323,
+    },
+    {
+      name: "2021-11-14",
+      value: 11231,
+      伙食费: 2130,
+      房贷: 4323,
+    },
+  ];
+  const option = {
+    tooltip: {
+      trigger: "axis",
+      formatter: (params) => {
+        const data = params[0].data;
+        return `${data.name}<br>伙食费: ${data.伙食费}<br>房贷 :${data.房贷}`;
+      },
+    },
+    legend: {
+      show: true,
+      icon: "circle",
+    },
+    color: [
+      "#5470c6",
+      "#91cc75",
+      "#fac858",
+      "#ee6666",
+      "#73c0de",
+      "#3ba272",
+      "#fc8452",
+      "#9a60b4",
+      "#ea7ccc",
+    ],
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: ["2021-11-11", "2021-11-12", "2021-11-13", "2021-11-14"],
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        type: "line",
+        data: pieData,
+        radius: [60, 140],
+        selectedMode: "multiple", // 多个可以选中
+      },
+    ],
+  };
+  mCharts.setOption(option);
+</script>
+```
+
