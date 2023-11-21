@@ -219,19 +219,20 @@ myChart.dispose();
 ## 折线图
 
 ```html
-<div style="width: 600px; height: 400px"></div>
+<div style="width: 100%; height: 500px"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.common.js"></script>
 <script>
   const mCharts = echarts.init(document.querySelector("div"));
   const pieData = [
     {
       name: "2021-11-11",
-      value: 11231,
+      value: 9231,
       伙食费: 2130,
       房贷: 4323,
     },
     {
       name: "2021-11-12",
-      value: 11231,
+      value: 3231,
       伙食费: 2130,
       房贷: 4323,
     },
@@ -243,7 +244,7 @@ myChart.dispose();
     },
     {
       name: "2021-11-14",
-      value: 11231,
+      value: 4231,
       伙食费: 2130,
       房贷: 4323,
     },
@@ -256,9 +257,16 @@ myChart.dispose();
         return `${data.name}<br>伙食费: ${data.伙食费}<br>房贷 :${data.房贷}`;
       },
     },
+    grid: {
+      left: "2%",
+      right: "3%",
+      bottom: "1%",
+      containLabel: true,
+    },
     legend: {
       show: true,
       icon: "circle",
+      selectedMode: "single",
     },
     color: [
       "#5470c6",
@@ -285,6 +293,11 @@ myChart.dispose();
         data: pieData,
         radius: [60, 140],
         selectedMode: "multiple", // 多个可以选中
+        label: {
+          show: true,
+          position: "top",
+          formatter: "{c}元",
+        },
       },
     ],
   };
