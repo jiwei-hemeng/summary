@@ -263,6 +263,14 @@ myChart.dispose();
       bottom: "1%",
       containLabel: true,
     },
+    toolbox: { // 工具栏
+      feature: {
+        saveAsImage: {},
+        magicType: {
+          type: ["line", "bar"],
+        },
+      },
+    },
     legend: { // 图例组件
       show: true,
       icon: "circle",
