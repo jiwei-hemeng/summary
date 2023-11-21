@@ -250,20 +250,20 @@ myChart.dispose();
     },
   ];
   const option = {
-    tooltip: {
+    tooltip: { // 提示框组件
       trigger: "axis",
       formatter: (params) => {
         const data = params[0].data;
         return `${data.name}<br>伙食费: ${data.伙食费}<br>房贷 :${data.房贷}`;
       },
     },
-    grid: {
+    grid: {  // 布局
       left: "2%",
       right: "3%",
       bottom: "1%",
       containLabel: true,
     },
-    legend: {
+    legend: { // 图例组件
       show: true,
       icon: "circle",
       selectedMode: "single",
@@ -279,12 +279,12 @@ myChart.dispose();
       "#9a60b4",
       "#ea7ccc",
     ],
-    xAxis: {
+    xAxis: { // x 轴
       type: "category",
       boundaryGap: false,
       data: ["2021-11-11", "2021-11-12", "2021-11-13", "2021-11-14"],
     },
-    yAxis: {
+    yAxis: { // y 轴
       type: "value",
     },
     series: [
