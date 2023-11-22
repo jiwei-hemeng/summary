@@ -215,10 +215,17 @@ pathion = pathion.trim(); // result: '12  23'
 ### 获取路由参数
 
 ```js
+/**
+ * 获取查询URL参数
+ * @param {string} url - 查询URL
+ * @returns {*}
+ */
 function getURLQuery(url) {
-  const queryObj = {}
-  url.replace(/([^?&=]+)=([^&]*)/g, (_, k, v) => queryObj[k] = v)
-  return queryObj;
+  const querySearch = {};
+  url.replace(/([^?&=]+)=([^&]*)/g, (_, key, value) => {
+    querySearch[key] = value;
+  });
+  return querySearch;
 }
 getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
 ```
