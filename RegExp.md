@@ -228,10 +228,14 @@ getURLQuery("http://www.baidu.com/aaaa?a=1&b=2&c=3");
 [相关链接](https://blog.csdn.net/qq_37152533/article/details/108485385)
 
 ```js
+/**
+ * 数字千分位按照,分割
+ * @param {number} num - 需要转的字符串
+ * @returns {string} - 返回值
+ */
 function ThousandNum(num) {
-  return num.toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-ThousandNum(123456789); // '123,456,789'
 ```
 
 `(?=(\d{3})+(?!\d))`代表的是：后面需要跟3的倍数个数字，且在这（`3`的倍数个数字）之后不能再有数字了。
