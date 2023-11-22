@@ -26,7 +26,35 @@ vue3.0 新特征
 ## toRef 和 toRefs的区别
 
 + toRef 用于为源响应式对象上的属性新建一个ref，从而保持对其源对象属性的响应式连接。接受两个参数：源相应对象和属性名，返回一个ref数据。获取数据值的时候需要加上.value;toRef后的ref数据不是原始数据的拷贝，而是引用，改变结果数据的值也会同时改变原始数据
+
+  ```js
+  const state = reactive({
+    foo: 1,
+    bar: 2
+  })
+  // 双向 ref，会与源属性同步
+  const fooRef = toRef(state, 'foo')
+  // 更改该 ref 会更新源属性
+  fooRef.value++
+  console.log(state.foo) // 2
+  // 更改源属性也会更新该 ref
+  state.foo++
+  console.log(fooRef.value) // 3
+  ```
+
 + toRefs 用于将响应式对象转化为结果对象，其中结果对象的每个属性都是指向原始对象相应属性的ref.toRef需要结合reactive 使用
+
+  ```js
+  const state = reactive({
+    foo: 1,
+    bar: 2
+  })
+  const { foo } = toRefs(state)
+  foo.value++
+  console.log(foo.value) // 2
+  foo.value++
+  console.log(state.foo) // 3
+  ```
 
 ## 计算属性(案例)
 
