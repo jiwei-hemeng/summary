@@ -75,11 +75,14 @@ npm i style-loader css-loader -D
 // webpack.config.js
 module.exports = {
   rules: [
-    test: /\.css$/,
-    use: [
-    	"style-loader",
+    {
+      test: /\.css$/,
+      use: [
+        "style-loader",
     	"css-loader"
-  	]
+  	  ]
+    }
+    
   ]
 }
 ```
@@ -130,25 +133,27 @@ npm i less-loader less -D
 // webpack.config.js
 module.exports = {
   rules: [
-    test: /\.less$/,
-    use: [
-    	{
-    		"loader": "style-loader"
-    	},
-  		{
-    		loader: "css-loader"
-    	},
-  		{
-    		loader: "less-loader",
-  			options: {
-          lessOptions: {
-            strictMath: true
-          }
-        }
-    	},
-  	]
-  ]
-}
+    {
+      test: /\.less$/,
+      use: [
+        {
+          loader: "style-loader",
+        },
+        {
+          loader: "css-loader",
+        },
+        {
+          loader: "less-loader",
+          options: {
+            lessOptions: {
+              strictMath: true,
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
 ```
 
 ### hmtlWebpackPlugin
@@ -238,22 +243,20 @@ npm install -D babel-loader @babel/core @babel/preset-env
 修改配置文件
 
 ```js
-// webpack.config.js
 module.exports = {
-  // 插件
   rules: [
     {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-            loader: "babel-loader",
-            options: {
-                presets: ["@babel/preset-env"],
-            },
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          presets: ["@babel/preset-env"],
         },
+      },
     },
-  ]
-}
+  ],
+};
 ```
 
 babel 默认只能转换基本的语法部分，它不会处理es6新增的API。如果需要兼容可要安装插件babel/polyfill
