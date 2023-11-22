@@ -196,6 +196,33 @@ module.exports = {
 }
 ```
 
+### 显示打包进度
+
+（1）安装
+
+```shell
+npm i progress-bar-webpack-plugin -D
+```
+
+（2）配置
+
+```js
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+module.exports = {
+  plugins: [
+    new ProgressBarPlugin({
+      complete: '█',
+    }),
+  ],
+}
+```
+
+（3）运行
+
+```shell
+npm run build
+```
+
 ### babel
 
 > [官网地址](https://webpack.js.org/loaders/babel-loader/#install)
