@@ -4,9 +4,9 @@ JSDoc和TypeScript都解决了编写和维护纯JavaScript代码的问题。然�
 
 ## JSDoc相对于TypeScript的优势
 
-- **灵活性和兼容性：**JSDoc只是JavaScript注释，这意味着它可以添加到任何JavaScript代码库中，而不受语言版本的限制，并且不像TypeScript那样与编译器绑定。
-- **代码注释：**JSDoc不仅可以用于类型检查，还可以用于添加更多的文档，描述函数的工作原理，并生成文档网站，从而提供价值以增强代码的可维护性和理解性。
-- **无需编译步骤：**这是从TypeScript转换到JSDoc最具动力的原因之一。TypeScript需要编译将TypeScript代码转换为JavaScript，以便浏览器能够理解，而JSDoc不需要任何其他步骤，因为它们只是“注释”，这是JavaScript本身支持的特性。与每次进行更改时都需要使用必要的TypeScript构建流程相比，这可以简化并加快开发工作流程。
+- **灵活性和兼容性**JSDoc只是JavaScript注释，这意味着它可以添加到任何JavaScript代码库中，而不受语言版本的限制，并且不像TypeScript那样与编译器绑定。
+- **代码注释**JSDoc不仅可以用于类型检查，还可以用于添加更多的文档，描述函数的工作原理，并生成文档网站，从而提供价值以增强代码的可维护性和理解性。
+- **无需编译步骤**这是从TypeScript转换到JSDoc最具动力的原因之一。TypeScript需要编译将TypeScript代码转换为JavaScript，以便浏览器能够理解，而JSDoc不需要任何其他步骤，因为它们只是“注释”，这是JavaScript本身支持的特性。与每次进行更改时都需要使用必要的TypeScript构建流程相比，这可以简化并加快开发工作流程。
 
 ## 向代码块添加代码描述
 
