@@ -22,7 +22,6 @@ xhr.onreadystatechange = function () {
 }
 xhr.ontimeout = function(e) { ... };
 xhr.onerror = function(e) { ... };
-xhr.upload.onprogress = function(e) { ... };
 // 接口请求成功后触发的事件 等价于readyState === 4
 xhr.onLoad = function(e) {
   console.log(this.reponse);
@@ -47,6 +46,10 @@ xhr.onreadystatechange = function () {
         console.log(res);
     }
 }
+// 上传文件进度触发事件
+xhr.upload.onprogress = function(e) { ... };
+// 文件上传成功时触发的事件              
+xhr.upload.onLoad = function(e) {}
 ```
 
 ### axios 的拦截器
