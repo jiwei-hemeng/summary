@@ -910,6 +910,7 @@ console.log("解密结果：" + decryptedStr);
 
 ```js
 import express from "express";
+import fs from "fs";
 const router = express.Router();
 router.get("/api/downLoadFile", async (req, res) => {
   // 指定一个被下载的文件名
