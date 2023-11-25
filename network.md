@@ -23,6 +23,10 @@ xhr.onreadystatechange = function () {
 xhr.ontimeout = function(e) { ... };
 xhr.onerror = function(e) { ... };
 xhr.upload.onprogress = function(e) { ... };
+// 接口请求成功后触发的事件 等价于readyState === 4
+xhr.onLoad = function(e) {
+  console.log(this.reponse);
+}
 ```
 
 **POST 请求案例**
