@@ -904,3 +904,19 @@ const decryptedStr = AESdecrypt(secret);
 console.log("解密结果：" + decryptedStr);
 ```
 
+## Nodejs 下载文件设置Content-Disposition
+
+> 告诉浏览器返回的文件需要进行下载
+
+```js
+import express from "express";
+const router = express.Router();
+router.get("/api/downLoadFile", async (req, res) => {
+  // 指定一个被下载的文件名
+  res.setHeader("Content-Disposition","attachment;filename=test.zip");
+  const file = await fs.readFile("test.zip", "utf-8");
+  res.send(file)
+});
+export default router;
+```
+
