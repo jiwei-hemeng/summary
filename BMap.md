@@ -216,6 +216,15 @@ const myChart = echarts.init(document.getElementById("container"));
 myChart.dispose();
 ```
 
+## 图表适配
+
+```js
+const myChart = echarts.init(document.getElementById("container"));
+window.addEventListener("resize", () => {
+  myChart.resize();
+})
+```
+
 ## 折线图
 
 ```html
