@@ -352,8 +352,31 @@ const myBlob2 = await response1.json();
 ### Jsonp 的原理和特点是什么
 
 - 原理
-  - img,script,这种标签如果有相应的src，那么便会发起一个htttp请求来请求相应的资源,如果有script标签对应的路径是一个js文件，那么在下载完毕这个js之后会马上执行
+  
+  - script 标签的src 属性引进来的javaScript文件不受跨域的影响
+  
+- 实现
+
+  客服端定义函数，并发生jsonp 请求
+
+  ```html
+  <script>
+    function sucess(data) {
+      console.log("获取到的data数据")
+  	}
+  </script>
+  <!-- 通过<script>标签，请求接口数据 -->
+  <script src="https://localhost/api/jsonp?callback=success&name=zs&age=12"></script>
+  ```
+
+  服务端返回的javaScript 文件
+
+  ```js
+  sucess({name: "zs", age: 12});
+  ```
+
 - 特点
+  
   - 只能发送get请求
   - 需要后台配合
 
