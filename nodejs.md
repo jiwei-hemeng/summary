@@ -921,3 +921,21 @@ router.get("/api/downLoadFile", async (req, res) => {
 export default router;
 ```
 
+## 设置cookie
+
+```js
+import express from "express";
+const router = express.Router();
+router.get("/api/login", async (req, res) => {
+  res.cookie("user", "jay", {
+    maxAge: 20000000, // cookie 有效期
+    httpOnly: true, // 客户端脚本不可编辑，防止XSS攻击的产生
+  });
+  res.json({
+    cede: 200,
+    message: "登录成功"
+  })
+});
+export default router;
+```
+
