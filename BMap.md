@@ -308,6 +308,7 @@ window.addEventListener("resize", () => {
       {
         type: "line",
         data: pieData,
+        smooth: true, // 是否平滑曲线显示
         radius: [60, 140],
         selectedMode: "multiple", // 多个可以选中
         label: {
