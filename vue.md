@@ -1293,7 +1293,7 @@ vue 框架能够对数据的更新快速做出响应依赖于三个重要的类�
 
 ### vue3相应式原理
 
-> [参考链接](https://mp.weixin.qq.com/s/lSoUlgP5LXt12AUNGZqKUQ) 、[从 Proxy 到 Vue3 响应式](https://cloud.tencent.com/developer/article/2183938?from=1068)
+> [参考链接](https://mp.weixin.qq.com/s/lSoUlgP5LXt12AUNGZqKUQ) 、[从 Proxy 到 Vue3 响应式](https://cloud.tencent.com/developer/article/2183938?from=1068) 、[Vue 中的响应性是如何工作的](https://cn.vuejs.org/guide/extras/reactivity-in-depth.html#how-reactivity-works-in-vue)
 
 `Vue3`响应式的关键在于两个函数：`track`（收集依赖）和`trigger`（触发依赖）
 
