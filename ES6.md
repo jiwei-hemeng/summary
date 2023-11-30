@@ -575,3 +575,7 @@ const peopleGroup = Object.groupBy(people, person => person.age);
 console.log("peopleGroup", peopleGroup);
 ```
 
+## JS 中 Map 和 WeakMap 有什么区别
+
++ Map和WeakMap最大的区别是它们的**键类型限制**。Map对象可以使用任何类型的值作为键，包括基本数据类型和对象类型，而WeakMap对象的键必须是对象类型。这是因为WeakMap使用对象的引用作为键，并且只有对象才有引用。如果尝试使用基本数据类型作为WeakMap的键，会导致TypeError异常。
++ Map和WeakMap对**垃圾回收机制**的影响。在Map对象中，键和值都会被常规垃圾回收机制回收，而在WeakMap对象中，键是弱引用。这意味着，当对象被垃圾回收时，WeakMap中对应的键值对也会被自动删除。这使得WeakMap通常用于缓存或元数据，当对象不再被使用时，WeakMap可以自动清除对应的数据，避免内存泄漏。
