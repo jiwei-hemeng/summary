@@ -515,6 +515,16 @@ showName('fatfish')
   + 对于==，将高级转化为基础类型，进行“值”比较
   + 因为类型不同，===结果为false
 
+## Object.is()和===的区别
+
+Object.is 方法与严格相等比较运算符 === 有些不同。大部分情况下， Object.is(a, b) 与a === b 等价
+
+但是有两种情况不同： NaN ； -0 和 +0 。该算法在 ECMAScript 规范中被称为SameValue 。
+
++ 当 NaN 和 NaN 比较时，严格相等运算符会返回 false ，因为 NaN 不等于它自身。但是 Object.is方法则会返回 true 。
+
++ 类似地，当 -0 与 +0 比较时， === 运算符得到的结果是 true ，但 Object.is 返回 false 。
+
 ## 比较一个对象是否相等
 
 > [lodash  isEqual 函数](https://www.lodashjs.com/docs/lodash.isEqual#_isequalvalue-other) 
