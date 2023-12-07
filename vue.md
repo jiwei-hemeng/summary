@@ -1330,5 +1330,66 @@ const trigger = ((target,key)=>{
 })
 ```
 
-**WeakMap与Map的区别是？** 区别就是垃圾回收器是否回收的问题，WeakMap对象对key是弱引用，如果target对象没有任何引用，可以被垃圾回收器回收，这就需要它了。相对于WeakMap，不管target是否引用，Map都不会被垃圾回收，容易造成内存泄露。
+### reactive 原理
+
+```js
+// -------------创建响应式-------------
+const targetMap = new WeakMap();
+// 运算函数的对象
+let activeEffect = null;
+// 为不同对象的每个属性单独保存运算函数，从而让不同对象的每个属性具备自己独立的响应式
+function track(target, key) {
+  if (activeEffect) {
+    // 获取对象所对应的 depsMap
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()));
+    }
+    // 获取 depsMap 对应的属性
+    let dep = depsMap.get(key);
+    if (!dep) {
+      depsMap.set(key, (dep = new Set()));
+    }
+    // 保存不同对象，不同属性的 运算函数
+    dep.add(activeEffect);
+  }
+}
+// 触发器，执行指定对象的指定属性的运算函数
+function trigger(target, key) {
+  // 获取对象所对应的 depsMap
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    return;
+  }
+  // 获取指定函数的 dep 数组
+  const dep = depsMap.get(key);
+  // 遍历 dep，执行指定函数的运算函数
+  if (dep) {
+    dep.forEach((eff) => eff());
+  }
+}
+
+function hasChanged(value, oldValue) {
+  return !Object.is(value, oldValue)
+}
+
+// 使用 proxy 代理数据源，以达到监听的目的
+function reactive(target) {
+  const handlers = {
+    get(target, key, receiver) {
+      track(target, key);
+      return Reflect.get(target, key, receiver);
+    },
+    set(target, key, value, receiver) {
+      let oldValue = target[key];
+      let result = Reflect.set(target, key, value, receiver);
+      if (result && hasChanged(value, oldValue)) {
+        trigger(target, key);
+      }
+      return result;
+    },
+  };
+  return new Proxy(target, handlers);
+}
+```
 
