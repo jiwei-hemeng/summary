@@ -323,3 +323,47 @@ window.addEventListener("resize", () => {
 </script>
 ```
 
+### 带标注的折线图
+
+```js
+<div style="width: 100%; height: 500px"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.common.js"></script>
+<script>
+  const mCharts = echarts.init(document.querySelector("div"));
+  const option = {
+    xAxis: {
+      type: "category",
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+    yAxis: {},
+    series: [
+      {
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: "line",
+        markPoint: {
+          // markLine 也是同理
+          data: [
+            {
+              coord: ["Mon", 843], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+              name: "lall",
+              value: "0%",
+            },
+            {
+              coord: ["Tue", 952], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+              name: "lall",
+              value: "5%",
+            },
+            {
+              coord: ["Wed", 922], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+              name: "lall",
+              value: "-5%",
+            },
+          ],
+        },
+      },
+    ],
+  };
+  mCharts.setOption(option);
+</script>
+```
+
