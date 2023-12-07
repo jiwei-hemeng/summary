@@ -323,7 +323,7 @@ window.addEventListener("resize", () => {
 </script>
 ```
 
-### 带标注的折线图
+## 带标注的折线图
 
 ```js
 <div style="width: 100%; height: 500px"></div>
