@@ -549,20 +549,20 @@ function isEqual(obj1, obj2) {
   }
   //深度比较每一个key
   for (let key in obj1) {
-    if(!obj2.hasOwnProperty(key)) {
-      return false
-	}
+    if (!obj2.hasOwnProperty(key)) {
+      return false;
+    }
     if (!isEqual(obj1[key], obj2[key])) {
       return false;
     }
   }
   return true;
 }
-const a = {a1: 1, b2: {C1: 23}}
-const b = {a1: 1, b2: {C1: 23}}
-const c= {a1: 1, b2: {C1: 33}}
-isEqual(a,b); // true
-isEqual(a,c); // false
+const a = { a1: 1, b2: { C1: 23 } };
+const b = { a1: 1, b2: { C1: 23 } };
+const c = { a1: 1, b2: { C1: 33 } };
+isEqual(a, b); // true
+isEqual(a, c); // false
 ```
 
 ## 校验数据类型
