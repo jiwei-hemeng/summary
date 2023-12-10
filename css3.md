@@ -130,6 +130,8 @@ div {
 
 # css 嵌套写法
 
+> [现代CSS：原生 CSS 嵌套快速入门](https://mp.weixin.qq.com/s?__biz=MzI2NjUxODkzOA==&mid=2247485385&idx=2&sn=3b5575ef8ba067d8d9c2185ac4af6f0d&chksm=ea8daf3cddfa262a316559f59ce5953f8b128a15149395d27591c48af11d7d322fba5d798590&scene=21#wechat_redirect)
+
 原生 CSS 嵌套可以像 SASS、LESS 预处理器一样，将相关的选择器组合在一起，从而减少需要编写的规则数量。它可以节省打字时间，并使语法更易于阅读和维护。您可以将选择器嵌套到任意深度，但要小心不要超过两层或三层。嵌套深度没有技术限制，但它会使代码更难以阅读，并且生成的 CSS 可能会变得不必要的冗长。 
 
 ```css
