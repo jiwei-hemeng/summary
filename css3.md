@@ -7,7 +7,7 @@
 ```css
 $width = 100px;
 .box {
-    width: $width + 100px;
+  width: $width + 100px;
 }
 ```
 
@@ -15,7 +15,7 @@ $width = 100px;
 
 ```css
 .box {
-    width: clac(100% - 50px);
+  width: clac(100% - 50px);
 }
 ```
 
@@ -25,7 +25,7 @@ $width = 100px;
 
 ```css
 html {
-    font-size: calc(100vw / 750);
+  font-size: calc(100vw / 750);
 }
 ```
 
@@ -136,16 +136,14 @@ div {
 
 ```css
 .button {
-   background-color: red;
-
-   &.warning {
-     background-color: blue;
-   }
-
-   & .icon {
-      width: 1rem;
-      height: 1rem;
-   }
+  background-color: red;
+  &.warning {
+    background-color: blue;
+  }
+  & .icon {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 ```
 
@@ -359,19 +357,19 @@ item-3 = 200px + 60px = 260px
 ```html
 <style>
 .item-4 {
-    width: 100px;
-    flex: 2 1 0;
-    background: blue;
+  width: 100px;
+  flex: 2 1 0;
+  background: blue;
 }
 .item-5 {
-    width: 600px;
-    flex: 2 2 auto;
-    background: lightblue;
+  width: 600px;
+  flex: 2 2 auto;
+  background: lightblue;
 }
 </style>
 <div  class="parent">
-    <div  class="item-4"></div>
-    <div  class="item-5"></div>
+  <div  class="item-4"></div>
+  <div  class="item-5"></div>
 </div>
 ```
 
@@ -470,12 +468,12 @@ h5:has(+ p) { font-size: 1rem; }
 
 ```css
 p:first-of-type::first-letter {
-    color: #666;
-    float: left;
-    font-family: "Georgio";
-    font-size: 4em;
-    line-height: 4vh;
-    padding-right: 4px;
+  color: #666;
+  float: left;
+  font-family: "Georgio";
+  font-size: 4em;
+  line-height: 4vh;
+  padding-right: 4px;
 }
 ```
 
@@ -485,8 +483,8 @@ p:first-of-type::first-letter {
 
 ```css
 ::selection {
-    background-color: #ccc;
-    color: #666;
+  background-color: #ccc;
+  color: #666;
 }
 ```
 
@@ -536,10 +534,10 @@ scorll-behavior: smooth !important;
 
 ```css
 .img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: drop-shadow(30px 10px 4px #757575);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: drop-shadow(30px 10px 4px #757575);
 }
 ```
 
@@ -547,18 +545,18 @@ scorll-behavior: smooth !important;
 
 ```css
 .content-warpper {
-    width: 100%;
-    height: 260px;
+  width: 100%;
+  height: 260px;
 }
 /* 滚动条的样式 */
 .content-warpper::-webkit-scrollbar {
-    width: 2px;
-    background-color: #dbdbdb;
-    border-radius: 1px;
+  width: 2px;
+  background-color: #dbdbdb;
+  border-radius: 1px;
 }
 /* 滚动条的样式 */
 .content-warpper::-webkit-scrollbar:active {
-    background-color: #616161;
+  background-color: #616161;
 }
 /* 滚动条里面的小方块 */
 .content-warpper::-webkit-scrollbar-thumb {
@@ -575,7 +573,7 @@ scorll-behavior: smooth !important;
 
 ```CSS
 .content-header h2 {
-    user-select: none;
+  user-select: none;
 }
 ```
 
@@ -821,13 +819,13 @@ content-visibility属性有三个可选值:
 
 ```css
 input[type="number"] {
-    appearance: textfield;
-    -moz-appearance: textfield;
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 ```
 
