@@ -949,6 +949,16 @@ function updateFrame() {
 updateFrame()
 ```
 
+### JavaScript的new Function
+
+```js
+const arr = ['a', 'b', 'return a + b'];
+let sum = new Function(...arr);
+sum(1, 2); // 3
+```
+
+**注意：** 最后一个参数必须是函数体，其余参数作为传递给函数体的参数。
+
 ### 触底加载更多原理
 
 ```js
