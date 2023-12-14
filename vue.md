@@ -1210,6 +1210,28 @@ nextTick: `在下次 DOM 更新循环结束之后执行延迟回调`。在修改
 
 setTimeout：只是延迟执行，在延迟执行的方法里，DOM有可能会更新也有可能没有更新。常规做法就是延迟500ms或者1s
 
+### 自定义nextTick
+
+```js
+// 自定义的 $nextTick 方法
+Vue.prototype.$myNextTick = function () {
+  return new Promise((resolve) => {
+    if (typeof MutationObserver !== "undefined") {
+      // 使用 MutationObserver 监听 DOM 变化
+      let observer = new MutationObserver(resolve);
+      let textNode = document.createTextNode("1");
+      observer.observe(textNode, {
+        characterData: true,
+      });
+      textNode.textContent = "2";
+    } else {
+      // fallback 方案，使用 setTimeout 模拟异步
+      setTimeout(resolve, 0);
+    }
+  });
+};
+```
+
 ## 自定义hook
 
 ### 监测页面触底
