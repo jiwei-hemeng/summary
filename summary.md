@@ -982,7 +982,7 @@ window.addEventListener("scroll", scrollBotton);
 > [参考地址](https://javascript.ruanyifeng.com/dom/mutationobserver.html) 
 
 MutationObserver用来监视 DOM 变动。DOM 的任何变动，比如节点的增减、属性的变动、文本内容的变动都会触发MutationObserver事件。
-但是，它与事件有一个本质不同：事件是同步触发，也就是说，DOM 的变动立刻会触发相应的事件；Mutation Observer 则是异步触发，DOM 的变动并不会马上触发，而是要等到当前所有 DOM 操作都结束才触发。
+但是，它与事件有一个本质不同：事件是同步触发，也就是说，DOM 的变动立刻会触发相应的事件；Mutation Observer 则是**异步**触发，DOM 的变动并不会马上触发，而是要等到当前所有 DOM 操作都结束才触发。
 Mutation Observer 有以下特点：
 
 + 它等待所有脚本任务完成后，才会运行（即异步触发方式）。
