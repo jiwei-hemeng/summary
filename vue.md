@@ -1118,7 +1118,7 @@ const newVNodeMap = {
 
 在找节点时，**如果旧节点在新列表中没有的话，直接删除就好**。除此之外，我们还需要一个数量表示记录我们已经`patch`过的节点，如果数量已经与**新列表**剩余的节点数量一样，那么剩下的`旧节点`我们就直接删除了就可以了。
 
-![第二步](D:\summary\assets\images\2d1a915fe3d252d436dddb74e9b09845.webp)
+![第二步](./assets/images/2d1a915fe3d252d436dddb74e9b09845.webp)
 
 ```js
 function vue3Diff(prevChildren, nextChildren, parent) {
