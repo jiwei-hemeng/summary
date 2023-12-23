@@ -79,6 +79,8 @@ result: start end promise1 timer1 promise2 timer2
 
 **基本原则：**
 
+![evenLoop](./assets/images/evenLoop.png)
+
 + 代码按调用顺序执行
 + 先执行同步代码，再执行异步代码
 + 异步代码中微任务优先于宏任务
