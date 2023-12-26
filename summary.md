@@ -444,7 +444,7 @@ function a2(a = 1, b, c){}; // result: 0
 
 **递归的方法实现**
 
-[lodash深拷贝cloneDeep函数](https://www.lodashjs.com/docs/lodash.cloneDeep#_clonedeepvalue)
+[lodash深拷贝cloneDeep函数](https://www.lodashjs.com/docs/lodash.cloneDeep#_clonedeepvalue) 、[深入剖析JavaScript中深浅拷贝](https://baijiahao.baidu.com/s?id=1765652696079292086&wfr=spider&for=pc)
 
 ```js
 function deepCopy(target) {
