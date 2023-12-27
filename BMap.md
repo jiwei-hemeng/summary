@@ -367,3 +367,31 @@ window.addEventListener("resize", () => {
 </script>
 ```
 
+## 使用 Canvas 或者 SVG 渲染
+
+如果是用如下的方式完整引入`echarts`，代码中已经包含了 SVG 渲染器和 Canvas 渲染器
+
+```js
+import * as echarts from 'echarts';
+```
+
+如果你是按照 [在项目中引入 Apache ECharts](https://echarts.apache.org/handbook/zh/basics/import) 一文中的介绍使用按需引入，则需要手动引入需要的渲染器
+
+```js
+import * as echarts from 'echarts/core';
+// 可以根据需要选用只用到的渲染器
+import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
+echarts.use([SVGRenderer, CanvasRenderer]);
+```
+
+然后，我们就可以在代码中，初始化图表实例时，[传入参数](https://echarts.apache.org/api.html#echarts.init) 选择渲染器类型：
+
+```js
+// 使用 Canvas 渲染器（默认）
+const chart = echarts.init(containerDom, null, { renderer: 'canvas' });
+// 等价于：
+const chart = echarts.init(containerDom);
+// 使用 SVG 渲染器
+const chart = echarts.init(containerDom, null, { renderer: 'svg' });
+```
+
