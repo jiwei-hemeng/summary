@@ -95,6 +95,11 @@ drop table if exists company;
 # insert into <表名> [(字段名1)[,...字段名n])] value (值1）[,(值n)];
 insert into student (id,name,age) value (1,'张三',13),(3, "王五", 28);
 insert into student set id=2,name="李四",age=100;
+# 有的话替换没有就新增
+replace INTO `com_cl` (`cl_type_code`, `cl_type_name`, `cl_code`, `cl_name`, `cl_short_name`, `cl_name_en`, `module_code`, `module_name`, `seq_no`, `enable_flag`) 
+VALUES 
+('NCCtumourChannelType', 'NCC 肿瘤-患者类型', 'A', '住院', '住院', '住院', 'tumor', '肿瘤监测', 1, 1),
+('NCCtumourChannelType', 'NCC 肿瘤-患者类型', 'O', '门诊', '门诊', '门诊', 'tumor', '肿瘤监测', 2, 1);
 ```
 
 查询数据表中的数据
