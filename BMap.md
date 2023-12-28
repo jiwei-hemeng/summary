@@ -280,6 +280,10 @@ window.addEventListener("resize", () => {
         },
       },
     },
+    emphasis: {
+      // 获得焦点时高亮
+      focus: "series",
+    },
     legend: { // 图例组件
       show: true,
       icon: "circle",
