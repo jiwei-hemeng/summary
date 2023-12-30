@@ -248,3 +248,75 @@ self.addEventListener('message', function (e) {
 self.close();
 ```
 
+## 常见的异步方案
+
+### 回调函数（Callback Functions）
+
+最初的异步编程模型通常依赖于回调函数。当异步操作完成时，将调用一个函数以处理结果。 
+
+```js
+const fs = require('fs');
+fs.readFile('example.txt', 'utf8', (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log(data);
+});
+```
+
+ ### 事件（Events）
+
+ 在某些框架和库中，如Node.js的事件发射器（EventEmitter），异步编程可以通过监听和触发事件来实现。 
+
+```js
+const EventEmitter = require('events');
+class MyEmitter extends EventEmitter {}
+const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {
+  console.log('an event occurred!');
+});
+myEmitter.emit('event');
+```
+
+ ### Promise对象
+
+ ES6 引入了Promise作为异步编程的一种解决方案。Promise代表一个尚未完成，但未来某一时刻可能会完成的操作。它允许你将回调链式调用，从而解决了"回调地狱"的问题。
+
+ ```js
+fetch('https://api.example.com/data')
+   .then(response => response.json())
+   .then(data => console.log(data))
+   .catch(error => console.error('Error:', error));
+ ```
+
+###  **Async/Await** 
+
+ Async/Await是建立在Promise之上的高级语法，可以让异步代码以同步的方式书写。Async函数会隐式返回一个Promise，而await关键字可以暂停async函数的执行，等待Promise解决。 
+
+```js
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+fetchData();
+```
+
+###  **生成器（Generators）和协程（Coroutines）** 
+
+ 生成器函数可以通过`yield`关键字暂停执行，并通过`.next()`方法恢复执行。结合`yield`，可以使用库（如co）进行异步控制流管理。 
+
+```js
+function* generatorExample() {
+  const data = yield fetch('https://api.example.com/data');
+  console.log(data);
+}
+const gen = generatorExample();
+gen.next(); // 需要适当的处理响应和继续生成器函数的执行
+```
+
