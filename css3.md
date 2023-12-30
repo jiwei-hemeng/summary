@@ -1653,7 +1653,21 @@ a[target="_blank"] {
 + 类、属性、伪类选择器(Specificity of class， attributes and pseudo-classes selectors)：每个类、属性或伪类选择器对应的权重值为10。
 + 标签、伪元素选择器(Specificity of type and pseudo-elements selectors)：每个标签或伪元素选择器对应的权重值为1。
 
+## iconFont symbol 的使用方式
 
+```html
+<script src="https://at.alicdn.com/t/c/font_3951262_kngq53kqvhf.js"></script>
+<style>
+  #icon-email path {
+    /* 设置颜色 */
+    fill: #ff0000;
+  }
+</style>
+<!-- 设置字体大小 -->
+<svg class="icon" aria-hidden="true" width="1rem" height="1rem">
+  <use xlink:href="#icon-email"></use>
+</svg>
+```
 
 
 
