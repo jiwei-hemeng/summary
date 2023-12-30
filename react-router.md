@@ -1,16 +1,16 @@
-## react-router
+# react-router
 
 [react router v6 中文文档](http://www.reactrouter.cn/docs/upgrading/)
 
-### 基本使用
+## 基本使用
 
-**安装**
+### 安装
 
 ```shell
 yarn add react-router-dom -S
 ```
 
-**定义路由表**
+### 定义路由表
 
 ```js
 import { lazy } from "react";
@@ -33,7 +33,7 @@ export const router = [
 ];
 ```
 
-**使用**
+### 使用
 
 ```js
 // @ts-nocheck
@@ -85,15 +85,18 @@ function App({ token }) {
 export default App;
 ```
 
-### 编程式导航
+## 编程式导航
 
 ```js
 import { useNavigate } from "react-router-dom";
 const navigate = useNavigate();
+// 传递search参数
 navigate("/getUser?id=666")
+// 传递state参数
+navigate('/Detail/Shop', { state: {name:'tom',age:"20"} })
 ```
 
-### 获取query 参数
+## 获取query 参数
 
 如，页面`/#/login?url=/invoices&tt=bb&aa=ii`
 
@@ -105,7 +108,7 @@ for (let key of searchParams.keys()) {
 }
 ```
 
-### 根据接口返回的路由表信息动态生成路由
+## 根据接口返回的路由表信息动态生成路由
 
 `router/index.js` 中
 
@@ -173,3 +176,98 @@ function App() {
 }
 export default App;
 ```
+
+## useRoutes() 介绍
+
+### 原来写的路由管理如下
+
+```html
+<Routes>
+  <Route path='/about' element={<About />} />
+  <Route path='/home' element={<Home />} />
+  <Route path='/' element={<Navigate to='/about' />} />
+</Routes>
+```
+
+ ### 使用路由表 `useRoutes()` 后 
+
+**routes.js**
+
+```js
+// routes.js
+import React from "react";
+import { Navigate } from 'react-router-dom'
+const Home = React.lazy(()=> import('@/pages/home/index.jsx'));
+const News = React.lazy(()=> import('@/pages/home/news.jsx'));
+const Message = React.lazy(()=> import('@/pages/home/message.jsx'))
+const About = React.lazy(()=> import('@/pages/About'));
+const routes = [{
+  path: '/about',
+  element: <About />
+}, {
+  path: '/home',
+  element: <Home />,
+  children: [{
+    path: 'news',
+    element: <News />
+  }, {
+    path: 'message',
+    element: <Message />
+  }]
+}, {
+  path: '/',
+  element: <Navigate to='/about' />
+}];
+export default routes;
+```
+
+**App.js**
+
+```js
+import React from 'react'
+import { NavLink, useRoutes } from 'react-router-dom'
+import routes from './routes'
+export default function App() {
+  const elements = useRoutes(routes)
+  return (
+    <div className="row">
+    	<div className="col-xs-2 col-xs-offset-2">
+    		<NavLink to="/about">About</NavLink>
+				<NavLink to="/home">Home</NavLink>
+			</div>
+			<div className="col-xs-6">
+  		  {elements}
+			</div>
+		</div>
+  )
+}
+```
+
+**Home.jsx**
+
+```jsx
+import React from 'react'
+import { NavLink, Outlet } from 'react-router-dom'
+export default function Home() {
+  return (
+    <>
+    	<h3>我是Home的内容</h3>
+    	<div>
+      	<ul class="nav nav-tabs">
+        	<li>
+          	<NavLink className='list-group-item' to="/home/news">News</NavLink>
+        	</li>
+        	<li>
+            <NavLink className='list-group-item' to="./message">Message</NavLink>
+          </li>
+          <li>
+            <NavLink className='list-group-item' to="other">Other</NavLink>
+        	</li>
+      	</ul>
+        <Outlet />
+    	</div>
+    </>
+  )
+}
+```
+
