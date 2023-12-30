@@ -1,5 +1,7 @@
 ## react-router
 
+[react router v6 中文文档](http://www.reactrouter.cn/docs/upgrading/)
+
 ### 基本使用
 
 **安装**
@@ -11,7 +13,6 @@ yarn add react-router-dom -S
 **定义路由表**
 
 ```js
-// @ts-nocheck
 import { lazy } from "react";
 export const router = [
   {
