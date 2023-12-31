@@ -1658,14 +1658,27 @@ a[target="_blank"] {
 ```html
 <script src="https://at.alicdn.com/t/c/font_3951262_kngq53kqvhf.js"></script>
 <style>
-  #icon-email path {
-    /* 设置颜色 */
-    fill: #ff0000;
+  /* 设置颜色 */
+  svg:has(symbol) > path {
+    fill: var(--icon-color, #000);
+  }
+  /* 设置图标大小 */
+  .icon {
+    width: var(--icon-size, 14px);
+    height: var(--icon-size, 14px);
   }
 </style>
-<!-- 设置字体大小 -->
-<svg class="icon" aria-hidden="true" width="1rem" height="1rem">
+<svg class="icon" aria-hidden="true" style="--icon-color: #ff0000; height: 14px; width: 14px;">
   <use xlink:href="#icon-email"></use>
+</svg>
+<svg class="icon" aria-hidden="true" style="--icon-color: #00ff00; height: 14px; width: 14px;">
+  <use xlink:href="#icon-email"></use>
+</svg>
+<svg class="icon" aria-hidden="true" style="--icon-color: #ffff00; height: 14px; width: 14px;">
+  <use xlink:href="#icon-moblie"></use>
+</svg>
+<svg class="icon" aria-hidden="true" style="--icon-color: #0000ff; height: 14px; width: 14px;">
+  <use xlink:href="#icon-moblie"></use>
 </svg>
 ```
 
