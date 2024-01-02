@@ -162,6 +162,51 @@ winget install --id Git.Git -e --source winget
 git update-git-for-windows
 ```
 
+### git hook 使用
+
+**创建文件**
+
+```shell
+cd .git/hooks && touch pre-commit
+```
+
+**编辑文件内容**
+
+```js
+#!/usr/bin/env node
+const child_process = require("child_process");
+const fs = require("fs");
+const command = "git diff --cached --name-only --diff-filter=ACMR -- .";
+const trimReg = /(\ +)|([ ])|([\r\n]|(["]))/g;
+let commitFile = child_process.execSync(command).toString();
+commitFile = commitFile.split("\n");
+const fileList = [];
+for (let i = 0; i < commitFile.length; i++) {
+  const name = commitFile[i];
+  if (!name) break;
+  fileList.push(decodeURI(name.replace(trimReg, "")));
+}
+const editFiles = [];
+fileList.forEach((file) => {
+  const txt = fs.readFileSync(file, "utf8");
+  if (txt.includes("debugger")) {
+    editFiles.push(file);
+    fs.writeFileSync(file, txt.replace(/(debugger);?(\s*\n)*/g, ""));
+    const commandAdd = "git add " + file;
+    child_process.execSync(commandAdd).toString();
+  }
+});
+process.exit(0);
+```
+
+**赋予可执行权限**
+
+```shell
+chmod +x pre-commit
+```
+
+此时再次执行`git commit` 就能运行 `git hooks` 清除 提交文件的 `debugger` 了
+
 ### 在vscode中配置GIT终端
 
 ![1953033-20210812175755860-640591619](./assets/images/1953033-20210812175755860-640591619.png)
