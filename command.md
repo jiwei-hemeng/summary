@@ -299,6 +299,8 @@ sudo apt-get install -y nodejs
 ssh-keygen -t rsa
 # 配置ssh文件的权限
 chmod 600 authorized_keys
+# 添加可执行的权限
+chmod +x [文件名]
 # 删除非空目录
 rm -rf [目录名]
 # 将2.txt 文件的内容追加到1.txt 文件内容的后面
