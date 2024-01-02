@@ -207,6 +207,34 @@ chmod +x pre-commit
 
 此时再次执行`git commit` 就能运行 `git hooks` 清除 提交文件的 `debugger` 了
 
+**其他常见的hooks**
+
+commit-msg
+
+```js
+#!/usr/bin/env node
+const childProcess = require('child_process');
+const fs = require('fs');
+
+const email = childProcess.execSync('git config user.email').toString().trim();
+const msg = fs.readFileSync(process.argv[2], 'utf-8').trim(); // 索引 2 对应的 commit 消息文件
+const commitRE = /^(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|release|workflow)(\(.+\))?: .{1,100}/;
+
+if (!commitRE.test(msg)) {
+  console.log();
+  console.error('不合法的 commit 消息格式，请使用正确的提交格式：');
+  console.error('feat: add \'comments\' option');
+  console.error('fix: handle events on blur (close #28)');
+  console.error('详情请查看 git commit 提交规范：https://github.com/woai3c/Front-end-articles/blob/master/git%20commit%20style.md。');
+  process.exit(1);
+}
+
+if (!/@qq\.com$/.test(email)) {
+  console.error('此用户没有权限，具有权限的用户为： xxx@qq.com');
+  process.exit(1);
+}
+```
+
 ### 在vscode中配置GIT终端
 
 ![1953033-20210812175755860-640591619](./assets/images/1953033-20210812175755860-640591619.png)
