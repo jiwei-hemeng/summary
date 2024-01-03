@@ -184,7 +184,7 @@ const fileList = [];
 for (let i = 0; i < commitFile.length; i++) {
   const name = commitFile[i];
   if (!name) break;
-  fileList.push(decodeURI(name.replace(trimReg, "")));
+  fileList.push(decodeURIComponent(name.replace(trimReg, "")));
 }
 const editFiles = [];
 fileList.forEach((file) => {
