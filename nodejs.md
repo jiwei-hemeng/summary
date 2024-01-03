@@ -939,3 +939,18 @@ router.get("/api/login", async (req, res) => {
 export default router;
 ```
 
+## child_process
+
+child_process是NodeJs的重要模块。帮助我们创建多进程任务，更好的利用了计算机的多核性能。
+
+当然也支持线程间的通信。
+
+### 基本使用
+
+```js
+const child_process = require("child_process");
+const command = "git diff --cached --name-only --diff-filter=ACMR -- .";
+let commitFile = child_process.execSync(command).toString();
+console.log("commitFile", commitFile);
+```
+
