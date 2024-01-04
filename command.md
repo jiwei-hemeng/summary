@@ -415,6 +415,10 @@ ln -s /usr/local/node/node-v18.12.0-linux-x64/bin/npm /usr/local/bin/npm
 df -h --total
 # lsof 命令用于查看端口占用情况
 lsof -i:3000
+# 将css.md 文件复制到 docs目录下
+cp css.md docs
+# 将assets 文件复制到 docs 目录下
+cp -r assets docs
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
