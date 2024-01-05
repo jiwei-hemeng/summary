@@ -303,6 +303,8 @@ msg /server:192.168.1.109 * "需要发送的消息"
 chkdsk d: /f
 # D盘下生成一个指向E盘文件夹system\systemconfig的软连接link文件夹
 mklink /j D:\systemconfig D:\system\systemconfig
+# PowerShell 终端中创建软连接
+New-Item -Path D:\App\client -ItemType SymbolicLink -Value D:\App\runarch\client
 # 清除日志垃圾
 %temp%
 # 删除恶意软件
@@ -321,6 +323,17 @@ setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
 setx Path "%PATH%;%JAVA_HOME%\bin";
 # 设置classpath命令
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%"; 
+```
+
+### PowerShell 中使用函数
+
+```powershell
+# 定义函数
+function make-link ($target, $link) {
+   New-Item -Path $link -ItemType SymbolicLink -Value $target
+}
+# 使用函数
+make-link D:\App\runarch\client D:\App\client
 ```
 
 ### npm 如何优雅的升级版本
