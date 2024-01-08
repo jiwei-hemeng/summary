@@ -163,8 +163,8 @@ socket.on("disconnect", function () {
 **nodeJS**
 
 ```js
-const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 3000 });
+import { WebSocketServer } from "ws";
+const wss = new WebSocketServer({ port: 3000 });
 wss.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     let msgData = JSON.parse(message);
