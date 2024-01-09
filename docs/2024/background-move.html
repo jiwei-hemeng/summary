@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>渐变背景动画</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      div {
+        width: 100vw;
+        height: 100vh;
+        margin: auto;
+        background: linear-gradient(30deg, #ffcc00, deeppink, #9c27b0);
+        animation: hueRotate 20s infinite alternate;
+      }
+
+      @keyframes hueRotate {
+        100% {
+          filter: hue-rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
