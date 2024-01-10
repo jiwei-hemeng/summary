@@ -21,11 +21,12 @@
         height: 200px;
         background: red;
       }
-      .fu-txt {
+      .fu-box::after {
+        content: "福";
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) rotate(180deg);
+        transform: translate(-50%, -50%) rotate(135deg);
         text-align: center;
         line-height: 200px;
         font-size: 130px;
@@ -35,6 +36,5 @@
   </head>
   <body>
     <div class="fu-box"></div>
-    <div class="fu-txt">福</div>
   </body>
 </html>
