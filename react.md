@@ -302,6 +302,14 @@ export default HouseItem
 <a className={[styles.alink, styles.delAlink].join(' ')} href="javascript:;">删除</a>
 ```
 
+在局部样式中保留原始类名
+
+```css
+:global(.antdr-btn) {
+  color: red;
+}
+```
+
 # 组件之间的数据通讯
 
 **父组件向子组件传值**
