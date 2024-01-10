@@ -7,27 +7,27 @@
     <title>在线拍照</title>
     <script>
       //访问用户媒体设备的兼容方法
-      let trackArr = []
+      let trackArr = [];
       function getUserMedia(constraints, success, error) {
         if (navigator.mediaDevices.getUserMedia) {
-          //最新的标准API
+          // 最新的标准API
           navigator.mediaDevices
             .getUserMedia(constraints)
             .then(success)
             .catch(error);
         } else if (navigator.webkitGetUserMedia) {
-          //webkit核心浏览器
+          // webkit核心浏览器
           navigator.webkitGetUserMedia(constraints, success, error);
         } else if (navigator.mozGetUserMedia) {
-          //firfox浏览器
+          // firfox浏览器
           navigator.mozGetUserMedia(constraints, success, error);
         } else if (navigator.getUserMedia) {
-          //旧版API
+          // 旧版API
           navigator.getUserMedia(constraints, success, error);
         }
       }
       function success(stream) {
-        //兼容webkit核心浏览器
+        // 兼容webkit核心浏览器
         let CompatibleURL = window.URL || window.webkitURL;
         trackArr = stream.getTracks();
         video.srcObject = stream;
@@ -74,10 +74,10 @@
       });
 
       document.querySelector("#close").addEventListener("click", () => {
-        trackArr.forEach(track => {
-          track.stop()
-        })
-      })
+        trackArr.forEach((track) => {
+          track.stop();
+        });
+      });
 
       document.getElementById("capture").addEventListener("click", function () {
         context.drawImage(video, 0, 0, 480, 320);
