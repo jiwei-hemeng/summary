@@ -206,10 +206,9 @@ const idCardRegex = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-
 ### 去除字符串首尾空格
 
 ```js
-let pathion = "  12  23  ";
-pathion = pathion.replace(/(^\s*)|(\s*$)/g, ""); // result: '12  23'
-// 或者可以使用
-pathion = pathion.trim(); // result: '12  23'
+String.prototype.trim = function () {
+  return this.replace(/(^\s+)|(\s+$)/g, "");
+};
 ```
 
 ### 获取路由参数
