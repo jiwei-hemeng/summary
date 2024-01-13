@@ -3,8 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>多行文本展开与收起</title>
     <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        /*   flex-direction: column; */
+        align-items: center;
+        background: #ffe8a3;
+        gap: 20px;
+      }
       .text-wrap {
         display: flex;
         position: relative;
@@ -18,7 +29,7 @@
       }
       .expand {
         font-size: 80%;
-        padding: 0.2em 0.5em;
+        padding: 0.1em 0.5em;
         background-color: #9747ff;
         color: #fff;
         border-radius: 4px;
@@ -33,15 +44,39 @@
         -webkit-line-clamp: 3;
         overflow: hidden;
       }
+      .text {
+        position: absolute;
+        inset: 8px 8px auto;
+      }
+      .text-size {
+        position: absolute;
+        inset: 0;
+        container-type: size;
+      }
+      @container (height <= 4.5em) {
+        .text-size .expand {
+          display: none;
+        }
+      }
+      .text::before {
+        content: attr(title);
+        opacity: 0;
+      }
       .text-content::before {
         content: "";
         float: right;
-        height: calc(100% - 24px);
+        height: calc(min(100%, 100cqh) - 1.4em);
       }
       .expand {
         float: right;
         clear: both;
         position: relative;
+      }
+      .text-flex {
+        display: flex;
+      }
+      .text-place {
+        visibility: hidden;
       }
       .text-wrap:has(:checked) .text-content {
         -webkit-line-clamp: 999;
@@ -53,11 +88,40 @@
   </head>
   <body>
     <div class="text-wrap">
-      <div class="text-content">
-        <label class="expand"><input type="checkbox" hidden /></label>
-        <span>
-          这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。
-        </span>
+      <div
+        class="text"
+        title="欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起"
+      >
+        <div class="text-size">
+          <div class="text-flex">
+            <div class="text-content">
+              <label class="expand"><input type="checkbox" hidden /></label>
+              欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-content text-place">
+        欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这次我们通过容器查询来实现多行文本展开收起
+      </div>
+    </div>
+
+    <div class="text-wrap">
+      <div
+        class="text"
+        title="欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。"
+      >
+        <div class="text-size">
+          <div class="text-flex">
+            <div class="text-content">
+              <label class="expand"><input type="checkbox" hidden /></label>
+              欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-content text-place">
+        欢迎关注前端侦探，这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。
       </div>
     </div>
   </body>
