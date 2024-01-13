@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .text-wrap {
+        display: flex;
+        position: relative;
+        width: 300px;
+        padding: 8px;
+        outline: 1px dashed #9747ff;
+        border-radius: 4px;
+        line-height: 1.5;
+        text-align: justify;
+        font-family: cursive;
+      }
+      .expand {
+        font-size: 80%;
+        padding: 0.2em 0.5em;
+        background-color: #9747ff;
+        color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .expand::after {
+        content: "展开";
+      }
+      .text-content {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+      }
+      .text-content::before {
+        content: "";
+        float: right;
+        height: calc(100% - 24px);
+      }
+      .expand {
+        float: right;
+        clear: both;
+        position: relative;
+      }
+      .text-wrap:has(:checked) .text-content {
+        -webkit-line-clamp: 999;
+      }
+      .text-wrap:has(:checked) .expand::after {
+        content: "收起";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="text-wrap">
+      <div class="text-content">
+        <label class="expand"><input type="checkbox" hidden /></label>
+        <span>
+          这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。这里有一些有趣的、你可能不知道的HTML、CSS、JS小技巧技巧。
+        </span>
+      </div>
+    </div>
+  </body>
+</html>
