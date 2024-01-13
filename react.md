@@ -1104,3 +1104,32 @@ console.log(this.state.message) // 你好啊 这里获取就是同步的
 # 高阶函数的缺点是啥
 
 需要对原组件进行包裹,如果大量使用 HOC,将会产生非常多的嵌套,会让调试变得困难;而且 HOC 可以劫持 pros,在不遵守约定的情况下可能会造成 props 的冲突。
+
+# 图片懒加载组件
+
+```jsx
+export default function LazyLoad(props) {
+  const {src = '', ...other} = props
+  const [URL, setURL] = useState('')
+  const img = useRef(null)
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].intersectionRatio > 0) {
+        setURL(src)
+        img.current && observer.unobserve(img.current)
+      }
+    }, {})   
+    if (img.current) {
+      observer.observe(img.current)
+    }
+    return () => {
+      // 停止监听目标元素
+      observer.unobserve(img.current)
+    }
+  }, [])
+  return (
+    <img ref={img} src={URL} {...other} />
+  )
+}
+```
+
