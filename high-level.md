@@ -320,3 +320,12 @@ const gen = generatorExample();
 gen.next(); // 需要适当的处理响应和继续生成器函数的执行
 ```
 
+## 浏览器一帧都会干些什么？
+
++ 接受输入事件
++ 执行事件回调
++ 开始一帧
++ 执行 RAF (RequestAnimationFrame)
++ 页面布局，样式计算
++ 绘制渲染
++ 执行 RIC (RequestIdelCallback)
