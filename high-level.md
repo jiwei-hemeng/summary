@@ -374,4 +374,17 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
   }
   ```
 
-  
+## createDocumentFragment
+
+每次JavaScript对DOM的操作都会改变当前页面的呈现，**并重新刷新整个页面，从而消耗了大量的时间**。而createDocumentFragment()的**作用**，就是可以创建一个文档碎片，把所有的新节点附加其上，然后把文档碎片的内容一次性添加到document中。这样的好处是**只会发生一次回流**。
+
+```js
+const frag = document.createDocumentFragment();
+for (let i = 0; i < 1000; i++) {
+  const el = document.createElement('p');
+  el.innerHTML = i; 
+  frag.appendChild(el); // 首先将新节点先添加到DocumentFragment 节点
+}
+document.body.appendChild(frag);// 然后用appendChild插入文档中
+```
+
