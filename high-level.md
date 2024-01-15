@@ -323,9 +323,55 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
 ## 浏览器一帧都会干些什么？
 
 + 接受输入事件
+
 + 执行事件回调
+
 + 开始一帧
-+ 执行 RAF (RequestAnimationFrame)
+
++ 执行 RAF (RequestAnimationFrame) 通常用来 **执行高优先级任务**
+
+  ```js
+  //控制台输出1和0
+  const timer = requestAnimationFrame(function(){
+    console.log(0);
+  });
+  cancelAnimationFrame(timer);
+  ```
+
 + 页面布局，样式计算
+
 + 绘制渲染
-+ 执行 RIC (RequestIdelCallback)
+
++ 执行 RIC (RequestIdelCallback) 通常用来 **执行低优先级任务**
+
+  ```js
+  requestIdleCallback(myNonEssentialWork, { timeout: 2000 });
+  // 任务队列
+  const tasks = [
+   () => {
+     console.log("第一个任务");
+   },
+   () => {
+     console.log("第二个任务");
+   },
+   () => {
+     console.log("第三个任务");
+   },
+  ];
+  
+  function myNonEssentialWork (deadline) {
+   // 如果帧内有富余的时间，或者超时
+   while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && tasks.length > 0) {
+     work();
+   }
+   if (tasks.length > 0)
+     requestIdleCallback(myNonEssentialWork);
+   }
+  }
+  function work () {
+   tasks.shift()();
+   console.log('执行任务');
+  }
+  ```
+
+  
