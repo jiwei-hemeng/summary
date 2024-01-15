@@ -382,7 +382,7 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
 const frag = document.createDocumentFragment();
 for (let i = 0; i < 1000; i++) {
   const el = document.createElement('p');
-  el.innerHTML = i; 
+  el.innerHTML = i;
   frag.appendChild(el); // 首先将新节点先添加到DocumentFragment 节点
 }
 document.body.appendChild(frag);// 然后用appendChild插入文档中
