@@ -102,6 +102,34 @@ window.addEventListener("load", (e) => {
 });
 ```
 
+### 广播频道-BroadcastChannel
+
+> `BroadcastChannel`，就字面意思来言，叫做“广播频道”，官方文档说，该API是用于**同源**不同页面之间完成通信的功能。
+
+```js
+const bc = new BroadcastChannel("test-channel");
+```
+
+接收消息
+
+```js
+bc.onmessage = (e) => {
+  console.log("接受到的广播", e)
+}
+```
+
+发送消息
+
+```js
+bc.postMessage({timeStarp: Date.now(), meaage: "hahh"})
+```
+
+关闭消息
+
+```js
+bc.close();
+```
+
 ### hash模式与history模式
 
 **hash模式**
