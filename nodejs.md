@@ -130,8 +130,8 @@ router.post("/login", (req, res) => {
 **配置不需要token认证的接口**
 
 ```js
-const expressJWT = require("express-jwt");
-app.use(expressJWT({ secret: secretKey, algorithms: ["HS256"] }).unless({ path: [/^\/api\//] }));
+import { expressjwt } from "express-jwt";
+app.use(expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({ path: [/^\/api\//] }));
 ```
 
 **解密**
