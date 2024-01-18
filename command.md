@@ -84,6 +84,8 @@ git stash apply
 git stash pop
 # 删除最近的一次stash
 git stash drop
+# 通过传递标识符作为最后一个参数来选择你想要弹出或应用的储藏
+git stash pop stash@{1}
 ```
 
 ### 关于分支的命令
