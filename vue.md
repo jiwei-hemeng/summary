@@ -1428,35 +1428,41 @@ function reactive(target) {
 
 # CustomEvent自定义事件
 
- javascript与HTML之间的交互是通过事件来实现的。事件，就是文档或浏览器窗口发生的一些特定的交互瞬间。通常大家都会认为事件是在用户与浏览器进行交互的时候触发的，其实通过javascript我们可以在任何时刻触发特定的事件，并且这些事件与浏览器创建的事件是相同的。 
-
-###  构造方法 CustomerEvent() 创建一个新的 [`CustomEvent`](https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent) 对象。 
+**语法**
 
 ```js
-const ev = document.getElementById('ev');
-const event = new CustomEvent('eventName', {
-  detail: {
-    message: 'Hello World',
-    time: new Date(), 
-  },
-  bubbles: true,
-  cancelable: true,
-} );
-ev.addEventListener('eventName',function(e){
-  console.log(e);
-},);
-setTimeout(function () {
-  ev.dispatchEvent(event);// 给节点分派一个合成事件
-}, 1000);
+new CustomEvent(type)
+new CustomEvent(type, options)
 ```
 
-### 参数说明：
+**参数**
 
-+ typeArg是DOMString代表事件的名称。一个表示 event 名字的字符串
-+ customEventInit（可选）：一个字典类型参数，有如下字段
-  + detail, 可选的默认值是 null 的任意类型数据，是一个与 event 相关的值
-  + bubbles 一个布尔值，表示该事件能否冒泡。 来自 EventInit。注意：测试chrome默认为不冒泡。
-  + cancelable 一个布尔值，表示该事件是否可以取消。 来自 EventInit
++ type  提供事件名称的字符串。事件名称区分大小写。
++ options  一个对象，*除 [`Event()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Event/Event) 中定义的属性外*，该对象还可以具有以下属性：
+  + detail  与事件相关联的事件相关值。处理器可使用 [`CustomEvent.detail`](https://developer.mozilla.org/zh-CN/docs/Web/API/CustomEvent/detail) 属性获取该值。默认为 `null`。
+
+**示例**
+
+```js
+// 创建自定义事件
+const catFound = new CustomEvent("animalfound", {
+  detail: {
+    name: "猫",
+  },
+});
+const dogFound = new CustomEvent("animalfound", {
+  detail: {
+    name: "狗",
+  },
+});
+
+// 添加合适的事件监听器
+obj.addEventListener("animalfound", (e) => console.log(e.detail.name));
+
+// 触发事件
+obj.dispatchEvent(catFound);
+obj.dispatchEvent(dogFound);
+```
 
 
 
