@@ -977,3 +977,17 @@ for (const name of profileNames) {
 }
 ```
 
+## 获取命令行参数
+
+```js
+process.argv.slice(2).forEach((val, index) => {
+  console.log(`参数 ${index}: ${val}`);
+});
+```
+
+输入命令
+
+```shell
+node avg.js a b c
+# 输出接收到的参数  参数 0: a  参数 1: b    参数 2: c
+```
