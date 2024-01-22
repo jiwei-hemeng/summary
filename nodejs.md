@@ -444,6 +444,16 @@ const fs = require("fs");
 fs.watchFile(filename[, options], listener)
 ```
 
+**获取文件信息状态**
+
+```js
+//导入文件系统模块（fs）
+const fs = require('fs');
+let res = fs.statSync('./文件信息.txt')
+console.log(res.isFile()); // 判断是否是一个文件 res.isFile();   是返回true，不是返回false
+console.log(res.isDirectory()); //判断是否是一个文件夹 res.isDirectory();  是返回true，不是返回false
+```
+
 ## path 路径模块
 
 > path 模块是 Node.js 官方提供的、用来处理路径的模块。它提供了一系列的方法和属性，用来满足用户对路径的处理需求。
