@@ -468,6 +468,28 @@ function a2(a = 1, b, c){}; // result: 0
 
 > **总结：** 精度丢失可能出现在进制转换和对阶运算中
 
+解决方案 bigNumber
+
+```sh
+npm install bignumber.js --save
+```
+
+```js
+import BigNumber from "bignumber.js";
+// 加法
+console.log(new BigNumber(0.1).plus(0.2));
+// 减法
+console.log(new BigNumber(0.2).minus(0.05));
+// 乘法
+console.log(new BigNumber(3).times(0.8));
+// 除法
+console.log(new BigNumber(3).div(0.8));
+// 指数运算
+console.log(new BigNumber(0.3).pow(2));
+// 开平方
+console.log(new BigNumber(0.04).sqrt(2));
+```
+
 ### 实现函数能够深度克隆基本类型
 
 **递归的方法实现**
