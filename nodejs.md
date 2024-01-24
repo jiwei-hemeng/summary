@@ -454,6 +454,21 @@ console.log(res.isFile()); // 判断是否是一个文件 res.isFile();   是返
 console.log(res.isDirectory()); //判断是否是一个文件夹 res.isDirectory();  是返回true，不是返回false
 ```
 
+**查看当前目录下的所有文件及目录**
+
+```js
+import path from "path";
+import fs from "fs";
+for (let filename of fs.readdirSync(path.join())) {
+  let res = fs.statSync(filename);
+  if (res.isDirectory()) {
+    console.log(`${filename} 是一个目录`);
+  } else if (res.isFile()) {
+    console.log(`${filename} 是一个文件`);
+  }
+}
+```
+
 ## path 路径模块
 
 > path 模块是 Node.js 官方提供的、用来处理路径的模块。它提供了一系列的方法和属性，用来满足用户对路径的处理需求。
