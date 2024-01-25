@@ -16,7 +16,8 @@
         :host {
           display: flex;
           align-items: center;
-          width: 450px;
+          width: 100%;
+          max-width: 450px;
           height: 180px;
           background-color: #d4d4d4;
           border: 1px solid #d5d5d5;
@@ -72,7 +73,8 @@
       class UserCard extends HTMLElement {
         constructor() {
           super();
-
+          // const shadow = this.attachShadow({ mode: "closed" });
+          const shadow = this.attachShadow({ mode: "open" });
           const templateElem = document.getElementById("userCardTemplate");
           const content = templateElem.content.cloneNode(true);
           content
@@ -87,7 +89,7 @@
             .addEventListener("click", (e) => {
               console.log("11111", e);
             });
-          this.appendChild(content);
+          shadow.appendChild(content);
         }
       }
       window.customElements.define("user-card", UserCard);
