@@ -8,8 +8,8 @@
   <body>
     <user-card
       image="https://semantic-ui.com/images/avatar2/large/kristy.png"
-      name="User Name"
-      email="yourmail@some-email.com"
+      name="纪伟"
+      email="jiwei7065@sina.com"
     />
     <template id="userCardTemplate">
       <style>
@@ -66,7 +66,7 @@
       <div class="container">
         <p class="name"></p>
         <p class="email"></p>
-        <button class="button">Follow John</button>
+        <button class="button">联系我</button>
       </div>
     </template>
     <script>
@@ -85,7 +85,7 @@
           content.querySelector(".container>.email").innerText =
             this.getAttribute("email");
           content
-            .querySelector(".container>.button")
+            .querySelector(".container > .button")
             .addEventListener("click", (e) => {
               console.log("11111", e);
             });
