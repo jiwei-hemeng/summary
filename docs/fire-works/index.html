@@ -31,6 +31,7 @@
       src="./music/test.mp3"
       controls
       autoplay
+      loop
       style="display: none"
     ></audio>
     <script src="./js/jQuery.js" type="text/javascript"></script>
@@ -308,36 +309,24 @@
       frame();
 
       window.onload = function () {
-        // setInterval("toggleSound()",100);
         // var musicBotton = document.getElementById("playButton");
-
         // 添加用户交互的触发机制
-        document.addEventListener(
-          "keydown",
-          function (event) {
-            if (event.key === "Enter") {
-              const music = document.getElementById("myAudio"); //获取ID
-              if (music.paused) {
-                music.paused = false;
-                music.play();
-              }
-            }
-          },
-          {
-            once: true,
-          }
-        );
+        // document.addEventListener(
+        //   "keydown",
+        //   function (event) {
+        //     if (event.key === "Enter") {
+        //       const music = document.getElementById("myAudio"); //获取ID
+        //       if (music.paused) {
+        //         music.paused = false;
+        //         music.play();
+        //       }
+        //     }
+        //   },
+        //   {
+        //     once: true,
+        //   }
+        // );
       };
-
-      function toggleSound() {
-        var music = document.getElementById("myAudio"); //获取ID
-
-        if (music.paused) {
-          //判读是否播放
-          music.paused = false;
-          music.play(); //没有就播放
-        }
-      }
     </script>
     <script>
       var S = {
@@ -409,6 +398,7 @@
           drawCircle: function (p, c) {
             context.fillStyle = c.render();
             context.beginPath();
+            // 文字圈圈的大小
             context.arc(p.x, p.y, p.z, 0, 2 * Math.PI, true);
             context.closePath();
             context.fill();
@@ -686,7 +676,7 @@
         this.e = 0.07;
         this.s = true;
 
-        this.c = new S.Color(255, 255, 255, this.p.a);
+        this.c = new S.Color(0, 255, 255, this.p.a);
 
         this.t = this.clone();
         this.q = [];
@@ -787,6 +777,7 @@
       };
 
       S.ShapeBuilder = (function () {
+        // 圈圈的数量
         var gap = 13,
           shapeCanvas = document.createElement("canvas"),
           shapeContext = shapeCanvas.getContext("2d"),

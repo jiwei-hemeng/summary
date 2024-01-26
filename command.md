@@ -381,6 +381,22 @@ scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
 scp -r -C -P 22 root@192.168.5.128:/home/root/path D:/path
 ```
 
+使用ssh config配置文件来管理ssh连接
+
+```
+# Private 192.168.2.125
+Host iPhone
+HostName  192.168.2.125
+User root 
+IdentityFile ~/.ssh/id_rsa_Theos125
+
+# Private gitlab.v6h5.
+Host gitlab.v6h5.cn
+HostName  gitlab.v6h5.
+User git
+IdentityFile ~/.ssh/id_rsa_qinbaowan
+```
+
 ### ubantu 的相关命令
 
 ```shell
