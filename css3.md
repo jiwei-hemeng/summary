@@ -544,28 +544,27 @@ scorll-behavior: smooth !important;
 ## 自定义滚动条
 
 ```css
-.content-warpper {
-  width: 100%;
-  height: 260px;
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-/* 滚动条的样式 */
-.content-warpper::-webkit-scrollbar {
-  width: 2px;
-  background-color: #dbdbdb;
-  border-radius: 1px;
+/* 当同时含有垂直和水平方向的滚动条时它们的交叉部分。一般是元素的右下角 */
+::-webkit-scrollbar-corner {
+  background: #c0c0c0;
 }
-/* 滚动条的样式 */
-.content-warpper::-webkit-scrollbar:active {
-  background-color: #616161;
+/* 滚动条上的滚动滑块 */
+::-webkit-scrollbar-thumb {
+  background: #00000033;
+  border-radius: 4px;
 }
-/* 滚动条里面的小方块 */
-.content-warpper::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-image: linear-gradient(45deg, #ffbd61 25%,#ffbd61 50%, #ff8800 75%, #ff8800 100%);
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: #f8f9fa;
 }
-/* 滚动条里面的轨道 */
-.content-warpper::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rbga(0,0,0, 0.5);
+/* 滚动条没有滑块的轨道部分 */
+::-webkit-scrollbar-track-piece {
+  background: #f8f9fa;
 }
 ```
 
