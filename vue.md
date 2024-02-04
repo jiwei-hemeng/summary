@@ -1464,5 +1464,70 @@ obj.dispatchEvent(catFound);
 obj.dispatchEvent(dogFound);
 ```
 
+# Vue3批量异步更新是如何实现的
 
+**源码实现**
+
+```js
+// 增加options参数
+const effect = function (fn, options = {}) {
+  const effectFn = () => {
+  }
+  effectFn.options = options
+}
+function trigger(target, key) {
+  effectsToRun.forEach((effectFn) => {
+    // 当指定了scheduler时，将执行scheduler而不是注册的副作用函数effectFn
+    if (effectFn.options.scheduler) {
+      effectFn.options.scheduler(effectFn)
+    } else {
+      effectFn()
+    }
+  })
+}
+```
+
+**实现可调度的特性**
+
+```js
+const state = reactive({
+  num: 1
+})
+
+const jobQueue = new Set()
+const p = Promise.resolve()
+let isFlushing = false
+
+const flushJob = () => {
+  if (isFlushing) {
+    return
+  }
+
+  isFlushing = true
+  // 微任务
+  p.then(() => {
+    jobQueue.forEach((job) => job())
+  }).finally(() => {
+    // 结束后充值设置为false
+    isFlushing = false
+  })
+}
+
+effect(() => {
+  console.log('num', state.num)
+}, {
+  scheduler (fn) {
+    // 每次数据发生变化都往队列中添加副作用函数
+    jobQueue.add(fn)
+    // 并尝试刷新job，但是一个微任务只会在事件循环中执行一次，所以哪怕num变化了100次，最后也只会执行一次副作用函数
+    flushJob()
+  }
+})
+
+let count = 100
+
+while (count--) {
+  state.num++
+}
+```
 
