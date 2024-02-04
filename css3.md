@@ -488,6 +488,17 @@ p:first-of-type::first-letter {
 }
 ```
 
+### ::-webkit-input-placeholder 
+
+> 修改input placeholder 样式
+
+```css
+.input::-webkit-input-placeholder {
+  color: red;
+  font-size: 18px;
+}
+```
+
 # css 新特性
 
 > + CSS实现圆角（border-radius）,阴影（box-shadow）,边框图片border-image
@@ -528,6 +539,14 @@ aspect-ratio: auto;  // 保持原有的纵横比
 
 ```css
 scorll-behavior: smooth !important;
+```
+
+## input 光标的样式
+
+```css
+input {
+  caret-color: red;
+}
 ```
 
 ## 投影
