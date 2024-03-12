@@ -315,6 +315,10 @@ MRT
 dxdiag
 # 查看系统服务
 services.msc
+# 查找被占用的端口号的pid号
+netstat -ano | findstr 8001
+# 杀死进程
+taskkill /f /pid 9020
 ```
 
 ### cmd 安装jdk并配置环境变量
