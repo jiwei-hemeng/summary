@@ -104,7 +104,7 @@ window.addEventListener("load", (e) => {
 
 ### 广播频道-BroadcastChannel
 
-> `BroadcastChannel`，就字面意思来言，叫做“广播频道”，官方文档说，该API是用于**同源**不同页面之间完成通信的功能。
+> BroadcastChannel API提供了一种简单的方法来实现跨窗口、跨标签页和跨框架之间的通信，而无需使用WebSocket或SSE。它是一个非常便捷的工具，可以帮助我们将实时通信功能集成到我们的Web应用程序中
 
 ```js
 const bc = new BroadcastChannel("test-channel");
@@ -113,9 +113,9 @@ const bc = new BroadcastChannel("test-channel");
 接收消息
 
 ```js
-bc.onmessage = (e) => {
-  console.log("接受到的广播", e)
-}
+bc.addEventListener('message', e => { 
+  console.log('Received message:', e.data);
+});
 ```
 
 发送消息
