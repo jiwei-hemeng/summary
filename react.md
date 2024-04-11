@@ -1071,6 +1071,8 @@ setState一定是异步操作吗? 其实`在React 18之前`分成两种情况：
 
 情况一: 在组件生命周期或React的事件中，setState是**异步**；
 
+![setState执行流程](./assets/images/202201130831541.png)
+
 情况二: 在setTimeout或者原生dom事件中，setState是**同步**；
 
 `在React18之后`，默认所有的操作都被放到了批处理中（也就是默认所有操作都是异步处理的）
