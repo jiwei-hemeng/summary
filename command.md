@@ -454,6 +454,10 @@ lsof -i:3000
 cp css.md docs
 # 将assets 文件复制到 docs 目录下
 cp -r assets docs
+# 查看文件的最后400行
+tail -n 400 /d/App/1.sh
+# 实时查看文件的最后400行
+tail -f -n 400 /d/App/1.sh
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
