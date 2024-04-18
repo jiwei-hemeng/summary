@@ -399,3 +399,38 @@ const chart = echarts.init(containerDom);
 const chart = echarts.init(containerDom, null, { renderer: 'svg' });
 ```
 
+## 图表标域
+
+> 图表标域，常用于标记图表中某个范围的数据，例如标出某段时间投放了广告
+
+```js
+const option = {
+  xAxis: {
+    type: "category",
+    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  },
+  yAxis: {},
+  series: [
+    {
+      data: [420, 932, 901, 934, 1290, 1330, 1320],
+      type: "line",
+      markArea: {
+        show: true,
+        itemStyle: { color: "#a7e1c4" },
+        data: [
+          [
+            {
+              name: "参考范围（920~1300）",
+              yAxis: 920,
+            },
+            {
+              yAxis: 1300,
+            },
+          ],
+        ],
+      },
+    },
+  ],
+};
+```
+
