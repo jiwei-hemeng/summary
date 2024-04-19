@@ -100,6 +100,8 @@ replace INTO `com_cl` (`cl_type_code`, `cl_type_name`, `cl_code`, `cl_name`, `cl
 VALUES 
 ('NCCtumourChannelType', 'NCC 肿瘤-患者类型', 'A', '住院', '住院', '住院', 'tumor', '肿瘤监测', 1, 1),
 ('NCCtumourChannelType', 'NCC 肿瘤-患者类型', 'O', '门诊', '门诊', '门诊', 'tumor', '肿瘤监测', 2, 1);
+# 有的话忽略没有就新增
+insert ignore INTO `sys_resource` (`resource_code`, `resource_name`, `resource_path`, `resource_type`, `module_code`, `module_name`, `icon`, `privilege`, `parent_code`, `status`, `seq`, `remark`) VALUES ('SyndromeWarning', '症候群预警', '/SyndromeWarning', 30, NULL, NULL, '', 'SyndromeWarning', 'reportAnalysis', 10, 100000249, '');
 ```
 
 查询数据表中的数据
