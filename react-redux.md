@@ -1,6 +1,6 @@
 # react redux基础
 
-[redux中文网](https://www.redux.org.cn/) 
+[redux中文网](https://cn.react-redux.js.org/introduction/getting-started) 
 
 ## redux是一个用于js应用的状态管理容器
 
