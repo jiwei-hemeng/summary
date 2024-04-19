@@ -207,7 +207,7 @@ export default counterSlice.reducer;
 
 ```js
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import counterReducer from '@/features/counter/counterSlice';
 export default configureStore({
   reducer: {
     counter: counterReducer,
@@ -220,9 +220,7 @@ export default configureStore({
 ```jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { decrement, increment } from './counterSlice';
-import styles from './Counter.module.css';
-
+import { decrement, increment } from '@/features/counter/counterSlice';
 export function Counter() {
   const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
