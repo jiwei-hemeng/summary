@@ -139,3 +139,112 @@ export const CounterComponent = ({ value }) => {
 }
 ```
 
+# React Redux 8.x  的使用步骤
+
+## 安装 Redux Toolkit 和 React Redux
+
+```shell
+npm install @reduxjs/toolkit react-redux
+```
+
+## 创建 Redux Store
+
+创建一个命名为 `src/app/store.js` 的文件
+
+```js
+import { configureStore } from '@reduxjs/toolkit';
+export default configureStore({
+  reducer: {},
+});
+```
+
+## 为 React 提供 Redux Store
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import store from './app/store';
+import { Provider } from 'react-redux';
+// 从 React 18 开始
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+```
+
+## 创建 Redux State Slice
+
+添加一个名为 `src/features/counter/counterSlice.js` 的新文件。在该文件中，从 Redux Toolkit 导入 `createSlice` API。
+
+```js
+import { createSlice } from '@reduxjs/toolkit';
+export const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    value: 0,
+  },
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
+    },
+  },
+});
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+## 添加 Slice Reducers 到 Store
+
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from '../features/counter/counterSlice';
+export default configureStore({
+  reducer: {
+    counter: counterReducer,
+  },
+});
+```
+
+## 在 React 组件中使用 Redux State 和 Actions
+
+```jsx
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { decrement, increment } from './counterSlice';
+import styles from './Counter.module.css';
+
+export function Counter() {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <div>
+        <button
+          aria-label="Increment value"
+          onClick={() => dispatch(increment())}
+        >
+          Increment
+        </button>
+        <span>{count}</span>
+        <button
+          aria-label="Decrement value"
+          onClick={() => dispatch(decrement())}
+        >
+          Decrement
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
