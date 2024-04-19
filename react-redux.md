@@ -121,6 +121,21 @@ export const CounterComponent = () => {
 }
 ```
 
+## 全等比较和更新
+
+当函数组件渲染时，给定的 selector 函数将被调用，`useSelector()` hook 会返回其结果。(如果与前一次组件渲染对比，两次是相同的函数引用，hook 不会重新调用 selector，而是会返回缓存的结果)。
+
+然而，当 dispatch 一个 action 到 Redux store 时，只有 selector 的结果与上一次的结果不同时，`useSelector()` 才会强制重新渲染。默认的对比方式是严格的 `===` 引用比较。这与 `connect()` 不同，后者对 `mapState` 的调用结果进行浅层全等对比，以此决定是否需要重新渲染。这对你应该如何使用 `useSelector()` 有一些影响。
+
+使用 React-Redux 的 `shallowEqual` 函数作为 `useSelector()` 的 `equalityFn` 参数，比如：
+
+```js
+import { shallowEqual, useSelector } from 'react-redux'
+const selectedData = useSelector(selectorReturningObject, shallowEqual)
+```
+
+可选的比较函数也可以使用类似 Lodash 的 `_.isEqual()` 或 Immutable.js 的比较功能
+
 ## useDispatch()
 
 ```jsx
