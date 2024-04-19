@@ -474,6 +474,8 @@ git reset --soft HEAD~
 ```shell
 # 它依然会撤销一上次提交，但还会取消所有暂存。 于是，我们回滚到了所有 git add 和 git commit 的命令执行之前。
 git reset --mixed HEAD~
+# 相当于执行
+git reset HEAD~
 ```
 
 使工作目录看起来像索引
