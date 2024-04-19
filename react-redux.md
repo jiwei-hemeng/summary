@@ -1,6 +1,6 @@
 # react redux基础
 
-[redux中文网](https://cn.react-redux.js.org/introduction/getting-started) 
+[redux中文网](https://cn.react-redux.js.org/introduction/getting-started) 、[React Redux 快速入门](https://cn.react-redux.js.org/tutorials/quick-start)
 
 ## redux是一个用于js应用的状态管理容器
 
@@ -104,3 +104,38 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Total)
 ```
+
+# Hooks
+
+> [文档地址](https://cn.react-redux.js.org/api/hooks)
+
+## useSelector
+
+```js
+import React from 'react'
+import { useSelector } from 'react-redux'
+
+export const CounterComponent = () => {
+  const counter = useSelector((state) => state.counter)
+  return <div>{counter}</div>
+}
+```
+
+## useDispatch()
+
+```jsx
+import React from 'react'
+import { useDispatch } from 'react-redux'
+export const CounterComponent = ({ value }) => {
+  const dispatch = useDispatch()
+  return (
+    <div>
+      <span>{value}</span>
+      <button onClick={() => dispatch({ type: 'increment-counter' })}>
+        Increment counter
+      </button>
+    </div>
+  )
+}
+```
+
