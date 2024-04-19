@@ -50,8 +50,10 @@ git config --global user.name 'userName'
 git config --global user.email 'example@xx.com'
 # 设置log 的时间格式
 git config --global log.date format:'%Y-%m-%d %H:%M:%S'
-# 配置SSH
+# 基于RSA算法，生成密钥对命令如下：
 ssh-keygen -t rsa -C "你的邮箱地址"
+# 基于ED25519算法，生成密钥对命令如下：
+ssh-keygen -t ed25519 -C "your_email@example.com"
 # 查看你的 public key
 cat ~/.ssh/id_rsa.pub
 # 测试是否连接到github, 现在带上私钥
