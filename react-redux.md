@@ -154,6 +154,32 @@ export const CounterComponent = ({ value }) => {
 }
 ```
 
+当使用 `dispatch` 向子组件传递回调时，有时你可能想用 [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) 对其进行储存。*如果* 子组件试图使用 `React.memo()` 或类似的方法来优化渲染行为，这可以避免子组件由于回调引用变更而导致的不必要渲染。
+
+```js
+import React, { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
+
+export const CounterComponent = ({ value }) => {
+  const dispatch = useDispatch()
+  const incrementCounter = useCallback(
+    () => dispatch({ type: 'increment-counter' }),
+    [dispatch]
+  )
+
+  return (
+    <div>
+      <span>{value}</span>
+      <MyIncrementButton onIncrement={incrementCounter} />
+    </div>
+  )
+}
+
+export const MyIncrementButton = React.memo(({ onIncrement }) => (
+  <button onClick={onIncrement}>Increment counter</button>
+))
+```
+
 # React Redux 8.x  的使用步骤
 
 ## 安装 Redux Toolkit 和 React Redux
