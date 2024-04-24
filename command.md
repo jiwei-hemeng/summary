@@ -458,6 +458,8 @@ cp -r assets docs
 tail -n 400 /d/App/1.sh
 # 实时查看文件的最后400行
 tail -f -n 400 /d/App/1.sh
+# 通过文件名查找文件所在路径
+find /d/summary -name "exp.html"
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
