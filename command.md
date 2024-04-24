@@ -111,8 +111,6 @@ git merge dev
 git branch -D dev
 # 查看本地分支及追踪的分支
 git branch -vv
-# 设置追踪, 需要已有该远程分支
-git branch --set-upstream-to=origin/dev dev
 # 如果是第一次提交, 新建追踪可以使用
 git push -u origin dev
 # 删除追踪
