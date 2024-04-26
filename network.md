@@ -14,18 +14,19 @@ xhr.open('GET', 'http://www.liulongbin.top:3006/api/getbooks?id=3');
 // 3. 调用send方法，发送请求
 xhr.send();
 // 4. 设置onreadystatechange事件，事件内部使用responseText属性接受结果
-xhr.onreadystatechange = function () {
-    if (this.readyState === 4) {
-        var res = this.responseText; // 是JSON格式的结果
-        console.log(JSON.parse(res));
-    }
-}
+xhr.addEventListener("readystatechange", (e) => {
+  const {readyState, response} = e.target
+  if(readyState === 4) {
+    console.log(JSON.parse(response)) 
+  }
+})
 xhr.ontimeout = function(e) { ... };
 xhr.onerror = function(e) { ... };
 // 接口请求成功后触发的事件 等价于readyState === 4
-xhr.onLoad = function(e) {
-  console.log(this.reponse);
-}
+xhr.addEventListener("load", (e) => {
+  const response = e.target.response;
+  console.log(JSON.parse(response))
+})
 ```
 
 **POST 请求案例**
