@@ -1016,3 +1016,22 @@ process.argv.slice(2).forEach((val, index) => {
 node avg.js a b c
 # 输出接收到的参数  参数 0: a  参数 1: b    参数 2: c
 ```
+
+## 如何调试 Node.js 应用？
+
+当启动 Node.js 应用时附加 **--inspect** 选型，Node.js 将初始化一个**调试会话**。此时，可以使用调试客户端连接至该调试会话，以便对 Node.js 应用的执行过程进行控制。
+
+例如： 
+
+```shell
+# 正常启动
+node index.js
+# 调试启动
+node --inspect index.js
+```
+
+接下来打开浏览器地址栏输入
+
+```txt
+chrome://inspect
+```
