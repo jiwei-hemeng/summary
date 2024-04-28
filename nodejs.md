@@ -1026,8 +1026,10 @@ node avg.js a b c
 ```shell
 # 正常启动
 node index.js
+npx nodemon index.js
 # 调试启动
 node --inspect index.js
+npx nodemon --inspect index.js
 ```
 
 接下来打开浏览器地址栏输入
