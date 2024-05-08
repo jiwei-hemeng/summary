@@ -154,6 +154,10 @@ git config --global alias.lg "log --pretty='%C(red)%h%Creset%C(yellow)%d%Creset 
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # 使用别名
 git lg
+# 提交到本地仓库
+git config --global alias.cm "commit -m"
+# 使用别名
+git cm "xxxx"
 ```
 
 ### git 版本升级
