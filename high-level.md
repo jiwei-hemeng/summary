@@ -344,6 +344,8 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
 
 + 执行 RIC (RequestIdelCallback) 通常用来 **执行低优先级任务**
 
+  > 强烈不建议在此处进行dom操作。推荐的做法是在requestAnimationFrame里面做dom的修改，可以在requestIdleCallback里面构建Document Fragment，然后在下一帧的requestAnimationFrame里面应用Fragment。
+  
   ```js
   requestIdleCallback(myNonEssentialWork, { timeout: 2000 });
   // 任务队列
@@ -373,6 +375,7 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
    console.log('执行任务');
   }
   ```
+  
 
 ## createDocumentFragment
 
