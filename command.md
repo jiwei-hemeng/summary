@@ -324,6 +324,8 @@ services.msc
 netstat -ano | findstr 8001
 # 杀死进程
 taskkill /f /pid 9020
+# 查看全局安装的npm包
+npm list -g
 ```
 
 ### cmd 安装jdk并配置环境变量
