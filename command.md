@@ -477,6 +477,10 @@ find /d/summary -name "*.log"
 find /d/summary -size +1M
 # 在当前目录下查找最近7天内被修改过的文件
 find . -mtime -7
+# 当前目录下查找大小大于1MB并且小于10MB的文件
+find . -size +1M -size -10M
+# 当前目录下查找所有的包含csdn.net字样的文件，并输出文件名
+find . | xargs grep -ri "csdn.net" -l
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
