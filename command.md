@@ -463,9 +463,20 @@ cp -r assets docs
 # 查看文件的最后400行
 tail -n 400 /d/App/1.sh
 # 实时查看文件的最后400行
-tail -f -n 400 /d/App/1.sh
+tail -f /d/App/1.sh
+```
+
+### find 命令
+
+```shell
 # 通过文件名查找文件所在路径
 find /d/summary -name "exp.html"
+# 模糊匹配查找
+find /d/summary -name "*.log"
+# 查找指定目录/d/summary下大小大于1M的文件
+find /d/summary -size +1M
+# 在当前目录下查找最近7天内被修改过的文件
+find . -mtime -7
 ```
 
 ### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
