@@ -39,6 +39,8 @@ git push -f origin mian
 git show
 # 显示某一特定用户（例如，用户 Agil）在两个指定的日期之间的提交记录
 git log --oneline --since="2022-04-22" --until="2022-04-24" --author="Agil"
+# 查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
+git diff --staged
 ```
 
 ### **Git 配置命令**
@@ -483,9 +485,7 @@ find . -size +1M -size -10M
 find . | xargs grep -ri "csdn.net" -l
 ```
 
-### reset 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
-
-#### git reset 三棵树
+### git reset 三棵树
 
 移动 HEAD 指向的分支 （若指定了 --soft，则到此停止）；
 ```shell
@@ -507,7 +507,7 @@ git reset HEAD~
 git reset --hard HEAD~
 ```
 
-#### HEAD 说明：
+HEAD 说明：
 
 - HEAD 表示当前版本
 - HEAD^ 上一个版本
