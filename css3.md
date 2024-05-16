@@ -1652,6 +1652,11 @@ a[target="_blank"] {
 -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(250, 250, 250, 0.1)));
 ```
 
+## border-collapse
 
+> 为表格设置合并单元格边框
 
-​		
+```css	
+border-collapse: collapse;
+```
+
