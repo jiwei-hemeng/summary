@@ -829,6 +829,66 @@ export default Counter;
 
 `useReducer` 的优势在于它可以处理更复杂的状态逻辑，允许你根据不同的操作类型进行状态更新。这使得代码更具可维护性，尤其适用于处理多个相关状态之间的复杂交互。
 
+## useOptimistic 
+
+> 是一个 React Hook，它可以帮助你更乐观地更新用户界面。
+>
+> [官方文档](https://react.docschina.org/reference/react/useOptimistic)
+
+```jsx
+import { useOptimistic, useState, useRef } from "react";
+
+async function deliverMessage(message) {
+  await new Promise((res) => setTimeout(res, 1000));
+  return message;
+}
+
+function Thread({ messages, sendMessage }) {
+  const formRef = useRef();
+  async function formAction(formData) {
+    addOptimisticMessage(formData.get("message"));
+    formRef.current.reset();
+    await sendMessage(formData);
+  }
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (state, newMessage) => [
+      ...state,
+      {
+        text: newMessage,
+        sending: true
+      }
+    ]
+  );
+
+  return (
+    <>
+      {optimisticMessages.map((message, index) => (
+        <div key={index}>
+          {message.text}
+          {!!message.sending && <small>（发送中……）</small>}
+        </div>
+      ))}
+      <form action={formAction} ref={formRef}>
+        <input type="text" name="message" placeholder="你好！" />
+        <button type="submit">发送</button>
+      </form>
+    </>
+  );
+}
+
+export default function App() {
+  const [messages, setMessages] = useState([
+    { text: "你好，在这儿！", sending: false, key: 1 }
+  ]);
+  async function sendMessage(formData) {
+    const sentMessage = await deliverMessage(formData.get("message"));
+    setMessages((messages) => [...messages, { text: sentMessage, sending: false }]);
+  }
+  return <Thread messages={messages} sendMessage={sendMessage} />;
+}
+```
+
 ## 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
