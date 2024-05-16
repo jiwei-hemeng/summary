@@ -1638,6 +1638,14 @@ a[target="_blank"] {
 </svg>
 ```
 
+## css 实现倒影效果
+
+> 语法： [ above | below | right | left ]? <length>? <image>?
+
+```css
+-webkit-box-reflect: below 5px linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+```
+
 
 
 ​		
