@@ -1640,7 +1640,7 @@ a[target="_blank"] {
 
 ## css 实现倒影效果
 
-> 语法： [ above | below | right | left ]? <length>? <image>?
+> 语法： [ above | below | right | left ]? [offset]? [mask-box-image]?
 
 ```css
 -webkit-box-reflect: below 5px linear-gradient(transparent, rgba(0, 0, 0, 0.3));
