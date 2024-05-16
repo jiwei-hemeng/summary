@@ -843,12 +843,19 @@ async function deliverMessage(message) {
   return message;
 }
 
-function Thread({ messages, sendMessage }) {
+export default function App() {
+  const [messages, setMessages] = useState([
+    { text: "你好，在这儿！", sending: false, key: 1 },
+  ]);
   const formRef = useRef();
   async function formAction(formData) {
     addOptimisticMessage(formData.get("message"));
     formRef.current.reset();
-    await sendMessage(formData);
+    const sentMessage = await deliverMessage(formData.get("message"));
+    setMessages((messages) => [
+      ...messages,
+      { text: sentMessage, sending: false },
+    ]);
   }
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     messages,
@@ -856,8 +863,8 @@ function Thread({ messages, sendMessage }) {
       ...state,
       {
         text: newMessage,
-        sending: true
-      }
+        sending: true,
+      },
     ]
   );
 
@@ -875,17 +882,6 @@ function Thread({ messages, sendMessage }) {
       </form>
     </>
   );
-}
-
-export default function App() {
-  const [messages, setMessages] = useState([
-    { text: "你好，在这儿！", sending: false, key: 1 }
-  ]);
-  async function sendMessage(formData) {
-    const sentMessage = await deliverMessage(formData.get("message"));
-    setMessages((messages) => [...messages, { text: sentMessage, sending: false }]);
-  }
-  return <Thread messages={messages} sendMessage={sendMessage} />;
 }
 ```
 
