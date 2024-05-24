@@ -214,6 +214,14 @@ select * from t_students where id in(1,3,8);
 select * from t_students where id =1 or id =3 or id =8);
 ```
 
+FIND_IN_SET
+
+> 用来匹配briefDepts字段中包含0111
+
+```mysql
+select id, name, depts from t_users where FIND_IN_SET('0111', t_users.briefDepts);
+```
+
 **空判断**
 
 ```sql
