@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas Face Detection</title>
+  </head>
+  <body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <script>
+      // 获取视频和画布元素
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 启动视频捕获
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(function (stream) {
+          video.srcObject = stream;
+        })
+        .catch(function (err) {
+          console.error("An error occurred: " + err);
+        });
+
+      // 视频帧监听
+      video.addEventListener("play", () => {
+        const constraints = {
+          video: {
+            width: 640,
+            height: 480,
+            facingMode: "user",
+          },
+        };
+
+        window.setInterval(() => {
+          ctx.drawImage(video, 0, 0, 640, 480); // 绘制视频帧到Canvas
+
+          // 这里调用人脸检测API，使用canvas数据
+          detectFaces();
+        }, 1000 / 30); // 30 FPS
+      });
+
+      async function detectFaces() {
+        const imageData = canvas.toDataURL("image/png"); // 将Canvas转换为图像数据
+
+        // 使用人脸识别API服务
+        const response = await fetch("your-face-detection-api-endpoint", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image: imageData }),
+        });
+
+        const faces = await response.json();
+
+        // 绘制检测到的脸
+        faces.forEach((face) => {
+          ctx.beginPath();
+          ctx.rect(face.x, face.y, face.width, face.height);
+          ctx.strokeStyle = "red";
+          ctx.stroke();
+        });
+      }
+    </script>
+  </body>
+</html>
