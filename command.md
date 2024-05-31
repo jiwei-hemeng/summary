@@ -90,6 +90,8 @@ git stash pop
 git stash drop
 # 通过传递标识符作为最后一个参数来选择你想要弹出或应用的储藏
 git stash pop stash@{1}
+# 删除某个本地缓存
+git stash drop stash@{0}
 ```
 
 ### 关于分支的命令
