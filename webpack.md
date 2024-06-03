@@ -545,6 +545,31 @@ module.exports = {
 };
 ```
 
+### 配置项目中某个目录不进行打包
+
+安装
+
+```shell
+npm i  webpack copy-webpack-plugin --save-dev
+```
+
+配置
+
+```js
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+module.exports = {
+  plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static'),
+        to: 'static',
+        ignore: ['.*']
+      }
+    ])
+  ]  
+}
+```
+
 ## vite
 
 ### 使用vite 构建 react 项目
