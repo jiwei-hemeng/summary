@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>六一儿童节祝福</title>
+    <style>
+      body {
+        background-image: url("https://picsum.photos/1920/1080");
+        background-size: cover;
+        font-family: "微软雅黑", sans-serif;
+        overflow: hidden;
+      }
+
+      .title {
+        text-align: center;
+        color: #fff;
+        font-size: 48px;
+        margin-top: 200px;
+        text-shadow: 4px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .text {
+        text-align: center;
+        color: #fff;
+        font-size: 32px;
+        margin-top: 50px;
+        text-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .icon {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+      }
+
+      .icon i {
+        font-size: 100px;
+        margin: 0 20px;
+        color: #fff;
+      }
+
+      .button {
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      .button a {
+        display: inline-block;
+        background-color: #ff4081;
+        color: #fff;
+        font-size: 32px;
+        padding: 20px 50px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .button a:hover {
+        background-color: #ff6699;
+      }
+
+      /* 烟花特效 */
+      .firework {
+        width: 9px;
+        height: 9px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        position: absolute;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="title">六一儿童节快乐</div>
+    <div class="text" id="text"></div>
+    <div class="icon">
+      <i class="iconfont">&#xe63c;</i>
+      <i class="iconfont">&#xe63c;</i>
+      <i class="iconfont">&#xe63c;</i>
+    </div>
+    <div class="button"><a href="#" id="sendBtn">发送祝福</a></div>
+    <script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+    <script>
+      // 定义祝福语和烟花效果的函数
+      function sendBlessing() {
+        // 获取需要添加祝福语的DOM元素
+        var textEl = document.getElementById("text");
+
+        // 定义祝福语数组
+        var blessings = [
+          "愿你在六一儿童节里，玩得开心、跑得快乐、笑得灿烂！",
+          "祝愿我们的小朋友健康快乐，甜甜蜜蜜每一天！",
+          "长大后的你，会找不到自己玩的快乐；请不要忘记，小时候我们的快乐是那么简单。",
+        ];
+
+        // 从祝福语数组中随机选择一个
+        var blessing = blessings[Math.floor(Math.random() * blessings.length)];
+
+        // 设置祝福语
+        textEl.textContent = blessing;
+
+        // 添加烟花特效
+        for (var i = 0; i < 30; i++) {
+          var firework = document.createElement("div");
+          firework.className = "firework";
+          document.body.appendChild(firework);
+
+          // 设置烟花初始位置
+          firework.style.left = Math.random() * window.innerWidth + "px";
+          firework.style.top = window.innerHeight + "px";
+
+          // 定义动画效果
+          var animation = anime({
+            targets: firework,
+            top: Math.random() * window.innerHeight - 100 + "px",
+            left: Math.random() * window.innerWidth - 100 + "px",
+            opacity: 0,
+            easing: "linear",
+            duration: 1500,
+          });
+
+          // 删除烟花元素
+          animation.finished.then(function () {
+            // 确认烟花元素是否是body的子元素
+            if (document.body.contains(firework)) {
+              document.body.removeChild(firework);
+            }
+          });
+        }
+      }
+
+      // 为发送祝福按钮添加事件处理函数
+      var sendBtn = document.getElementById("sendBtn");
+      sendBtn.addEventListener("click", function () {
+        sendBlessing();
+
+        // 添加烟花特效
+        setInterval(function () {
+          sendBlessing();
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

@@ -10,9 +10,10 @@
         margin: 10px 0;
       }
       #table {
-        border-collapse:collapse;
+        border-collapse: collapse;
       }
-      th,td {
+      th,
+      td {
         border: 1px solid #afddff;
       }
     </style>
@@ -71,7 +72,6 @@
         };
       });
       document.querySelector("#download").addEventListener("click", () => {
-        debugger
         let wb = XLSX.utils.table_to_book(document.getElementById("table"));
         let wb_out = XLSX.write(wb, {
           bookType: "xlsx",
@@ -80,12 +80,14 @@
         });
         const alink = document.createElement("a");
         const fd = new FileReader();
-        fd.readAsDataURL(new Blob([wb_out], { type: "application/octet-stream" }))
+        fd.readAsDataURL(
+          new Blob([wb_out], { type: "application/octet-stream" })
+        );
         fd.addEventListener("load", (e) => {
           alink.setAttribute("href", e.target.result);
-          alink.setAttribute("download", "统计表.xlsx")
+          alink.setAttribute("download", "统计表.xlsx");
           alink.click();
-        })
+        });
       });
     </script>
   </body>
