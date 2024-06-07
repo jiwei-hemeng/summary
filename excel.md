@@ -64,3 +64,37 @@ XLSX.utils.book_append_sheet(wb, ws2, "Sheet2");
 XLSX.writeFile(wb, "output.xlsx"); // 导出文件
 ```
 
+# XLSX.utils 下的 Api 
+
+## 工作表
+
+- aoa_to_sheet 将 JS 数据数组转换为工作表
+- json_to_sheet 将 JS 对象数组转换为工作表
+- table_to_sheet 将 DOM 表元素转换为工作表
+- sheet_add_aoa 将 JS 数据数组添加到现有工作表中
+- sheet_add_json 将 JS 对象数组添加到现有工作表中
+- sheet_add_dom 将 DOM 表元素中的数据添加到现有工作表中
+- sheet_to_json 将工作表转换为 JSON 对象数组
+- sheet_to_cvs 生成分隔符分隔的值输出
+- sheet_to_txt 生成 UTF16 格式的文本
+- sheet_to_html 生成 HTML 输出
+- sheet_to_formulae 生成公式列表（具有值回退）
+
+## 工作簿
+
+- book_new 创建工作簿
+- book_append_sheet 将工作表添加到工作簿
+
+# json_to_sheet
+
+```js
+const tableData = [
+  { department: "行政部", count: 2 },
+  { department: "技术部", count: 2 },
+];
+const ws = XLSX.utils.json_to_sheet(tableData);
+const wb = XLSX.utils.book_new(); // 创建工作簿
+XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); // 将工作表添加到工作簿
+XLSX.writeFile(wb, "output.xlsx");
+```
+
