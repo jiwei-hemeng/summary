@@ -98,3 +98,17 @@ XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); // 将工作表添加到工作�
 XLSX.writeFile(wb, "output.xlsx");
 ```
 
+# table_to_sheet
+
+```js
+const workbook = XLSX.utils.book_new();
+const ws = XLSX.utils.table_to_sheet(
+  document.querySelector("#resultTable"),
+  {
+    raw: true,
+  }
+);
+XLSX.utils.book_append_sheet(workbook, ws, "Sheet1");
+XLSX.writeFile(workbook, `output${Date.now()}.xlsx`);
+```
+
