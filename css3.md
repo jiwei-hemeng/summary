@@ -862,7 +862,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 **解决办法**
 
-+ 可以将<li>代码写成一排
++ 可以将`<li>`写成一排
 
 + 浮动li中float: left;
 
