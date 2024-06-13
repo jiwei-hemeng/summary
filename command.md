@@ -485,6 +485,8 @@ find . -mtime -7
 find . -size +1M -size -10M
 # 当前目录下查找所有的包含csdn.net字样的文件，并输出文件名
 find . | xargs grep -ri "csdn.net" -l
+# 在当前目录下递归查找特定字符串并打印行
+grep -r 'zh-CN' .
 ```
 
 ### git reset 三棵树
