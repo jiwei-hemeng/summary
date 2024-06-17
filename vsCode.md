@@ -166,3 +166,198 @@
 }
 ```
 
+# 定制主题
+
+```json
+{
+  // 自定义代码颜色
+  "editor.semanticHighlighting.enabled": true,
+  "editor.tokenColorCustomizations": {
+    "keywords": "#c678dd",
+    "variables": "#e06c75",
+    "functions": "#61afef",
+    "strings": "#98c379",
+    "numbers": "#d19a66",
+    "[Default Dark Modern]": {
+      "keywords": "#c678dd",
+      "numbers": "#d19a66",
+      "functions": "#61afef",
+      "comments": "#ffc3bab7",
+      "strings": "#98c379",
+      "variables": "#e06c75"
+    },
+    "[Visual Studio Dark]": {
+      "keywords": "#c678dd",
+      "numbers": "#d19a66",
+      "functions": "#61afef",
+      "comments": "#ffc3bab7",
+      "strings": "#98c379",
+      "variables": "#e06c75"
+    },
+    "comments": {
+      "fontStyle": "italic",
+      "foreground": "#c3bfbf8d"
+    },
+    "textMateRules": [
+      {
+        "scope": [
+          "storage", // function const let
+          "variable.parameter",
+          "keyword.control"
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": "keyword.operator.new",
+        "settings": {
+          "fontStyle": "italic",
+          "foreground": "#c678dd"
+        }
+      },
+      {
+        // 算数符号
+        "scope": ["keyword.operator", "keyword.operator.assignment"],
+        "settings": {
+          "foreground": "#56b6c2"
+        }
+      },
+      // HTML
+      {
+        "scope": [
+          "punctuation.definition.tag.begin.html",
+          "punctuation.definition.tag.end.html"
+        ],
+        "settings": {
+          "foreground": "#abb2bf"
+        }
+      },
+      {
+        "scope": "entity.name.tag",
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        "scope": "entity.other.attribute-name",
+        "settings": {
+          "foreground": "#c59a66",
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": ["meta.property-name", "support.type.property-name"],
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        "scope": [
+          "meta.property-value",
+          "meta.property-value constant.other",
+          "support.constant.property-value"
+        ],
+        "settings": {
+          "foreground": "#ce9178"
+        }
+      },
+      {
+        // JSON key
+        "scope": ["support.type.property-name"],
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      // Markdown
+      {
+        "scope": "markup.bold",
+        "settings": {
+          "foreground": "#c678dd",
+          "fontStyle": "bold underline"
+        }
+      },
+      {
+        "scope": "markup.italic",
+        "settings": {
+          "foreground": "#e5c07b"
+        }
+      },
+      {
+        "scope": "markup.heading",
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        // link 的文字部分
+        "scope": "string.other.link.title.markdown",
+        "settings": {
+          "foreground": "#7DE0DA"
+        }
+      },
+      {
+        "scope": "markup.underline.link.markdown",
+        "settings": {
+          "foreground": "#98c379"
+        }
+      },
+      {
+        // 无序列表
+        "scope": "markup.list.unnumbered",
+        "settings": {
+          "foreground": "#41d9ea"
+        }
+      },
+      {
+        // 引用块颜色，如： > Test
+        "scope": "markup.quote",
+        "settings": {
+          "foreground": "#989c99",
+          "fontStyle": "bold"
+        }
+      }
+    ]
+  },
+  "editor.semanticTokenColorCustomizations": {
+    "enabled": true,
+    "rules": {
+      "property": "#e06c75",
+      "function": "#61afef",
+      "*.async": "#eea667",
+      "method": "#61afef",
+      "*.readonly": "#e5c07b",
+      "enumMember": "#e5c07b",
+      "parameter": "#e06c75",
+      "class": "#e5c07b",
+      "attribute": "#e06c75",
+      "*.documentation": "#e5c07b",
+      "*.deprecated": "#ff4500",
+      "*.modification": "#ff4500",
+      "*.abstract": "#c678dd"
+    }
+  },
+  "workbench.colorCustomizations": {
+    // 修改选择相同代码后的颜色
+    "editor.wordHighlightBackground": "#3be2f806",
+    "editor.selectionHighlightBackground": "#c865f942",
+    // 当前选项卡背景颜色
+    "tab.activeBackground": "#193d4c",
+    // 括号颜色
+    "editorBracketMatch.background": "#565d6a",
+    "editorBracketMatch.border": "#0077ffa6",
+    // 背景色
+    "editor.background": "#191815d6",
+    // 侧栏颜色
+    "activityBar.activeBackground": "#193d4c",
+    "activityBar.background": "#191815d6",
+    "activityBar.foreground": "#fff",
+    // 光标所在行的背景色
+    "editor.lineHighlightBackground": "#23262cbb",
+    // 光标所在行的边框色
+    "editor.lineHighlightBorder": "#23262cbb",
+    "terminalStickyScroll.background": "#18181893"
+  }
+}
+```
+
