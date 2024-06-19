@@ -1660,3 +1660,32 @@ a[target="_blank"] {
 border-collapse: collapse;
 ```
 
+## CSS @property
+
+什么是@property?
+
+**`@property`** CSS at-rule **是 CSS Houdini API [[🔗](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini)] 的一部分，它允许开发者显式地定义他们的**CSS 自定义属性, 允许进行属性类型检查、设定默认值以及定义该自定义属性是否可以被继承。
+
+> 在过去，我们使用CSS自定义变量（CSS Variables）来存储和复用值，但它们并不具备类型检查和默认值设定的功能。
+> 而CSS @property则弥补了这一空白，使得自定义属性更加功能丰富和强大。
+
+语法
+
+```css
+@property --property-name {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #c0ffee;
+}
+```
+
++ `--property-name` : 自定义属性名称
++ syntax: 定义了自定义属性接受的值的类型。
+  CSS 基本数据类型 - CSS：层叠样式表 | [MDN](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Types)
+  可能是（长度）、（数字）、（百分比）、（长度百分比）、（颜色）、（图像）、（URL地址）、（整数）、（角度）、（时间）、（分辨率）、（变换函数）或（自定义标识符），或者是这些数据类型和关键字值的列表。
+  +（空格分隔）和 # 字号（逗号分隔）的乘法器表示期望的是一个值的列表，
+  例如 <color># 意味着期望的语法是一个以逗号分隔的 <color>值列表。
+  竖线（|）可以为预期的语法创建"或"条件，
+  例如 <length> | auto 接受 <length>或auto，而 <color># | <integer># 期望的是以逗号分隔的 <color>值列表 或以 逗号分隔的<integer>值列表。
++ inherits: 指定该自定义属性是否可以被子元素继承，默认为 false。
++ initial-value:设置自定义属性的默认值。
