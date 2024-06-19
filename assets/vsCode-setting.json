@@ -6,38 +6,32 @@
   "workbench.list.smoothScrolling": true,
   "editor.mouseWheelZoom": true,
   "editor.wordWrap": "on",
-  "editor.lineHeight": 1.5,
+  "editor.lineHeight": 1.4,
   "editor.fontSize": 28,
   "editor.fontFamily": "Consolas, '等线', monospace",
   "editor.fastScrollSensitivity": 10,
-  "editor.guides.bracketPairs": true,
-  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": false,
+  "editor.bracketPairColorization.enabled": false,
   "editor.suggest.snippetsPreventQuickSuggestions": false,
   "editor.acceptSuggestionOnEnter": "smart",
   "editor.suggestSelection": "recentlyUsedByPrefix",
   "editor.suggest.insertMode": "replace",
-  // 补全括号选择
   "editor.autoClosingBrackets": "beforeWhitespace",
   "editor.autoClosingDelete": "always",
   "editor.autoClosingOvertype": "always",
   "editor.autoClosingQuotes": "beforeWhitespace",
-  // 关闭缩进猜测
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "window.dialogStyle": "custom",
   "debug.showBreakpointsInOverviewRuler": true,
-  // 文件夹紧凑模式
   "explorer.compactFolders": true,
   "notebook.compactView": true,
-  // 自动补齐`HTML`尖括号
   "editor.linkedEditing": true,
   "html.format.wrapAttributes": "preserve",
   "html.format.wrapLineLength": 80,
   "html.format.indentHandlebars": true,
-  // 格式化自动删分号
   "javascript.format.semicolons": "remove",
   "typescript.format.semicolons": "remove",
-  // 类型提示
   "javascript.inlayHints.enumMemberValues.enabled": true,
   "javascript.inlayHints.functionLikeReturnTypes.enabled": false,
   "javascript.inlayHints.parameterNames.enabled": "none",
@@ -49,17 +43,16 @@
   "typescript.preferences.includePackageJsonAutoImports": "on",
   "javascript.suggest.autoImports": true,
   "typescript.suggest.autoImports": true,
-  // "javascript.preferences.quoteStyle": "single",
   "javascript.preferences.quoteStyle": "double",
   "typescript.preferences.quoteStyle": "double",
   "vue.updateImportsOnFileMove.enabled": true,
   "vue.inlayHints.missingProps": true,
   "vue.autoInsert.dotValue": true,
   "files.autoGuessEncoding": true,
-  "emmet.variables": {"lang": "zh-CN"},
-  // 保存自动删除末尾空格
-  "files.trimTrailingWhitespace": false,
-  // 搜索吸附目录
+  "emmet.variables": {
+    "lang": "zh-CN"
+  },
+  "files.trimTrailingWhitespace": true,
   "search.searchEditor.singleClickBehaviour": "peekDefinition",
   "editor.stickyScroll.enabled": false,
   "workbench.tree.enableStickyScroll": true,
@@ -73,7 +66,6 @@
   "workbench.list.fastScrollSensitivity": 10,
   "workbench.colorTheme": "Pretty Dark Theme",
   "editor.foldingImportsByDefault": true,
-  // index 替换成 目录名
   "workbench.editor.customLabels.patterns": {
     "**/index.vue": "${dirname}.vue",
     "**/index.js": "${dirname}.js",
@@ -85,7 +77,6 @@
   "[markdown]": {
     "files.trimTrailingWhitespace": false
   },
-  // 行内样式代码补全
   "editor.quickSuggestions": {
     "other": true,
     "comments": true,
@@ -94,12 +85,14 @@
   "editor.wordSeparators": "`~!@%^&*()=+[{]}\\|;:'\",.<>/?（），。；：",
   "editor.minimap.enabled": false,
   "editor.foldingStrategy": "indentation",
-  // JSX
   "emmet.includeLanguages": {
     "javascript": "javascriptreact",
     "typescript": "javascriptreact"
   },
-  "emmet.excludeLanguages": ["javascript", "typescript"],
+  "emmet.excludeLanguages": [
+    "javascript",
+    "typescript"
+  ],
   "search.followSymlinks": false,
   "update.mode": "manual",
   "search.exclude": {
@@ -117,216 +110,207 @@
     "**/tmp": true,
     "**/yarn.lock": true
   },
-  // 配置文件关联
   "files.associations": {
-    // 比如小程序中的 .wxss 这种文件 会把它作为css文件来处理 提供对应的css的语法提示 css的格式化等。
     "*.wxss": "css",
     "*.wxml": "html",
     "*.svg": "html",
     "*.xml": "html",
     "*.wxs": "javascript",
-    // json注释
     "*.cjson": "jsonc",
     "*.json": "jsonc"
   },
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore",
-  "togglequotes.chars": ["'", "`"],
   "explorer.copyRelativePathSeparator": "/",
-  // 自定义代码颜色
   "editor.semanticHighlighting.enabled": true,
   "editor.tokenColorCustomizations": {
+    "keywords": "#c678dd",
+    "variables": "#e06c75",
+    "functions": "#61afef",
+    "strings": "#98c379",
+    "numbers": "#d19a66",
+    "[Default Dark Modern]": {
       "keywords": "#c678dd",
-      "variables": "#e06c75",
-      "functions": "#61afef",
-      "strings": "#98c379",
       "numbers": "#d19a66",
-      "[Default Dark Modern]": {
-          "keywords": "#c678dd",
-          "numbers": "#d19a66",
-          "functions": "#61afef",
-          "comments": "#ffc3bab7",
-          "strings": "#98c379",
-          "variables": "#e06c75",
+      "functions": "#61afef",
+      "comments": "#ffc3bab7",
+      "strings": "#98c379",
+      "variables": "#e06c75",
+    },
+    "[Visual Studio Dark]": {
+      "keywords": "#c678dd",
+      "numbers": "#d19a66",
+      "functions": "#61afef",
+      "comments": "#ffc3bab7",
+      "strings": "#98c379",
+      "variables": "#e06c75",
+    },
+    "comments": {
+      "fontStyle": "italic",
+      "foreground": "#c3bfbf8d"
+    },
+    "textMateRules": [
+      {
+        "scope": [
+          "storage",
+          "variable.parameter",
+          "keyword.control"
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
       },
-      "[Visual Studio Dark]": {
-          "keywords": "#c678dd",
-          "numbers": "#d19a66",
-          "functions": "#61afef",
-          "comments": "#ffc3bab7",
-          "strings": "#98c379",
-          "variables": "#e06c75",
-      },
-      "comments": {
+      {
+        "scope": "keyword.operator.new",
+        "settings": {
           "fontStyle": "italic",
-          "foreground": "#c3bfbf8d"
+          "foreground": "#c678dd"
+        }
       },
-      "textMateRules": [
-          {
-              "scope": [
-                  "storage", // function const let
-                  "variable.parameter",
-                  "keyword.control"
-              ],
-              "settings": {
-                  "fontStyle": "italic"
-              }
-          },
-          {
-              "scope": "keyword.operator.new",
-              "settings": {
-                  "fontStyle": "italic",
-                  "foreground": "#c678dd"
-              }
-          },
-          { // 算数符号
-              "scope": [
-                  "keyword.operator",
-                  "keyword.operator.assignment"
-              ],
-              "settings": {
-                  "foreground": "#56b6c2"
-              }
-          },
-          // HTML
-          {
-              "scope": [
-                  "punctuation.definition.tag.begin.html",
-                  "punctuation.definition.tag.end.html"
-              ],
-              "settings": {
-                  "foreground": "#abb2bf"
-              }
-          },
-          {
-              "scope": "entity.name.tag",
-              "settings": {
-                  "foreground": "#e06c75"
-              }
-          },
-          {
-              "scope": "entity.other.attribute-name",
-              "settings": {
-                  "foreground": "#c59a66",
-                  "fontStyle": "italic"
-              }
-          },
-          {
-              "scope": [
-                  "meta.property-name",
-                  "support.type.property-name"
-              ],
-              "settings": {
-                  "foreground": "#e06c75"
-              }
-          },
-          {
-              "scope": [
-                  "meta.property-value",
-                  "meta.property-value constant.other",
-                  "support.constant.property-value",
-              ],
-              "settings": {
-                  "foreground": "#ce9178"
-              }
-          },
-          { // JSON key
-              "scope": [
-                  "support.type.property-name",
-              ],
-              "settings": {
-                  "foreground": "#e06c75",
-              }
-          },
-          // Markdown
-          {
-              "scope": "markup.bold",
-              "settings": {
-                  "foreground": "#c678dd",
-                  "fontStyle": "bold underline"
-              }
-          },
-          {
-              "scope": "markup.italic",
-              "settings": {
-                  "foreground": "#e5c07b"
-              }
-          },
-          {
-              "scope": "markup.heading",
-              "settings": {
-                  "foreground": "#e06c75"
-              }
-          },
-          { // link 的文字部分
-              "scope": "string.other.link.title.markdown",
-              "settings": {
-                  "foreground": "#7DE0DA"
-              }
-          },
-          {
-              "scope": "markup.underline.link.markdown",
-              "settings": {
-                  "foreground": "#98c379"
-              }
-          },
-          { // 无序列表
-              "scope": "markup.list.unnumbered",
-              "settings": {
-                  "foreground": "#41d9ea"
-              }
-          },
-          { // 引用块颜色，如： > Test
-              "scope": "markup.quote",
-              "settings": {
-                  "foreground": "#989c99",
-                  "fontStyle": "bold"
-              }
-          }
-      ]
+      {
+        "scope": [
+          "keyword.operator",
+          "keyword.operator.assignment"
+        ],
+        "settings": {
+          "foreground": "#56b6c2"
+        }
+      },
+      {
+        "scope": [
+          "punctuation.definition.tag.begin.html",
+          "punctuation.definition.tag.end.html"
+        ],
+        "settings": {
+          "foreground": "#abb2bf"
+        }
+      },
+      {
+        "scope": "entity.name.tag",
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        "scope": "entity.other.attribute-name",
+        "settings": {
+          "foreground": "#c59a66",
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": [
+          "meta.property-name",
+          "support.type.property-name"
+        ],
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        "scope": [
+          "meta.property-value",
+          "meta.property-value constant.other",
+          "support.constant.property-value",
+        ],
+        "settings": {
+          "foreground": "#ce9178"
+        }
+      },
+      {
+        "scope": [
+          "support.type.property-name",
+        ],
+        "settings": {
+          "foreground": "#e06c75",
+        }
+      },
+      {
+        "scope": "markup.bold",
+        "settings": {
+          "foreground": "#c678dd",
+          "fontStyle": "bold underline"
+        }
+      },
+      {
+        "scope": "markup.italic",
+        "settings": {
+          "foreground": "#e5c07b"
+        }
+      },
+      {
+        "scope": "markup.heading",
+        "settings": {
+          "foreground": "#e06c75"
+        }
+      },
+      {
+        "scope": "string.other.link.title.markdown",
+        "settings": {
+          "foreground": "#7DE0DA"
+        }
+      },
+      {
+        "scope": "markup.underline.link.markdown",
+        "settings": {
+          "foreground": "#98c379"
+        }
+      },
+      {
+        "scope": "markup.list.unnumbered",
+        "settings": {
+          "foreground": "#41d9ea"
+        }
+      },
+      {
+        "scope": "markup.quote",
+        "settings": {
+          "foreground": "#989c99",
+          "fontStyle": "bold"
+        }
+      }
+    ]
   },
   "editor.semanticTokenColorCustomizations": {
-      "enabled": true,
-      "rules": {
-          "property": "#e06c75",
-          "function": "#61afef",
-          "*.async": "#eea667",
-          "method": "#61afef",
-          "*.readonly": "#e5c07b",
-          "enumMember": "#e5c07b",
-          "parameter": "#e06c75",
-          "class": "#e5c07b",
-          "attribute": "#e06c75",
-          "*.documentation": "#e5c07b",
-          "*.deprecated": "#ff4500",
-          "*.modification": "#ff4500",
-          "*.abstract": "#c678dd",
-      }
+    "enabled": true,
+    "rules": {
+      "property": "#e06c75",
+      "function": "#61afef",
+      "*.async": "#eea667",
+      "method": "#61afef",
+      "*.readonly": "#e5c07b",
+      "enumMember": "#e5c07b",
+      "parameter": "#e06c75",
+      "class": "#e5c07b",
+      "attribute": "#e06c75",
+      "*.documentation": "#e5c07b",
+      "*.deprecated": "#ff4500",
+      "*.modification": "#ff4500",
+      "*.abstract": "#c678dd",
+    }
   },
   "workbench.colorCustomizations": {
-      // 修改选择相同代码后的颜色
-      "editor.wordHighlightBackground": "#3be2f806",
-      "editor.selectionHighlightBackground": "#c865f942",
-      // 当前选项卡背景颜色
-      "tab.activeBackground": "#193d4c",
-      // 括号颜色
-      "editorBracketMatch.background": "#565d6a",
-      "editorBracketMatch.border": "#0077ffa6",
-      // 背景色
-      "editor.background": "#191815d6",
-      // 侧栏颜色
-      "activityBar.activeBackground": "#193d4c",
-      "activityBar.background": "#191815d6",
-      "activityBar.foreground": "#fff",
-      // 光标所在行的背景色
-      "editor.lineHighlightBackground": "#23262cbb",
-      // 光标所在行的边框色
-      "editor.lineHighlightBorder": "#23262cbb",
-      "terminalStickyScroll.background": "#18181893"
-},
-"terminal.integrated.defaultProfile.windows": "Git Bash",
-"[javascriptreact]": {
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-}
+    "editor.wordHighlightBackground": "#3be2f806",
+    "editor.selectionHighlightBackground": "#c865f942",
+    "tab.activeBackground": "#193d4c",
+    "editorBracketMatch.background": "#565d6a",
+    "editorBracketMatch.border": "#0077ffa6",
+    "editor.background": "#191815d6",
+    "activityBar.activeBackground": "#193d4c",
+    "activityBar.background": "#191815d6",
+    "activityBar.foreground": "#fff",
+    "editor.lineHighlightBackground": "#23262cbb",
+    "editor.lineHighlightBorder": "#23262cbb",
+    "terminalStickyScroll.background": "#18181893"
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "git.openRepositoryInParentFolders": "never",
+  "maven.settingsFile": ""
 }
