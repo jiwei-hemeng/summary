@@ -312,5 +312,9 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "git.openRepositoryInParentFolders": "never",
-  "maven.settingsFile": ""
+  "maven.settingsFile": "",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true
 }
