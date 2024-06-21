@@ -41,6 +41,8 @@ git show
 git log --oneline --since="2022-04-22" --until="2022-04-24" --author="Agil"
 # 查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
 git diff --staged
+# 查询lib/component/BasicInfoCard.jsx 文件1539行最后一次修改信息
+git blame -L 1539,1539 lib/component/BasicInfoCard.jsx
 ```
 
 ### **Git 配置命令**
@@ -268,31 +270,6 @@ if (min == 100) {
 }
 child_process.execSync(command).toString();
 process.exit(0);
-```
-
-### 在vscode中配置GIT终端
-
-![1953033-20210812175755860-640591619](./assets/images/1953033-20210812175755860-640591619.png)
-
-在settings.json
-
-```json
-{
-  "terminal.integrates.profiles.windows": {
-    "Git-Bash": {
-      "path": "D:\\Program Files\\Git\\bin\\bash.exe",
-      "args": []
-    }
-  }
-}
-```
-
-### vscode如何将生成的html模板中的语言改为中文？
-
-在settings.json
-
-```json
-"emmet.variables": {"lang": "zh-CN"}
 ```
 
 ### cmd 常用命令
