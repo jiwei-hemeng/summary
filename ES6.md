@@ -595,3 +595,28 @@ console.log("peopleGroup", peopleGroup);
 + Promise.all 全部resolve执行then,  只要有一个reject 就执行 catch
 + Promise.any 只要有一个resolve 就执行then，只有全部reject  才会执行catch
 + Promise.race 第一个执行完承诺的是resolve 就执行then，是reject  就执行catch
+
+## promise.allSettled()详解
+
+当需要执行并行和独立的异步操作并收集所有结果时，Promise.allSettled() 就是不错的选择，即使一些异步操作可能失败。
+
+**和promise.all()的区别：**
+
+返回的Promise总是以一系列状态实现，无论是否有一些（或者全部）Promise被拒绝。Promise.allSettled() 永远不会被 rejected 。
+
+```js
+const promise1 = Promise.resolve(100);
+const promise2 = Promise.reject('Error occurred');
+const promise3 = Promise.resolve(200);
+Promise.allSettled([promise1, promise2, promise3])
+  .then((results) => {
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        console.log(`Fulfilled with value: ${result.value}`);
+      } else {
+        console.log(`Rejected with reason: ${result.reason}`);
+      }
+    });
+  });
+```
+
