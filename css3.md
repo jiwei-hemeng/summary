@@ -1689,3 +1689,26 @@ border-collapse: collapse;
   例如 <length> | auto 接受 <length>或auto，而 <color># | <integer># 期望的是以逗号分隔的 <color>值列表 或以 逗号分隔的<integer>值列表。
 + inherits: 指定该自定义属性是否可以被子元素继承，默认为 false。
 + initial-value:设置自定义属性的默认值。
+
+## :is() 选择器
+
+在之前，对于多个不同父容器的同个子元素的一些共性样式设置，可能会出现如下 CSS 代码：
+
+```css
+.header div:hover,
+.main div:hover,
+.footer div:hover {
+  color: green;
+  cursor: pointer;
+}
+```
+
+而如今，有了 `:is()`选择器，则上述代码可以被改写为：
+
+```css
+:is(.header, .main, .footer) div:hover {
+  color: green;
+  cursor: pointer;
+}
+```
+
