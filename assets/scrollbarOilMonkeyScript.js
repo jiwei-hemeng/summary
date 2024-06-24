@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         滚动条样式
 // @namespace    http://tampermonkey.net/
-// @version      2024-01-25
+// @version      2024-06-24
 // @description  修改滚动条默认样式
 // @author       jjw
 // @match        http://10.10.10.252
 // @match        http://10.10.10.251:30113/*
 // @match        http://git.lilianinfo.com/*
 // @match        https://gitee.com/*
+// @match        http://localhost*
 // @match        https://github.com/*
 // @match        http://49.232.226.10:10082/*
 // @match        https://ant-design.antgroup.com/*
@@ -42,7 +43,6 @@
       background: #f8f9fa;
     }
   `;
-  let timer = null;
   const style = document.createElement("style");
   style.innerText = styles;
   document.querySelector("head").appendChild(style);
