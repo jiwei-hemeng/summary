@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>css 运动轨迹</title>
+    <style>
+      .con {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        background-color: #ffefc5;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .con::before {
+        position: absolute;
+        content: "😁";
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: grid;
+        place-content: center;
+        background-color: #3e65ff;
+        color: #fff;
+        z-index: 2;
+        animation: offset 3s linear infinite;
+      }
+      .path::before {
+        offset-path: path(
+          "M16 39.567C36.479 34.0777 82.9341 33.7783 104.922 76.4954C132.407 129.892 117.317 157.339 192.766 154.844C253.126 152.848 280.072 87.1417 286 54.5383"
+        );
+      }
+
+      @keyframes offset {
+        0% {
+          offset-distance: 0%;
+        }
+        50% {
+          offset-distance: 100%;
+        }
+        100% {
+          offset-distance: 0%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="con path"></div>
+  </body>
+</html>
