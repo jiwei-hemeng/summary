@@ -208,6 +208,18 @@ H5的新特性，为了移动端的使用而新增的特性，使用 @media 查�
 @media screen and (-webkit-min-device-pixel-ratio: 3) {}
 ```
 
+## prefers-reduced-motion
+
+> 用于检测用户的系统是否被开启了动画减弱功能
+
+```css
+@media screen and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+```
+
 ## CSS 视口 - viewport
 
 **布局视口 layout viewport** 一般移动设备的浏览器都默认设置了一个布局视口，用于解决早期的PC端页面在手机上显示的问题，iOS, Android基本都将这个视口分辨率设置为 980px，所以PC上的网页大多都能在手机上呈现，只不过元素看上去很小
