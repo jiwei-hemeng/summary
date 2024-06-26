@@ -1037,3 +1037,33 @@ npx nodemon --inspect index.js
 ```txt
 chrome://inspect
 ```
+
+## 解决内存溢出问题
+
+内存溢出主要原因分析
+
++ nodejs在执行JavaScript时，内存受到v8限制,64位约为1.4g,32位0.7g
++ 限制内存原因：垃圾回收时，js线程会暂停执行（避免JS应用逻辑与垃圾回收器看到的不一样），大量的堆内存回收严重影响性能
+
+通过解决increase-memory-limit的包升级版来解决
+
++ 安装两个npm包： increase-memory-limit-fixbug 和 cross-env
+
+  ```shell
+  npm install increase-memory-limit-fixbug cross-env -g
+  ```
+
++ package.json中 添加如下脚本
+
+  ```json
+  "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"
+  ```
+
++ 执行fix-memory-limit脚本
+
+  ```shell
+  npm run build
+  ```
+
++ 重新运行项目即可
+
