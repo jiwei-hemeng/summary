@@ -595,3 +595,11 @@ netsh interface portproxy add v4tov4 listenaddress=2.2.2.2 listenport=80 connect
 netsh interface portproxy delete v4tov4 listenaddress=2.2.2.2 listenport=80
 ```
 
+### 解决github网速慢的方案
+
+修改host文件
+
+```txt
+https://raw.hellogithub.com/hosts
+```
+
