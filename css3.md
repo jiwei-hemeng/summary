@@ -1724,3 +1724,13 @@ border-collapse: collapse;
 }
 ```
 
+## timing-function
+
+transition-timing-function 是 CSS3 中用来指定过渡效果的时间函数的属性。它定义了过渡效果在时间上的变化规律，控制了过渡效果的速度曲线，从而影响了元素从开始到结束过渡过程中的动画效果。
+
+- `ease`：默认值，缓慢加速，然后缓慢减速的过渡效果。
+- `linear`：匀速过渡效果。
+- `ease-in`：缓慢加速的过渡效果。
+- `ease-out`：缓慢减速的过渡效果。
+- `ease-in-out`：先缓慢加速，再缓慢减速的过渡效果。
+- `cubic-bezier(n,n,n,n)`：自定义的贝塞尔曲线函数，通过四个值来定义曲线的控制点，分别对应 `x1`、`y1`、`x2`、`y2`。
