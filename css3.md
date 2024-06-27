@@ -1768,7 +1768,7 @@ transition-timing-function 是 CSS3 中用来指定过渡效果的时间函数�
 ```css
 div{
   transform-origin: 50% 50%;
-	transform: translateX(50px) rotate(45deg);
+  transform: translateX(50px) rotate(45deg);
 }
 ```
 
