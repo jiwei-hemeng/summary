@@ -1,4 +1,4 @@
-### **Git常用命令**
+### **Git 常用命令**
 
 ```shell
 # 初始化仓库
@@ -43,6 +43,7 @@ git log --oneline --since="2022-04-22" --until="2022-04-24" --author="Agil"
 git diff --staged
 # 查询lib/component/BasicInfoCard.jsx 文件1539行最后一次修改信息
 git blame -L 1539,1539 lib/component/BasicInfoCard.jsx
+git blame -C -w -L 2,2 lib/index.jsx
 ```
 
 ### **Git 配置命令**
@@ -149,7 +150,7 @@ git restore --staged .
 # 用 HEAD 的文件同时重置缓存去和工作区的所有文件
 git restore --staged --worktree .
 # 用 dev2 分支的 READEME.md 替换当前工作区
-git restore --source dev2 READEME.md 
+git restore --source dev2 READEME.md
 ```
 
 ### git 别名
@@ -220,30 +221,33 @@ chmod +x pre-commit
 
 此时再次执行`git commit` 就能运行 `git hooks` 清除 提交文件的 `debugger` 了
 
-**其他常见的hooks**
+**其他常见的 hooks**
 
 commit-msg
 
 ```js
 #!/usr/bin/env node
-const childProcess = require('child_process');
-const fs = require('fs');
+const childProcess = require("child_process");
+const fs = require("fs");
 
-const email = childProcess.execSync('git config user.email').toString().trim();
-const msg = fs.readFileSync(process.argv[2], 'utf-8').trim(); // 索引 2 对应的 commit 消息文件
-const commitRE = /^(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|release|workflow)(\(.+\))?: .{1,100}/;
+const email = childProcess.execSync("git config user.email").toString().trim();
+const msg = fs.readFileSync(process.argv[2], "utf-8").trim(); // 索引 2 对应的 commit 消息文件
+const commitRE =
+  /^(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|release|workflow)(\(.+\))?: .{1,100}/;
 
 if (!commitRE.test(msg)) {
   console.log();
-  console.error('不合法的 commit 消息格式，请使用正确的提交格式：');
-  console.error('feat: add \'comments\' option');
-  console.error('fix: handle events on blur (close #28)');
-  console.error('详情请查看 git commit 提交规范：https://github.com/woai3c/Front-end-articles/blob/master/git%20commit%20style.md。');
+  console.error("不合法的 commit 消息格式，请使用正确的提交格式：");
+  console.error("feat: add 'comments' option");
+  console.error("fix: handle events on blur (close #28)");
+  console.error(
+    "详情请查看 git commit 提交规范：https://github.com/woai3c/Front-end-articles/blob/master/git%20commit%20style.md。"
+  );
   process.exit(1);
 }
 
 if (!/@qq\.com$/.test(email)) {
-  console.error('此用户没有权限，具有权限的用户为： xxx@qq.com');
+  console.error("此用户没有权限，具有权限的用户为： xxx@qq.com");
   process.exit(1);
 }
 ```
@@ -277,7 +281,7 @@ process.exit(0);
 ```shell
 # 刷新本地dns
 ipconfig /flushdns
-# 列出所有连接过的WiFi的配置文件  
+# 列出所有连接过的WiFi的配置文件
 netsh wlan show profiles
 # 查看到某个具体WiFi的配置详情，包括密码：
 netsh wlan show profiles name="XXXXXX" key=clear
@@ -309,14 +313,14 @@ taskkill /f /pid 9020
 npm list -g
 ```
 
-### cmd 安装jdk并配置环境变量
+### cmd 安装 jdk 并配置环境变量
 
 ```shell
 # 引号中换成自己的路径
 setx JAVA_HOME "C:\Program Files\Java\jdk1.8.0"
 setx Path "%PATH%;%JAVA_HOME%\bin";
 # 设置classpath命令
-setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%"; 
+setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 ```
 
 ### PowerShell 中使用函数
@@ -332,29 +336,29 @@ make-link D:\App\runarch\client D:\App\client
 
 ### npm 如何优雅的升级版本
 
-#### 升级主版本号Major
+#### 升级主版本号 Major
 
 ```shell
 npm version major
 ```
 
-当前版本号是 1.0.0，执行该命令后版本号变成2.0.0。
+当前版本号是 1.0.0，执行该命令后版本号变成 2.0.0。
 
-#### 升级次版本号Minor
+#### 升级次版本号 Minor
 
 ```shell
 npm version minor
 ```
 
-当前版本号是 1.0.0，执行该命令后版本号变成1.1.0。
+当前版本号是 1.0.0，执行该命令后版本号变成 1.1.0。
 
-#### 升级修订号Patch
+#### 升级修订号 Patch
 
 ```shell
 npm version patch
 ```
 
-当前版本号是 1.0.0，执行该命令后版本号变成1.0.1。
+当前版本号是 1.0.0，执行该命令后版本号变成 1.0.1。
 
 ### ssh 远程操作
 
@@ -373,7 +377,7 @@ scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
 scp -r -C -P 22 root@192.168.5.128:/home/root/path D:/path
 ```
 
-使用ssh config配置文件来管理ssh连接
+使用 ssh config 配置文件来管理 ssh 连接
 
 ```
 Host ll252
@@ -409,7 +413,7 @@ sudo apt-get install -y nodejs
 
 > chmod 文件读写权限：
 >
-> 三个数代表： - 所有者 - 用户组 - 其它用户 
+> 三个数代表： - 所有者 - 用户组 - 其它用户
 >
 > 读写权限： wrx 分别对应读、写、执行，用数字表示 4、2、1
 
@@ -469,12 +473,14 @@ grep -r 'zh-CN' .
 ### git reset 三棵树
 
 移动 HEAD 指向的分支 （若指定了 --soft，则到此停止）；
+
 ```shell
 # 它本质上是撤销了上一次 git commit 命令
 git reset --soft HEAD~
 ```
 
 重置 index 以便和 HEAD 相匹配 （若未指定 --hard，则到此停止）；**默认的可以不用带该参数**
+
 ```shell
 # 它依然会撤销一上次提交，但还会取消所有暂存。 于是，我们回滚到了所有 git add 和 git commit 的命令执行之前。
 git reset --mixed HEAD~
@@ -483,6 +489,7 @@ git reset HEAD~
 ```
 
 使工作目录看起来像索引
+
 ```shell
 # 撤销了最后的提交（git commit ）、git add 和工作目录中的所有工作。
 git reset --hard HEAD~
@@ -500,9 +507,9 @@ HEAD 说明：
 - HEAD~1 上一个版本
 - HEAD~2 上上一个版本
 
-###  nrm
+### nrm
 
-> 作用：1. 更换国内镜像包源，解决国内npm国外包慢的问题  2. 更换某些内网独立的包源，实现安装内网独立的npm包
+> 作用：1. 更换国内镜像包源，解决国内 npm 国外包慢的问题 2. 更换某些内网独立的包源，实现安装内网独立的 npm 包
 
 **使用方法**
 
@@ -534,7 +541,7 @@ yarn config set registry https://registry.npm.taobao.org
 
 ### Termux
 
-[Github地址](https://github.com/termux/termux-app/releases)
+[Github 地址](https://github.com/termux/termux-app/releases)
 
 ```shell
 # 更换源
@@ -567,11 +574,11 @@ kill [pid]
 
 ### 谷歌浏览器长截屏
 
-按 f12 ,  再按 ctrl+shift+P ,输入 Capture full size screenshot
+按 f12 , 再按 ctrl+shift+P ,输入 Capture full size screenshot
 
 ### Windows 下实现端口映射
 
- **查询某一个 IP 的所有端口映射情况** 
+**查询某一个 IP 的所有端口映射情况**
 
 > 语法： netsh interface portproxy show v4tov4 | find "[IP]"
 
@@ -579,27 +586,26 @@ kill [pid]
 netsh interface portproxy show v4tov4 | find "192.168.1.1"
 ```
 
- **增加一个端口映射** 
+**增加一个端口映射**
 
-> 语法： netsh interface portproxy add v4tov4 listenaddress=[外网IP] listenport=[外网端口] connectaddress=[内网IP] connectport=[内网端口]
+> 语法： netsh interface portproxy add v4tov4 listenaddress=[外网 IP] listenport=[外网端口] connectaddress=[内网 IP] connectport=[内网端口]
 
 ```shell
 netsh interface portproxy add v4tov4 listenaddress=2.2.2.2 listenport=80 connectaddress=192.168.1.110 connectport=8000
 ```
 
- **删除一个端口映射** 
+**删除一个端口映射**
 
-> 语法：  netsh interface portproxy delete v4tov4 listenaddress=[外网IP] listenport=[外网端口] 
+> 语法： netsh interface portproxy delete v4tov4 listenaddress=[外网 IP] listenport=[外网端口]
 
 ```shell
 netsh interface portproxy delete v4tov4 listenaddress=2.2.2.2 listenport=80
 ```
 
-### 解决github网速慢的方案
+### 解决 github 网速慢的方案
 
-修改host文件
+修改 host 文件
 
 ```txt
 https://raw.hellogithub.com/hosts
 ```
-
