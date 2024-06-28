@@ -1946,22 +1946,27 @@ and 修饰符
 
 - container-name的作用是给容器元素命名，这个属性在页面中存在多个容器元素的时候,可以帮我们区分不同的容器属性，不至于搞混
 
+```html
+<div class="container" style="--fc: red">
+  <p>容器查询容器查询容器查询容器查询</p>
+</div>
+```
+
 ```css
-.container-a {
-    container: aside;
+.container {
+  width: 60%;
+  margin: 50px auto 0;
+  container-type: inline-size;
+  container-name: containerName;
+  background-color: #ccc;
 }
-.container-b {
-    container-type: inline-size;
-    container-name: a;
+.container p {
+  text-align: center;
 }
-@container banner (max-width: 480px) {
-  p {
-    font-size: 20px;
-  }
-}
-@container aside (inline-size > 300px) {
-  a {
-    background: green;
+@container containerName (inline-size > 500px) {
+  .container p {
+    background-color: skyblue;
+    text-align: left;
   }
 }
 ```
@@ -1971,17 +1976,9 @@ and 修饰符
 > 简单地说，样式查询让我们查询一个容器的[CSS属性](https://so.csdn.net/so/search?q=CSS属性&spm=1001.2101.3001.7020)或CSS变量。
 
 ```css
-.page-header {
-  display: flex;
-  container-name: pageHeader
-}
-
-@container pageHeader style(display: flex) {
-  .page-header__start {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    border-right: 1px solid lightgrey;
+ @container containerName style(--fc: red) {
+  .container p {
+    color: var(--fc);
   }
 }
 ```
