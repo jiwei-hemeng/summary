@@ -128,6 +128,16 @@ div {
 - SASS 变量代码经过编译后，变量也就消失了。因此，我们不能在 CSS 运行时更改变量值。
 - 预处理器中的变量范围归结为嵌套的大括号块。然而，因为 CSS 变量是属性，所以它们的作用域是基于 DOM 的。这意味着 CSS 变量是按元素解析的，而不是按作用域解析的
 
+## clamp
+
+`clamp()` 用于将一个值限制在一个特定的范围内。这个函数接受三个参数：最小值（MIN）、首选值（VAL）和最大值（MAX）。
+
+```css
+font-size: clamp(12px, 2rem, 24px); 
+```
+
+在这个例子中，2rem 是首选值，它根据视口的宽度变化。如果视口宽度很小，导致 2rem 计算出来的值小于 12px，`clamp()` 函数将返回 12px。如果视口宽度很大，导致 2rem 计算出来的值大于 24px，`clamp()` 函数将返回 24px。如果 2rem 计算出来的值在 12px 和 24px 之间，那么 `clamp()` 函数将直接返回这个计算值
+
 # css 嵌套写法
 
 > [现代 CSS：原生 CSS 嵌套快速入门](https://mp.weixin.qq.com/s?__biz=MzI2NjUxODkzOA==&mid=2247485385&idx=2&sn=3b5575ef8ba067d8d9c2185ac4af6f0d&chksm=ea8daf3cddfa262a316559f59ce5953f8b128a15149395d27591c48af11d7d322fba5d798590&scene=21#wechat_redirect)
