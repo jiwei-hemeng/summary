@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>css 滚动特调</title>
+    <style>
+      html,
+      body {
+        scroll-behavior: smooth;
+      }
+      @property --scroll-position {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+      }
+      @property --scroll-position-delayed {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+      }
+      /* 是否滚动 0 不滚动 */
+      @property --scroll-velocity {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 0;
+      }
+      @keyframes adjust-pos {
+        to {
+          --scroll-position: 100;
+          --scroll-position-delayed: 100;
+        }
+      }
+      :root {
+        animation: adjust-pos 3s linear both;
+        animation-timeline: scroll();
+      }
+      body {
+        margin: 0;
+        transition: --scroll-position-delayed 0.15s linear;
+        --scroll-velocity: calc(
+          var(--scroll-position) - var(--scroll-position-delayed)
+        );
+      }
+      main {
+        padding: 10px;
+      }
+      .item {
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+        gap: 10px;
+      }
+      .item::before,
+      .item::after {
+        content: "";
+        height: 20px;
+        border-radius: 4px;
+        width: 85%;
+        background-color: #e4ccff;
+      }
+      .item::after {
+        width: 50%;
+      }
+      .item:nth-child(odd)::before {
+        width: 100%;
+      }
+      .item:nth-child(odd)::after {
+        width: 70%;
+      }
+      .debug {
+        position: fixed;
+        padding: 15px;
+        width: 300px;
+        background: #fff;
+        border: 1px solid royalblue;
+        font-size: 16px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        counter-reset: scroll-position calc(var(--scroll-position) * 1)
+          scroll-position-delayed calc(var(--scroll-position-delayed) * 1)
+          scroll-velocity calc(var(--scroll-velocity) * 1);
+      }
+      [data-id="--scroll-position"]::after {
+        content: "--scroll-position: " counter(scroll-position);
+      }
+      [data-id="--scroll-position-delayed"]::after {
+        content: "--scroll-position-delayed: " counter(scroll-position-delayed);
+      }
+      [data-id="--scroll-velocity"]::after {
+        content: "--scroll-velocity: " counter(scroll-velocity);
+      }
+      .back {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        background-color: royalblue;
+        border-radius: 8px;
+        width: 60px;
+        height: 60px;
+        transform: translateX(100%);
+        transition: 0.2s;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      /* 当同时含有垂直和水平方向的滚动条时它们的交叉部分。一般是元素的右下角 */
+      ::-webkit-scrollbar-corner {
+        background: #c0c0c0;
+      }
+      /* 滚动条上的滚动滑块 */
+      ::-webkit-scrollbar-thumb {
+        background: #00000033;
+        border-radius: 4px;
+      }
+      /* 滚动条轨道 */
+      ::-webkit-scrollbar-track {
+        background: #f8f9fa;
+      }
+      /* 滚动条没有滑块的轨道部分 */
+      ::-webkit-scrollbar-track-piece {
+        background: #f8f9fa;
+      }
+      @container style(--scroll-velocity: 0) {
+        .back {
+          transform: translateX(0);
+        }
+        ::-webkit-scrollbar {
+          width: 0px;
+          height: 0px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <a class="back" href="#"></a>
+    <div class="debug">
+      <div data-id="--scroll-position"></div>
+      <div data-id="--scroll-position-delayed"></div>
+      <div data-id="--scroll-velocity"></div>
+    </div>
+  </body>
+</html>
