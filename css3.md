@@ -1924,3 +1924,65 @@ and 修饰符
 ```css
 @supports (display: flex) and (box-shadow: 2px 2px 2px black) {}
 ```
+
+## 容器查询
+
+> container是container-type和container-name的简写
+>
+> [演示链接](./docs/2024/container.html)
+
+### container-type：
+
+标识一个作为被查询的容器，取值范围为normal、size、inline-size、block-size、layout、style、state
+
+- normal是默认值，表示不建立容器元素，
+- size表示水平和垂直方向都建立，
+- inline-size是只在水平方向建立，会给元素同时应用
+- layout、style和inline-size容器状态。
+
+### container-name：
+
+被查询的容器的名字
+
+- container-name的作用是给容器元素命名，这个属性在页面中存在多个容器元素的时候,可以帮我们区分不同的容器属性，不至于搞混
+
+```css
+.container-a {
+    container: aside;
+}
+.container-b {
+    container-type: inline-size;
+    container-name: a;
+}
+@container banner (max-width: 480px) {
+  p {
+    font-size: 20px;
+  }
+}
+@container aside (inline-size > 300px) {
+  a {
+    background: green;
+  }
+}
+```
+
+### 样式查询
+
+> 简单地说，样式查询让我们查询一个容器的[CSS属性](https://so.csdn.net/so/search?q=CSS属性&spm=1001.2101.3001.7020)或CSS变量。
+
+```css
+.page-header {
+  display: flex;
+  container-name: pageHeader
+}
+
+@container pageHeader style(display: flex) {
+  .page-header__start {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid lightgrey;
+  }
+}
+```
+

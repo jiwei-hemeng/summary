@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>容器查询</title>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        width: 60%;
+        margin: 50px auto 0;
+        container-type: inline-size;
+        container-name: containerName;
+        background-color: #ccc;
+      }
+
+      .container p {
+        text-align: center;
+      }
+      @container containerName (inline-size > 500px) {
+        .container p {
+          background-color: skyblue;
+          text-align: left;
+        }
+      }
+      @container containerName style(--fc: red) {
+        .container p {
+          color: var(--fc);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="--fc: red">
+      <p>容器查询容器查询容器查询容器查询</p>
+    </div>
+  </body>
+</html>
