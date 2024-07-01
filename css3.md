@@ -1799,6 +1799,17 @@ border-collapse: collapse;
 - inherits: 指定该自定义属性是否可以被子元素继承，默认为 false。
 - initial-value:设置自定义属性的默认值。
 
+使用 [JavaScript 中的](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript) [`CSS.registerProperty`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/@property)函数：
+
+```js
+window.CSS.registerProperty({
+  name: "--my-color",
+  syntax: "<color>",
+  inherits: false,
+  initialValue: "#c0ffee",
+});
+```
+
 ## :is() 选择器
 
 在之前，对于多个不同父容器的同个子元素的一些共性样式设置，可能会出现如下 CSS 代码：
