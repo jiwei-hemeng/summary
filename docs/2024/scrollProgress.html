@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Scroll-driven animation</title>
+    <style>
+      .warning {
+        box-sizing: border-box;
+        padding: 1em;
+        margin: 1em 0;
+        border: 1px solid #ccc;
+        background: rgba(255 255 205 / 0.8);
+      }
+
+      @supports (animation-timeline: scroll()) {
+        .warning {
+          display: none;
+        }
+      }
+
+      .container {
+        position: relative;
+        margin: 20px auto;
+        width: 500px;
+        border: 1px dashed #999;
+        padding-top: 4px;
+      }
+
+      .pics {
+        display: flex;
+        overflow-x: scroll;
+        flex-direction: row;
+      }
+
+      .progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 8px;
+        background: linear-gradient(
+          to right,
+          rgb(18, 194, 233),
+          rgb(196, 113, 237),
+          rgb(246, 79, 89)
+        );
+        width: 100%;
+        transform: scaleX(calc(1 / var(--num-images)));
+        transform-origin: 0 50%;
+      }
+
+      .pic {
+        height: 200px;
+        width: 500px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @supports (animation-timeline: scroll()) {
+        @keyframes progress-grow {
+          to {
+            transform: scaleX(1);
+          }
+        }
+
+        .pics {
+          scroll-timeline-name: --pics-scroll;
+          scroll-timeline-axis: x;
+        }
+
+        .progress {
+          animation: auto progress-grow linear forwards;
+          animation-timeline: --pics-scroll;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="warning">
+      <p>
+        ⚠️ Your browser does not support Scroll-driven Animations. Please use
+        Chrome 115 or newer.
+      </p>
+    </div>
+    <div class="container" style="--num-images: 5">
+      <div class="pics">
+        <div class="progress"></div>
+        <div class="pic">Pic-1</div>
+        <div class="pic">Pic-2</div>
+        <div class="pic">Pic-3</div>
+        <div class="pic">Pic-4</div>
+        <div class="pic">Pic-5</div>
+      </div>
+    </div>
+  </body>
+</html>
