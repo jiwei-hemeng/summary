@@ -2008,62 +2008,26 @@ and 修饰符
 
 我们可以定义一个动画效果，该动画的开始和结束可以通过容器的滚动进度来进行控制
 
-```html
-<style>
-  #g-content {
-    width: 300px;
-    height: 170vh;
-    background: #999;
-  }
-  #g-box {
-    font-size: 150px;
-    margin: 70vh auto 0;
-    animation-name: rotate;
-    animation-duration: 3s;
-    animation-direction: alternate;
-    animation-easing-function: linear;
-    animation-timeline: box-rotate;
-  }
-  @keyframes rotate {
-    0% {
-      transform: rotate(0);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  @scroll-timeline box-rotate {
-    source: selector("#g-content");
-  }
-</style>
-<div id="g-content">
-  <div id="g-box">F</div>
-</div>
-```
+[演示效果](https://jiwei-hemeng.github.io/summary/docs/2024/scrollProgress)
 
-@scroll-timeline 语法介绍
+语法
 
 ```css
-@scroll-timeline moveTimeline {
-  source: selector("#g-content");
-  orientation: vertical;
-  scroll-offsets: 0px, 500px;
-}
+animation: move 3s linear;
+animation-timeline: scroll();
 ```
 
-其中：
+scroll() 可以接受两个参数
 
-+ source：绑定触发滚动动画的滚动容器
-  + source: auto：绑定到Document，也就是全局 Windows 对象
-  + source: selector("id-selector")，通过selector()，内置一个#id 选择器，选取一个可滚动容器
-  + source: none：不指的滚动容
-+ orientation：设定滚动时间线的方向
-  + orientation: auto：默认为 vertical，也就是竖直方向的滚动
-  + orientation: vertical：竖直方向的滚动
-  + orientation: horizontal：水平方向的滚动
-  + orientation: block：不太常用，使用沿块轴的滚动位置，符合书写模式和方向性
-  + orientation: inline：不太常用，使用沿内联轴的滚动位置，符合书写模式和方向性
-+ scroll-offsets：滚动时间线的核心，设定在滚动的什么阶段，触发动画
++ 滚动元素: 滚动元素提供 scroll progress timeline. 可以取值
+  nearest: (默认值)设置 animation-timeline 元素最近的、具有滚动条的祖先元素.
+  root: 文档的根元素, 即 <html> 元素
+  self: 设置 animation-timeline 的元素自身
++ 滚动轴:
+  y: 垂直滚动轴
+  x: 水平滚动轴
+  block: (默认值)与滚动容器中行内文本方向垂直的轴. 对于从左到右书写的文字, 与 y 相同. 对于从上到下书写的文字, 与 x 相同.
+  inline: 与滚动容器中行内文本方向水平的轴. 对于从左到右书写的文字, 与 x 相同. 对于从上到下书写的文字, 与 y 相同.
 
-[演示效果](https://jiwei-hemeng.github.io/summary/docs/2024/scrollProgress)
+
 
