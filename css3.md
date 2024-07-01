@@ -2004,3 +2004,66 @@ and 修饰符
 }
 ```
 
+## 何为 @scroll-timeline 滚动时间线？
+
+我们可以定义一个动画效果，该动画的开始和结束可以通过容器的滚动进度来进行控制
+
+```html
+<style>
+  #g-content {
+    width: 300px;
+    height: 170vh;
+    background: #999;
+  }
+  #g-box {
+    font-size: 150px;
+    margin: 70vh auto 0;
+    animation-name: rotate;
+    animation-duration: 3s;
+    animation-direction: alternate;
+    animation-easing-function: linear;
+    animation-timeline: box-rotate;
+  }
+  @keyframes rotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @scroll-timeline box-rotate {
+    source: selector("#g-content");
+  }
+</style>
+<div id="g-content">
+  <div id="g-box">F</div>
+</div>
+```
+
+@scroll-timeline 语法介绍
+
+```css
+@scroll-timeline moveTimeline {
+  source: selector("#g-content");
+  orientation: vertical;
+  scroll-offsets: 0px, 500px;
+}
+```
+
+其中：
+
++ source：绑定触发滚动动画的滚动容器
+  + source: auto：绑定到Document，也就是全局 Windows 对象
+  + source: selector("id-selector")，通过selector()，内置一个#id 选择器，选取一个可滚动容器
+  + source: none：不指的滚动容
++ orientation：设定滚动时间线的方向
+  + orientation: auto：默认为 vertical，也就是竖直方向的滚动
+  + orientation: vertical：竖直方向的滚动
+  + orientation: horizontal：水平方向的滚动
+  + orientation: block：不太常用，使用沿块轴的滚动位置，符合书写模式和方向性
+  + orientation: inline：不太常用，使用沿内联轴的滚动位置，符合书写模式和方向性
++ scroll-offsets：滚动时间线的核心，设定在滚动的什么阶段，触发动画
+
+[演示效果](https://jiwei-hemeng.github.io/summary/docs/2024/scrollProgress)
+
