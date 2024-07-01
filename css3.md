@@ -133,7 +133,7 @@ div {
 `clamp()` 用于将一个值限制在一个特定的范围内。这个函数接受三个参数：最小值（MIN）、首选值（VAL）和最大值（MAX）。
 
 ```css
-font-size: clamp(12px, 2rem, 24px); 
+font-size: clamp(12px, 2rem, 24px);
 ```
 
 在这个例子中，2rem 是首选值，它根据视口的宽度变化。如果视口宽度很小，导致 2rem 计算出来的值小于 12px，`clamp()` 函数将返回 12px。如果视口宽度很大，导致 2rem 计算出来的值大于 24px，`clamp()` 函数将返回 24px。如果 2rem 计算出来的值在 12px 和 24px 之间，那么 `clamp()` 函数将直接返回这个计算值
@@ -1936,36 +1936,39 @@ not 操作符
 和其他操作符一样，not 操作符可以应用在任意复杂度的表达式上。
 
 ```css
-@supports not (not (transform-origin: 2px)) {}
-@supports (display: grid) and (not (display: inline-grid)) {}
+@supports not (not (transform-origin: 2px)) {
+}
+@supports (display: grid) and (not (display: inline-grid)) {
+}
 ```
 
 and 修饰符
 
 ```css
-@supports (display: flex) and (box-shadow: 2px 2px 2px black) {}
+@supports (display: flex) and (box-shadow: 2px 2px 2px black) {
+}
 ```
 
 ## 容器查询
 
-> container是container-type和container-name的简写
+> container 是 container-type 和 container-name 的简写
 >
 > [演示链接](./docs/2024/container.html)
 
 ### container-type：
 
-标识一个作为被查询的容器，取值范围为normal、size、inline-size、block-size、layout、style、state
+标识一个作为被查询的容器，取值范围为 normal、size、inline-size、block-size、layout、style、state
 
-- normal是默认值，表示不建立容器元素，
-- size表示水平和垂直方向都建立，
-- inline-size是只在水平方向建立，会给元素同时应用
-- layout、style和inline-size容器状态。
+- normal 是默认值，表示不建立容器元素，
+- size 表示水平和垂直方向都建立，
+- inline-size 是只在水平方向建立，会给元素同时应用
+- layout、style 和 inline-size 容器状态。
 
 ### container-name：
 
 被查询的容器的名字
 
-- container-name的作用是给容器元素命名，这个属性在页面中存在多个容器元素的时候,可以帮我们区分不同的容器属性，不至于搞混
+- container-name 的作用是给容器元素命名，这个属性在页面中存在多个容器元素的时候,可以帮我们区分不同的容器属性，不至于搞混
 
 ```html
 <div class="container" style="--fc: red">
@@ -1994,10 +1997,10 @@ and 修饰符
 
 ### 样式查询
 
-> 简单地说，样式查询让我们查询一个容器的[CSS属性](https://so.csdn.net/so/search?q=CSS属性&spm=1001.2101.3001.7020)或CSS变量。
+> 简单地说，样式查询让我们查询一个容器的[CSS 属性](https://so.csdn.net/so/search?q=CSS属性&spm=1001.2101.3001.7020)或 CSS 变量。
 
 ```css
- @container containerName style(--fc: red) {
+@container containerName style(--fc: red) {
   .container p {
     color: var(--fc);
   }
@@ -2010,7 +2013,7 @@ and 修饰符
 
 [演示效果](https://jiwei-hemeng.github.io/summary/docs/2024/scrollProgress)
 
-语法
+### 语法
 
 ```css
 animation: move 3s linear;
@@ -2019,15 +2022,36 @@ animation-timeline: scroll();
 
 scroll() 可以接受两个参数
 
-+ 滚动元素: 滚动元素提供 scroll progress timeline. 可以取值
+- 滚动元素: 滚动元素提供 scroll progress timeline. 可以取值
   nearest: (默认值)设置 animation-timeline 元素最近的、具有滚动条的祖先元素.
   root: 文档的根元素, 即 <html> 元素
   self: 设置 animation-timeline 的元素自身
-+ 滚动轴:
+- 滚动轴:
   y: 垂直滚动轴
   x: 水平滚动轴
   block: (默认值)与滚动容器中行内文本方向垂直的轴. 对于从左到右书写的文字, 与 y 相同. 对于从上到下书写的文字, 与 x 相同.
   inline: 与滚动容器中行内文本方向水平的轴. 对于从左到右书写的文字, 与 x 相同. 对于从上到下书写的文字, 与 y 相同.
 
+### 创建一个带有名称的时间线
 
+> 有时候结构稍微复杂一点，自动查找就不适用了，并且这里的最近祖先滚动容器还受到绝对定位的影响，因此，我们还需要手动去指定滚动容器。
 
+官方的解决方式是创建一个带有名称的时间线，具体做法是，在滚动容器上添加一个属性 scroll-timeline-name，这个属性值必须以--开头，就像 CSS 变量一样，还可以通过 scroll-timeline-axis 设置滚动方向，此时的 animation-timeline 就不用默认的 scroll()了，而是改用前面设置的变量，示意如下
+
+```css
+@keyframes animate-it {
+  form {
+    width: 100%;
+  }
+}
+
+/*滚动容器*/
+.scroller {
+  scroll-timeline-name: --my-scroller;
+  scroll-timeline-axis: y;
+}
+.scroller .subject {
+  animation: animate-it linear;
+  animation-timeline: --my-scroller;
+}
+```
