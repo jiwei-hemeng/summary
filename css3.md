@@ -196,6 +196,8 @@ H5 的新特性，为了移动端的使用而新增的特性，使用 @media 查
 ```css
 @media only screen and (min-width: 320px) and (max-width: 767px) {
 }
+@media screen and (width <= 750px) {
+}
 ```
 
 ## 横屏、竖屏 显示
