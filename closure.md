@@ -43,6 +43,40 @@ p()
 + 被赋值就有了引用关系，那么内部的函数就不会销毁（其函数的作用域自然也就不会销毁）
 + 闭包的作用域：在函数**定义**的地方开始向上查找
 
+## 闭包时解决内存泄漏的示例
+
+```js
+function createClosure() {
+  let value = 'Hello';
+
+  // 闭包函数
+  const closure = function() {
+    console.log(value);
+  };
+
+  // 解绑定闭包函数，并释放资源
+  const releaseClosure = function() {
+    value = null; // 解除外部变量的引用
+    closure = null; // 解除闭包函数的引用
+    releaseClosure = null; // 解除解绑函数的引用
+  };
+
+  // 返回闭包函数和解绑函数
+  return {
+    closure,
+    releaseClosure
+  };
+}
+
+// 创建闭包
+const closureObj = createClosure();
+
+// 调用闭包函数
+closureObj.closure(); // 输出：Hello
+// 解绑闭包并释放资源
+closureObj.releaseClosure();
+```
+
 ## 使用
 
 ### 用闭包模拟私有方法
