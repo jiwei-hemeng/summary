@@ -279,8 +279,6 @@ process.exit(0);
 ### cmd 常用命令
 
 ```shell
-# 刷新本地dns
-ipconfig /flushdns
 # 列出所有连接过的WiFi的配置文件
 netsh wlan show profiles
 # 查看到某个具体WiFi的配置详情，包括密码：
@@ -311,6 +309,12 @@ netstat -ano | findstr 8001
 taskkill /f /pid 9020
 # 查看全局安装的npm包
 npm list -g
+# 刷新网络
+ipconfig /release
+# 重新获取DHCP给的地址
+ipconfig /renew
+# 刷新dns记录
+ipconfig /flushdns
 ```
 
 ### cmd 安装 jdk 并配置环境变量
