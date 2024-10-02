@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>自定义输入框</title>
+    <style>
+      body {
+        padding: 200px;
+      }
+      .floating-label {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+      .floating-label input {
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        padding: 0.75rem 0.75rem;
+        background-color: #fff;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .floating-label label {
+        position: absolute;
+        top: 50%;
+        left: 0.75rem;
+        font-size: 1rem;
+        color: #6c757d;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        transform: translateY(-50%);
+        background-color: #fff;
+        padding: 0 0.25rem;
+        z-index: 1;
+      }
+      .floating-label input:focus {
+        border-color: #495057;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+      .floating-label input:focus + label,
+      .floating-label input:not(:placeholder-shown) + label {
+        top: -0.75rem;
+        left: 0.75rem;
+        font-size: 0.75rem;
+        color: #495057;
+        background-color: #fff;
+        padding: 0 0.25rem;
+        transform: translateY(0);
+      }
+      .floating-label input:not(:placeholder-shown) {
+        border-color: #495057;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="form-group floating-label">
+        <input
+          type="text"
+          class="form-control"
+          id="textInput"
+          placeholder=" "
+        />
+        <label for="textInput">请输入名称</label>
+      </div>
+    </div>
+  </body>
+</html>
