@@ -281,6 +281,8 @@ process.exit(0);
 ```shell
 # 列出所有连接过的WiFi的配置文件
 netsh wlan show profiles
+# 查询当前wifi信息
+netsh wlan show network mode=bssid 
 # 查看到某个具体WiFi的配置详情，包括密码：
 netsh wlan show profiles name="XXXXXX" key=clear
 # 磁盘检查
