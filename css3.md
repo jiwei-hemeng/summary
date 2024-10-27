@@ -2052,6 +2052,7 @@ scroll() 可以接受两个参数
   scroll-timeline-name: --my-scroller;
   scroll-timeline-axis: y;
 }
+/*动画容器*/
 .scroller .subject {
   animation: animate-it linear;
   animation-timeline: --my-scroller;
