@@ -498,6 +498,25 @@ h5:has(+ p) {
 </style>
 ```
 
+### :placeholder-shown
+
+>  输入框在显示占位符时将应用特殊字体和边框样式 
+
+[mdn地址](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:placeholder-shown)
+
+```css
+input {
+  background-color: #e8e8e8;
+  color: black;
+}
+
+input.studentid:placeholder-shown {
+  background-color: yellow;
+  color: red;
+  font-style: italic;
+}
+```
+
 ## 伪元素
 
 > 概念：创建一些不在文档树中的元素，并为其添加样式。(就是选取某些元素前面或后面这种普通选择器无法完成的工作,虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。)
