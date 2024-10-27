@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>电子印章</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="250" height="250"></canvas>
+    <script>
+      function createSeal(id, company, name) {
+        var canvas = document.getElementById(id);
+        var context = canvas.getContext("2d");
+
+        // 绘制印章边框
+        var width = canvas.width / 2;
+        var height = canvas.height / 2;
+        context.lineWidth = 7;
+        context.strokeStyle = "#f00";
+        context.beginPath();
+        context.ellipse(width, height, 110, 80, 0, 0, Math.PI * 2); // 修改为椭圆形
+        context.stroke();
+
+        // 绘制印章中间的文字
+        context.font = "16px Helvetica";
+        context.textBaseline = "middle"; //设置文本的垂直对齐方式
+        context.textAlign = "center"; //设置文本的水平对对齐方式
+        context.lineWidth = 1;
+        context.fillStyle = "#f00";
+        context.fillText("全国二次元聚集地", width, height + 5);
+
+        // 绘制印章名称
+        context.font = "20px Helvetica";
+        context.textBaseline = "middle"; //设置文本的垂直对齐方式
+        context.textAlign = "center"; //设置文本的水平对对齐方式
+        context.lineWidth = 1;
+        context.fillStyle = "#f00";
+        context.fillText(name, width, height + 55);
+
+        // 绘制印章单位
+        context.translate(width, height); // 平移到此位置
+        context.font = "18px Helvetica";
+        var count = company.length; // 字数
+        var angle = (2 * Math.PI) / 15; // 修改为围绕椭圆的角度
+        var radiusX = 86; // 椭圆的X半径
+        var radiusY = 60; // 椭圆的Y半径
+        var chars = company.split("");
+        var c;
+        var startAngle = Math.PI / 1; // 设置开始文字的角度
+        for (var i = 0; i < count; i++) {
+          c = chars[i]; // 需要绘制的字符
+          var currentAngle = startAngle + angle * i; // 当前字符的角度
+          var x = radiusX * Math.cos(currentAngle); // X坐标
+          var y = radiusY * Math.sin(currentAngle); // Y坐标
+          context.save();
+          context.translate(x, y); // 平移到字符位置
+          context.rotate(currentAngle + Math.PI / 2); // 旋转字符
+          context.fillText(c, 0, 0); // 绘制字符
+          context.restore();
+        }
+      }
+
+      createSeal("canvas", "全国统一发票监制章", "749局");
+    </script>
+  </body>
+</html>
