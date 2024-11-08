@@ -680,5 +680,19 @@ export default {
 }
 ```
 
+##   样式隔离选项styleIsolation  
 
+ 默认情况下，自定义组件的样式只受到自定义组件 wxss 的影响。除非以下两种情况：
 
++ 指定特殊的样式隔离选项styleIsolation 。
+
+  ```js
+  export default {
+    name: "Index",
+    options: {
+      styleIsolation: 'shared'
+    }
+  }
+  ```
+
++ webview 渲染下，在 app.wxss 或页面的 wxss 中使用标签名选择器（或一些其他特殊选择器）来直接指定样式会影响到页面和全部组件。通常情况下这是不推荐的做
