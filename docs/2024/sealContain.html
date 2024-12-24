@@ -8,6 +8,27 @@
   <body>
     <canvas id="canvas" width="250" height="250"></canvas>
     <script>
+      function create5star(context, sx, sy, radius, color, rotato) {
+        context.save();
+        context.fillStyle = color;
+        context.translate(sx, sy); //移动坐标原点
+        context.rotate(Math.PI + rotato); //旋转
+        context.beginPath(); //创建路径
+        let x = Math.sin(0);
+        let y = Math.cos(0);
+        let dig = (Math.PI / 5) * 4;
+        for (let i = 0; i < 5; i++) {
+          //画五角星的五条边
+          let x = Math.sin(i * dig);
+          let y = Math.cos(i * dig);
+          context.lineTo(x * radius, y * radius);
+        }
+        context.closePath();
+        context.stroke();
+        context.fill();
+        context.restore();
+      }
+
       function createSeal(id, company, name) {
         var canvas = document.getElementById(id);
         var context = canvas.getContext("2d");
@@ -22,13 +43,15 @@
         context.stroke();
 
         // 绘制印章中间的文字
-        context.font = "16px Helvetica";
-        context.textBaseline = "middle"; //设置文本的垂直对齐方式
-        context.textAlign = "center"; //设置文本的水平对对齐方式
-        context.lineWidth = 1;
-        context.fillStyle = "#f00";
-        context.fillText("全国二次元聚集地", width, height + 5);
+        // context.font = "16px Helvetica";
+        // context.textBaseline = "middle"; //设置文本的垂直对齐方式
+        // context.textAlign = "center"; //设置文本的水平对对齐方式
+        // context.lineWidth = 1;
+        // context.fillStyle = "#f00";
+        // context.fillText("全国二次元聚集地", width, height + 5);
 
+        // 绘制印章中的五角星
+        create5star(context, width / 2 + 60, height / 2 + 60, 20, "#f00", 0);
         // 绘制印章名称
         context.font = "20px Helvetica";
         context.textBaseline = "middle"; //设置文本的垂直对齐方式
