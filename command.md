@@ -317,6 +317,8 @@ ipconfig /release
 ipconfig /renew
 # 刷新dns记录
 ipconfig /flushdns
+# 查看cpu信息
+wmic cpu get name
 ```
 
 ### cmd 安装 jdk 并配置环境变量
