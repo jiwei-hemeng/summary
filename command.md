@@ -319,6 +319,8 @@ ipconfig /renew
 ipconfig /flushdns
 # 查看cpu信息
 wmic cpu get name
+# 查看显卡名称
+wmic path win32_videocontroller get name
 ```
 
 ### cmd 安装 jdk 并配置环境变量

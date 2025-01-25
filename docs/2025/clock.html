@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>高级感数字时钟</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Roboto:700");
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: black;
+        font-family: "Roboto", sans-serif;
+      }
+      .visually-hidden {
+        position: absolute;
+        clip: rect(0 0 0 0);
+        margin: -1px;
+        padding: 0;
+        width: 1px;
+        height: 1px;
+        border: 0;
+        overflow: hidden;
+      }
+      .input-wrapper {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+      }
+      [type="checkbox"]:checked + label:before {
+        background-color: mediumseagreen;
+      }
+      [type="checkbox"]:checked + label:after {
+        transform: translateX(22px);
+      }
+      [type="checkbox"] + label {
+        padding: 8px 0 0 60px;
+        font-family: "Helvetica", sans-serif;
+        font-size: 0.85rem;
+        color: white;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        transition: color 200ms;
+      }
+      [type="checkbox"] + label:before,
+      [type="checkbox"] + label:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 28px;
+        background-color: darkslategray;
+        border-radius: 360px;
+        transition: background-color 200ms, transform 200ms;
+      }
+      [type="checkbox"] + label:after {
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        background-color: whitesmoke;
+        box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 4px;
+      }
+      .clock {
+        width: 75vw;
+        max-width: 500px;
+        transform: translateZ(0) rotate(-90deg);
+      }
+      .clock__unit {
+        fill: none;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1s linear;
+      }
+      .clock__unit--blue {
+        stroke: #5ac8fa;
+      }
+      .clock__unit--red {
+        stroke: #fa114f;
+      }
+      .clock__unit--yellow {
+        stroke: #ffe620;
+      }
+      .outlines .clock__unit {
+        opacity: 0.17;
+      }
+      .time {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 4.5vw;
+        color: white;
+        transform: translate(-50%, -50%);
+      }
+      @media (min-width: 666px) {
+        .time {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="clock">
+      <div class="input-wrapper">
+        <input
+          id="time-format"
+          class="time-format visually-hidden"
+          type="checkbox"
+        />
+        <label for="time-format">12-hour format</label>
+      </div>
+      <svg
+        class="clock"
+        viewBox="0 0 200 200"
+        preserveAspectRatio="xMinYMin meet"
+      >
+        <g class="outlines">
+          <circle
+            class="clock__unit clock__unit--blue"
+            stroke-width="20"
+            r="42"
+            cx="50%"
+            cy="50%"
+          />
+          <circle
+            class="clock__unit clock__unit--yellow"
+            stroke-width="20"
+            r="66"
+            cx="50%"
+            cy="50%"
+          />
+          <circle
+            class="clock__unit clock__unit--red"
+            stroke-width="20"
+            r="90"
+            cx="50%"
+            cy="50%"
+          />
+        </g>
+        <g>
+          <circle
+            class="clock__unit--hours clock__unit clock__unit--blue"
+            stroke-width="20"
+            r="42"
+            cx="50%"
+            cy="50%"
+          />
+          <circle
+            class="clock__unit--minutes clock__unit clock__unit--yellow"
+            stroke-width="20"
+            r="66"
+            cx="50%"
+            cy="50%"
+          />
+          <circle
+            class="clock__unit--seconds clock__unit clock__unit--red"
+            stroke-width="20"
+            r="90"
+            cx="50%"
+            cy="50%"
+          />
+        </g>
+      </svg>
+      <div class="time"></div>
+    </div>
+    <script>
+      class Clock {
+        constructor(id) {
+          const el = document.getElementById(id);
+          this.unitHr = el.querySelector(".clock__unit--hours");
+          this.unitMin = el.querySelector(".clock__unit--minutes");
+          this.unitSec = el.querySelector(".clock__unit--seconds");
+          this.timeText = el.querySelector(".time");
+          this.timeFormat = el.querySelector(".time-format");
+          this.setTime();
+          this.init();
+        }
+        buildTimeRings(h, m, s) {
+          const hours = (h / 24) * 100;
+          const minutes = (m / 60) * 100;
+          const seconds = (s / 60) * 100;
+
+          this.progress(this.unitHr, hours);
+          this.progress(this.unitMin, minutes);
+          this.progress(this.unitSec, seconds);
+        }
+        checkTime(unit) {
+          if (unit < 10) unit = `0${unit}`;
+          return unit;
+        }
+        formatHours(hours) {
+          if (this.timeFormat.checked) {
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+          }
+
+          return hours;
+        }
+        progress(unit, percent) {
+          const radius = unit.r.baseVal.value;
+          const circumference = radius * 2 * Math.PI;
+          unit.style.strokeDasharray = `${circumference} ${circumference}`;
+          unit.style.strokeDashoffset =
+            circumference - (percent / 100) * circumference;
+          if (percent < 1) {
+            unit.style.transitionTimingFunction =
+              "cubic-bezier(0.85, 0, 0.05, 1)";
+          } else {
+            unit.style.transitionTimingFunction = "linear";
+          }
+        }
+        setTime() {
+          const now = new Date();
+          const hours = this.checkTime(now.getHours());
+          const minutes = this.checkTime(now.getMinutes());
+          const seconds = this.checkTime(now.getSeconds());
+
+          this.buildTimeRings(hours, minutes, seconds);
+          this.timeText.innerHTML = `${this.formatHours(hours)}:${minutes}`;
+        }
+        init() {
+          setInterval(this.setTime.bind(this), 10);
+        }
+      }
+      let clock = new Clock("clock");
+    </script>
+  </body>
+</html>
