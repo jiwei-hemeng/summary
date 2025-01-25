@@ -321,6 +321,8 @@ ipconfig /flushdns
 wmic cpu get name
 # 查看显卡名称
 wmic path win32_videocontroller get name
+# 查看硬盘信息
+wmic diskdrive get model,size
 ```
 
 ### cmd 安装 jdk 并配置环境变量
