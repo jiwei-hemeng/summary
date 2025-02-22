@@ -272,3 +272,24 @@ regex.test('112345672345A'); // false
 regex.test('112345672345A@'); // true
 ```
 
+### 实现 compile 函数
+
+```js
+function compile(template, data) {
+  let reg = /{{(\w+)}}/;
+  while (reg.test(template)) {
+    let key = reg.exec(template)[1]; // 捕获占位符中的内容
+    let value = data[key]; // 从数据中获取对应的值
+    template = template.replace(reg, value); // 替换占位符
+  }
+  return template;
+}
+let str = "我是{{name}},年龄{{age}},性别{{sex}}";
+let person = {
+  name: "张三",
+  age: 18,
+  sex: "男",
+};
+console.log(compile(str, person)); // 输出：我是张三,年龄18,性别男
+```
+
