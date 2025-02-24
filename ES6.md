@@ -672,6 +672,10 @@ class Promise {
       this.onRejectedCallbacks.push(() => onRejected(this.reason));
     }
   }
+  // Promise 中的 catch 指代的就是 then 没有成功回调的一个别名而已
+  catch(errCallback) {
+    return this.then(null, errCallback);
+  }
 }
 ```
 
