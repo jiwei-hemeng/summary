@@ -622,7 +622,7 @@ Promise.allSettled([promise1, promise2, promise3])
 
 ## 手写promise
 
-Promisea是ES69中处理异步操作的重要工具，其实现原理涉及闭包、回调函数和事件循环。Promise的工作原理主要包括其三种状态(pending、fulfilled、rejected)及其转换机制。
+Promise是ES6中处理异步操作的重要工具，其实现原理涉及闭包、回调函数和事件循环。Promise的工作原理主要包括其三种状态(pending、fulfilled、rejected)及其转换机制。
 
 ```js
 class Promise {
