@@ -1,12 +1,32 @@
-## 小程序的生命周期
+## 生命周期
 
-+ onLaunch 启动就执行
-+ onShow 切换到前台运行时
-+ onHide 切后台时
-+ onError 小程序抛出错误时，捕获错误时
-+ onPageNotFound 没用找到页面时
+uniapp应用的生命周期分成三类：应用级别；页面级别、组件级别。
 
-小程序中将生命周期分成两类：应用级别App；页面级别Page。
++ 应用级别
+
+  > [官方链接](https://uniapp.dcloud.net.cn/collocation/App.html#applifecycle)
+
+  + onLaunch 当`uni-app` 初始化完成时触发（全局只触发一次）
+  + onShow 当 `uni-app` 启动，或从后台进入前台显示
+  + onHide 当 `uni-app` 从前台进入后台
+  + onLastPageBackPress 最后一个页面按下Android back键，常用于自定义退出
+  + onExit 监听应用退出
+
++ 页面级别
+
+  > [官方链接](https://uniapp.dcloud.net.cn/tutorial/page.html#lifecycle)
+
+  + onLoad 监听页面加载，该钩子被调用时，响应式数据、计算属性、方法、侦听器、props、slots 已设置完成，其参数为上个页面传递的数据
+  + onShow 监听页面显示，页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
+  + onHide 监听页面隐藏
+  + onUnload 监听页面卸载
+  + onPullDownRefresh 监听用户下拉动作，一般用于下拉刷新
+  + onReachBottom 页面滚动到底部的事件（不是scroll-view滚到底），常用于下拉下一页数据
+  + onShareAppMessage 用户点击右上角分享
+
++ 组件级别
+
+  同vue的生命周期
 
 ## 小程序原生的api
 
