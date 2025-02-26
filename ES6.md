@@ -141,6 +141,10 @@ person = new Proxy(person, {
   deleteProperty(target, key) {
     return Reflect.deleteProperty(target, key);
   },
+  defineProperty(target, key, value) {
+    // 新增属性
+    return Reflect.defineProperty(target, key, value);
+  }
 });
 console.log("姓名", person.name);
 person.age = 44;
