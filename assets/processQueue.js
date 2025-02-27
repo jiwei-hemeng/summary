@@ -15,11 +15,13 @@ let failedQueue = [];
 
 // 处理队列中的请求
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
+  failedQueue.forEach(async (prom) => {
     if (error) {
       prom.reject(error); // 拒绝请求
     } else {
-      prom.resolve(token); // 使用新的 token 重新发起请求
+      error.originalRequest.headers["Authorization"] = `Bearer ${token}`;
+      // 使用新的 token 重新发起请求
+      prom.resolve(await service(error.originalRequest));
     }
   });
   if (!error) {
@@ -98,7 +100,7 @@ service.interceptors.response.use(
       } else {
         //如果正在刷新token,则将请求加入队列
         return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
+          failedQueue.push({ resolve, reject, originalRequest });
         });
       }
     }
