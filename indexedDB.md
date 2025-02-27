@@ -514,3 +514,28 @@ window.WebSql = {
 };
 ```
 
+# localforage
+
+安装
+
+```shell
+pnpm add localforage
+```
+
+使用
+
+```js
+import localforage from "localforage";
+const db = localforage.createInstance({
+  name: "myDatabase",
+  version: 1.0,
+  storeName: "myStore",
+  description: "A sample database",
+});
+// 设置数据
+await db.setItem("routers", routers);
+// 获取数据，若是没有则返回null
+const res = await db.getItem("routers");
+
+```
+
