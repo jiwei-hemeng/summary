@@ -1067,3 +1067,28 @@ chrome://inspect
 
 + 重新运行项目即可
 
+## 服务端主动刷新token
+
+```js
+app.use((req, res, next) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  if (accessToken) {
+    const expiresIn = getTokenExpiresIn(accessToken);
+    if (expiresIn < 60) { // 剩余时间小于 60 秒
+      const newAccessToken = generateAccessToken(req.user);
+      res.set('New-Access-Token', newAccessToken);
+    }
+  }
+  next();
+});
+
+// 客户端逻辑
+service.interceptors.response.use(response => {
+  const newAccessToken = response.headers['new-access-token'];
+  if (newAccessToken) {
+    localStorage.setItem('accessToken', newAccessToken);
+  }
+  return response;
+});
+```
+
