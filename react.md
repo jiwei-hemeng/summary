@@ -685,6 +685,13 @@ export default function UseRefExample() {
 
 把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算。
 
+应用场景：
+
++ 计算昂贵的操作：当你有一些计算量较大的操作，而且这些操作的结果不会随着组件的重新渲染而改变时，你可以使用useMemo来缓存计算的结果。这样可以避免在每次渲染时都重新计算，提高组件的性能。
++ 避免不必要的渲染：有时候，你需要根据一些条件来决定是否渲染组件的一部分。使用useMemo可以缓存条件的计算结果，只有在条件发生变化时才重新计算，避免不必要的渲染。
++ 优化子组件的渲染：在父组件中使用useMemo来缓存子组件的props，只有当props发生变化时才会重新渲染子组件。这可以减少子组件的渲染次数，提高性能。
++ 优化回调函数：当你将回调函数作为props传递给子组件时，可以使用useMemo来缓存回调函数，以避免在每次渲染时都创建新的回调函数。
+
 ## useImperativeHandle
 
 >  react hook组件中父组件调用子组件的方法 [官网连接](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
