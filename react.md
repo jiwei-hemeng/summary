@@ -626,7 +626,7 @@ function Example() {
   useEffect(() => {
     // 更新 title
     document.title = `你点击了 ${count} 次`;
-  });
+  }, [count]);
   return (
     <div>
       <p>You clicked {count} times</p>
