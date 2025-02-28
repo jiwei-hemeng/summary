@@ -81,10 +81,6 @@ class App extends React.Component {
   + 父组件：定义并传入一个方法
   + 子组件：通过props调用该方法
 
-# 数据的双向绑定原理
-
-react没有v-modle，但是其可以使用value实现从数据到视图的绑定，onChange事件可以实现从视图到数据的绑定，从而实现了数据的双向绑定
-
 # react的生命周期
 
 - 创建时
