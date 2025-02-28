@@ -536,6 +536,11 @@ const db = localforage.createInstance({
 await db.setItem("routers", routers);
 // 获取数据，若是没有则返回null
 const res = await db.getItem("routers");
-
+// 获取所有key
+const keys = await db.keys();
+// 移除key
+await db.removeItem("routers");
+// 从数据库中删除所有的 key，重置数据库
+await db.clear()
 ```
 

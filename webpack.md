@@ -659,3 +659,9 @@ async function getModules() {
 getModules();
 ```
 
+### 获取环境变量
+
+```js
+export const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+```
+
