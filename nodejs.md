@@ -1092,3 +1092,24 @@ service.interceptors.response.use(response => {
 });
 ```
 
+## 本机环境变量支持
+
+> Node.js 23 支持直接加载 .env 文件，无需使用 dotenv 等库。
+
+在项目的根目录创建`.env`文件
+
+```env
+DB_PORT=80
+```
+
+在nodeJs文件中这样获取
+
+```js
+const port = process.env.DB_PORT || 80;
+```
+
+运行命令
+
+```shell
+node --env-file=.env config.js
+```
