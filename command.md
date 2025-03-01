@@ -389,14 +389,18 @@ scp -r -P 22 root@192.168.5.128:/home/root/path D:/path
 scp -r -C -P 22 root@192.168.5.128:/home/root/path D:/path
 ```
 
-使用 ssh config 配置文件来管理 ssh 连接
+#### 使用 ssh config 配置文件来管理 ssh 连接
+
+创建文件
+
+```shell
+cd ~/.ssh
+touch config
+```
+
+编辑文件
 
 ```
-Host ll252
-  HostName 10.10.10.252
-  User hais_dev00
-  Port 22
-
 Host jw
   HostName 192.168.1.111
   User u0_a238
