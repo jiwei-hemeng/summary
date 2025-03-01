@@ -44,6 +44,8 @@ git diff --staged
 # 查询lib/component/BasicInfoCard.jsx 文件1539行最后一次修改信息
 git blame -L 1539,1539 lib/component/BasicInfoCard.jsx
 git blame -C -w -L 2,2 lib/index.jsx
+# 搜索提交信息
+git log --grep="闭包陷阱"
 ```
 
 ### **Git 配置命令**
@@ -96,6 +98,31 @@ git stash pop stash@{1}
 # 删除某个本地缓存
 git stash drop stash@{0}
 ```
+
+### 变基
+
+```shell
+# 3=> 代表的是最近三次
+git rebase -i HEAD~3
+```
+
+常用指令说明
+
+```text
+pick：保留该commit（缩写:p）
+reword：保留该commit，但我需要修改该commit的注释（缩写:r）
+edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
+squash：将该commit和前一个commit合并（缩写:s）
+fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f）
+exec：执行shell命令（缩写:x）
+drop：我要丢弃该commit（缩写:d）
+```
+
+我们按 `i` 进入编辑页面
+
+![img](./assets/images/git_rebase.jpg)
+
+上面的意思就是把第二次、第三次提交都合并到第一次提交上
 
 ### 关于分支的命令
 
