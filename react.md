@@ -1,24 +1,3 @@
-# 原理
-
-- 虚拟`dom` 它是一个js对象，它和页面真实dom一一对应。react会在页面加载时自动在内存中生成虚拟dom，根据虚拟dom会在页面生成真实的dom
-- diff算法，它会一层一层、一级一级的比较，如果发现不同将不会在继续进行比较，而是直接更新其组件、及其后代组件
-
-# 特点
-
-- 数据驱动视图的更新
-- 组件化开发
-
-# react和vue的异同
-
-+ 相同点
-  + 虚拟DOM
-  + 单页面应用程序
-+ 不同点
-  + vue采用template;而react采用jsx
-  + vue双向数据绑定，其核心是Object.defineProperty()方法；react采用的是diff算法
-  + vue和react的生命周期钩子函数不同
-  + vue本质是是MVVM框架；react是组件化
-
 # 鉴权路由 **AuthRoute**
 
 ```js
