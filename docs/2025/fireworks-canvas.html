@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <title>2025新年快乐</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background-color: #000;
+      }
+      body,
+      html {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(
+          to bottom,
+          #0a1f3b 0%,
+          #1b3b5f 20%,
+          #2a4973 40%,
+          #1b3b5f 60%,
+          #0a1f3b 100%
+        );
+      }
+      #fireworks-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+      }
+      .title {
+        font-weight: bold;
+        background: linear-gradient(180deg, #ff0000 0%, #ffe88e 100%);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 60px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5em;
+        z-index: 1000;
+        padding-left: 0.5em;
+      }
+      .title span {
+        display: block;
+        font-size: 0.4em;
+        text-transform: lowercase;
+        margin-top: 1em;
+      }
+      @keyframes glow {
+        from {
+          text-shadow: 0010pxrgba (255, 255, 255, 0.8),
+            0020pxrgba (255, 255, 255, 0.6), 0030pxrgba (255, 255, 255, 0.4),
+            0040pxrgba (255, 182, 255, 0.3);
+        }
+        to {
+          text-shadow: 0020pxrgba (255, 255, 255, 0.9),
+            0030pxrgba (255, 255, 255, 0.7), 0040pxrgba (255, 255, 255, 0.5),
+            0050pxrgba (255, 182, 255, 0.4), 0060pxrgba (255, 182, 255, 0.3);
+        }
+      }
+      @media (max-width: 768px) {
+        .title {
+          letter-spacing: 0.3em;
+          padding-left: 0.3em;
+        }
+        .title span {
+          font-size: 0.5em;
+          letter-spacing: 0.15em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">2025<span>新年快乐</span></h1>
+    <canvas id="fireworks-canvas"></canvas>
+  </body>
+  <script>
+    class Firework {
+      constructor(t, i, s) {
+        this.ctx = t;
+        this.canvasWidth = i;
+        this.canvasHeight = s;
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * this.canvasWidth;
+        this.y = this.canvasHeight;
+        this.color = `hsl(${360 * Math.random()}, 100%, 60%)`;
+        this.dx = 3 * (Math.random() - 0.5);
+        this.dy = -(10 * Math.random() + 10);
+        this.exploded = !1;
+        this.particles = [];
+        this.age = 0;
+      }
+      launch() {
+        (this.x += this.dx),
+          (this.y += this.dy),
+          this.ctx.beginPath(),
+          this.ctx.moveTo(this.x - this.dx, this.y - this.dy),
+          this.ctx.lineTo(this.x, this.y),
+          (this.ctx.strokeStyle = this.color),
+          this.ctx.stroke(),
+          this.y <= this.canvasHeight * Math.random() * 0.5 && this.explode();
+      }
+      explode() {
+        const t = Math.floor(50 * Math.random() + 50);
+        for (let i = 0; i < t; i++) {
+          const t = Math.random() * Math.PI * 2,
+            i = 5 * Math.random() + 2;
+          this.particles.push({
+            x: this.x,
+            y: this.y,
+            dx: Math.cos(t) * i,
+            dy: Math.sin(t) * i,
+            size: 3 * Math.random() + 1,
+            alpha: 1,
+            color: this.color,
+            trail: [{ x: this.x, y: this.y }],
+            maxTrailLength: 10,
+          });
+        }
+        this.exploded = !0;
+      }
+      updateParticles() {
+        for (let t = this.particles.length - 1; t >= 0; t--) {
+          const i = this.particles[t];
+          if (
+            ((i.x += i.dx),
+            (i.y += i.dy),
+            i.trail.push({ x: i.x, y: i.y }),
+            i.trail.length > i.maxTrailLength && i.trail.shift(),
+            (i.dy += 0.15),
+            (i.dx *= 0.99),
+            i.trail.length > 1)
+          ) {
+            this.ctx.beginPath(), this.ctx.moveTo(i.trail[0].x, i.trail[0].y);
+            for (let t = 1; t < i.trail.length; t++)
+              this.ctx.lineTo(i.trail[t].x, i.trail[t].y);
+            (this.ctx.strokeStyle = `rgba(${this.getRGB(i.color)}, ${
+              i.alpha
+            })`),
+              (this.ctx.lineWidth = i.size / 2),
+              this.ctx.stroke();
+          }
+          this.ctx.beginPath(),
+            this.ctx.arc(i.x, i.y, i.size, 0, 2 * Math.PI),
+            (this.ctx.fillStyle = `rgba(${this.getRGB(i.color)}, ${i.alpha})`),
+            this.ctx.fill(),
+            (i.alpha -= 0.01),
+            (i.alpha <= 0 ||
+              i.x < 0 ||
+              i.x > this.canvasWidth ||
+              i.y > this.canvasHeight) &&
+              this.particles.splice(t, 1);
+        }
+      }
+      update() {
+        this.age++,
+          this.exploded ? this.updateParticles() : this.launch(),
+          this.exploded && 0 === this.particles.length && this.reset();
+      }
+      getRGB(t) {
+        const i = t.match(/hsl\((\d+\.?\d*),\s*(\d+)%,\s*(\d+)%\)/);
+        if (i) {
+          const [t, s, h, a] = i;
+          return this.hslToRgb(parseFloat(s), parseInt(h), parseInt(a)).join(
+            ","
+          );
+        }
+        return "255,255,255";
+      }
+      hslToRgb(t, i, s) {
+        s /= 100;
+        const h = (i) => (i + t / 30) % 12,
+          a = (i /= 100) * Math.min(s, 1 - s),
+          e = (t) =>
+            s - a * Math.max(-1, Math.min(h(t) - 3, Math.min(9 - h(t), 1)));
+        return [
+          Math.round(255 * e(0)),
+          Math.round(255 * e(8)),
+          Math.round(255 * e(4)),
+        ];
+      }
+    }
+    class FireworksDisplay {
+      constructor() {
+        (this.canvas = document.getElementById("fireworks-canvas")),
+          (this.ctx = this.canvas.getContext("2d")),
+          this.resize(),
+          (this.fireworks = []);
+        for (let t = 0; t < 8; t++)
+          this.fireworks.push(
+            new Firework(this.ctx, this.canvas.width, this.canvas.height)
+          );
+        window.addEventListener("resize", () => this.resize()), this.animate();
+      }
+      resize() {
+        (this.canvas.width = window.innerWidth),
+          (this.canvas.height = window.innerHeight);
+      }
+      animate() {
+        (this.ctx.fillStyle = "rgba(7, 7, 48, 0.15)"),
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height),
+          this.fireworks.forEach((t) => t.update()),
+          requestAnimationFrame(() => this.animate());
+      }
+    }
+    new FireworksDisplay();
+  </script>
+</html>
