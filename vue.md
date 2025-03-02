@@ -744,9 +744,9 @@ Vue 提供了样式穿透`:deep()` 他的作用就是用来改变 属性选择�
 
 ```html
 <style scoped>
-.wrapper  :deep (.el-tag--warning) {
+  .wrapper :deep(.el-tag--warning) {
     color: #e6a23c;
-}
+  }
 </style>
 ```
 
