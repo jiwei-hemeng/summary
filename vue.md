@@ -365,6 +365,35 @@ event：`input` -> `update:modelValue`；
 
 > 总结： vue中的v-model:title   相当于 title 的 prop 和  update:title 的 event
 
+## 使用 [`defineModel()`](https://cn.vuejs.org/api/sfc-script-setup.html#definemodel) 宏
+
+> [官方链接](https://cn.vuejs.org/guide/components/v-model.html#component-v-model)
+>
+> `v-model` 可以在组件上使用以实现双向绑定。从 Vue 3.4 开始，推荐的实现方式是使用 [`defineModel()`](https://cn.vuejs.org/api/sfc-script-setup.html#definemodel) 宏：
+
+```html
+<!-- Child.vue -->
+<script setup>
+const model = defineModel()
+
+function update() {
+  model.value++
+}
+</script>
+
+<template>
+  <div>Parent bound v-model is: {{ model }}</div>
+  <button @click="update">Increment</button>
+</template>
+```
+
+父组件可以用 v-model 绑定一个值：
+
+```html
+<!-- Parent.vue -->
+<Child v-model="countModel" />
+```
+
 ## 自定义指令
 
 定义
@@ -1530,4 +1559,3 @@ while (count--) {
   state.num++
 }
 ```
-
