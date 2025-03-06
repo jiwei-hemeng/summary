@@ -100,6 +100,8 @@ watch(
 );
 ```
 
+### 回调的触发时机
+
 默认情况下，用户创建的侦听器回调，都会在 Vue 组件更新**之前**被调用。这意味着你在侦听器回调中访问的 DOM 将是被 Vue 更新之前的状态。如果想在侦听器回调中能访问被 Vue 更新**之后**的 DOM，你需要指明 `flush: 'post'` 选项：
 
 ```js
@@ -108,6 +110,50 @@ watch(source, callback, {
 })
 watchEffect(callback, {
   flush: 'post'
+})
+```
+
+### 副作用清理
+
+有时我们可能会在侦听器中执行副作用，例如异步请求：
+
+```js
+watch(id, (newId) => {
+  fetch(`/api/${newId}`).then(() => {
+    // 回调逻辑
+  })
+})
+```
+
+但是如果在请求完成之前 id 发生了变化怎么办？当上一个请求完成时，它仍会使用已经过时的 ID 值触发回调。理想情况下，我们希望能够在 id 变为新值时取消过时的请求。 我们可以使用 onWatcherCleanup() 3.5+  API 来注册一个清理函数，当侦听器失效并准备重新运行时会被调用：
+
+```js
+import { watch, onWatcherCleanup } from 'vue'
+watch(id, (newId) => {
+  const controller = new AbortController()
+  fetch(`/api/${newId}`, { signal: controller.signal }).then(() => {
+    // 回调逻辑
+  })
+  onWatcherCleanup(() => {
+    // 终止过期请求
+    controller.abort()
+  })
+})
+```
+
+请注意，onWatcherCleanup 仅在 Vue 3.5+ 中支持，并且必须在 watchEffect 效果函数或 watch 回调函数的同步执行期间调用：你不能在异步函数的 await 语句之后调用它。 作为替代，onCleanup 函数还作为第三个参数传递给侦听器回调，以及 watchEffect 作用函数的第一个参数
+
+```js
+watch(id, (newId, oldId, onCleanup) => {
+  onCleanup(() => {
+    // 清理逻辑
+  })
+})
+
+watchEffect((onCleanup) => {
+  onCleanup(() => {
+    // 清理逻辑
+  })
 })
 ```
 
