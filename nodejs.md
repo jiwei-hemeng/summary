@@ -1137,3 +1137,24 @@ npm install rimraf -g
 ```shell
 npm run clean
 ```
+
+系统原生命令的快速删除方案
+
+### windows CMD
+
+```shell
+rmdir /s /q node_modules
+```
+
+### windows PowerShell  （更快）：
+
+```shell
+Remove-Item -Force -Recurse node_modules
+```
+
+### Linux/macOS用户
+
+```shell
+rm -rf ./node_modules
+```
+
