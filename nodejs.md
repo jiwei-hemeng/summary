@@ -1113,3 +1113,27 @@ const port = process.env.DB_PORT || 80;
 ```shell
 node --env-file=.env config.js
 ```
+
+## 轻松应对node_modules删除难题
+
+安装
+
+```shell
+npm install rimraf -g
+```
+
+在package.json中配置
+
+```json
+{
+  "scripts": {
+    "clean": "rimraf node_modules"
+  }
+}
+```
+
+执行命令
+
+```shell
+npm run clean
+```
