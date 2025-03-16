@@ -435,6 +435,42 @@ Host jw
   IdentityFile ~/.ssh/id_rsa
 ```
 
+#### 端口转发
+
+> ssh 实现内网穿透
+
++ **本地端口转发**（Local Port Forwarding）
+
+  ```shell
+  # 语法 ssh -L 本地端口:目标主机:目标端口 用户名@ssh服务器地址
+  ssh -L 9000:localhost:8080 user@ssh-server-address
+  ```
+
+  这样，当你尝试访问本地机器的9000端口时，实际上你是在访问远程服务器上的8080端口
+
++ **远程端口转发**（Remote Port Forwarding）
+
+  ```shell
+  # 语法：ssh -R 远程端口:localhost:本地端口 用户名@ssh服务器地址
+  ssh -R 2525:localhost:25 user@ssh-server-address
+  ```
+
+  这样，任何尝试连接到远程服务器2525端口的连接都会被转发到你的本地机器的25端口。
+
++ **动态端口转发**（Dynamic Port Forwarding）
+
+关闭端口转发
+
++ 如果该 SSH 会话在前台运行，直接退出会话即可终止端口转发。
+
++ 如果 SSH 端口转发在后台运行，使用 `-f` 选项启动，可以通过终止对应的 SSH 进程来停止端口转发。
+
+```shell
+# 先找到 SSH 进程的 PID：
+ps aux | grep ssh
+kill [PID]
+```
+
 ### ubantu 的相关命令
 
 ```shell
