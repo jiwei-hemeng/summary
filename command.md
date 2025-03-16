@@ -569,6 +569,17 @@ nrm add npmName http://registry.com
 nrm del npmName
 ```
 
+对于某些情况可能不支持nrm,可以使用npm原生命令
+
+```shell
+# 全局设置npm镜像源
+npm config set registry http://config.zhgw.cnpc:8091/repository/npm-group/
+# 查看当前npm镜像源
+npm get registry
+# 安装某个依赖使用特定的镜像源
+npm install node-sass --save --registry=https://registry.npm.taobao.org
+```
+
 ### yarn
 
 ```shell
