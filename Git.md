@@ -347,3 +347,43 @@ HEAD 说明：
 ```txt
 https://raw.hellogithub.com/hosts
 ```
+
+### git pull 使用变基模式
+
+> 我们都知道`git push` 命令是 `git fetch`、`git merge` 两个命令的组合，但是这种模式会让提交历史变得很复杂，难以追溯问题，其解决方案就是使用git push 的变基模式
+
+```shell
+git pull --rebase
+```
+
+但是每次提交代码都是用这个命令是非常繁琐的，此时我们就可以设置全局配置，一劳永逸
+
+```shell
+git config --global pull.rebase true
+```
+
+想要关闭也很简单，只需要执行
+
+```shell
+git config --global pull.rebase false
+```
+
+使用变基有一个额外的问题是：如果你本地文件有更改的话，变基会失败，因为变基前服务区必须是干净的，可以通过以下两个方案解决：
+
++ `git pull` 前，先使用`git commit` 提交代码
++ `git pull` 前，先使用`git stash` 将代码暂存
+
+执行完 `git pull --rebase`之后如果有合并冲突，使用以下三种方式处理这些冲突：
+
++ `git rebase --abort` 会放弃合并，回到rebase操作之前的状态，之前的提交的不会丢弃；
+
++ `git rebase --skip` 则会将引起冲突的commits丢弃掉（慎用！！）；
+
++ `git rebase --continue` 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
+
+  ```shell
+  git add .
+  git rebase --continue
+  ```
+
+其他和先前没有区别
