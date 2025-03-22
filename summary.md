@@ -268,6 +268,24 @@ input.visually-hidden:focus-within + label {
 - 语句结束加分号
 - 命名要有意义，使用驼峰命名法
 
+### 终极奥义——动态Debug艺术
+
+```js
+function logWithStyle(type, message) {
+  const styles = {
+    error: 'color: red; font-weight: bold; background: #ffe5e5; padding: 2px 5px;',
+    warn: 'color: orange; background: #fff3e0; padding: 2px 5px;',
+    success: 'color: green; background: #e8f5e9; padding: 2px 5px;',
+    debug: 'color: #666; background: #f5f5f5; padding: 2px 5px;'
+  };
+  console.log(`%c${type.toUpperCase()} ➤ ${message}`, styles[type]);
+}
+
+// 用法：
+logWithStyle('error', '这个Bug我改不动了！');   // 红色警告
+logWithStyle('success', 'Bug已祭天！');       // 绿色嘚瑟
+```
+
 ### 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
 
 - `CSS`不会阻塞`DOM`解析，但是会阻塞`DOM`渲染，严谨一点则是`CSS`会阻塞`render tree`的生成，进而会阻塞`DOM`的渲染
