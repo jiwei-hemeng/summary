@@ -97,6 +97,8 @@ git stash drop
 git stash pop stash@{1}
 # 删除某个本地缓存
 git stash drop stash@{0}
+# 使用某个本地缓存
+git stash apply stash@{1}
 ```
 
 ### 变基
