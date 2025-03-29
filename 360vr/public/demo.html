@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* styles.css */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* 防止出现滚动条 */
+      }
+
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #000; /* 黑色背景 */
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starCanvas"></canvas>
+    <script>
+      // script.js
+      const canvas = document.getElementById("starCanvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let stars = [];
+
+      class Star {
+        constructor() {
+          this.x = Math.random() * canvas.width; // 随机生成x坐标
+          this.y = 0; // 从顶部开始
+          this.size = Math.random() * 3 + 1; // 星星大小
+          this.speed = Math.random() * 2 + 1; // 星星下落速度
+        }
+
+        update() {
+          this.y += this.speed; // 更新y坐标
+          // 如果星星掉出画布底部，重置到顶部
+          if (this.y > canvas.height) {
+            this.y = 0;
+            this.x = Math.random() * canvas.width;
+          }
+        }
+
+        draw() {
+          context.fillStyle = "white"; // 星星颜色
+          context.beginPath();
+          context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          context.fill();
+        }
+      }
+
+      function init() {
+        for (let i = 0; i < 100; i++) {
+          // 创建100颗星星
+          stars.push(new Star());
+        }
+      }
+
+      function animate() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach((star) => {
+          star.update();
+          star.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      init();
+      animate();
+    </script>
+  </body>
+</html>
