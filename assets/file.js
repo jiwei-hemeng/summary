@@ -11,6 +11,14 @@ export function base64UrlToFile(base64Url, filename) {
   }
   return new File([u8arr], filename, { type: mime });
 }
+/***
+ * 将ArrayBuffer对学校转为blob对象
+ */
+
+function bufToBlob(buf, mimeType) {
+  return new Blob([buf], { type: mimeType });
+}
+
 /**
  * 下载文件
  * @params {string} url
@@ -51,4 +59,3 @@ export function chunkFileToFile(bigFile) {
     type: "application/octet-stream",
   });
 }
-
