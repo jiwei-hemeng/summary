@@ -803,6 +803,24 @@ defineExpose({
 </script>
 ```
 
+## useTemplateRef
+
+> vue3.5 新增用于操作DOM
+
+```html
+<script setup>
+import { useTemplateRef, onMounted } from "vue";
+const inputRef = useTemplateRef("input");
+onMounted(() => {
+  inputRef.value.focus()
+})
+</script>
+
+<template>
+  <input ref="input" />
+</template>
+```
+
 ## 局部样式
 
 ### scoped的原理
