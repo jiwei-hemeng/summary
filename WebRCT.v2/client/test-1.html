@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>本地媒体采集</title>
+    <style>
+      .media-box {
+        width: 600px;
+        margin: 100px auto 0;
+      }
+      .video {
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="media-box">
+      <video class="video" id="video" poster="/img/72.jpg"></video>
+      <div class="btn-box">
+        <button id="get-media">获取视频</button>
+        <button id="stop-media">结束</button>
+      </div>
+    </div>
+    <script>
+      window.onload = () => {
+        let mediaBtn = document.getElementById("get-media");
+        let stopBtn = document.getElementById("stop-media");
+        let video = document.getElementById("video");
+
+        let stream = null;
+
+        video.addEventListener("loadedmetadata", () => {
+          video.play();
+        });
+
+        // 获取视频
+        mediaBtn.addEventListener("click", async () => {
+          await getUserMedia();
+          video.srcObject = stream;
+        });
+
+        // 结束
+        stopBtn.addEventListener("click", async () => {
+          if (!stream) return alert("没有开启视频");
+          stream.getTracks().forEach((t) => t.stop());
+          stream = null;
+          video.srcObject = null;
+        });
+
+        async function getUserMedia({ front = true, audio = true } = {}) {
+          stream = await navigator.mediaDevices
+            .getUserMedia({
+              audio,
+              video: {
+                facingMode: front ? "user" : "environment",
+                // 分辨率
+                // width: 1280,
+                // height: 720
+              },
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        }
+      };
+    </script>
+  </body>
+</html>

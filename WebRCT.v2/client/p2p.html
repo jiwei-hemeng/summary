@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>端对端</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .page-container {
+        width: 900px;
+        height: 600px;
+        margin: 50px auto 0;
+        display: flex;
+        border: 1px solid #ccc;
+        position: relative;
+      }
+
+      .mask {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ccc;
+      }
+
+      .mask-content {
+        width: 300px;
+        margin: 100px auto;
+        text-align: center;
+      }
+
+      .message-box {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message-list {
+        height: 500px;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      .message-list .left {
+        text-align: left;
+        color: red;
+        line-height: 30px;
+      }
+
+      .message-list .right {
+        text-align: right;
+        color: blue;
+        line-height: 30px;
+      }
+
+      .send-box {
+        height: 100px;
+        border-top: 1px solid #ccc;
+        display: flex;
+      }
+
+      .send-box textarea {
+        flex: 1;
+        padding: 10px;
+      }
+
+      .send-box button {
+        width: 80px;
+      }
+
+      .user-box {
+        width: 200px;
+        height: 100%;
+        border: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .local-video,
+      .remote-video {
+        display: block;
+        height: 200px;
+        display: none;
+      }
+
+      .user-box .title {
+        height: 30px;
+        text-align: center;
+      }
+
+      .user-box .user-list {
+        flex: 1;
+        padding: 0 10px;
+        overflow-y: auto;
+      }
+
+      .user-list .user-li {
+        line-height: 30px;
+        padding: 0 10px;
+        height: 30px;
+        background: #f5f5f5;
+        margin-bottom: 4px;
+        position: relative;
+      }
+
+      .user-li .cannot-call {
+        display: none;
+      }
+
+      .user-li .can-call {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        line-height: 30px;
+        padding: 0 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-container">
+      <div class="message-box">
+        <ul class="message-list"></ul>
+        <div class="send-box">
+          <textarea class="send-content"></textarea>
+          <button class="sendbtn">发送</button>
+        </div>
+      </div>
+      <div class="user-box">
+        <video id="local-video" autoplay class="local-video"></video>
+        <video id="remote-video" autoplay class="remote-video"></video>
+        <p class="title">在线用户</p>
+        <ul class="user-list"></ul>
+      </div>
+      <div class="mask">
+        <div class="mask-content">
+          <input class="myname" type="text" placeholder="输入用户名加入房间" />
+          <button class="add-room">加入</button>
+        </div>
+      </div>
+      <div class="video-box"></div>
+    </div>
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/socket.io.js"></script>
+    <script>
+      class Chat {
+        constructor({ calledHandle, host, socketPath, getCallReject } = {}) {
+          this.host = host;
+          this.socketPath = socketPath;
+          this.socket = null;
+          this.calledHandle = calledHandle;
+          this.getCallReject = getCallReject;
+          this.peer = null;
+          this.localMedia = null;
+        }
+        async init() {
+          this.socket = await this.connentSocket();
+          return this;
+        }
+        async connentSocket() {
+          if (this.socket) return this.socket;
+          return new Promise((resolve, reject) => {
+            let socket = io(this.host, { path: this.socketPath });
+            socket.on("connect", () => {
+              console.log("连接成功！");
+              resolve(socket);
+            });
+            socket.on("connect_error", (e) => {
+              console.log("连接失败！");
+              throw e;
+              reject();
+            });
+            // 呼叫被接受
+            socket.on("answer", ({ answer }) => {
+              this.peer && this.peer.setRemoteDescription(answer);
+            });
+            // 被呼叫事件
+            socket.on("called", (callingInfo) => {
+              this.called && this.called(callingInfo);
+            });
+            // 呼叫被拒
+            socket.on("callRejected", () => {
+              this.getCallReject && this.getCallReject();
+            });
+
+            socket.on("iceCandidate", ({ iceCandidate }) => {
+              console.log("远端添加iceCandidate");
+              this.peer &&
+                this.peer.addIceCandidate(new RTCIceCandidate(iceCandidate));
+            });
+          });
+        }
+        addEvent(name, cb) {
+          if (!this.socket) return;
+          this.socket.on(name, (data) => {
+            cb.call(this, data);
+          });
+        }
+        sendMessage(name, data) {
+          if (!this.socket) return;
+          this.socket.emit(name, data);
+        }
+        // 获取本地媒体流
+        async getLocalMedia() {
+          let localMedia = await navigator.mediaDevices
+            .getUserMedia({ video: { facingMode: "user" }, audio: true })
+            .catch((e) => {
+              console.log(e);
+            });
+          this.localMedia = localMedia;
+          return this;
+        }
+        // 设置媒体流到video
+        setMediaTo(eleId, media) {
+          document.getElementById(eleId).srcObject = media;
+        }
+        // 被叫响应
+        called(callingInfo) {
+          this.calledHandle && this.calledHandle(callingInfo);
+        }
+        // 创建RTC
+        createLoacalPeer() {
+          this.peer = new RTCPeerConnection();
+          return this;
+        }
+        // 将媒体流加入通信
+        addTrack() {
+          if (!this.peer || !this.localMedia) return;
+          this.peer.addStream(this.localMedia);
+          return this;
+        }
+        // 创建 SDP offer
+        async createOffer(cb) {
+          if (!this.peer) return;
+          let offer = await this.peer.createOffer({
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true,
+          });
+          this.peer.setLocalDescription(offer);
+          cb && cb(offer);
+          return this;
+        }
+        async createAnswer(offer, cb) {
+          if (!this.peer) return;
+          this.peer.setRemoteDescription(offer);
+          let answer = await this.peer.createAnswer({
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true,
+          });
+          this.peer.setLocalDescription(answer);
+          cb && cb(answer);
+          return this;
+        }
+        listenerAddStream(cb) {
+          this.peer.addEventListener("addstream", (event) => {
+            console.log("addstream事件触发", event.stream);
+            cb && cb(event.stream);
+          });
+          return this;
+        }
+        // 监听候选加入
+        listenerCandidateAdd(cb) {
+          this.peer.addEventListener("icecandidate", (event) => {
+            let iceCandidate = event.candidate;
+            if (iceCandidate) {
+              console.log("发送candidate给远端");
+              cb && cb(iceCandidate);
+            }
+          });
+          return this;
+        }
+        // 检测ice协商过程
+        listenerGatheringstatechange() {
+          this.peer.addEventListener("icegatheringstatechange", (e) => {
+            console.log("ice协商中: ", e.target.iceGatheringState);
+          });
+          return this;
+        }
+        // 关闭RTC
+        closeRTC() {
+          // ....
+        }
+      }
+    </script>
+    <script>
+      $(function () {
+        let chat = new Chat({
+          host: "/",
+          socketPath: "/websocket",
+          calledHandle: calledHandle,
+          getCallReject: getCallReject,
+        });
+
+        // 更新用户列表视图
+        function updateUserList(list) {
+          $(".user-list").html(
+            list.reduce((temp, li) => {
+              temp += `<li class="user-li">${li.name} <button data-calling=${
+                li.calling
+              } data-id=${li.id} class=${
+                li.id === this.socket.id || li.calling
+                  ? "cannot-call"
+                  : "can-call"
+              }> 通话</button></li>`;
+              return temp;
+            }, "")
+          );
+        }
+        // 更新消息li表视图
+        function updateMessageList(msg) {
+          $(".message-list").append(
+            `<li class=${msg.userId === this.socket.id ? "left" : "right"}>${
+              msg.user
+            }: ${msg.content}</li>`
+          );
+        }
+
+        // 加入房间
+        $(".add-room").on("click", async () => {
+          let name = $(".myname").val();
+          if (!name) return;
+          $(".mask").fadeOut();
+          await chat.init();
+          // 用户加入事件
+          chat.addEvent("updateUserList", updateUserList);
+          // 消息更新事件
+          chat.addEvent("updateMessageList", updateMessageList);
+
+          chat.sendMessage("addUser", { name });
+        });
+        // 发送消息
+        $(".sendbtn").on("click", () => {
+          let sendContent = $(".send-content").val();
+          if (!sendContent) return;
+          $(".send-content").val("");
+          chat.sendMessage("sendMessage", { content: sendContent });
+        });
+
+        // 视屏
+        $(".user-list").on("click", ".can-call", async function () {
+          // 被叫方信息
+          let calledParty = $(this).data();
+          if (calledParty.calling) return console.log("对方正在通话");
+
+          // 初始本地视频
+          $(".local-video").fadeIn();
+          await chat.getLocalMedia();
+          chat.setMediaTo("local-video", chat.localMedia);
+
+          chat
+            .createLoacalPeer()
+            .listenerGatheringstatechange()
+            .addTrack()
+            .listenerAddStream(function (stream) {
+              $(".remote-video").fadeIn();
+              chat.setMediaTo("remote-video", stream);
+            })
+            .listenerCandidateAdd(function (iceCandidate) {
+              chat.sendMessage("iceCandidate", {
+                iceCandidate,
+                id: calledParty.id,
+              });
+            })
+            .createOffer(function (offer) {
+              chat.sendMessage("offer", { offer, ...calledParty });
+            });
+        });
+
+        //呼叫被拒绝
+        function getCallReject() {
+          chat.closeRTC();
+          $(".local-video").fadeIn();
+          console.log("呼叫被拒");
+        }
+
+        // 被叫
+        async function calledHandle(callingInfo) {
+          if (!confirm(`是否接受${callingInfo.name}的视频通话`)) {
+            chat.sendMessage("rejectCall", callingInfo.id);
+            return;
+          }
+
+          $(".local-video").fadeIn();
+          await chat.getLocalMedia();
+          chat.setMediaTo("local-video", chat.localMedia);
+
+          chat
+            .createLoacalPeer()
+            .listenerGatheringstatechange()
+            .addTrack()
+            .listenerCandidateAdd(function (iceCandidate) {
+              chat.sendMessage("iceCandidate", {
+                iceCandidate,
+                id: callingInfo.id,
+              });
+            })
+            .listenerAddStream(function (stream) {
+              $(".remote-video").fadeIn();
+              chat.setMediaTo("remote-video", stream);
+            })
+            .createAnswer(callingInfo.offer, function (answer) {
+              chat.sendMessage("answer", { answer, id: callingInfo.id });
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

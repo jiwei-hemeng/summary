@@ -1,0 +1,19 @@
+{
+  "name": "webrtc",
+  "author": "ott",
+  "version": "1.0.0",
+  "description": "",
+  "main": "www.js",
+  "scripts": {
+    "dev": "npx nodemon --delay 3 ./bin/www.js",
+    "clean": "npx rimraf node_modules"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.10.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "nodemon": "^1.19.3",
+    "socket.io": "^2.3.0"
+  }
+}
