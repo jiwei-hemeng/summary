@@ -469,6 +469,23 @@ window.matchMedia('(prefers-color-scheme: dark)') .addEventListener('change', ev
 })
 ```
 
+### 在指定的DOM元素后面插入新的DOM
+
+```js
+function inSetDom(el, newEl) {
+  // 确保存在下一个兄弟节点
+  if (el.nextSibling) {
+    // 在parent的下一个兄弟节点前插入新元素
+    el.parentNode.insertBefore(newEl, el.nextSibling);
+  } else {
+    el.parentNode.appendChild(newEl); // 如果没有下一个兄弟节点，则直接添加到父节点的末尾
+  }
+}
+const targetDOM = document.getElementById("target");
+const newElement = document.createElement("div"); // 创建一个新的div元素
+inSetDom(targetDOM, newElement);
+```
+
 ### 函数的length属性
 
 - 函数的length是js函数对象的一个属性，函数的length代表形参的个数（即有多少必传参数）
