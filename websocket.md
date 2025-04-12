@@ -34,7 +34,7 @@ ws.close()
 
 ### socketIo
 
-> 相关连接：[github 仓库](https://github.com/socketio/socket.io-client)       [客户端 API](https://socket.io/docs/v4/client-api/)
+> 相关连接：[github 仓库](https://github.com/socketio/socket.io-client) 、 [客户端 API](https://socket.io/docs/v4/client-api/)、[socket v4 中文文档](https://socket.io/zh-CN/docs/v4/)
 
 **安装**
 
