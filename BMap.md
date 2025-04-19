@@ -447,3 +447,17 @@ myChart.addEventListener('click', function (params) {
 });
 ```
 
+## echarts图例分页
+
+```js
+const option = {
+  legend: {
+    data: ["系列1", "系列2", "系列3", "系列4", "系列5", /* 更多系列 */],
+    type: "scroll", // 启用滚动条
+    tooltip: {
+      show: true
+    }
+  },
+};
+```
+
