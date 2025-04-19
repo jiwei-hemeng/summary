@@ -359,3 +359,27 @@ netsh interface portproxy delete v4tov4 listenaddress=2.2.2.2 listenport=80
 ```txt
 https://raw.hellogithub.com/hosts
 ```
+
+### 使用Windows内置工具定时备份文件、文件夹
+
+创建文件
+
+```shell
+touch AutoBackup.bat
+```
+
+编写内容
+
+```bat
+@echo off
+rem 删除之前备份
+del /f /s /q E:\ftp2\*
+rem 需要的话生成日期参数
+set dt=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+rem 复制文件
+xcopy "E:\ftp\*" "E:\ftp2" /e
+echo Backup completed at %date% %time% >> E:\ftp\backup_log.txt
+pause
+```
+
+按 Win + R 输入taskschd.msc打开任务计划程序，右侧点击【创建任务】按照引导完成即可
