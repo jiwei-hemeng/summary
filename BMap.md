@@ -434,3 +434,16 @@ const option = {
 };
 ```
 
+## echarts 的点击事件
+
+```js
+myChart.addEventListener('click', function (params) {
+  if (params.componentType === 'series') { // 确保点击的是数据点
+    console.log(params.dataIndex); // 数据点索引
+    console.log(params.data); // 数据点值
+    console.log(params.seriesName); // 系列名称
+    console.log(params.seriesType); // 系列类型，如 'line'
+  }
+});
+```
+
