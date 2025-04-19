@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>echarts 柱状图分页</title>
+
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"
+    ></script>
+    <style>
+      .Box {
+        width: 480px;
+        height: 320px;
+        margin: 20px auto;
+        position: relative;
+      }
+      .chartBox {
+        width: 100%;
+        height: 100%;
+      }
+      .pageButton {
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+      }
+      .pageNext {
+        float: right;
+        cursor: pointer;
+        height: 6px;
+        margin-right: 0.25rem;
+        width: 6px;
+        border-top: 2px solid #00a0e9;
+        border-left: 2px solid #00a0e9;
+        transform: rotate(135deg);
+      }
+      .pageNev {
+        float: left;
+        height: 6px;
+        width: 6px;
+        border-top: 2px solid #00a0e9;
+        border-left: 2px solid #00a0e9;
+        transform: rotate(-45deg);
+        cursor: pointer;
+        transition: all 0.28s ease;
+      }
+      #dataChart {
+        height: 320px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 图表的容器，一定要有宽高 -->
+    <div class="Box">
+      <div class="pageButton">
+        <div class="pageNev" id="nev"></div>
+        <div class="pageNext" id="next"></div>
+      </div>
+      <div class="chartBox">
+        <div id="dataChart"></div>
+      </div>
+    </div>
+    <script>
+      const allData = {
+        series: [120, 200, 150, 80, 70, 110, 130],
+        xAxis: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      };
+      const echartsPage = 5; //五条数据一页
+      let currentPage = 1; //当前显示页数
+      let totalPage =
+        allData.series.length % echartsPage === 0
+          ? allData.series.length / echartsPage
+          : Math.ceil(allData.series.length / echartsPage); // 共有多少页
+      document.getElementById("nev").addEventListener("click", () => {
+        currentPage--;
+        drawEcharts();
+      });
+      document.getElementById("next").addEventListener("click", () => {
+        currentPage++;
+        drawEcharts();
+      });
+      drawEcharts();
+      function drawEcharts() {
+        //获取id并初始化图表
+        const myChart = echarts.init(document.getElementById("dataChart"));
+        //控制分页图标的显示隐藏(处在第一页隐藏上一页，处在最后一页隐藏下一页)
+        if (currentPage == totalPage) {
+          document.getElementById("next").style.display = "none"; //隐藏
+        } else {
+          document.getElementById("next").style.display = "";
+        }
+        if (currentPage == 1) {
+          document.getElementById("nev").style.display = "none"; //隐藏
+        } else {
+          document.getElementById("nev").style.display = "";
+        }
+        //取出页面的值
+        const start = (currentPage - 1) * echartsPage;
+        const end = currentPage * echartsPage;
+
+        //配置项
+        let option = {
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "shadow",
+            },
+          },
+          grid: {
+            top: 10,
+            left: 30,
+            right: 0,
+            bottom: 20,
+          },
+          xAxis: {
+            type: "category",
+            data: allData.xAxis.slice(start, end),
+          },
+          yAxis: {
+            show: true,
+            type: "value",
+            name: "水量", // Y轴名称
+            axisLabel: {
+              formatter: "{value}", // Y轴标签格式化
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: "#333", // Y轴线颜色
+              },
+            },
+          },
+          series: [
+            {
+              data: allData.series.slice(start, end),
+              type: "bar",
+            },
+          ],
+        };
+        myChart.setOption(option); //通过setOption()方法生成图表
+        window.addEventListener("resize", function () {
+          myChart.resize(); //图表自适应的一个方法
+        });
+      }
+    </script>
+  </body>
+</html>
