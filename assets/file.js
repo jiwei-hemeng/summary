@@ -59,3 +59,15 @@ export function chunkFileToFile(bigFile) {
     type: "application/octet-stream",
   });
 }
+
+/**
+ * 获取文件的扩展名
+ * @params {string} filename
+ * @return {string}
+ */
+
+export function getFileExtension(filename) {
+  const extRegex = /\.([0-9a-z]+)(?:[\?#]|$)/i;
+  const match = extRegex.exec(filename);
+  return match ? match[1] : "";
+}
