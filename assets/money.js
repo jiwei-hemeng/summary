@@ -1,4 +1,4 @@
-/** 
+/**
  * @param {string} tranvalue 需要转换的数字
  * @return {string}
  */
@@ -83,7 +83,7 @@ export function splits(tranvalue) {
   return value;
 }
 
-/** 
+/**
  * 将数字按照每隔3位逗号分割
  * @param {number} tranvalue 需要转换的数字
  * @return {string}
@@ -92,28 +92,31 @@ export function splits(tranvalue) {
 export function numberPutCommaShow(value) {
   let installVal = value;
   if (value != "") {
-    value = Number(value).toFixed(2)
-    let intPart = Math.trunc(value) // 获取整数部分
-    let intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, "$1,") // 将整数部分逢三一断
-    let floatPart = ".00" // 预定义小数部分
-    let value2Array = value.split(".")
+    value = Number(value).toFixed(2);
+    let intPart = Math.trunc(value); // 获取整数部分
+    let intPartFormat = intPart
+      .toString()
+      .replace(/(\d)(?=(?:\d{3})+$)/g, "$1,"); // 将整数部分逢三一断
+    let floatPart = ".00"; // 预定义小数部分
+    let value2Array = value.split(".");
     // =2表示数据有小数位
     if (value2Array.length === 2) {
-      floatPart = value2Array[1].toString() // 拿到小数部分
-      if (floatPart.length === 1) { // 补0,实际上用不着
-        return intPartFormat + "." + floatPart + "0"
+      floatPart = value2Array[1].toString(); // 拿到小数部分
+      if (floatPart.length === 1) {
+        // 补0,实际上用不着
+        return intPartFormat + "." + floatPart + "0";
       } else {
         if (installVal < 0 && intPartFormat == 0) {
-          return "-" + intPartFormat + "." + floatPart
+          return "-" + intPartFormat + "." + floatPart;
         } else {
-          return intPartFormat + "." + floatPart
+          return intPartFormat + "." + floatPart;
         }
       }
     } else {
-      return intPartFormat + floatPart
+      return intPartFormat + floatPart;
     }
   } else if (value == 0 && String(value)) {
-    return "0.00"
+    return "0.00";
   }
 }
 // 每三个数字一个，分割
@@ -121,11 +124,11 @@ export function ThousandNum(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 function formatNumber(value) {
-  value += '';
-  const list = value.split('.');
-  const prefix = list[0].charAt(0) === '-' ? '-' : '';
+  value += "";
+  const list = value.split(".");
+  const prefix = list[0].charAt(0) === "-" ? "-" : "";
   let num = prefix ? list[0].slice(1) : list[0];
-  let result = '';
+  let result = "";
   while (num.length > 3) {
     result = `,${num.slice(-3)}${result}`;
     num = num.slice(0, num.length - 3);
@@ -133,10 +136,10 @@ function formatNumber(value) {
   if (num) {
     result = num + result;
   }
-  return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
+  return `${prefix}${result}${list[1] ? `.${list[1]}` : ""}`;
 }
 
-/** 
+/**
  * 将数字按照每隔3位逗号分割
  * @param {number} number 需要转换的数字
  * @param {number} prec 保留几位小数
@@ -145,23 +148,112 @@ function formatNumber(value) {
  * @return {string}
  */
 
-export function moneyFormat (number, prec = 2, dec = ".", sep = ",") {
-  number = (number + '').replace(/[^0-9+-Ee.]/g, '')
-  const n = !isFinite(+number) ? 0 : +number
-  let s = ''
-  const toFixedFix = function(n, prec) {
-    const k = Math.pow(10, prec)
-    return '' + Math.ceil(n * k) / k
-  }
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.')
-  const re = /(-?\d+)(\d{3})/
+export function moneyFormat(number, prec = 2, dec = ".", sep = ",") {
+  number = (number + "").replace(/[^0-9+-Ee.]/g, "");
+  const n = !isFinite(+number) ? 0 : +number;
+  let s = "";
+  const toFixedFix = function (n, prec) {
+    const k = Math.pow(10, prec);
+    return "" + Math.ceil(n * k) / k;
+  };
+  s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
+  const re = /(-?\d+)(\d{3})/;
   while (re.test(s[0])) {
-    s[0] = s[0].replace(re, '$1' + sep + '$2')
+    s[0] = s[0].replace(re, "$1" + sep + "$2");
   }
 
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || ''
-    s[1] += new Array(prec - s[1].length + 1).join('0')
+  if ((s[1] || "").length < prec) {
+    s[1] = s[1] || "";
+    s[1] += new Array(prec - s[1].length + 1).join("0");
   }
-  return s.join(dec)
+  return s.join(dec);
+}
+
+/**
+ * 将中文数字转为阿拉伯数字
+ * @param {string} chineseStr
+ * @return {number}
+ */
+
+export function chineseToArabic(chineseStr) {
+  // 映射表（支持简繁）
+  const numMap = {
+    零: 0,
+    一: 1,
+    壹: 1,
+    二: 2,
+    两: 2,
+    三: 3,
+    叁: 3,
+    四: 4,
+    肆: 4,
+    五: 5,
+    伍: 5,
+    六: 6,
+    陆: 6,
+    七: 7,
+    柒: 7,
+    八: 8,
+    捌: 8,
+    九: 9,
+    玖: 9,
+  };
+  //单位映射表
+  const unitMap = {
+    十: { value: 10, sec: false },
+    拾: { value: 10, sec: false },
+    百: { value: 100, sec: false },
+    佰: { value: 100, sec: false },
+    千: { value: 1000, sec: false },
+    仟: { value: 1000, sec: false },
+    万: { value: 10000, sec: true },
+    萬: { value: 10000, sec: true },
+    亿: { value: 100000000, sec: true },
+    億: { value: 100000000, sec: true },
+  };
+  let total = 0; // 最终结果
+  let section = 0; // 当前小节
+  let current = 0; // 当前累加值
+  let hasZero = false; // 零标记
+
+  const processSection = () => {
+    section += current;
+    current = 0;
+  };
+  for (const char of chineseStr) {
+    if (numMap.hasOwnProperty(char)) {
+      if (char === "零") {
+        hasZero = true;
+        continue;
+      }
+
+      if (hasZero && current > 0) {
+        current *= 10;
+        hasZero = false;
+      }
+      current += numMap[char];
+    } else if (unitMap.hasOwnProperty(char)) {
+      const unit = unitMap[char];
+
+      if (unit.sec) {
+        // 处理万/亿分段
+        processSection();
+        section = (section + current) * unit.value;
+        total += section;
+        section = 0;
+      } else {
+        current = current === 0 ? unit.value : current * unit.value;
+        section += current;
+        current = 0;
+      }
+      hasZero = false;
+    }
+  }
+
+  const last2 = chineseStr.slice(-2)[0];
+  const last2Unit = unitMap[last2];
+  if (last2Unit) {
+    current = (current * last2Unit.value) / 10;
+  }
+  return total + section + current;
 }
