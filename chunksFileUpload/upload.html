@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>文件上传</title>
+  </head>
+  <body>
+    <form>
+      <label for="file">选择文件：</label>
+      <input type="file" name="file" id="file" />
+      <input type="button" value="上传" id="upload" />
+    </form>
+    <script>
+      document.getElementById("upload").addEventListener("click", onUpload);
+      async function onUpload() {
+        console.log("Uploading file...");
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files[0];
+        await uploadChunks(file);
+      }
+      function splitFile(file) {
+        const chunkSize = 1 * 1024 * 1024;
+        // 1MB
+        const chunks = [];
+        let start = 0;
+        while (start < file.size) {
+          const chunk = file.slice(start, start + chunkSize);
+          chunks.push(chunk);
+          start += chunkSize;
+        }
+        return chunks;
+      }
+      async function uploadChunks(file) {
+        const chunks = splitFile(file);
+        const totalChunks = chunks.length;
+        let uploadedChunks = 0;
+        let totalUploadedBytes = 0;
+        for (let i = 0; i < totalChunks; i++) {
+          const chunk = chunks[i];
+          const formData = new FormData();
+          formData.append("fileName", file.name);
+          formData.append("totalChunks", totalChunks);
+          formData.append("chunkIndex", i);
+          formData.append("file", chunk);
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            uploadedChunks++;
+            totalUploadedBytes += chunk.size;
+            const percentCompleted = Math.round(
+              (totalUploadedBytes / file.size) * 100
+            );
+            console.log(`Upload Progress: ${percentCompleted}%`);
+            if (uploadedChunks === totalChunks) {
+              console.log("All chunks uploaded successfully");
+            }
+          } else {
+            console.error("Error uploading chunk:", await response.text());
+            break;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
