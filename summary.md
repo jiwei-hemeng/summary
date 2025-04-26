@@ -456,6 +456,12 @@ document.body.scrollTop = 0;
 document.documentElement.scrollTop = 0;
 ```
 
+### js 获取浏览器可视高度
+
+```js
+const clientHeigh = document.documentElement.clientHeigh;
+```
+
 ### 检测系统主题
 
 ```js
