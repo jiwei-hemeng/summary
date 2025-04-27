@@ -694,3 +694,22 @@ class Promise {
 }
 ```
 
+## withResolvers
+
+````js
+const fs = require("fs");
+const path = require("path");
+const { encode } = require("punycode");
+function reafFile(path, encoding = "utf8") {
+  let { promise, resolve, reject } = Promise.withResolvers();
+  fs.readFile(path, encoding, (err, data) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(data);
+    }
+  });
+  return promise;
+}
+````
+
