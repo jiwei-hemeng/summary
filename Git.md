@@ -411,3 +411,11 @@ git cherry-pick --continue
 git cherry-pick --abort
 ```
 
+### 未来无忧的哈希算法：SHA-256
+
+随着 SHA-1 算法的安全性逐渐受到质疑，Git 2.29 引入了对 SHA-256 的支持。通过 core.hashAlgorithm 配置，你可以将仓库迁移到更安全的哈希算法。
+
+```shell
+git config --global core.hashAlgorithm sha256
+```
+
