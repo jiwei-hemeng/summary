@@ -389,3 +389,25 @@ git config --global pull.rebase false
   ```
 
 其他和先前没有区别
+
+### Cherry Pick
+
+Cherry Pick 是 Git 提供的一个功能强大的命令，**用于将某个特定的提交从一个分支复制到另一个分支**。与直接合并整个分支的 `git merge` 和 `git rebase` 不同，Cherry Pick 的独特之处在于它可以只挑选一个或几个具体的提交，而无需处理整个分支的更改。
+
+```shell
+git cherry-pick abc123
+```
+
+如果产生了冲突, 在解决冲突后，执行以下命令标记为已解决：
+
+```shell
+git add <file>
+git cherry-pick --continue
+```
+
+如果发现问题或不想继续，可以执行以下命令中止 Cherry Pick：
+
+```shell
+git cherry-pick --abort
+```
+
