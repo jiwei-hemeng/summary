@@ -368,8 +368,8 @@
 ```json
 {
   "files.watcherExclude": {
-    "**/node_modules/*/**": true,
-  },
+    "**/node_modules/*/**": true,
+  },
 }
 ```
 
