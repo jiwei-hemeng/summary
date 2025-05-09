@@ -361,3 +361,17 @@
 }
 ```
 
+# files.watcherExclude
+
+> 排除对node_modules的文件监听，减少内存的使用
+
+```json
+{
+  "files.watcherExclude": {
+    "**/node_modules/*/**": true,
+  },
+}
+```
+
+
+
