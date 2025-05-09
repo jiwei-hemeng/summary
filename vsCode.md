@@ -373,5 +373,29 @@
 }
 ```
 
+# 配置路径别名，方便ctrl跳转
 
+在项目的根目录上创建文件`jsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}
+```
 
