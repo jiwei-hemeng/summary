@@ -402,3 +402,14 @@
 }
 ```
 
+# vscode 常用插件
+
++ Chinese (Simplified) (简体中文) - 汉化插件
++ ESLint - js代码语法校验
++ Prettier - Code formatter - 代码格式化插件
++ Live Server - 本地代码服务器
++ open-in-browser - 右键通过浏览器打开网页文件
++ gitlens - git 历史提交记录
++ Vue - Official - vue3 的语法扩展程序
++ Postcode - 类似于postman的插件
++ Draw.io Integration
