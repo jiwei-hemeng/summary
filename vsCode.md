@@ -369,6 +369,8 @@
 {
   "files.watcherExclude": {
     "**/node_modules/*/**": true,
+    "**/dist/*/**": true,
+    "**/.git/**": true,
   },
 }
 ```
@@ -380,7 +382,8 @@
 ```json
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "ESNext",
+    "module": "ESNext",
     "allowSyntheticDefaultImports": false,
     "baseUrl": "./",
     "paths": {
