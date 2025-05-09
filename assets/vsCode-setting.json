@@ -316,5 +316,10 @@
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "files.watcherExclude": {
+    "**/node_modules/*/**": true,
+    "**/dist/*/**": true,
+    "**/.git/**": true
+  }
 }

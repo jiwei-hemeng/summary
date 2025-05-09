@@ -361,3 +361,55 @@
 }
 ```
 
+# files.watcherExclude
+
+> 排除对node_modules的文件监听，减少内存的使用
+
+```json
+{
+  "files.watcherExclude": {
+    "**/node_modules/*/**": true,
+    "**/dist/*/**": true,
+    "**/.git/**": true,
+  },
+}
+```
+
+# 配置路径别名，方便ctrl跳转
+
+在项目的根目录上创建文件`jsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}
+```
+
+# vscode 常用插件
+
++ Chinese (Simplified) (简体中文) - 汉化插件
++ ESLint - js代码语法校验
++ Prettier - Code formatter - 代码格式化插件
++ Live Server - 本地代码服务器
++ open-in-browser - 右键通过浏览器打开网页文件
++ gitlens - git 历史提交记录
++ Vue - Official - vue3 的语法扩展程序
++ Postcode - 类似于postman的插件
++ Draw.io Integration
