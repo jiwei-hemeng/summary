@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>简易版-计算器</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .calculator {
+        background-color: #222;
+        border-radius: 10px;
+        box-shadow: 04px8pxrgba (0, 0, 0, 0.2);
+        width: 200px;
+        padding: 20px;
+      }
+
+      .display {
+        background-color: #333;
+        color: #fff;
+        font-size: 24px;
+        text-align: right;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      button {
+        background-color: #444;
+        color: #fff;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      button:hover {
+        background-color: #555;
+      }
+
+      button.ac {
+        background-color: #ff4d4d;
+      }
+
+      button.ac:hover {
+        background-color: #ff6666;
+      }
+
+      button.equals {
+        background-color: #ff8a00;
+      }
+
+      button.equals:hover {
+        background-color: #ff9933;
+      }
+
+      button.zero {
+        grid-column: span 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <!-- 显示区域 -->
+      <div class="display">0</div>
+      <!-- 操作按钮 -->
+      <div class="buttons">
+        <button class="ac">AC</button>
+        <button class="sign">±</button>
+        <button class="percent">%</button>
+        <button class="operator">÷</button>
+
+        <button class="number">7</button>
+        <button class="number">8</button>
+        <button class="number">9</button>
+        <button class="operator">×</button>
+
+        <button class="number">4</button>
+        <button class="number">5</button>
+        <button class="number">6</button>
+        <button class="operator">-</button>
+
+        <button class="number">1</button>
+        <button class="number">2</button>
+        <button class="number">3</button>
+        <button class="operator">+</button>
+
+        <button class="number zero">0</button>
+        <button class="dot">.</button>
+        <button class="equals">=</button>
+      </div>
+    </div>
+    <script>
+      const display = document.querySelector(".display");
+      const buttons = document.querySelectorAll("button");
+
+      let currentNum = "0"; // 当前输入值
+      let firstNum = null; // 存储第一个运算数
+      let operator = null; // 存储运算符
+      let resetScreen = false; // 是否重置显示
+
+      // 监听所有按钮点击（事件委托优化）
+      document.querySelector(".buttons").addEventListener("click", (e) => {
+        const btn = e.target;
+        if (!btn.matches("button")) return;
+
+        const value = btn.textContent;
+
+        // 处理数字输入
+        if (btn.classList.contains("number")) {
+          handleNumber(value);
+        }
+
+        // 处理运算符
+        if (btn.classList.contains("operator")) {
+          handleOperator(value);
+        }
+
+        // 处理特殊操作
+        if (btn.classList.contains("ac")) {
+          resetCalculator();
+        }
+
+        if (btn.classList.contains("equals")) {
+          calculate();
+        }
+
+        if (btn.classList.contains("dot")) {
+          addDot();
+        }
+
+        updateDisplay();
+      });
+
+      // 处理数字输入
+      function handleNumber(num) {
+        if (resetScreen) {
+          currentNum = "0";
+          resetScreen = false;
+        }
+        currentNum = currentNum === "0" ? num : currentNum + num;
+      }
+
+      // 处理运算符
+      function handleOperator(op) {
+        if (firstNum === null) {
+          firstNum = parseFloat(currentNum);
+        } else if (operator) {
+          const result = calculate();
+          firstNum = result;
+        }
+        operator = op;
+        resetScreen = true;
+      }
+
+      // 执行计算
+      function calculate() {
+        if (operator === null || firstNum === null) return;
+        const secondNum = parseFloat(currentNum);
+        let result;
+
+        switch (operator) {
+          case "+":
+            result = firstNum + secondNum;
+            break;
+          case "-":
+            result = firstNum - secondNum;
+            break;
+          case "×":
+            result = firstNum * secondNum;
+            break;
+          case "÷":
+            if (secondNum === 0) {
+              alert("不能除以零！");
+              resetCalculator();
+              return;
+            }
+            result = firstNum / secondNum;
+            break;
+        }
+
+        currentNum = result.toString();
+        operator = null;
+        firstNum = null;
+        return result;
+      }
+
+      // 重置计算器
+      function resetCalculator() {
+        currentNum = "0";
+        firstNum = null;
+        operator = null;
+      }
+
+      // 添加小数点
+      function addDot() {
+        if (!currentNum.includes(".")) {
+          currentNum += ".";
+        }
+      }
+
+      // 更新显示
+      function updateDisplay() {
+        display.textContent =
+          currentNum.length > 10
+            ? parseFloat(currentNum).toExponential(5)
+            : currentNum;
+      }
+    </script>
+  </body>
+</html>
