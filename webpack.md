@@ -570,6 +570,48 @@ module.exports = {
 }
 ```
 
+###  如何配置 Webpack 可以让图片以base64方式显示 
+
+安装
+
+```shell
+npm install --save-dev url-loader file-loader
+```
+
+webpack配置
+
+```js
+const path = require('path');
+
+module.exports = {
+// 其他配置...
+module: {
+    rules: [
+      {
+        test: /\.(png|jpg|gif|svg)$/, // 匹配图片文件类型
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192, // 小于等于8KB（8192字节）的图片会被转换成Base64编码
+              name: '[name].[ext]', // 输出文件名格式
+              outputPath: 'images/', // 图片输出目录
+              esModule: false, // 如果你遇到图片路径问题，可以尝试设置此选项为false
+            },
+          },
+        ],
+      },
+    ],
+  },
+}
+```
+
+ 此外，如果你希望保留图片的原始名称并在文件名前加上哈希值以防止缓存问题，你可以这样调整 `name` 属性 
+
+```js
+name: '[hash:8]-[name].[ext]',
+```
+
 ## vite
 
 ### 使用vite 构建 react 项目
