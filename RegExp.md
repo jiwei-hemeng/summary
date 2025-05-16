@@ -293,3 +293,15 @@ let person = {
 console.log(compile(str, person)); // 输出：我是张三,年龄18,性别男
 ```
 
+### 正则表达式：重复命名捕获组
+
+```js
+const re = /(?<year>\d{4})-(?<month>\d{2})|(?<month>\d{2})\/(?<year>\d{4})/;
+const match1 = "2024-07".match(re);
+const match2 = "07/2024".match(re);
+console.log(match1.groups.year); // "2024"
+console.log(match1.groups.month); // "07"
+console.log(match2.groups.year); // "2024"
+console.log(match2.groups.month); // "07"
+```
+
