@@ -25,6 +25,19 @@ var arr = [1,2,3,4,5,6];
 var newArr = [...new Set(arr)];
 ```
 
+ Set 方法增强 
+
+```js
+const devs = new Set(['Alice', 'Bob']);
+const seniors = new Set(['Alice', 'Charlie']);
+// 交集：同时具备开发与资深身份
+devs.intersection(seniors); // Set {'Alice'}
+// 差集：普通开发者
+devs.difference(seniors);   // Set {'Bob'}
+// 并集：所有相关人员
+devs.union(seniors);        // Set {'Alice','Bob','Charlie'}
+```
+
 ## Map 新的数据类型
 
 >  `Map`是ES6引入的一种类似`Object`的新的数据结构。
