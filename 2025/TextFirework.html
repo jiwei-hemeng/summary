@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <title>文字烟花</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #000;
+        font-size: 14x;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #ui {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        background: rgba(20, 24, 40, 0.85);
+        padding: 10px 8vw 18px 8vw;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -2px 24px #000a;
+        color: #fff;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        border: 1.5px solid rgba(80, 120, 255, 0.18);
+        backdrop-filter: blur(2px);
+        width: 100vw;
+        max-width: 280px;
+        min-width: 0;
+      }
+      #textInput {
+        font-size: 1.1rem;
+        padding: 10px 16px;
+        border-radius: 18px;
+        border: 1.5px solid #3a4a7a;
+        outline: none;
+        background: rgba(30, 40, 70, 0.85);
+        color: #fff;
+        transition: border 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px #0004 inset;
+        width: 64vw;
+        max-width: 340px;
+        min-width: 0;
+      }
+      #launchBtn,
+      #shareBtn {
+        font-size: 1.1rem;
+        padding: 10px 0;
+        border-radius: 18px;
+        border: none;
+        background: linear-gradient(90deg, #3a8dde 0%, #7ecfff 100%);
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        letter-spacing: 2px;
+        box-shadow: 0 2px 12px #3a8dde44;
+        transition: background 0.2s, box-shadow 0.2s;
+        width: 38vw;
+        max-width: 150px;
+        min-width: 80px;
+        margin: 0 2vw;
+      }
+      #launchBtn:hover,
+      #shareBtn:hover {
+        background: linear-gradient(90deg, #7ecfff 0%, #3a8dde 100%);
+        box-shadow: 0 4px 18px #7ecfff66;
+      }
+      #canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        touch-action: none;
+      }
+      @media (max-width: 600px) {
+        #ui {
+          padding: 8px 2vw 12px 2vw;
+          max-width: 100vw;
+          border-radius: 18px 18px 0 0;
+        }
+        #textInput {
+          font-size: 1rem;
+          padding: 8px 8px;
+          width: 80vw;
+          max-width: 98vw;
+        }
+        #launchBtn,
+        #shareBtn {
+          font-size: 1rem;
+          padding: 8px 0;
+          width: 38vw;
+          max-width: 120px;
+          min-width: 60px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ui">
+      <input
+        id="textInput"
+        type="text"
+        placeholder="输入你想要的文字"
+        maxlength="100"
+        style="font-size: 18px; padding: 4px 8px"
+      />
+      <div
+        style="
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+          margin-top: 6px;
+        "
+      >
+        <button id="launchBtn" style="font-size: 18px">确定</button>
+        <button
+          id="shareBtn"
+          style="
+            font-size: 18px;
+            background: linear-gradient(90deg, #3a8dde 0%, #7ecfff 100%);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 2px 12px #3a8dde44;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 18px;
+            transition: background 0.2s, box-shadow 0.2s;
+          "
+        >
+          分享
+        </button>
+      </div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      let W = window.innerWidth,
+        H = window.innerHeight;
+      function resize() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W;
+        canvas.height = H;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      // 粒子类
+      class Particle {
+        constructor(x, y, color, vx, vy, size, alpha, fade, gravity = 0.02) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.vx = vx;
+          this.vy = vy;
+          this.size = size;
+          this.alpha = alpha;
+          this.fade = fade;
+          this.gravity = gravity;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += this.gravity;
+          this.alpha -= this.fade;
+        }
+        draw(ctx) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(this.alpha, 0);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.restore();
+        }
+        isAlive() {
+          return this.alpha > 0;
+        }
+      }
+
+      // 烟花上升类
+      class AscendFirework {
+        constructor(sx, sy, tx, ty, color, textChar) {
+          this.x = sx;
+          this.y = sy;
+          this.tx = tx;
+          this.ty = ty;
+          this.color = color;
+          this.textChar = textChar;
+          this.vx = (tx - sx) / 36;
+          this.vy = (ty - sy) / 36;
+          this.age = 0;
+          this.exploded = false;
+        }
+        update() {
+          if (!this.exploded) {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.age++;
+            if (
+              (Math.abs(this.x - this.tx) < 2 &&
+                Math.abs(this.y - this.ty) < 2) ||
+              this.age > 40
+            ) {
+              this.exploded = true;
+              return true;
+            }
+          }
+          return false;
+        }
+        draw(ctx) {
+          if (!this.exploded) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+      }
+
+      // 文字烟花粒子
+      function createTextParticles(text, x, y, color) {
+        const offCanvas = document.createElement("canvas");
+        const offCtx = offCanvas.getContext("2d");
+        const fontSize = 94;
+        offCanvas.width = fontSize * text.length;
+        offCanvas.height = fontSize * 1.2;
+        offCtx.clearRect(0, 0, offCanvas.width, offCanvas.height);
+        offCtx.font = `bold ${fontSize}px cursive`;
+        offCtx.textAlign = "center";
+        offCtx.textBaseline = "middle";
+        offCtx.fillStyle = "#fff";
+        offCtx.fillText(text, offCanvas.width / 2, offCanvas.height / 2);
+        const imageData = offCtx.getImageData(
+          0,
+          0,
+          offCanvas.width,
+          offCanvas.height
+        );
+        const particles = [];
+        for (let i = 0; i < imageData.width; i += 6) {
+          // 步长由4改为6，减少粒子
+          for (let j = 0; j < imageData.height; j += 6) {
+            const idx = (j * imageData.width + i) * 4;
+            if (imageData.data[idx + 3] > 128) {
+              const tx = x - offCanvas.width / 2 + i;
+              const ty = y - offCanvas.height / 2 + j;
+              const sx = x;
+              const sy = y;
+              const duration = 32;
+              const vx = (tx - sx) / duration;
+              const vy = (ty - sy) / duration;
+              const p = new Particle(
+                sx,
+                sy,
+                color,
+                vx,
+                vy,
+                2.2,
+                1,
+                0.012 + Math.random() * 0.01,
+                0
+              );
+              p.tx = tx;
+              p.ty = ty;
+              p.explodeFrame = 0;
+              p.state = "explode";
+              p.holdFrame = 0;
+              p.disperseFrame = 0;
+              particles.push(p);
+            }
+          }
+        }
+        return particles;
+      }
+
+      // 烟花爆炸粒子
+      function createFirework(x, y, color, count = 40, speed = 4, size = 2) {
+        const particles = [];
+        for (let i = 0; i < count; i++) {
+          const angle = Math.PI * 2 * (i / count);
+          const vx =
+            Math.cos(angle) * (Math.random() * speed * 0.7 + speed * 0.3);
+          const vy =
+            Math.sin(angle) * (Math.random() * speed * 0.7 + speed * 0.3);
+          particles.push(
+            new Particle(
+              x,
+              y,
+              color,
+              vx,
+              vy,
+              size,
+              1,
+              0.015 + Math.random() * 0.01
+            )
+          );
+        }
+        return particles;
+      }
+
+      // 随机颜色
+      function randomColor() {
+        const colors = [
+          "#ff5252",
+          "#ffd740",
+          "#40c4ff",
+          "#69f0ae",
+          "#fff176",
+          "#b388ff",
+          "#ff80ab",
+          "#fff",
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      // 背景烟花
+      let bgFireworks = [];
+      let bgAscendFireworks = [];
+      function launchBgFirework() {
+        const tx = Math.random() * W * 0.9 + W * 0.05;
+        const ty = Math.random() * H * 0.4 + H * 0.1;
+        const sx = tx + (Math.random() - 0.5) * 80;
+        const sy = H;
+        const color = randomColor();
+        bgAscendFireworks.push(new AscendFirework(sx, sy, tx, ty, color, null));
+      }
+      setInterval(() => {
+        if (bgAscendFireworks.length < 8) launchBgFirework();
+      }, 700);
+
+      // 文字烟花流程
+      let textQueue = [];
+      let textParticles = [];
+      let isTextFirework = false;
+      let textCurrentChar = "";
+      let textCurrentColor = "";
+      let textLoopStr = "";
+      let textAnimating = false;
+      let textAscendFireworks = [];
+
+      function launchTextFirework(str) {
+        textLoopStr = str;
+        textQueue = str.split("|");
+        textParticles = [];
+        isTextFirework = true;
+        textCurrentChar = "";
+        textCurrentColor = "";
+        textAnimating = false;
+        textAscendFireworks = [];
+        nextTextFirework();
+      }
+
+      function nextTextFirework() {
+        if (textQueue.length === 0) {
+          textAnimating = true;
+          return;
+        }
+        textCurrentChar = textQueue.shift();
+        // 目标位置在上下70%-80%和左右33%-66%区域内随机
+        const x = W * (0.33 + 0.33 * Math.random());
+        const y = H * (0.1 + 0.1 * Math.random());
+        textCurrentColor = randomColor();
+        const sx = x + (Math.random() - 0.5) * 80;
+        const sy = H;
+        textAscendFireworks.push(
+          new AscendFirework(sx, sy, x, y, textCurrentColor, textCurrentChar)
+        );
+      }
+
+      // 在动画主循环中增加粒子拖影效果
+      function animate() {
+        // 拖影效果：用半透明黑色覆盖
+        ctx.globalAlpha = 0.22;
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+        // 背景烟花上升
+        for (let i = bgAscendFireworks.length - 1; i >= 0; i--) {
+          const fw = bgAscendFireworks[i];
+          fw.draw(ctx);
+          if (fw.update()) {
+            bgFireworks.push(
+              ...createFirework(
+                fw.x,
+                fw.y,
+                fw.color,
+                30 + Math.random() * 20,
+                2.5 + Math.random() * 1.5,
+                1.5 + Math.random()
+              )
+            );
+            bgAscendFireworks.splice(i, 1);
+          }
+        }
+        // 绘制背景烟花爆炸
+        bgFireworks = bgFireworks.filter((p) => p.isAlive());
+        for (const p of bgFireworks) {
+          p.update();
+          p.draw(ctx);
+        }
+        // 文字烟花上升
+        for (let i = textAscendFireworks.length - 1; i >= 0; i--) {
+          const fw = textAscendFireworks[i];
+          fw.draw(ctx);
+          if (fw.update()) {
+            textParticles.push(
+              ...createTextParticles(fw.textChar, fw.x, fw.y, fw.color)
+            );
+            textAscendFireworks.splice(i, 1);
+            setTimeout(nextTextFirework, 300);
+          }
+        }
+        // 文字烟花动画
+        textParticles = textParticles.filter((p) => p.isAlive());
+        let allDisappear = true;
+        for (const p of textParticles) {
+          if (p.tx !== undefined && p.ty !== undefined) {
+            if (p.state === "explode") {
+              // 爆炸阶段粒子带有更高透明度拖影
+              ctx.save();
+              ctx.globalAlpha = 0.7;
+              p.x += p.vx;
+              p.y += p.vy;
+              p.explodeFrame++;
+              p.draw(ctx);
+              ctx.restore();
+              if (p.explodeFrame >= 32) {
+                p.x = p.tx;
+                p.y = p.ty;
+                p.state = "hold";
+              } else {
+                allDisappear = false;
+              }
+            } else if (p.state === "hold") {
+              p.holdFrame++;
+              p.alpha = 1;
+              p.draw(ctx);
+              if (p.holdFrame > 38) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 2.5;
+                p.vx = Math.cos(angle) * speed;
+                p.vy = Math.sin(angle) * speed;
+                p.state = "disperse";
+              } else {
+                allDisappear = false;
+              }
+            } else if (p.state === "disperse") {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vx *= 0.96;
+              p.vy *= 0.96;
+              p.alpha *= 0.94;
+              p.disperseFrame++;
+              p.draw(ctx);
+              if (p.alpha > 0.05) allDisappear = false;
+            }
+          } else {
+            p.update();
+            p.draw(ctx);
+            allDisappear = false;
+          }
+        }
+        // 所有字动画完全消失后再自动循环
+        if (isTextFirework && textAnimating && allDisappear) {
+          setTimeout(() => {
+            if (textLoopStr) {
+              textQueue = textLoopStr.split("|");
+              textParticles = [];
+              isTextFirework = true;
+              textCurrentChar = "";
+              textCurrentColor = "";
+              textAnimating = false;
+              textAscendFireworks = [];
+              nextTextFirework();
+            }
+          }, 1200);
+          isTextFirework = false;
+          textAnimating = false;
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // 简单base64加密
+      function encodeText(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+      }
+      function decodeText(str) {
+        try {
+          return decodeURIComponent(escape(atob(str)));
+        } catch (e) {
+          return "";
+        }
+      }
+      // 交互
+      const input = document.getElementById("textInput");
+      const btn = document.getElementById("launchBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      btn.onclick = () => {
+        const val = input.value.trim();
+        if (!val) return;
+        launchTextFirework(val);
+        // 更新URL参数（加密）
+        const url = new URL(window.location.href);
+        url.searchParams.set("text", encodeText(val));
+        window.history.replaceState(null, "", url.toString());
+      };
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") btn.click();
+      });
+      shareBtn.onclick = () => {
+        const val = input.value.trim();
+        const url = new URL(window.location.href);
+        if (val) {
+          url.searchParams.set("text", encodeText(val));
+        } else {
+          url.searchParams.delete("text");
+        }
+        navigator.clipboard.writeText(url.toString()).then(() => {
+          shareBtn.textContent = "已复制!";
+          setTimeout(() => {
+            shareBtn.textContent = "分享";
+          }, 1200);
+        });
+      };
+      // 页面加载时自动播放默认或URL参数文字（解密）
+      const urlTextRaw = new URLSearchParams(window.location.search).get(
+        "text"
+      );
+      let urlText = "";
+      if (urlTextRaw) {
+        urlText = decodeText(urlTextRaw);
+      }
+      if (urlText) {
+        input.value = urlText;
+        launchTextFirework(urlText);
+      } else {
+        launchTextFirework("祝我|2025|新年快乐|万事顺义");
+      }
+    </script>
+  </body>
+</html>
