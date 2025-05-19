@@ -45,6 +45,12 @@ wmic cpu get name
 wmic path win32_videocontroller get name
 # 查看硬盘信息
 wmic diskdrive get model,size
+# 递归查询扩展名是.html文件 
+dir /s /b | findstr ".html"
+# 在当前目录中查找字符串
+findstr /s /i "switch_btn_0" *.*
+# 查看mac地址
+getmac
 ```
 
 ### cmd 安装 jdk 并配置环境变量
