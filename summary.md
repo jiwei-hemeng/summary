@@ -75,6 +75,28 @@ document.ondrop = function(e){
 }
 ```
 
+**通过拖拽实现文件上传**
+
+```html
+<style>
+  #dropZone {
+    height: 200px;
+    width: 200px;
+    border: 1px dashed #000;
+    background-color: coral;
+  }
+</style>
+<div id="dropZone">Drop files here</div>
+<script>
+  const dropZone = document.getElementById("dropZone");
+  dropZone.addEventListener("dragover", (e) => e.preventDefault());
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+  });
+</script>
+```
+
 ### 通过JavaScript来实现页面间数据传递
 
 Window. opener 属性是一个可读可写的属性，使用 window.open 打开的两个窗口之间存在着关系“父子”关系。子窗口可以通过 window.opener 指向父窗口，访问父窗口的对象。优点：取值方便。只要 opener 指向父窗口，就可以访问所有对象。不仅可以访问值，还可以访问父窗口的方法。值长度无限制。缺点：两窗口要存在着关系。就是需要使用 open 打开窗口，不能跨域。
