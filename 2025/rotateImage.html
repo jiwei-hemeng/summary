@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片旋转</title>
+    <style>
+      .preview {
+        height: 200px;
+      }
+    </style>
+    <script>
+      /**
+       * @param src 图片路径
+       * @param rotate 旋转角度
+       * @returns {Promise<base64>}
+       */
+      function rotateImg(src, rotate) {
+        return new Promise((resolve, reject) => {
+          let img = new Image();
+          img.src = src;
+          img.setAttribute("crossOrigin", "Anonymous");
+          img.onload = () => {
+            let canvas = document.createElement("canvas");
+            let context = canvas.getContext("2d");
+            if (rotate > 45 && rotate <= 135) {
+              // 90 宽高颠倒
+              canvas.width = img.height;
+              canvas.height = img.width;
+            } else if (rotate > 225 && rotate <= 315) {
+              // 270 宽高颠倒
+              canvas.width = img.height;
+              canvas.height = img.width;
+            } else {
+              canvas.width = img.width;
+              canvas.height = img.height;
+            }
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.translate(canvas.width / 2, canvas.height / 2);
+            context.rotate((rotate * Math.PI) / 180);
+            context.translate(-canvas.width / 2, -canvas.height / 2);
+            context.drawImage(
+              img,
+              canvas.width / 2 - img.width / 2,
+              canvas.height / 2 - img.height / 2,
+              img.width,
+              img.height
+            );
+            context.translate(canvas.width / 2, canvas.height / 2);
+            context.rotate((-rotate * Math.PI) / 180);
+            context.translate(-canvas.width / 2, -canvas.height / 2);
+            context.restore();
+            let base64 = canvas.toDataURL();
+            resolve(base64);
+          };
+          img.onerror = reject;
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <img src="" id="preview" class="preview" alt="" />
+    <br />
+    <button id="selectImage">选择图片</button>
+    <button id="rotateBtn">顺时针旋转</button>
+    <button id="rotateBtn2">逆时针旋转</button>
+    <script>
+      let previewUrl = "";
+      const previewDOM = document.getElementById("preview");
+      document
+        .getElementById("selectImage")
+        ?.addEventListener("click", async () => {
+          const [fileHandle] = await window.showOpenFilePicker({
+            types: [
+              {
+                description: "Images",
+                accept: {
+                  "image/*": [".png", ".gif", ".jpeg", ".jpg"],
+                },
+              },
+            ],
+            excludeAcceptAllOption: true,
+            multiple: false,
+          });
+          const file = await fileHandle.getFile();
+          previewUrl = window.URL.createObjectURL(file);
+          previewDOM.setAttribute("src", previewUrl);
+        });
+      document
+        .getElementById("rotateBtn")
+        ?.addEventListener("click", async () => {
+          const res = await rotateImg(previewUrl, 45);
+          previewUrl = res;
+          previewDOM.setAttribute("src", previewUrl);
+        });
+      document
+        .getElementById("rotateBtn2")
+        ?.addEventListener("click", async () => {
+          const res = await rotateImg(previewUrl, -45);
+          previewUrl = res;
+          previewDOM.setAttribute("src", previewUrl);
+        });
+    </script>
+  </body>
+</html>
