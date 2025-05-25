@@ -707,3 +707,25 @@ getModules();
 export const baseUrl = import.meta.env.VITE_APP_BASE_URL;
 ```
 
+### 配置代理服务器
+
+```js
+export default {
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,// 是否改变请求头中的源Origin
+        rewirite: (path) => path.replace(/^\/api/, ""),
+      },
+      "/auth": {
+        target: "http://localhost:3000",
+        changeOrigin: true,// 是否改变请求头中的源Origin
+        rewirite: (path) => path.replace(/^\/auth/, ""),
+        ws: true, // 处理websocket请求
+      }
+    }
+  }
+}
+```
+
