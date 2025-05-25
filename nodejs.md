@@ -1158,3 +1158,42 @@ Remove-Item -Force -Recurse node_modules
 rm -rf ./node_modules
 ```
 
+## HTML5 服务器发送事件（Server-Sent Events, SSE）：实时数据传输的新篇章
+
+>  Server-Sent Events为开发者提供了一种简便的实时数据传输方案，特别适合那些不需要双向通信的场景 
+
+ ### 服务器端（Node.js + Express）示例 
+
+```js
+const express = require('express');
+const app = express();
+app.get('/stream', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+    
+  setInterval(() => {
+    const currentTime = new Date().toLocaleTimeString();
+    res.write(`data: ${currentTime}\n\n`);
+  }, 1000);
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+```
+
+ ### 客户端（HTML + JavaScript）示例
+
+```js
+const eventSource = new EventSource('/stream');
+eventSource.onmessage = function(event) {
+  const currentTime = event.data;
+  document.getElementById('time').innerText = currentTime;
+};
+eventSource.onerror = function(error) {
+  console.error('Error occurred:', error);
+};
+```
+
