@@ -1070,6 +1070,15 @@ chrome://inspect
 ## 服务端主动刷新token
 
 ```js
+function getTokenExpiresIn(token) {
+  // 解析JWT以获取过期时间（exp字段）
+  const decoded = jwt.decode(token);
+  const expirationTime = new Date(decoded.exp * 1000); // 将秒转换为毫秒
+  const currentTime = new Date();
+  // 计算剩余时间
+  return (expirationTime - currentTime) / 1000;
+}
+
 app.use((req, res, next) => {
   const accessToken = req.headers.authorization?.split(' ')[1];
   if (accessToken) {
