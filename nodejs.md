@@ -1206,3 +1206,9 @@ eventSource.onerror = function(error) {
 };
 ```
 
+## 当前目录启动一个http服务
+
+```shell
+npx serve -S .
+```
+

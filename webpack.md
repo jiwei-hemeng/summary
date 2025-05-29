@@ -729,3 +729,92 @@ export default {
 }
 ```
 
+### **rollup-plugin-remove-others-console**
+
+>  在生产环境中可以根据 git 作者信息移除非自己的 console 语句，无任何配置负担，优化开发体验～ 
+
+安装
+
+```shell
+npm install rollup-plugin-remove-others-console --save-dev
+```
+
+配置
+
+```js
+import { defineConfig } from 'vite';
+import removeConsole from 'rollup-plugin-remove-others-console';
+
+export default defineConfig({
+  plugins: [removeConsole()],
+});
+```
+
+###  vite-plugin-vconsole 
+
+>  集成 VConsole，帮助开发者在移动设备上进行调试 
+
+```shell
+npm install vite-plugin-vconsole --save-dev
+```
+
+配置
+
+```js
+import { defineConfig } from 'vite';
+import vconsole from 'vite-plugin-vconsole';
+
+export default defineConfig({
+  plugins: [
+    vconsole({
+      entry: 'src/main.js',
+      enabled: process.env.NODE_ENV === 'development',
+    }),
+  ],
+});
+```
+
+###  vite-plugin-find-image-duplicates
+
+>  在构建时查找项目中的重复图像，优化资源管理 
+
+```shell
+npm install vite-plugin-find-image-duplicates -D
+```
+
+配置
+
+```js
+import { defineConfig } from "vite";
+import findImageDuplicates from "vite-plugin-find-image-duplicates";
+
+export default defineConfig({
+  plugins: [findImageDuplicates({ imagePath: ["src/assets/images"] })],
+});
+```
+
+###  vite-plugin-qrcode 
+
+>  Vite 开发服务器启动时显示 QR 码，方便移动设备访问本地开发环境 
+
+```shell
+npm install --save-dev vite-plugin-qrcode
+```
+
+配置
+
+```js
+import { defineConfig } from "vite";
+import { qrcode } from "vite-plugin-qrcode";
+
+export default defineConfig({
+  plugins: [qrcode()],
+});
+```
+
+ 在开发模式下，使用下面的命令启动 
+
+```shell
+vite --host
+```
+
