@@ -130,7 +130,7 @@ router.post("/login", (req, res) => {
 ### 服务端主动刷新token
 
 ```js
-import jwt from "jsonwebtoken");
+import jwt from "jsonwebtoken";
 function getTokenExpiresIn(token) {
   // 解析JWT以获取过期时间（exp字段）
   const decoded = jwt.decode(token);
