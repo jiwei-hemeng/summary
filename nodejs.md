@@ -74,7 +74,7 @@ app.use(express.urlencoded({
 const express = require("express");
 const router = express.Router();
 
-router.get("/api/test/:id", function(req, res) {
+router.get("/test/:id", function(req, res) {
   res.json({
     code: 200,
     msg: "请求成功",
@@ -89,7 +89,7 @@ module.exports = router
 
 ```js
 let Test = require("./router/test")
-app.use("/", Test)
+app.use("/api", Test)
 ```
 
 ## 开放静态资源
