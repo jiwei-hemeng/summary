@@ -102,22 +102,22 @@ app.use(express.static("public"))
 
 ## 关于**jsonwebtoken**
 
-**安装**
+### 安装
 
 ```shell
 yarn add jsonwebtoken express-jwt -S
 ```
 
-**使用**(生成token)
+### 生成token
 
 ```js
 const secretKey = "jiwei-96";
 const jwt = require("jsonwebtoken");
 router.post("/login", (req, res) => {
-    res.json({
-      code: 200,
-      message: "登录成功",
-      token:
+  res.json({
+    code: 200,
+    message: "登录成功",
+    token:
       "Bearer " +
       jwt.sign({ username: req.body.username }, secretKey, {
         expiresIn: "1h",
@@ -127,14 +127,49 @@ router.post("/login", (req, res) => {
 });
 ```
 
-**配置不需要token认证的接口**
+### 服务端主动刷新token
+
+```js
+import jwt from "jsonwebtoken");
+function getTokenExpiresIn(token) {
+  // 解析JWT以获取过期时间（exp字段）
+  const decoded = jwt.decode(token);
+  const expirationTime = new Date(decoded.exp * 1000); // 将秒转换为毫秒
+  const currentTime = new Date();
+  // 计算剩余时间
+  return (expirationTime - currentTime) / 1000;
+}
+
+app.use((req, res, next) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  if (accessToken) {
+    const expiresIn = getTokenExpiresIn(accessToken);
+    if (expiresIn < 60) { // 剩余时间小于 60 秒
+      const newAccessToken = generateAccessToken(req.user);
+      res.set('New-Access-Token', newAccessToken);
+    }
+  }
+  next();
+});
+
+// 客户端逻辑
+service.interceptors.response.use(response => {
+  const newAccessToken = response.headers['new-access-token'];
+  if (newAccessToken) {
+    localStorage.setItem('accessToken', newAccessToken);
+  }
+  return response;
+});
+```
+
+### 配置不需要token认证的接口
 
 ```js
 import { expressjwt } from "express-jwt";
 app.use(expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({ path: [/^\/api\//] }));
 ```
 
-**解密**
+### 接口中解密token
 
 **使用tokenexpressJWT**
 
@@ -1066,40 +1101,6 @@ chrome://inspect
   ```
 
 + 重新运行项目即可
-
-## 服务端主动刷新token
-
-```js
-function getTokenExpiresIn(token) {
-  // 解析JWT以获取过期时间（exp字段）
-  const decoded = jwt.decode(token);
-  const expirationTime = new Date(decoded.exp * 1000); // 将秒转换为毫秒
-  const currentTime = new Date();
-  // 计算剩余时间
-  return (expirationTime - currentTime) / 1000;
-}
-
-app.use((req, res, next) => {
-  const accessToken = req.headers.authorization?.split(' ')[1];
-  if (accessToken) {
-    const expiresIn = getTokenExpiresIn(accessToken);
-    if (expiresIn < 60) { // 剩余时间小于 60 秒
-      const newAccessToken = generateAccessToken(req.user);
-      res.set('New-Access-Token', newAccessToken);
-    }
-  }
-  next();
-});
-
-// 客户端逻辑
-service.interceptors.response.use(response => {
-  const newAccessToken = response.headers['new-access-token'];
-  if (newAccessToken) {
-    localStorage.setItem('accessToken', newAccessToken);
-  }
-  return response;
-});
-```
 
 ## 本机环境变量支持
 
