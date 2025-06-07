@@ -120,7 +120,7 @@ router.post("/login", (req, res) => {
     token:
       "Bearer " +
       jwt.sign({ username: req.body.username }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "2h",
       }),
     });
   });
@@ -138,6 +138,13 @@ function getTokenExpiresIn(token) {
   const currentTime = new Date();
   // 计算剩余时间
   return (expirationTime - currentTime) / 1000;
+}
+
+function generateAccessToken(user) {
+  return "Bearer " +
+    jwt.sign({ username: user.username }, secretKey, {
+    expiresIn: "2h",
+  })
 }
 
 app.use((req, res, next) => {
