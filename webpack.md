@@ -484,8 +484,9 @@ plugins: [
 
 ### 使用多个进程线程可以帮助加快构建速度
 
+#### 使用parallel-webpack插件
+
 ```js
-// 使用parallel-webpack插件
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 
 module.exports = {
@@ -499,8 +500,9 @@ module.exports = {
 };
 ```
 
+#### 使用HappyPack插件
+
 ```js
-// 使用HappyPack插件
 const HappyPack = require('happypack');
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 module.exports = {
