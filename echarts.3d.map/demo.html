@@ -4,6 +4,11 @@
     <meta charset="utf-8" />
     <title>3D中国地图</title>
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a2d5e; /* 深蓝色背景 */
+      }
       #container {
         width: 100%;
         height: 100vh;
@@ -20,13 +25,15 @@
       var chart = echarts.init(document.getElementById("container"));
 
       // 加载GeoJSON数据（实际使用时需要替换为真实数据）
-      fetch("/china-map.json")
+      fetch(
+        "https://jiwei-hemeng.github.io/summary/echarts.3d.map/china-map.json"
+      )
         .then((response) => response.json())
         .then((chinaJson) => {
           echarts.registerMap("china", chinaJson);
 
           // 配置项
-          var option = {
+          const option = {
             backgroundColor: "#0A2D5E",
             title: {
               text: "3D中国地图",
