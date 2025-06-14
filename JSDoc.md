@@ -8,6 +8,22 @@ JSDoc和TypeScript都解决了编写和维护纯JavaScript代码的问题。然�
 - **代码注释**JSDoc不仅可以用于类型检查，还可以用于添加更多的文档，描述函数的工作原理，并生成文档网站，从而提供价值以增强代码的可维护性和理解性。
 - **无需编译步骤**这是从TypeScript转换到JSDoc最具动力的原因之一。TypeScript需要编译将TypeScript代码转换为JavaScript，以便浏览器能够理解，而JSDoc不需要任何其他步骤，因为它们只是“注释”，这是JavaScript本身支持的特性。与每次进行更改时都需要使用必要的TypeScript构建流程相比，这可以简化并加快开发工作流程。
 
+## 使用
+
+安装
+
+```shell
+npm i -g jsdoc
+```
+
+生成文档
+
+```shell
+jsdoc yourFile.js -d docs
+```
+
+该命令会在名为`docs`的文件夹中生成文档。
+
 ## 向代码块添加代码描述
 
 ```js
