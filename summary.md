@@ -310,6 +310,12 @@ input.visually-hidden:focus-within + label {
 - 语句结束加分号
 - 命名要有意义，使用驼峰命名法
 
+### 一行代码让页面可编辑
+
+```js
+document.designMode = "on";
+```
+
 ### 终极奥义——动态Debug艺术
 
 ```js
