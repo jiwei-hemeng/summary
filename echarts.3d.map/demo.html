@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>3D中国地图</title>
+    <style>
+      #container {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script src="./echarts.min.js"></script>
+    <script src="./echarts-gl.min.js"></script>
+    <script>
+      // 初始化图表
+      var chart = echarts.init(document.getElementById("container"));
+
+      // 加载GeoJSON数据（实际使用时需要替换为真实数据）
+      fetch("/china-map.json")
+        .then((response) => response.json())
+        .then((chinaJson) => {
+          echarts.registerMap("china", chinaJson);
+
+          // 配置项
+          var option = {
+            backgroundColor: "#0A2D5E",
+            title: {
+              text: "3D中国地图",
+              left: "center",
+              textStyle: {
+                color: "#fff",
+                fontSize: 24,
+              },
+            },
+            tooltip: {
+              trigger: "item",
+              formatter: "{b}<br/>{c}",
+            },
+            visualMap: {
+              min: 0,
+              max: 100,
+              text: ["高", "低"],
+              realtime: false,
+              calculable: true,
+              inRange: {
+                color: ["#1E90FF", "#00BFFF", "#87CEFA"],
+              },
+              textStyle: {
+                color: "#fff",
+              },
+            },
+            series: [
+              {
+                name: "中国地图",
+                type: "map3D",
+                map: "china",
+                regionHeight: 2, // 地图厚度
+                itemStyle: {
+                  color: "#1E90FF",
+                  opacity: 1,
+                  borderWidth: 1,
+                  borderColor: "#404a59",
+                },
+                environment: new echarts.graphic.LinearGradient(
+                  0,
+                  0,
+                  0,
+                  1,
+                  [
+                    { offset: 0, color: "#00aaff" }, // 天空渐变
+                    { offset: 0.7, color: "#998866" }, // 地面渐变
+                    { offset: 1, color: "#998866" },
+                  ],
+                  false
+                ),
+                // emphasis: {
+                //   itemStyle: {
+                //     color: "#FFA500",
+                //   },
+                //   label: {
+                //     show: true,
+                //     textStyle: {
+                //       color: "#fff",
+                //       fontSize: 12,
+                //     },
+                //   },
+                // },
+                // light: {
+                //   main: {
+                //     intensity: 1.2,
+                //     shadow: true,
+                //     shadowQuality: "high",
+                //     alpha: 30,
+                //     beta: 40,
+                //   },
+                //   ambient: {
+                //     intensity: 0.3,
+                //   },
+                // },
+                light: {
+                  // 光照系统
+                  main: { intensity: 1.2, alpha: 55, beta: 10 },
+                  ambient: { intensity: 0.5 },
+                },
+                label: {
+                  // 区域标签
+                  show: true,
+                  textStyle: { color: "#000", fontSize: 8 },
+                },
+                // itemStyle: {
+                //   // 基础样式
+                //   color: "rgba(95,158,160,0.5)",
+                //   borderWidth: 0.5,
+                //   borderColor: "#000",
+                // },
+                emphasis: {
+                  // 悬停高亮
+                  label: { textStyle: { color: "#fff", fontSize: 15 } },
+                  itemStyle: { areaColor: "#66ffff" },
+                },
+                viewControl: {
+                  // distance: 60,
+                  // alpha: 40,
+                  // beta: 30,
+                  // autoRotate: true,
+                  // autoRotateSpeed: 0,
+                  // rotateSensitivity: 0,
+                  rotateSensitivity: 1,
+                  zoomSensitivity: 0.2,
+                  translateSensitivity: 1,
+                  rotateButtonRotate: true,
+                  rotateButtonZoom: true,
+                  rotateCursor: "crosshair",
+                  zoomCursor: "pointer",
+                  panCursor: "move",
+                  rotateStepX: 180, // 每按一次旋转180度（顺时针）
+                  rotateStepY: 180, // 每按一次旋转180度（逆时针）
+                  zoomStep: 1, // 每次缩放的比例因子
+                  autoRotate: false, // 自动旋转视图
+                  autoRotateAfterStill: 2000, // 自动旋转前的静止时间2秒
+                  autoRotateSpeed: 10, // 自动旋转速度
+                },
+                data: [
+                  { name: "北京市", value: 200 },
+                  { name: "山西省", value: 154 },
+                  {
+                    name: "上海市",
+                    value: 200,
+                    itemStyle: { color: "#c23531" },
+                  },
+                ],
+              },
+            ],
+          };
+
+          chart.setOption(option);
+        });
+
+      // 响应式调整
+      window.addEventListener("resize", function () {
+        chart.resize();
+      });
+    </script>
+  </body>
+</html>

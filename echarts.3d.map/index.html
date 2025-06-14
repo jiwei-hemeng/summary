@@ -1,0 +1,141 @@
+<!--
+	此示例下载自 https://echarts.apache.org/examples/zh/editor.html?c=map-HK
+-->
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
+
+    <script
+      type="text/javascript"
+      src="https://echarts.apache.org/zh/js/vendors/jquery@3.7.1/dist/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"
+    ></script>
+
+    <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5/dist/extension/dataTool.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://echarts.apache.org/zh/js/vendors/echarts-gl/dist/echarts-gl.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://echarts.apache.org/zh/js/vendors/echarts-stat/dist/ecStat.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to echarts-graph-modularity extension
+  <script type="text/javascript" src="https://echarts.apache.org/zh/js/vendors/echarts-graph-modularity/dist/echarts-graph-modularity.min.js"></script>
+  -->
+    <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+    <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5/dist/extension/bmap.min.js"></script>
+  -->
+
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      var app = {};
+      // var ROOT_PATH = 'https://echarts.apache.org/examples';
+      var option;
+
+      myChart.showLoading();
+      // $.get(ROOT_PATH + '/data/asset/geo/HK.json', function (geoJson) {
+      $.get("/china-map.json", function (geoJson) {
+        myChart.hideLoading();
+        echarts.registerMap("chinaMap", geoJson);
+        const option = {
+          title: {
+            text: "人口密度",
+            subtext: "Data from Wikipedia",
+          },
+          tooltip: {
+            trigger: "item",
+            formatter: "{b}<br/>{c}",
+          },
+          toolbox: {
+            show: true,
+            orient: "vertical",
+            left: "right",
+            top: "center",
+            feature: {
+              dataView: { readOnly: false },
+              restore: {},
+              saveAsImage: {},
+            },
+          },
+          visualMap: {
+            min: 800,
+            max: 50000,
+            text: ["High", "Low"],
+            realtime: false,
+            calculable: true,
+            inRange: {
+              color: ["lightskyblue", "yellow", "orangered"],
+            },
+          },
+          series: [
+            {
+              name: "人口密度",
+              type: "map",
+              map: "chinaMap",
+              label: {
+                show: true,
+              },
+              data: [
+                { name: "北京市", value: 20057.34 },
+                { name: "山西省", value: 15477.48 },
+              ],
+              // 自定义名称映射
+              nameMap: {
+                // "Central and Western": "北京",
+                // Eastern: "山西",
+              },
+              label: {
+                show: true,
+                color: "#666666",
+                fontSize: 8,
+              },
+              // 地图区域的多边形 图形样式。
+              itemStyle: {
+                // 地图区域的颜色
+                areaColor: "#71d5a1", // 绿色
+                // 图形的描边颜色
+                borderColor: "#2979ff", // 蓝色
+              },
+              // 设置高亮状态下的多边形和标签样式
+              emphasis: {
+                // 设置区域样式
+                itemStyle: {
+                  areaColor: "#ffff99", // 黄色
+                  borderColor: "#f29100", // 描边颜色黄色
+                },
+                // 设置字体
+                label: {
+                  fontSize: 16, // 16px
+                  color: "#f29100", // 白色
+                },
+              },
+            },
+          ],
+        };
+        myChart.setOption(option);
+      });
+
+      if (option && typeof option === "object") {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener("resize", myChart.resize);
+    </script>
+  </body>
+</html>

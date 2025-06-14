@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>3D 中国地图</title>
+
+    <style>
+      #main {
+        width: 1000px;
+        height: 800px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script src="./echarts.min.js"></script>
+    <script src="./echarts-gl.min.js"></script>
+    <script>
+      (async function () {
+        const res = await fetch("/china.js");
+        const china = await res.json();
+        var chart = echarts.init(document.getElementById("main"));
+
+        // 注册地图
+        echarts.registerMap("china", china);
+
+        var option = {
+          backgroundColor: "#000",
+          title: {
+            text: "3D 中国地图",
+            left: "center",
+            textStyle: {
+              color: "#fff",
+            },
+          },
+          tooltip: {},
+          visualMap: {
+            min: 0,
+            max: 1000,
+            text: ["High", "Low"],
+            realtime: false,
+            calculable: true,
+            inRange: {
+              color: ["#50a3ba", "#eac736", "#d94e5d"],
+            },
+          },
+          series: [
+            {
+              name: "中国",
+              type: "map3D",
+              map: "china",
+              regionHeight: 2, // 区域高度
+              itemStyle: {
+                color: "#1E90FF",
+                opacity: 1,
+                borderWidth: 0.5,
+                borderColor: "#fff",
+              },
+              emphasis: {
+                itemStyle: {
+                  color: "#FF4500",
+                },
+                label: {
+                  show: true,
+                },
+              },
+              light: {
+                main: {
+                  intensity: 1.2,
+                  shadow: true,
+                  shadowQuality: "high",
+                  alpha: 30,
+                  beta: 40,
+                },
+                ambient: {
+                  intensity: 0.3,
+                },
+              },
+              viewControl: {
+                distance: 120,
+                alpha: 40,
+                beta: 30,
+                autoRotate: true,
+                autoRotateSpeed: 10,
+                rotateSensitivity: 1,
+              },
+              data: [
+                { name: "北京", value: 1000 },
+                { name: "上海", value: 800 },
+                { name: "广东", value: 700 },
+                // 其他省份数据...
+              ],
+            },
+          ],
+        };
+
+        chart.setOption(option);
+
+        // 窗口大小变化时调整图表大小
+        window.addEventListener("resize", function () {
+          chart.resize();
+        });
+      })();
+    </script>
+  </body>
+</html>
