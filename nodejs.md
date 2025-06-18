@@ -1270,3 +1270,11 @@ modules.forEach((moduleDir) => {
 console.log("处理结束");
 process.exit(0);
 ```
+
+## npm create
+
+`npm create` 命令的工作原理非常简单：它实际上会执行 `npm init ` 命令，后者会查找并运行一个名为 `create-` 的包，执行该包的默认操作。因此，`npm create` 会根据 `` 的不同，去寻找相应的工具包并运行。
+
+如果省略 `` 参数（仅调用 `npm create`），`init` 将回退到旧版 `init` 行为。它会问你一堆问题，然后为你生成一个 `package.json` 文件。
+
+ **运行 `npm create` 命令**：当我们在命令行中输入 `npm create vite` 时，NPM 会尝试查找名为 `create-vite` 的包。 
