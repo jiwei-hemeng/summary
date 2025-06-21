@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ECharts | 路径图</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      #main {
+        width: 100%;
+        height: 100dvh;
+        background-color: #0a2d5e; /* 深蓝色背景 */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script src="./echarts.min.js"></script>
+    <script>
+      const myChart = echarts.init(document.getElementById("main"));
+      var option;
+      // 路径多段线顶点坐标
+      const routeData = [
+        [116.4, 39.9],
+        [115.64718627929688, 34.44358444213867],
+        [113.82158660888672, 34.026859283447266],
+        [115.07498931884766, 30.21379852294922],
+        [115.98458099365234, 29.72321128845215],
+        [115.89991760253906, 28.67599105834961],
+        [116.10794067382812, 24.31450080871582],
+        [116.68379974365234, 23.36269187927246],
+      ];
+
+      myChart.showLoading();
+      fetch(
+        "https://jiwei-hemeng.github.io/summary/echarts.3d.map/china-map.json"
+      )
+        .then((response) => response.json())
+        .then((geoJson) => {
+          myChart.hideLoading();
+          echarts.registerMap("china", geoJson);
+          option = {
+            geo: [
+              {
+                map: "china",
+                roam: true,
+                label: { show: true },
+                emphasis: { disabled: true }, // 鼠标悬停时不显示高亮
+                center: [116.4, 39.9],
+                zoom: 1.6, // 缩放级别
+                itemStyle: {
+                  areaColor: "#1e90ff", // 区域颜色
+                  borderColor: "#fff", // 边界颜色
+                  borderWidth: 1, // 边界宽度
+                },
+              },
+            ],
+            series: [
+              {
+                name: "Route",
+                type: "lines",
+                coordinateSystem: "geo",
+                geoIndex: 0,
+                polyline: true,
+                lineStyle: { color: "green", width: 3 }, // 线条颜色和宽度
+                effect: {
+                  show: true,
+                  period: 18, // 移动速度
+                  color: "#a10000",
+                  trailLength: 0, //
+                  symbolSize: [12, 30], //
+                  symbol:
+                    "path://M87.1667 3.8333L80.5.5h-60l-6.6667 3.3333L.5 70.5v130l10 10h80l10 -10v-130zM15.5 190.5l15 -20h40l15 20zm75 -65l-15 5v35l15 15zm-80 0l15 5v35l-15 15zm65 0l15 -5v-40l-15 20zm-50 0l-15 -5v-40l15 20zm 65,-55 -15,25 c -15,-5 -35,-5 -50,0 l -15,-25 c 25,-15 55,-15 80,0 z", // 自定义图标路径
+                },
+                data: [{ coords: routeData }],
+              },
+            ],
+          };
+          myChart.setOption(option);
+        });
+    </script>
+  </body>
+</html>
