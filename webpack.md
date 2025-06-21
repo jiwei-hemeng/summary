@@ -525,29 +525,9 @@ module.exports = {
 };
 ```
 
-### 不打包第三方包
+#### thread-loader
 
-```js
-// webpack.config.js
-module.exports = {
-  entry: './main.jsx',
-  output: {
-    filename: 'bundle.js'
-  },
-  externals: {
-    "echarts": "echarts",
-  }
-}
-
-```
-
-### webpack开启cpu多线程提升打包效率
-
-> 如果小项目，文件不多，无需开启多进程打包，反而会变慢，因为开启进程是需要花费时间的
->
 > [文档地址](https://webpack.docschina.org/loaders/thread-loader/)
-
-安装 thread-loader
 
 ```shell
 npm i thread-loader -D
@@ -580,6 +560,43 @@ module.exports = {
     ],
   },
 };
+```
+
+### Webpack 5 内置缓存
+
+```js
+module.exports = {
+  cache: {
+    type: 'filesystem', // 使用文件系统缓存
+    buildDependencies: {
+      config: [__filename], // 当webpack配置变化时自动失效缓存
+    },
+    cacheDirectory: path.resolve(__dirname, '.temp_cache'), // 自定义缓存目录
+    name: 'my-app-cache', // 多配置项目时区分缓存
+    compression: 'gzip', // 压缩缓存内容
+  }
+};
+```
+
+优势
+
+- 默认缓存到 `node_modules/.cache/webpack`
+- 比 Webpack 4 的 `cache-loader` 更高效
+- 支持配置依赖自动失效
+
+### 不打包第三方包
+
+```js
+// webpack.config.js
+module.exports = {
+  entry: './main.jsx',
+  output: {
+    filename: 'bundle.js'
+  },
+  externals: {
+    "echarts": "echarts",
+  }
+}
 ```
 
 ### 配置项目中某个目录不进行打包
