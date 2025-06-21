@@ -1623,3 +1623,48 @@ while (count--) {
   state.num++
 }
 ```
+
+# vue中使用字体图标
+
+```html
+<template>
+  <svg aria-hidden="true" :fill="color"
+    :style="'width:' + size + ';height:' + size">
+    <use :xlink:href="symbolId" />
+  </svg>
+</template>
+
+<script setup>
+import { computed } from "vue"
+const props = defineProps({
+  // icon 名字
+  name: {
+    type: String,
+    default: "",
+  },
+  // 填充颜色
+  color: {
+    type: String,
+    default: "black",
+  },
+  // 大小
+  size: {
+    type: String,
+    default: "1em",
+  },
+})
+const symbolId = computed(() => `#icon-${props.name}`)
+</script>
+```
+
+使用
+
+```html
+<template>
+  <JIcon name="certificate-copy" color="#0f0" size="28px"></JIcon>
+</template>
+<script setup>
+  import JIcon from "@/components/JIcon.vue"
+</script>
+```
+
