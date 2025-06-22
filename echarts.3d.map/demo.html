@@ -30,9 +30,7 @@
       )
         .then((response) => response.json())
         .then((chinaJson) => {
-          echarts.registerMap("china", chinaJson);
-
-          // 配置项
+          echarts.registerMap("china", chinaJson); // 注册地图数据
           const option = {
             backgroundColor: "#0A2D5E",
             title: {
@@ -54,7 +52,7 @@
               realtime: false,
               calculable: true,
               inRange: {
-                color: ["#1E90FF", "#00BFFF", "#87CEFA"],
+                color: ["#1E90FF", "#00BFFF", "#87CEFA"], // 渐变色
               },
               textStyle: {
                 color: "#fff",
@@ -65,7 +63,7 @@
                 name: "中国地图",
                 type: "map3D",
                 map: "china",
-                regionHeight: 2, // 地图厚度
+                regionHeight: 2, // 区域高度
                 itemStyle: {
                   color: "#1E90FF",
                   opacity: 1,
@@ -83,31 +81,8 @@
                     { offset: 1, color: "#998866" },
                   ],
                   false
-                ),
-                // emphasis: {
-                //   itemStyle: {
-                //     color: "#FFA500",
-                //   },
-                //   label: {
-                //     show: true,
-                //     textStyle: {
-                //       color: "#fff",
-                //       fontSize: 12,
-                //     },
-                //   },
-                // },
-                // light: {
-                //   main: {
-                //     intensity: 1.2,
-                //     shadow: true,
-                //     shadowQuality: "high",
-                //     alpha: 30,
-                //     beta: 40,
-                //   },
-                //   ambient: {
-                //     intensity: 0.3,
-                //   },
-                // },
+                ), // 环境光照
+
                 light: {
                   // 光照系统
                   main: { intensity: 1.2, alpha: 55, beta: 10 },
@@ -118,24 +93,12 @@
                   show: true,
                   textStyle: { color: "#000", fontSize: 8 },
                 },
-                // itemStyle: {
-                //   // 基础样式
-                //   color: "rgba(95,158,160,0.5)",
-                //   borderWidth: 0.5,
-                //   borderColor: "#000",
-                // },
                 emphasis: {
                   // 悬停高亮
                   label: { textStyle: { color: "#fff", fontSize: 15 } },
                   itemStyle: { areaColor: "#66ffff" },
                 },
                 viewControl: {
-                  // distance: 60,
-                  // alpha: 40,
-                  // beta: 30,
-                  // autoRotate: true,
-                  // autoRotateSpeed: 0,
-                  // rotateSensitivity: 0,
                   rotateSensitivity: 1,
                   zoomSensitivity: 0.2,
                   translateSensitivity: 1,
