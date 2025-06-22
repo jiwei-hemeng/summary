@@ -24,8 +24,6 @@ git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
 cd -
 ```
 
-### ftp 使用
-
 **批量上传脚本代码**
 
 ```shell
@@ -47,23 +45,8 @@ EOF
 echo "commit to ftp successfully"
 ```
 
-**批量下载脚本代码**
+### 根据PID过滤进程所有信息
 
-```shell
-#!/bin/sh
-ftp -vn <<EOF
-open 192.168.0.199 21
-user ftpuser ftppwd
-binary
-cd /ftphome/downloadData
-lcd /local/getDownloadData
-prompt
-mget *
-bye
-EOF
-echo "download from ftp successfully"
-```
-**根据PID过滤进程所有信息**
 ```shell
 #! /bin/bash
 # Function: 根据用户输入的PID，过滤出该PID所有的信息
@@ -86,7 +69,8 @@ echo "进程虚拟内存：`ps -aux| awk '$2~/^'$P'$/{print $5}'`"
 echo "进程共享内存：`ps -aux| awk '$2~/^'$P'$/{print $6}'`"
 echo "--------------------------------"
 ```
-**实现磁盘分区的**
+### 实现磁盘分区
+
 ```shell
 #! /bin/bash
 # Function:对硬盘进行分区,得到一个标准的linux文件系统(ext4/xfs)的主分区
@@ -158,5 +142,38 @@ case $G in
         *)
            echo "你的输入有误！！"
 esac
+```
+
+###  可疑进程扫描脚本 
+
+```shell
+#!/bin/bash
+echo "隐藏进程检测:"
+ps -ef | awk 'NR > 1 {print $2}' | sort -n | diff < (ls /proc | grep '^[0-9]' | sort -n) - | grep '>' | awk '{print "可疑PID: "$2}'
+
+# 检测挖矿进程
+echo -e "\n挖矿特征检测:"
+ps aux | awk '{
+  if ($3 > 50.0 || $4 > 30.0)
+    print "高资源进程: " $11 " (CPU: "$3"%, MEM:"$4"%)"
+  if (match($0, /(xmrig|minerd|cpuminer)/))
+    print "挖矿进程: " $11 " PID: " $2
+}'
+```
+
+###  可疑进程扫描脚本 
+
+```shell
+#!/bin/bash
+# 文件名：user_audit_report.sh
+USERS=("root""admin")
+DAYS=7
+
+for user in"${USERS[@]}"; do
+ echo"===== $user 最近${DAYS}天操作 ====="
+  last | grep "$user" | head -10
+ echo -e "\n** 命令历史摘要 **"
+  grep -H "$user" /home/*/.bash_history | awk -F: '{print $1}' | sort | uniq -c | sort -nr
+done
 ```
 
