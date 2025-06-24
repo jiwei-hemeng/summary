@@ -593,6 +593,40 @@ function Example() {
 
 `useState` 就是一个 Hooks，以前的函数组件是无状态的，但是有了 Hooks 后我们可以在函数中通过 `useState` 来获取 state 属性（count）以及修改 state 属性的方法（setCount）。
 
+### 函数式写法
+
+>  在 React 中，`useState` 的 setState 函数支持两种调用方式：直接更新和函数式更新。函数式更新在依赖前一个状态值时特别有用。 
+
+**解决闭包问题**
+
+```jsx
+function Timer() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // 使用函数式更新获取最新count值
+      setCount(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []); // 空依赖数组，因为setCount是稳定的
+  return <div>Count: {count}</div>;
+}
+```
+
+**依赖前一个状态的条件更新**
+
+```js
+function Toggle() {
+  const [isOn, setIsOn] = useState(false);
+
+  const toggle = () => {
+    // 基于前一个状态决定新状态
+    setIsOn(prev => !prev);
+  };
+  return <button onClick={toggle}>{isOn ? 'ON' : 'OFF'}</button>;
+}
+```
+
 ## useEffect
 
 在 Hooks 出现之前函数组件是不能访问生命周期钩子的，所以提供了 `useEffect` Hooks 来解决钩子问题，以往的所有生命周期钩子都被合并成了 `useEffect`，并且其解决了之前所提的关于生命周期钩子的问题。
