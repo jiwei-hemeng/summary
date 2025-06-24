@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>炫酷的details</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      .main {
+        width: calc(100% - 70px);
+        margin: 0 auto;
+      }
+      /* 基础样式 */
+      details {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 1rem 0;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      details summary {
+        font-weight: 600;
+        color: #333;
+        padding: 0.8rem 1rem;
+        margin: -0.5rem -1rem;
+        cursor: pointer;
+        list-style: none;
+        position: relative;
+        font-size: 1.1em;
+      }
+
+      details summary::after {
+        content: "▶";
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.2s;
+        color: #666;
+        font-size: 0.8em;
+      }
+
+      details[open] summary::after {
+        transform: translateY(-50%) rotate(90deg);
+        color: #0066cc;
+      }
+
+      details div {
+        padding: 0.5rem 1rem 1rem;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 现代卡片变体 */
+      details.modern {
+        border: none;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin: 1.5rem 0;
+      }
+
+      details.modern summary {
+        padding: 1.2rem 2rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        font-size: 1.2em;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <!-- 基础样式 -->
+      <details>
+        <summary>基础折叠面板</summary>
+        <div>
+          <p>这里是折叠内容区域，可以放置任何HTML内容。</p>
+          <p>包括段落、列表、图片等元素。</p>
+        </div>
+      </details>
+
+      <!-- 现代卡片样式 -->
+      <details class="modern">
+        <summary>现代卡片式设计</summary>
+        <div>
+          <p>这种样式更适合现代Web应用，有更好的视觉层次感。</p>
+          <ul>
+            <li>渐变标题背景</li>
+            <li>更大的圆角</li>
+            <li>更柔和的阴影</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <script>
+      // 添加点击动画
+      document.querySelectorAll("details").forEach((detail) => {
+        detail.addEventListener("toggle", function () {
+          if (this.open) {
+            this.style.transform = "scale(1.02)";
+            setTimeout(() => {
+              this.style.transform = "";
+            }, 300);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
