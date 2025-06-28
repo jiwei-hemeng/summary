@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>迁徙图</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a2d5e; /* 深蓝色背景 */
+      }
+      #container {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script src="./echarts.min.js"></script>
+    <script src="./echarts-gl.min.js"></script>
+    <script>
+      var chart = echarts.init(document.getElementById("container"));
+
+      // 加载GeoJSON数据（实际使用时需要替换为真实数据）
+      fetch(
+        "https://jiwei-hemeng.github.io/summary/echarts.3d.map/china-map.json"
+      ).then((response) =>
+        response.json().then((chinaJson) => {
+          echarts.registerMap("china", chinaJson); // 注册地图数据
+          // 数据示例：城市间迁徙路径
+          const migrationData = [
+            {
+              coords: [
+                [116.4, 39.9],
+                [121.47, 31.23],
+              ],
+              name: "北京→上海",
+              value: 100,
+            },
+            {
+              coords: [
+                [113.26, 23.12],
+                [120.15, 30.28],
+              ],
+              name: "广州→杭州",
+              value: 80,
+            },
+            {
+              coords: [
+                [114.05, 22.55],
+                [113.53, 29.58],
+              ],
+              name: "深圳→武汉",
+              value: 60,
+            },
+          ];
+          const option = {
+            title: { text: "中国城市人口迁徙流向图" },
+            tooltip: {
+              trigger: "item",
+              formatter: (params) =>
+                `${params.data.name}<br/>流量: ${params.data.value}万人`,
+            },
+            geo: {
+              map: "china",
+              roam: true,
+              label: { show: true },
+              emphasis: { label: { show: true } },
+              itemStyle: {
+                // 地图区域的颜色
+                areaColor: "#71d5a1", // 绿色
+                // 图形的描边颜色
+                borderColor: "#2979ff", // 蓝色
+              },
+            },
+            series: [
+              {
+                type: "lines",
+                coordinateSystem: "geo",
+                data: migrationData,
+                symbol: ["none", "arrow"], // 终点显示箭头
+                symbolSize: 10,
+                lineStyle: {
+                  color: {
+                    type: "linear",
+                    x: 0,
+                    y: 0,
+                    x2: 1,
+                    y2: 0,
+                    colorStops: [
+                      { offset: 0, color: "#FF0000" }, // 起点颜色
+                      { offset: 1, color: "#FFA500" }, // 终点颜色
+                    ],
+                  },
+                  width: 2,
+                  curveness: 0.2,
+                },
+                effect: {
+                  show: true,
+                  symbol: "circle",
+                  symbolSize: 5,
+                  trailLength: 0.2,
+                  period: 3, // 动画周期
+                },
+                label: {
+                  show: true,
+                  formatter: "{b}",
+                  position: "end", // 标签显示在终点
+                },
+              },
+              // 城市散点（增强可视化）
+              {
+                type: "scatter",
+                coordinateSystem: "geo",
+                symbol: "pin",
+                symbolSize: 30,
+                data: [
+                  { name: "北京", value: [116.4, 39.9, 100] },
+                  { name: "上海", value: [121.47, 31.23, 90] },
+                  { name: "广州", value: [113.26, 23.12, 80] },
+                  { name: "武汉", value: [113.41, 29.59, 30] },
+                ],
+                label: {
+                  show: true,
+                  formatter: "{b}",
+                  color: "#333",
+                },
+                itemStyle: {
+                  color: "#4b0082",
+                },
+              },
+            ],
+          };
+
+          chart.setOption(option);
+        })
+      );
+    </script>
+  </body>
+</html>
