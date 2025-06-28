@@ -51,6 +51,8 @@ dir /s /b | findstr ".html"
 findstr /s /i "switch_btn_0" *.*
 # 查看mac地址
 getmac
+# 查看某个文件夹被哪个进程（PID）占用
+Get-Process | Where-Object { $_.Path -like "*文件夹路径*" } | Select-Object Id, ProcessName
 ```
 
 ### cmd 安装 jdk 并配置环境变量
