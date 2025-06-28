@@ -85,6 +85,10 @@ class Student extends Person {
     super(age)
     this.name = name
   }
+  // 私有字段
+  #privateField = "private";
+  // 静态字段
+  static count = 0;
   doSth(){
     console.log(this.name)
   }
@@ -725,4 +729,20 @@ function reafFile(path, encoding = "utf8") {
   return promise;
 }
 ````
+
+## JSON 模块导入
+
+静态导入
+
+```js
+import config from "./config.json" with {type: "json"};
+```
+
+动态导入
+
+```js
+const setting = await import("./setting.json", {
+  with: {type: "json"}
+})
+```
 
