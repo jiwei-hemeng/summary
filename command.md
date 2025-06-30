@@ -65,6 +65,23 @@ setx Path "%PATH%;%JAVA_HOME%\bin";
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 ```
 
+### PowerShell  常用命令
+
+```cmd
+# 查询某个文件夹占用的pid
+$folderPath = "D:\summary"
+Get-Process | Where-Object {
+    $_.Path -like "$folderPath*" -or
+    ($_.Modules | Where-Object { $_.FileName -like "$folderPath*" })
+} | Select-Object Id, ProcessName, Path
+
+# CPU 占用 > 50% 的进程
+Get-Process | Where-Object { $_.CPU -gt 50 } | Select-Object Id, ProcessName, CPU
+
+# 内存占用 > 500MB 的进程
+Get-Process | Where-Object { $_.WorkingSet64 -gt 500MB } | Format-Table Id, ProcessName, @{Name="Memory(MB)";Expression={$_.WorkingSet64 / 1MB}}
+```
+
 ### PowerShell 中使用函数
 
 ```powershell
