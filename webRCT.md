@@ -1,6 +1,15 @@
 # webRTC
 
+## 创建webRTC 实例
+
+```js
+const PeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+const peer = new PeerConnection();
+```
+
 ## 创建信令交换过程
+
+> 模拟A--B 端通信
 
 ```js
 // 1. 创建 offer
