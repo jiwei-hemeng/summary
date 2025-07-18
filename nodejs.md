@@ -1374,3 +1374,94 @@ await select.selectByVisibleText('选项文本'); // 按显示文本选择
 await select.selectByValue('option1'); // 按value值选择
 ```
 
+## Node.js 中使用 MySQL 事务
+
+### 基本事务处理
+
+```js
+import mysql from "mysql2/promise"; // 使用 promise 版本
+async function executeTransaction() {
+  let connection;
+  try {
+    // 创建连接
+    connection = await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "password",
+      database: "test_db",
+    });
+    // 开始事务
+    await connection.beginTransaction();
+    // 执行多个SQL操作
+    await connection.query(
+      "UPDATE accounts SET balance = balance - 100 WHERE id = 1"
+    );
+    await connection.query(
+      "UPDATE accounts SET balance = balance + 100 WHERE id = 2"
+    );
+    // 提交事务
+    await connection.commit();
+    console.log("Transaction completed successfully");
+  } catch (error) {
+    // 出错时回滚
+    if (connection) await connection.rollback();
+    console.error("Transaction failed:", error);
+  } finally {
+    // 释放连接
+    if (connection) connection.end();
+  }
+}
+executeTransaction();
+```
+
+### 使用连接池的事务处理
+
+>  对于生产环境，建议使用连接池： 
+
+```js
+const mysql = require('mysql2/promise');
+
+// 创建连接池
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'test_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+async function transferFunds(fromId, toId, amount) {
+  let connection;
+  try {
+    // 从连接池获取连接
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    // 检查余额是否足够
+    const [rows] = await connection.query(
+      'SELECT balance FROM accounts WHERE id = ? FOR UPDATE', 
+      [fromId]
+    );
+    if (rows[0].balance < amount) {
+      throw new Error('Insufficient funds');
+    }
+    // 执行转账
+    await connection.query(
+      'UPDATE accounts SET balance = balance - ? WHERE id = ?',
+      [amount, fromId]
+    );
+    await connection.query(
+      'UPDATE accounts SET balance = balance + ? WHERE id = ?',
+      [amount, toId]
+    );
+    await connection.commit();
+    return { success: true };
+  } catch (error) {
+    if (connection) await connection.rollback();
+    return { success: false, error: error.message };
+  } finally {
+    if (connection) connection.release();
+  }
+}
+```
+
