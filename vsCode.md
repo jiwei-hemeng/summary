@@ -413,6 +413,7 @@
 + Vue - Official - vue3 的语法扩展程序
 + Postcode - 类似于postman的插件
 + Draw.io Integration
++ 文心快码 ( Baidu Comate ) AI 辅助代码工具
 
 # npm 脚本使用yarn 打包
 
