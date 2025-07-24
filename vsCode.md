@@ -413,3 +413,11 @@
 + Vue - Official - vue3 的语法扩展程序
 + Postcode - 类似于postman的插件
 + Draw.io Integration
+
+# npm 脚本使用yarn 打包
+
+```json
+{
+  "npm.scriptRunner": "yarn",
+}
+```
