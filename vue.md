@@ -1667,4 +1667,24 @@ const symbolId = computed(() => `#icon-${props.name}`)
   import JIcon from "@/components/JIcon.vue"
 </script>
 ```
+## 鼠标经过改变字体颜色
+
+```html
+<svg aria-hidden="true" class="svg-icon">
+  <use xlink:href="#iconvstongyongxiazai"></use>
+  <title>模板下载</title>
+</svg>
+<style>
+.svg-icon {
+  width: 18px;
+  height: 22px;
+  fill: #2d8cf0; /* 默认颜色 */
+  transition: fill 0.3s ease; /* 添加过渡效果 */
+}
+
+.svg-icon:hover {
+  fill: #ffffff; /* 悬停时的颜色 */
+}
+</style>
+```
 
