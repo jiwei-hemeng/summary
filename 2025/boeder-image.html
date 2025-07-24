@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background: #000;
+      }
+      .card::before {
+        z-index: -1;
+        filter: blur(20px);
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        background: #191c29;
+        border-radius: inherit;
+      }
+      @property --direc {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      }
+      .card {
+        position: relative;
+        width: 200px;
+        height: 400px;
+        margin: 100px auto;
+        --direc: 0deg;
+        color: red;
+        background-image: linear-gradient(
+          var(--direc),
+          #5ddcff,
+          #3c67e3,
+          43%,
+          #4e00c2
+        );
+        animation: rotate 3s linear infinite;
+      }
+      @keyframes rotate {
+        to {
+          --direc: 360deg;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card"></div>
+    <script></script>
+  </body>
+</html>
