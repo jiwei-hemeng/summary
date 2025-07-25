@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>记忆配对游戏</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f0f0f0;
+      }
+      h1 {
+        color: #333;
+      }
+      .game-info {
+        margin: 0;
+        font-size: 1em;
+      }
+      .game-board {
+        width: calc(100% - 20px);
+        display: grid;
+        grid-template-columns: repeat(4, 80px);
+        grid-gap: 10px;
+        margin: 20px 0;
+      }
+      .card {
+        width: 70px;
+        height: 70px;
+        background-color: #3498db;
+        color: white;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .card.flipped {
+        background-color: white;
+        color: #333;
+        transform: rotateY(180deg);
+      }
+      .card.matched {
+        background-color: #2ecc71;
+        cursor: default;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>记忆配对游戏</h1>
+    <div class="game-info">
+      匹配数: <span id="matches">0</span> | 尝试次数:
+      <span id="attempts">0</span>
+    </div>
+    <div class="game-board" id="gameBoard"></div>
+    <button id="resetButton">重新开始</button>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // 游戏配置
+        const config = {
+          cardSymbols: ["🍎", "🍌", "🍒", "🍓", "🍊", "🍋", "🍐", "🍉"],
+          totalPairs: 8,
+          // 应与cardSymbols长度一致
+          boardElement: document.getElementById("gameBoard"),
+          matchesElement: document.getElementById("matches"),
+          attemptsElement: document.getElementById("attempts"),
+          resetButton: document.getElementById("resetButton"),
+        };
+        // 游戏状态
+        let state = {
+          cards: [],
+          flippedCards: [],
+          matchedPairs: 0,
+          attempts: 0,
+          canFlip: true,
+        };
+        // 初始化游戏
+        function initGame() {
+          // 重置状态
+          state = {
+            cards: [],
+            flippedCards: [],
+            matchedPairs: 0,
+            attempts: 0,
+            canFlip: true,
+          };
+          // 更新UI
+          config.matchesElement.textContent = state.matchedPairs;
+          config.attemptsElement.textContent = state.attempts;
+          config.boardElement.innerHTML = "";
+          // 创建卡片对
+          const cardSymbols = config.cardSymbols.slice(0, config.totalPairs);
+          const cardPairs = [...cardSymbols, ...cardSymbols];
+          // 洗牌
+          shuffleArray(cardPairs);
+          // 创建卡片元素
+          cardPairs.forEach((symbol, index) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.index = index;
+            card.dataset.symbol = symbol;
+            card.addEventListener("click", flipCard);
+            config.boardElement.appendChild(card);
+            // 保存卡片引用
+            state.cards.push({
+              element: card,
+              symbol: symbol,
+              isFlipped: false,
+              isMatched: false,
+            });
+          });
+        }
+        // 洗牌函数
+        function shuffleArray(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+        }
+        // 翻牌函数
+        function flipCard() {
+          if (!state.canFlip) return;
+          const index = parseInt(this.dataset.index);
+          const card = state.cards[index];
+          // 如果卡片已经翻开或已匹配，则不做任何操作
+          if (card.isFlipped || card.isMatched) return;
+          // 翻开卡片
+          card.isFlipped = true;
+          this.classList.add("flipped");
+          this.textContent = card.symbol;
+          // 添加到已翻开卡片数组
+          state.flippedCards.push(card);
+          // 如果翻开了两张卡片，检查是否匹配
+          if (state.flippedCards.length === 2) {
+            state.canFlip = false;
+            state.attempts++;
+            config.attemptsElement.textContent = state.attempts;
+            checkForMatch();
+          }
+        }
+        // 检查匹配
+        function checkForMatch() {
+          const [card1, card2] = state.flippedCards;
+          if (card1.symbol === card2.symbol) {
+            // 匹配成功
+            card1.isMatched = true;
+            card2.isMatched = true;
+            card1.element.classList.add("matched");
+            card2.element.classList.add("matched");
+            state.matchedPairs++;
+            config.matchesElement.textContent = state.matchedPairs;
+            // 清空已翻开卡片数组
+            state.flippedCards = [];
+            state.canFlip = true;
+            // 检查游戏是否结束
+            if (state.matchedPairs === config.totalPairs) {
+              setTimeout(() => {
+                alert(`恭喜！你赢了！\n尝试次数: ${state.attempts}`);
+              }, 500);
+            }
+          } else {
+            // 不匹配，翻回去
+            setTimeout(() => {
+              card1.isFlipped = false;
+              card2.isFlipped = false;
+              card1.element.classList.remove("flipped");
+              card2.element.classList.remove("flipped");
+              card1.element.textContent = "";
+              card2.element.textContent = "";
+              // 清空已翻开卡片数组
+              state.flippedCards = [];
+              state.canFlip = true;
+            }, 1000);
+          }
+        }
+        // 重置按钮事件
+        config.resetButton.addEventListener("click", initGame);
+        // 初始化游戏
+        initGame();
+      });
+    </script>
+  </body>
+</html>
