@@ -1216,6 +1216,14 @@ eventSource.onerror = function(error) {
 
 ## 当前目录启动一个http服务
 
+### http-server
+
+```shell
+npx http-server -g -p 3000
+```
+
+### serve
+
 ```shell
 npx serve -S .
 ```
