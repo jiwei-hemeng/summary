@@ -1473,3 +1473,11 @@ async function transferFunds(fromId, toId, amount) {
 }
 ```
 
+## 使用合适的内存限制
+
+> Node.js 默认的内存限制可能不足以满足大型应用的需求。可以通过设置 --max-old-space-size 参数来调整内存限制。
+
+```shell
+node --max-old-space-size=4096 your-app.js
+```
+
