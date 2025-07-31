@@ -112,3 +112,168 @@ XLSX.utils.book_append_sheet(workbook, ws, "Sheet1");
 XLSX.writeFile(workbook, `output${Date.now()}.xlsx`);
 ```
 
+# exceljs
+
+## 封装函数
+
+```js
+import ExcelJS from "exceljs";
+
+function downloadFile(url, filename) {
+  const alink = document.createElement("a");
+  alink.setAttribute("href", url);
+  alink.setAttribute("download", filename);
+  document.body.appendChild(alink);
+  alink.click();
+  document.body.removeChild(alink);
+}
+
+/**
+ * 从columns数组中获取列名和列宽
+ *
+ * @param arr 包含列信息的数组
+ * @returns 包含列名和列宽的对象
+ */
+function getColumnsKeys(columns) {
+  const columnsKeys = [];
+  const columnsWidths = [];
+  for (let item of columns) {
+    if (item.children) {
+      for (let it of item.children) {
+        columnsKeys.push(it.key);
+        columnsWidths.push({ width: it.width / 8 });
+      }
+    } else {
+      columnsKeys.push(item.key);
+      columnsWidths.push({ width: item.width / 8 });
+    }
+  }
+  return { columnsKeys, columnsWidths };
+}
+
+/**
+ * 导出带有增强表头的Excel文件
+ *
+ * @param columns 表头配置
+ * @param data 需要展示的数据数组
+ * @param mergeCells 合计一行需要合并的单元格，例如：[{start: { row: 2, column: 1 }, end: { row: 2, column: 5 }}]
+ */
+export async function exportExcelWithEnhancedHeader(
+  columns, // 表头
+  data, //展示的数组
+  mergeCells // 合计一行需要合并的单元格
+) {
+  // 创建工作簿
+  const workbook = new ExcelJS.Workbook();
+  // 添加sheet标签页
+  const worksheet = workbook.addWorksheet("信息汇总");
+  const { columnsKeys, columnsWidths } = getColumnsKeys(columns);
+  // 生成表头行（只需要一行）
+  const headerRow = [];
+  const merges = [];
+  let currentCol = 1;
+
+  columns.forEach((item) => {
+    if (item.children) {
+      // 处理有子项的组
+      const startCol = currentCol;
+
+      // 添加子项
+      item.children.forEach((child) => {
+        headerRow.push(child.title);
+        currentCol++;
+      });
+
+      // 在当前行合并父标题
+      merges.push({
+        start: { row: 1, column: startCol },
+        end: { row: 1, column: startCol + item.children.length - 1 },
+      });
+
+      // 在当前行添加父标题（会覆盖第一个子项）
+      worksheet.getCell(1, startCol).value = item.title;
+    } else {
+      // 处理普通表头项
+      merges.push({
+        start: { row: 2, column: currentCol },
+        end: { row: 1, column: currentCol },
+      });
+      worksheet.getCell(1, currentCol).value = item.title;
+      headerRow.push(item.title);
+      currentCol++;
+    }
+  });
+
+  // 添加表头行到工作表
+  worksheet.addRow(headerRow);
+  worksheet.getRow(1).height = 25;
+  worksheet.getRow(2).height = 25;
+  // 合并单元格（只在当前行合并）
+  merges.forEach((merge) => {
+    worksheet.mergeCells(
+      merge.start.row,
+      merge.start.column,
+      merge.end.row,
+      merge.end.column
+    );
+  });
+
+  // 设置表头样式
+  const headerStyle = {
+    fill: {
+      type: "pattern",
+      pattern: "solid",
+      // fgColor: { argb: "FF4F81BD" },
+      fgColor: { argb: "00eaeaed" },
+    },
+    font: {
+      bold: true,
+      color: { argb: "00000000" },
+    },
+    border: {
+      top: { style: "thin", color: { argb: "ffaaaaaa" } },
+      left: { style: "thin", color: { argb: "ffaaaaaa" } },
+      bottom: { style: "thin", color: { argb: "ffaaaaaa" } },
+      right: { style: "thin", color: { argb: "ffaaaaaa" } },
+    },
+    alignment: {
+      vertical: "middle",
+      horizontal: "center",
+    },
+  };
+
+  // 应用样式到整个表头行
+  for (let col = 1; col <= headerRow.length; col++) {
+    const cell = worksheet.getCell(1, col);
+    const cell2 = worksheet.getCell(2, col);
+    Object.assign(cell, headerStyle);
+    Object.assign(cell2, headerStyle);
+  }
+
+  // 添加数据行
+  data.forEach((item) => {
+    const rowData = columnsKeys.map((it) => item[it] ?? "");
+    const row = worksheet.addRow(rowData);
+    row.height = 25;
+    // 设置数据行样式
+    row.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin", color: { argb: "ffaaaaaa" } },
+        left: { style: "thin", color: { argb: "ffaaaaaa" } },
+        bottom: { style: "thin", color: { argb: "ffaaaaaa" } },
+        right: { style: "thin", color: { argb: "ffaaaaaa" } },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+    });
+  });
+  for (let j of mergeCells) {
+    worksheet.mergeCells(j.start.row, j.start.column, j.end.row, j.end.column);
+  }
+
+  // 设置列宽
+  worksheet.columns = columnsWidths;
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "application/octet-stream" });
+  downloadFile(window.URL.createObjectURL(blob), "职业健康_信息汇总.xlsx");
+}
+```
