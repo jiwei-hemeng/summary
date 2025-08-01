@@ -468,3 +468,17 @@ git revert abc1234 def5678 ghi9012
   ```
 
 总结： 假如依次提交了a--> a-->c-->d-->f  使用`git revert c` 撤销以后仅仅只是撤销了c 而 d、f 依然在
+
+# 生成ssl证书
+
+```shell
+# 查看 openssl 是否安装
+openssl version -a
+# 生成私钥
+openssl genrsa -out server.key 2048
+# 创建证书签名请求
+openssl req -new -key server.key -out server.csr
+# 生成自签名证书
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+```
+
