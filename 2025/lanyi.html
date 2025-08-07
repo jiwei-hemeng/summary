@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>致兰一的秋天第一杯奶茶</title>
+    <style>
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #ffe8e8 100%);
+        font-family: "Microsoft YaHei", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .poem-container {
+        position: relative;
+        width: 290px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transform-style: preserve-3d;
+        transition: all 0.5s ease;
+        z-index: 10;
+      }
+
+      .poem-container:hover {
+        transform: translateY(-10px) rotateX(5deg);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .poem-title {
+        color: #e74c3c;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .poem-line {
+        margin: 12px 0;
+        font-size: 18px;
+        color: #333;
+        transition: all 0.3s ease;
+      }
+
+      .poem-line:hover {
+        color: #e74c3c;
+        transform: scale(1.05);
+      }
+
+      .hidden-word {
+        color: #e74c3c;
+        font-weight: bold;
+      }
+
+      .milk-tea {
+        position: absolute;
+        width: 100px;
+        height: 120px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120"><path d="M30,20 L70,20 L75,50 L65,60 L35,60 L25,50 Z" fill="%23f9d5bb"/><path d="M35,60 L65,60 L60,100 L40,100 Z" fill="%23d4a76a"/><path d="M40,30 L60,30 L58,40 L42,40 Z" fill="%23ffffff"/><circle cx="50" cy="15" r="5" fill="%23e74c3c"/></svg>');
+        bottom: -50px;
+        right: -30px;
+        opacity: 0.8;
+        animation: float 3s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      .leaf {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path d="M15,3 C20,3 25,8 25,15 C25,22 15,27 15,27 C15,27 5,22 5,15 C5,8 10,3 15,3 Z" fill="%23e74c3c" opacity="0.6"/></svg>');
+        animation: falling linear infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(5deg);
+        }
+      }
+
+      @keyframes falling {
+        to {
+          transform: translateY(100vh) rotate(360deg);
+        }
+      }
+
+      .signature {
+        margin-top: 20px;
+        font-style: italic;
+        color: #888;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="poem-container">
+      <div class="poem-title">秋天的第一杯奶茶</div>
+      <div class="poem-line">
+        <span class="hidden-word">兰</span>桂飘香秋风起，
+      </div>
+      <div class="poem-line">
+        <span class="hidden-word">一</span>杯温暖递君前。
+      </div>
+      <div class="poem-line">
+        <span class="hidden-word">的</span>是人间好滋味，
+      </div>
+      <div class="poem-line">
+        <span class="hidden-word">奶</span>香茶韵两相宜。
+      </div>
+      <div class="poem-line">
+        <span class="hidden-word">茶</span>烟袅袅寄相思。
+      </div>
+      <div class="signature">—— 赠予兰一</div>
+      <div class="milk-tea"></div>
+    </div>
+
+    <script>
+      // 创建落叶效果
+      function createLeaves() {
+        for (let i = 0; i < 10; i++) {
+          const leaf = document.createElement("div");
+          leaf.className = "leaf";
+          leaf.style.left = Math.random() * 100 + "vw";
+          leaf.style.top = -30 + "px";
+          leaf.style.opacity = Math.random() * 0.5 + 0.3;
+          leaf.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+          leaf.style.animationDuration = Math.random() * 5 + 5 + "s";
+          leaf.style.animationDelay = Math.random() * 5 + "s";
+          document.body.appendChild(leaf);
+        }
+      }
+
+      // 页面加载后创建落叶
+      window.onload = function () {
+        createLeaves();
+      };
+    </script>
+  </body>
+</html>
