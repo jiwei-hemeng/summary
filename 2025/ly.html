@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>赠与兰一 秋天里的第一杯奶茶~~</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(to bottom, #fff5e6, #ffe8cc);
+        font-family: "Arial", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* 奶茶杯容器 */
+      .milk-tea-container {
+        position: relative;
+        width: 200px;
+        height: 300px;
+        margin-bottom: 40px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      /* 奶茶杯 */
+      .milk-tea {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+      }
+
+      /* 杯子主体 */
+      .cup {
+        position: absolute;
+        width: 120px;
+        height: 180px;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #f8f4e9, #f0e6d2);
+        border-radius: 10px 10px 40px 40px;
+        border: 3px solid #e0d5bc;
+        box-shadow: inset 0 -30px 30px rgba(210, 180, 140, 0.2),
+          0 10px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      /* 奶茶液体 */
+      .tea {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 80%;
+        background: linear-gradient(to bottom, #d2b48c, #a67c52);
+        border-radius: 0 0 35px 35px;
+        transition: height 0.5s;
+      }
+
+      /* 珍珠 */
+      .bubble {
+        position: absolute;
+        background: #3a2d1b;
+        border-radius: 50%;
+        animation: float 3s infinite ease-in-out;
+      }
+
+      /* 杯盖 */
+      .lid {
+        position: absolute;
+        width: 130px;
+        height: 30px;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #ff9aa2, #ffb7b2);
+        border-radius: 15px;
+        border: 3px solid #e88a92;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 吸管 */
+      .straw {
+        position: absolute;
+        width: 10px;
+        height: 120px;
+        top: -80px;
+        left: 50%;
+        transform: translateX(-50%) rotate(10deg);
+        background: linear-gradient(to bottom, #ffd166, #ff9f1c);
+        border-radius: 5px;
+        z-index: 2;
+      }
+
+      /* 吸管插口 */
+      .straw-hole {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff9aa2;
+        border-radius: 50%;
+      }
+
+      /* 落叶 */
+      .leaf {
+        position: absolute;
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0;
+        z-index: -1;
+        animation: falling linear infinite;
+      }
+
+      /* 文字消息 */
+      .message {
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 1s ease;
+        max-width: 80%;
+      }
+
+      h1 {
+        color: #8b4513;
+        font-size: 2rem;
+        margin-bottom: 15px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      p {
+        color: #a67c52;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        background: linear-gradient(to right, #ff9f1c, #ffbf69);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 159, 28, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 159, 28, 0.4);
+      }
+
+      /* 热气 */
+      .steam {
+        position: absolute;
+        width: 20px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        filter: blur(5px);
+        opacity: 0;
+        animation: steamRise 3s infinite ease-out;
+      }
+
+      /* 动画 */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes falling {
+        0% {
+          transform: translate(var(--start-x), -10%) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--end-x), 100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes steamRise {
+        0% {
+          transform: translateY(0) scale(0.8);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-50px) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      .message.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .milk-tea-container:hover .milk-tea {
+        transform: rotateY(20deg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 奶茶杯 -->
+    <div class="milk-tea-container" id="milkTea">
+      <div class="milk-tea">
+        <div class="cup">
+          <div class="tea" id="tea"></div>
+          <!-- 珍珠 -->
+          <div
+            class="bubble"
+            style="
+              width: 15px;
+              height: 15px;
+              bottom: 30px;
+              left: 30px;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="bubble"
+            style="
+              width: 12px;
+              height: 12px;
+              bottom: 50px;
+              left: 60px;
+              animation-delay: 0.5s;
+            "
+          ></div>
+          <div
+            class="bubble"
+            style="
+              width: 18px;
+              height: 18px;
+              bottom: 70px;
+              left: 40px;
+              animation-delay: 1s;
+            "
+          ></div>
+          <div
+            class="bubble"
+            style="
+              width: 10px;
+              height: 10px;
+              bottom: 90px;
+              left: 70px;
+              animation-delay: 1.5s;
+            "
+          ></div>
+          <div
+            class="bubble"
+            style="
+              width: 14px;
+              height: 14px;
+              bottom: 110px;
+              left: 30px;
+              animation-delay: 2s;
+            "
+          ></div>
+        </div>
+        <div class="lid"></div>
+        <div class="straw"></div>
+        <div class="straw-hole"></div>
+
+        <!-- 热气 -->
+        <div class="steam" style="left: 30%; animation-delay: 0.5s"></div>
+        <div class="steam" style="left: 50%; animation-delay: 1s"></div>
+        <div class="steam" style="left: 70%; animation-delay: 1.5s"></div>
+      </div>
+    </div>
+
+    <!-- 文字消息 -->
+    <div class="message" id="message">
+      <h1>秋天里的第一杯奶茶</h1>
+      <p>秋风微凉，奶茶温热<br />愿这杯奶茶能温暖你的整个秋天</p>
+      <button class="btn" id="btn">❤️ 一起喝奶茶吧 ❤️</button>
+    </div>
+
+    <script>
+      // 创建落叶
+      function createLeaves() {
+        const types = ["🍁", "🍂", "🌰", "🍄"];
+        const colors = ["#8B4513", "#A0522D", "#D2691E", "#CD853F"];
+
+        for (let i = 0; i < 20; i++) {
+          const leaf = document.createElement("div");
+          leaf.className = "leaf";
+          leaf.innerHTML = types[Math.floor(Math.random() * types.length)];
+          leaf.style.fontSize = `${Math.random() * 20 + 15}px`;
+          leaf.style.color = colors[Math.floor(Math.random() * colors.length)];
+          leaf.style.left = `${Math.random() * 100}vw`;
+          leaf.style.setProperty("--start-x", `${Math.random() * 100 - 50}px`);
+          leaf.style.setProperty("--end-x", `${Math.random() * 100 - 50}px`);
+          leaf.style.animationDuration = `${Math.random() * 5 + 5}s`;
+          leaf.style.animationDelay = `${Math.random() * 5}s`;
+          document.body.appendChild(leaf);
+        }
+      }
+
+      // 奶茶喝的效果
+      function drinkTea() {
+        const tea = document.getElementById("tea");
+        let height = 80;
+        const drinkInterval = setInterval(() => {
+          height -= 2;
+          tea.style.height = `${height}%`;
+
+          if (height <= 20) {
+            clearInterval(drinkInterval);
+            // 显示新的消息
+            document.getElementById("message").innerHTML = `
+                        <h1>奶茶喝完了...</h1>
+                        <p>但我们的故事才刚刚开始<br>下次见面，再请你喝一杯吧</p>
+                        <button class="btn" id="btn">🥤 约定下一杯 🥤</button>
+                    `;
+          }
+        }, 200);
+      }
+
+      // 页面加载
+      window.onload = function () {
+        createLeaves();
+
+        // 显示消息
+        setTimeout(() => {
+          document.getElementById("message").classList.add("show");
+        }, 1000);
+
+        // 点击奶茶杯
+        document
+          .getElementById("milkTea")
+          .addEventListener("click", function () {
+            this.style.animation = "none";
+            this.offsetHeight; // 触发重绘
+            this.style.animation = "bounce 0.5s";
+
+            // 开始喝奶茶
+            drinkTea();
+          });
+
+        // 点击按钮
+        document.addEventListener("click", function (e) {
+          if (e.target.id === "btn") {
+            alert("约定好啦！下次见面一定请你喝奶茶~ ❤️");
+          }
+        });
+      };
+    </script>
+  </body>
+</html>
