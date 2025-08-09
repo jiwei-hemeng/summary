@@ -293,3 +293,12 @@ COMMIT;  #提交事务
 ```
 
   此时，name为B的记录以及被删除，而name为A的记录money没有增加1000。 
+
+# 联表查询
+
+## 左连接（LEFT JOIN）示例
+
+```mysql
+SELECT a.id,a.user_name, b.name FROM accounts as a LEFT JOIN account as b ON a.id = b.id WHERE a.id = '1';
+```
+
