@@ -1,111 +1,278 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>印章生成器</title>
-  <style>
-    #canvas {
-      display: block;
-      margin: 20px auto;
-      border: 1px solid #666;
-    }
-  </style>
-</head>
-
-<body>
-  <canvas id="canvas" width="210px" height="210px"></canvas>
-  <button class="btn" id="btn">下载图片</button>
-  <script>
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
-    context.translate(15, 15); //移动坐标原点
-    const company = "中国测试科技股份有限公司";
-    const name = "合同专用章";
-    // 绘制印章边框
-    const width = 90;
-    const height = 90;
-    context.lineWidth = 3;
-    context.strokeStyle = "#f00";
-    context.beginPath();
-    context.arc(width, height, 100, 0, Math.PI * 2);
-    context.stroke();
-    context.save();
-
-    // 绘制印章名称(1)
-    context.font = "bolder 20px SimSun";
-    context.textBaseline = "middle"; //设置文本的垂直对齐方式
-    context.textAlign = "center"; //设置文本的水平对对齐方式
-    context.lineWidth = 1;
-    context.fillStyle = "#f00";
-    context.fillText(name, width, height + 70);
-
-    //绘制印章单位
-    context.translate(width, height); // 平移到此位置,
-    context.font = "bolder 25px SimSun";
-    const count = company.length; // 字数
-    const angle = (16 * Math.PI) / (12 * (count - 1)); // 字间角度
-    const chars = company.split("");
-    let c;
-    for (let i = 0; i < count; i++) {
-      c = chars[i]; // 需要绘制的字符
-      if (i == 0) context.rotate((5 * Math.PI) / 6);
-      else context.rotate(angle);
-      context.save();
-      context.translate(85, 0); // 平移到此位置,此时字和x轴垂直，第一个参数是与圆外边的距离，越大距离越近
-      context.rotate(Math.PI / 2); // 旋转90度,让字平行于x轴
-      context.fillText(c, 0, 5); // 此点为字的中心点
-      context.restore();
-    }
-    //画五角星
-    create5star(context, 0, 0, 30, "#f00", 0);
-    function create5star(context, sx, sy, radius, color, rotato) {
-      context.save();
-      context.fillStyle = color;
-      context.translate(sx, sy); //移动坐标原点
-      context.rotate(Math.PI + rotato); //旋转
-      context.beginPath(); //创建路径
-      let x = Math.sin(0);
-      let y = Math.cos(0);
-      let dig = (Math.PI / 5) * 4;
-      for (let i = 0; i < 5; i++) {
-        //画五角星的五条边
-        let x = Math.sin(i * dig);
-        let y = Math.cos(i * dig);
-        context.lineTo(x * radius, y * radius);
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>印章生成器</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: #f5f5f5;
       }
-      context.closePath();
-      context.stroke();
-      context.fill();
-      context.restore();
-    }
 
-    function drowImageToCanvas(context, x, y) {
-      let img = new Image();
-      //指定图片的URL
-      img.src = "dh.png";
-      //浏览器加载图片完毕后再绘制图片
-      img.onload = function () {
+      #canvas {
+        display: block;
+        margin: 20px auto;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        background-image: linear-gradient(
+            45deg,
+            #eee 25%,
+            transparent 25%,
+            transparent 75%,
+            #eee 75%
+          ),
+          linear-gradient(
+            45deg,
+            #eee 25%,
+            transparent 25%,
+            transparent 75%,
+            #eee 75%
+          );
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+
+      .controls {
+        margin: 20px auto;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      input,
+      button {
+        padding: 8px 12px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+        border: none;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #btn {
+        background-color: #2196f3;
+      }
+
+      #btn:hover {
+        background-color: #0b7dda;
+      }
+
+      .input-group {
+        margin: 10px 0;
+        text-align: left;
+      }
+
+      label {
+        display: inline-block;
+        width: 120px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>印章生成器</h1>
+
+    <div class="controls">
+      <div class="input-group">
+        <label for="company">公司名称:</label>
+        <input
+          type="text"
+          id="company"
+          value="中国测试科技股份有限公司"
+          size="30"
+        />
+      </div>
+      <div class="input-group">
+        <label for="name">印章类型:</label>
+        <input type="text" id="name" value="合同专用章" size="30" />
+      </div>
+      <div class="input-group">
+        <label for="size">印章大小:</label>
+        <input type="range" id="size" min="100" max="200" value="150" />
+        <span id="sizeValue">150</span>px
+      </div>
+      <div class="input-group">
+        <label for="color">印章颜色:</label>
+        <input type="color" id="color" value="#f00" />
+      </div>
+      <button id="generate">生成印章</button>
+      <button id="btn">下载图片</button>
+    </div>
+
+    <canvas id="canvas" width="300" height="300"></canvas>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d", {
+        willReadFrequently: true, // 优化画布性能
+        alpha: true, // 确保画布支持透明背景
+      });
+      const companyInput = document.getElementById("company");
+      const nameInput = document.getElementById("name");
+      const sizeInput = document.getElementById("size");
+      const sizeValue = document.getElementById("sizeValue");
+      const colorInput = document.getElementById("color");
+
+      // 更新尺寸显示
+      sizeInput.addEventListener("input", function () {
+        sizeValue.textContent = this.value;
+      });
+
+      // 生成印章
+      document
+        .getElementById("generate")
+        .addEventListener("click", generateSeal);
+
+      // 初始生成
+      generateSeal();
+
+      function generateSeal() {
+        const company = companyInput.value.trim() || "公司名称";
+        const name = nameInput.value.trim() || "印章类型";
+        const size = parseInt(sizeInput.value);
+        const color = colorInput.value ?? "#f00";
+
+        // 清除画布并设置为透明
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 调整画布大小
+        canvas.width = size + 100;
+        canvas.height = size + 100;
+
+        // 计算中心点
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = size / 2;
+
+        // 绘制印章边框
+        context.lineWidth = 3;
+        context.strokeStyle = color;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.stroke();
+
+        // 绘制印章名称
+        context.font = `bolder ${Math.max(12, size / 12)}px SimSun, serif`;
+        context.textBaseline = "middle";
+        context.textAlign = "center";
+        context.fillStyle = color;
+        context.fillText(name, centerX, centerY + radius * 0.8);
+
+        // 绘制印章单位(弧形文字)
         context.save();
-        context.rotate(-0.5); //旋转
-        //以Canvas画布上的坐标(10,10)为起始点，绘制图像
-        context.translate(-165, -165); //移动坐标原点
-        context.drawImage(img, x, y);
-        context.restore();
-      };
-    }
-    document.getElementById("btn").addEventListener("click", function () {
-      // let imgobj = new Image();
-      // context.drawImage(imgobj, 0, 0);
-      const dataURL = canvas.toDataURL("image/png", 0.9);
-      const alink = document.createElement("a");
-      alink.setAttribute("href", dataURL);
-      alink.setAttribute("download", company + ".png");
-      alink.click();
-    });
-  </script>
-</body>
+        context.translate(centerX, centerY);
+        context.font = `bolder ${Math.max(14, size / 6)}px SimSun, serif`;
 
+        const count = company.length;
+        const angle = (4 * Math.PI) / (3 * (count - 1)); // 字间角度
+        const chars = company.split("");
+
+        for (let i = 0; i < count; i++) {
+          context.save();
+          // 初始旋转角度调整
+          context.rotate((5 * Math.PI) / 6 + angle * i);
+          context.translate(radius * 0.85, 0);
+          context.rotate(Math.PI / 2);
+          context.fillText(chars[i], 0, 5);
+          context.restore();
+        }
+        context.restore();
+
+        // 画五角星
+        drawFivePointedStar(context, centerX, centerY, size * 0.15, color, 0);
+
+        // 去除白色背景（如果有）
+        // removeWhiteBackground();
+      }
+
+      function drawFivePointedStar(context, x, y, radius, color, rotation) {
+        context.save();
+        context.fillStyle = color;
+        context.translate(x, y);
+        context.rotate(Math.PI + rotation);
+
+        context.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          if (i === 0) {
+            context.moveTo(x, y);
+          } else {
+            context.lineTo(x, y);
+          }
+        }
+        context.closePath();
+        context.fill();
+        context.restore();
+      }
+
+      function removeWhiteBackground() {
+        // 获取画布像素数据
+        const imageData = context.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        const data = imageData.data;
+
+        // 遍历所有像素，将白色(或接近白色)设置为透明
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+
+          // 如果像素是白色或接近白色，设置为透明
+          if (r > 240 && g > 240 && b > 240) {
+            data[i + 3] = 0; // 设置alpha通道为0（完全透明）
+          }
+        }
+
+        // 将处理后的像素数据放回画布
+        context.putImageData(imageData, 0, 0);
+      }
+
+      // 下载图片
+      document.getElementById("btn").addEventListener("click", function () {
+        const company = companyInput.value.trim() || "公司印章";
+        // 创建一个临时canvas来确保下载的是透明背景
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext("2d", {
+          willReadFrequently: true, // 优化画布性能
+          alpha: true,
+        });
+
+        // 绘制透明背景
+        tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+        // 复制原canvas内容
+        tempCtx.drawImage(canvas, 0, 0);
+
+        const dataURL = tempCanvas.toDataURL("image/png");
+        const alink = document.createElement("a");
+        alink.href = dataURL;
+        alink.download = `${company}.png`;
+        alink.click();
+      });
+    </script>
+  </body>
 </html>
