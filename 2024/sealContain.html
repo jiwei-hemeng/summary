@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>电子印章</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+    </style>
   </head>
   <body>
     <canvas id="canvas" width="250" height="250"></canvas>
@@ -30,26 +38,16 @@
       }
 
       function createSeal(id, company, name) {
-        var canvas = document.getElementById(id);
-        var context = canvas.getContext("2d");
-
+        const canvas = document.getElementById(id);
+        const context = canvas.getContext("2d");
         // 绘制印章边框
-        var width = canvas.width / 2;
-        var height = canvas.height / 2;
+        const width = canvas.width / 2;
+        const height = canvas.height / 2;
         context.lineWidth = 7;
         context.strokeStyle = "#f00";
         context.beginPath();
         context.ellipse(width, height, 110, 80, 0, 0, Math.PI * 2); // 修改为椭圆形
         context.stroke();
-
-        // 绘制印章中间的文字
-        // context.font = "16px Helvetica";
-        // context.textBaseline = "middle"; //设置文本的垂直对齐方式
-        // context.textAlign = "center"; //设置文本的水平对对齐方式
-        // context.lineWidth = 1;
-        // context.fillStyle = "#f00";
-        // context.fillText("全国二次元聚集地", width, height + 5);
-
         // 绘制印章中的五角星
         create5star(context, width / 2 + 60, height / 2 + 60, 20, "#f00", 0);
         // 绘制印章名称
