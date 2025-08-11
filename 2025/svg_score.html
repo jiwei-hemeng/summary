@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>svg 特效 | 评分案例</title>
+    <style>
+      .star {
+        width: 30px;
+        height: 30px;
+        fill: #e0e0e0;
+        cursor: pointer;
+        transition: fill 0.2s;
+      }
+      .star:hover {
+        fill: #ffd700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rating">
+      <svg class="star" viewBox="0 0 24 24" data-rating="1">
+        <path
+          d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+        />
+      </svg>
+      <svg class="star" viewBox="0 0 24 24" data-rating="2">
+        <path
+          d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+        />
+      </svg>
+      <svg class="star" viewBox="0 0 24 24" data-rating="3">
+        <path
+          d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+        />
+      </svg>
+      <!-- 重复4个star元素 -->
+    </div>
+
+    <script>
+      document.querySelectorAll(".star").forEach((star) => {
+        star.addEventListener("click", function () {
+          const rating = this.getAttribute("data-rating");
+          document.querySelectorAll(".star").forEach((s, i) => {
+            s.style.fill = i < rating ? "#FFD700" : "#e0e0e0";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
