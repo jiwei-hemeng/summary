@@ -1,282 +1,468 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>印章生成器</title>
+    <title>防伪电子印章生成器</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 20px;
-        background-color: #f5f5f5;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
 
-      #canvas {
-        display: block;
-        margin: 20px auto;
-        border: 1px solid #ddd;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: white;
-        background-image: linear-gradient(
-            45deg,
-            #eee 25%,
-            transparent 25%,
-            transparent 75%,
-            #eee 75%
-          ),
-          linear-gradient(
-            45deg,
-            #eee 25%,
-            transparent 25%,
-            transparent 75%,
-            #eee 75%
-          );
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-      }
+        #canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            background-image: linear-gradient(
+                    45deg,
+                    #eee 25%,
+                    transparent 25%,
+                    transparent 75%,
+                    #eee 75%
+                ),
+                linear-gradient(
+                    45deg,
+                    #eee 25%,
+                    transparent 25%,
+                    transparent 75%,
+                    #eee 75%
+                );
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
 
-      .controls {
-        margin: 20px auto;
-        max-width: 400px;
-        padding: 20px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-      }
+        .controls {
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
 
-      input,
-      button {
-        padding: 8px 12px;
-        margin: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        outline: none;
-      }
-      input:focus {
-        border: 2px solid #2196f3;
-      }
+        input, button, select {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border: 2px solid #2196f3;
+        }
 
-      button {
-        background-color: #4caf50;
-        color: white;
-        cursor: pointer;
-        border: none;
-        transition: background-color 0.3s;
-      }
+        button {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
 
-      button:hover {
-        background-color: #45a049;
-      }
+        button:hover {
+            background-color: #45a049;
+        }
 
-      #btn {
-        background-color: #2196f3;
-      }
+        #btn {
+            background-color: #2196f3;
+        }
 
-      #btn:hover {
-        background-color: #0b7dda;
-      }
+        #btn:hover {
+            background-color: #0b7dda;
+        }
 
-      .input-group {
-        margin: 10px 0;
-        text-align: left;
-      }
+        .input-group {
+            margin: 10px 0;
+            text-align: left;
+        }
 
-      label {
-        display: inline-block;
-        width: 120px;
-      }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        
+        .advanced-options {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+        
+        .toggle-advanced {
+            background-color: #ff9800;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-advanced:hover {
+            background-color: #e68a00;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
-    <h1>印章生成器</h1>
+<body>
+    <h1>防伪电子印章生成器</h1>
 
     <div class="controls">
-      <div class="input-group">
-        <label for="company">公司名称:</label>
-        <input
-          type="text"
-          id="company"
-          value="中国测试科技股份有限公司"
-          size="30"
-        />
-      </div>
-      <div class="input-group">
-        <label for="name">印章类型:</label>
-        <input type="text" id="name" value="合同专用章" size="30" />
-      </div>
-      <div class="input-group">
-        <label for="size">印章大小:</label>
-        <input type="range" id="size" min="100" max="200" value="150" />
-        <span id="sizeValue">150</span>px
-      </div>
-      <div class="input-group">
-        <label for="color">印章颜色:</label>
-        <input type="color" id="color" value="#f00" />
-      </div>
-      <button id="generate">生成印章</button>
-      <button id="btn">下载图片</button>
+        <div class="input-group">
+            <label for="company">单位名称:</label>
+            <input type="text" id="company" value="中国测试科技股份有限公司" size="30" />
+        </div>
+        <div class="input-group">
+            <label for="name">印章类型:</label>
+            <input type="text" id="name" value="合同专用章" size="30" />
+        </div>
+        <div class="input-group">
+            <label for="size">印章大小:</label>
+            <input type="range" id="size" min="150" max="300" value="200" />
+            <span id="sizeValue">200</span>px
+        </div>
+        <div class="input-group">
+            <label for="color">印章颜色:</label>
+            <input type="color" id="color" value="#f00" />
+        </div>
+        
+        <button class="toggle-advanced" id="toggleAdvanced">显示高级选项</button>
+        
+        <div class="advanced-options" id="advancedOptions" style="display:none;">
+            <div class="input-group">
+                <label for="securityCode">防伪编码:</label>
+                <input type="text" id="securityCode" value="NO.20230815-001" size="30" />
+            </div>
+            <div class="input-group">
+                <label for="securityLine">防伪线样式:</label>
+                <select id="securityLine">
+                    <option value="none">无</option>
+                    <option value="dotted" selected>虚线</option>
+                    <option value="wave">波浪线</option>
+                    <option value="zigzag">锯齿线</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="microText">微缩文字:</label>
+                <input type="text" id="microText" value="SECURITY" size="30" />
+            </div>
+            <div class="input-group">
+                <label for="stampEffect">印章效果:</label>
+                <select id="stampEffect">
+                    <option value="clean">清晰</option>
+                    <option value="slight" selected>轻微磨损</option>
+                    <option value="heavy">重度磨损</option>
+                </select>
+            </div>
+        </div>
+        
+        <button id="generate">生成印章</button>
+        <button id="btn">下载图片</button>
     </div>
 
     <canvas id="canvas" width="300" height="300"></canvas>
 
     <script>
-      const canvas = document.getElementById("canvas");
-      const context = canvas.getContext("2d", {
-        willReadFrequently: true, // 优化画布性能
-        alpha: true, // 确保画布支持透明背景
-      });
-      const companyInput = document.getElementById("company");
-      const nameInput = document.getElementById("name");
-      const sizeInput = document.getElementById("size");
-      const sizeValue = document.getElementById("sizeValue");
-      const colorInput = document.getElementById("color");
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d", {
+            willReadFrequently: true,
+            alpha: true,
+        });
+        const companyInput = document.getElementById("company");
+        const nameInput = document.getElementById("name");
+        const sizeInput = document.getElementById("size");
+        const sizeValue = document.getElementById("sizeValue");
+        const colorInput = document.getElementById("color");
+        const securityCodeInput = document.getElementById("securityCode");
+        const securityLineInput = document.getElementById("securityLine");
+        const microTextInput = document.getElementById("microText");
+        const stampEffectInput = document.getElementById("stampEffect");
+        const toggleAdvancedBtn = document.getElementById("toggleAdvanced");
+        const advancedOptions = document.getElementById("advancedOptions");
 
-      // 更新尺寸显示
-      sizeInput.addEventListener("input", function () {
-        sizeValue.textContent = this.value;
-      });
-
-      // 生成印章
-      document
-        .getElementById("generate")
-        .addEventListener("click", generateSeal);
-
-      // 初始生成
-      generateSeal();
-
-      function generateSeal() {
-        const company = companyInput.value.trim() || "公司名称";
-        const name = nameInput.value.trim() || "印章类型";
-        const size = parseInt(sizeInput.value);
-        const color = colorInput.value ?? "#f00";
-
-        // 清除画布并设置为透明
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // 调整画布大小
-        canvas.width = size + 100;
-        canvas.height = size + 100;
-
-        // 计算中心点
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = size / 2;
-
-        // 绘制印章边框
-        context.lineWidth = 3;
-        context.strokeStyle = color;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        context.stroke();
-
-        // 绘制印章名称
-        context.font = `bolder ${Math.max(12, size / 12)}px SimSun, serif`;
-        context.textBaseline = "middle";
-        context.textAlign = "center";
-        context.fillStyle = color;
-        context.fillText(name, centerX, centerY + radius * 0.8);
-
-        // 绘制印章单位(弧形文字)
-        context.save();
-        context.translate(centerX, centerY);
-        context.font = `bolder ${Math.max(14, size / 6)}px SimSun, serif`;
-
-        const count = company.length;
-        const angle = (4 * Math.PI) / (3 * (count - 1)); // 字间角度
-        const chars = company.split("");
-
-        for (let i = 0; i < count; i++) {
-          context.save();
-          // 初始旋转角度调整
-          context.rotate((5 * Math.PI) / 6 + angle * i);
-          context.translate(radius * 0.85, 0);
-          context.rotate(Math.PI / 2);
-          context.fillText(chars[i], 0, 5);
-          context.restore();
-        }
-        context.restore();
-
-        // 画五角星
-        drawFivePointedStar(context, centerX, centerY, size * 0.15, color, 0);
-
-        // 去除白色背景（如果有）
-        // removeWhiteBackground();
-      }
-
-      function drawFivePointedStar(context, x, y, radius, color, rotation) {
-        context.save();
-        context.fillStyle = color;
-        context.translate(x, y);
-        context.rotate(Math.PI + rotation);
-
-        context.beginPath();
-        for (let i = 0; i < 5; i++) {
-          const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) {
-            context.moveTo(x, y);
-          } else {
-            context.lineTo(x, y);
-          }
-        }
-        context.closePath();
-        context.fill();
-        context.restore();
-      }
-
-      function removeWhiteBackground() {
-        // 获取画布像素数据
-        const imageData = context.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-        const data = imageData.data;
-
-        // 遍历所有像素，将白色(或接近白色)设置为透明
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-
-          // 如果像素是白色或接近白色，设置为透明
-          if (r > 240 && g > 240 && b > 240) {
-            data[i + 3] = 0; // 设置alpha通道为0（完全透明）
-          }
-        }
-
-        // 将处理后的像素数据放回画布
-        context.putImageData(imageData, 0, 0);
-      }
-
-      // 下载图片
-      document.getElementById("btn").addEventListener("click", function () {
-        const company = companyInput.value.trim() || "公司印章";
-        // 创建一个临时canvas来确保下载的是透明背景
-        const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = canvas.width;
-        tempCanvas.height = canvas.height;
-        const tempCtx = tempCanvas.getContext("2d", {
-          willReadFrequently: true, // 优化画布性能
-          alpha: true,
+        // 切换高级选项显示
+        toggleAdvancedBtn.addEventListener("click", function() {
+            if (advancedOptions.style.display === "none") {
+                advancedOptions.style.display = "block";
+                this.textContent = "隐藏高级选项";
+            } else {
+                advancedOptions.style.display = "none";
+                this.textContent = "显示高级选项";
+            }
         });
 
-        // 绘制透明背景
-        tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        // 复制原canvas内容
-        tempCtx.drawImage(canvas, 0, 0);
+        // 更新尺寸显示
+        sizeInput.addEventListener("input", function () {
+            sizeValue.textContent = this.value;
+        });
 
-        const dataURL = tempCanvas.toDataURL("image/png");
-        const alink = document.createElement("a");
-        alink.href = dataURL;
-        alink.download = `${company}.png`;
-        alink.click();
-      });
+        // 生成印章
+        document.getElementById("generate").addEventListener("click", generateSeal);
+
+        // 初始生成
+        generateSeal();
+
+        function generateSeal() {
+            const company = companyInput.value.trim() || "单位名称";
+            const name = nameInput.value.trim() || "印章类型";
+            const size = parseInt(sizeInput.value);
+            const color = colorInput.value ?? "#f00";
+            const securityCode = securityCodeInput.value.trim();
+            const securityLine = securityLineInput.value;
+            const microText = microTextInput.value.trim();
+            const stampEffect = stampEffectInput.value;
+
+            // 清除画布并设置为透明
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 调整画布大小
+            canvas.width = size + 100;
+            canvas.height = size + 100;
+
+            // 计算中心点
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = size / 2;
+
+            // 绘制印章外边框
+            context.lineWidth = 3;
+            context.strokeStyle = color;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            context.stroke();
+
+            // 绘制印章内边框（防伪特征）
+            context.lineWidth = 1.5;
+            context.beginPath();
+            context.arc(centerX, centerY, radius * 0.9, 0, Math.PI * 2);
+            context.stroke();
+
+            // 绘制防伪线
+            drawSecurityLine(context, centerX, centerY, radius * 0.85, color, securityLine);
+
+            // 绘制印章名称
+            context.font = `bolder ${Math.max(12, size / 12)}px SimSun, serif`;
+            context.textBaseline = "middle";
+            context.textAlign = "center";
+            context.fillStyle = color;
+            context.fillText(name, centerX, centerY + radius * 0.8);
+
+            // 绘制防伪编码（如果有）
+            if (securityCode) {
+                context.font = `bold ${Math.max(8, size / 20)}px Arial, sans-serif`;
+                context.fillText(securityCode, centerX, centerY + radius * 0.6);
+            }
+
+            // 绘制印章单位(弧形文字)
+            context.save();
+            context.translate(centerX, centerY);
+            context.font = `bolder ${Math.max(14, size / 6)}px SimSun, serif`;
+
+            const count = company.length;
+            const angle = (4 * Math.PI) / (3 * (count - 1));
+            const chars = company.split("");
+
+            for (let i = 0; i < count; i++) {
+                context.save();
+                context.rotate((5 * Math.PI) / 6 + angle * i);
+                context.translate(radius * 0.85, 0);
+                context.rotate(Math.PI / 2);
+                context.fillText(chars[i], 0, 5);
+                context.restore();
+            }
+            context.restore();
+
+            // 绘制微缩文字（如果有）
+            if (microText) {
+                drawMicroText(context, centerX, centerY, radius * 0.7, color, microText);
+            }
+
+            // 画五角星
+            drawFivePointedStar(context, centerX, centerY, size * 0.15, color, 0);
+
+            // 添加印章效果
+            applyStampEffect(context, stampEffect);
+        }
+
+        function drawFivePointedStar(context, x, y, radius, color, rotation) {
+            context.save();
+            context.fillStyle = color;
+            context.translate(x, y);
+            context.rotate(Math.PI + rotation);
+
+            context.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                if (i === 0) {
+                    context.moveTo(x, y);
+                } else {
+                    context.lineTo(x, y);
+                }
+            }
+            context.closePath();
+            context.fill();
+            context.restore();
+        }
+
+        function drawSecurityLine(context, x, y, radius, color, type) {
+            if (type === "none") return;
+            
+            context.save();
+            context.translate(x, y);
+            context.strokeStyle = color;
+            context.lineWidth = 1;
+            
+            if (type === "dotted") {
+                // 虚线
+                context.setLineDash([3, 3]);
+                context.beginPath();
+                context.arc(0, 0, radius, 0, Math.PI * 2);
+                context.stroke();
+            } else if (type === "wave") {
+                // 波浪线
+                const segments = 36;
+                const angleStep = (Math.PI * 2) / segments;
+                const waveAmplitude = 2;
+                
+                context.beginPath();
+                for (let i = 0; i <= segments; i++) {
+                    const angle = i * angleStep;
+                    const waveOffset = Math.sin(angle * 5) * waveAmplitude;
+                    const x = Math.cos(angle) * (radius + waveOffset);
+                    const y = Math.sin(angle) * (radius + waveOffset);
+                    
+                    if (i === 0) {
+                        context.moveTo(x, y);
+                    } else {
+                        context.lineTo(x, y);
+                    }
+                }
+                context.stroke();
+            } else if (type === "zigzag") {
+                // 锯齿线
+                const segments = 24;
+                const angleStep = (Math.PI * 2) / segments;
+                const toothHeight = 3;
+                
+                context.beginPath();
+                for (let i = 0; i <= segments; i++) {
+                    const angle = i * angleStep;
+                    const tooth = i % 2 === 0 ? 0 : toothHeight;
+                    const x = Math.cos(angle) * (radius + tooth);
+                    const y = Math.sin(angle) * (radius + tooth);
+                    
+                    if (i === 0) {
+                        context.moveTo(x, y);
+                    } else {
+                        context.lineTo(x, y);
+                    }
+                }
+                context.stroke();
+            }
+            
+            context.restore();
+        }
+
+        function drawMicroText(context, x, y, radius, color, text) {
+            context.save();
+            context.translate(x, y);
+            context.font = `bold ${radius * 0.05}px Arial, sans-serif`;
+            context.fillStyle = color;
+            context.textBaseline = "middle";
+            context.textAlign = "center";
+            
+            // 在五角星周围绘制微缩文字
+            const segments = text.length;
+            const angleStep = (Math.PI * 2) / segments;
+            
+            for (let i = 0; i < segments; i++) {
+                context.save();
+                const angle = i * angleStep;
+                const r = radius * 0.3;
+                context.rotate(angle);
+                context.translate(r, 0);
+                context.rotate(Math.PI/2);
+                context.fillText(text[i], 0, 0);
+                context.restore();
+            }
+            
+            context.restore();
+        }
+
+        function applyStampEffect(context, effect) {
+            if (effect === "clean") return;
+            
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // 随机噪点效果
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i+3] > 0) { // 只处理不透明像素
+                    // 随机减少一些像素的不透明度
+                    if (Math.random() > (effect === "slight" ? 0.9 : 0.8)) {
+                        data[i+3] = data[i+3] * (0.7 + Math.random() * 0.3);
+                    }
+                    
+                    // 轻微颜色变化
+                    if (Math.random() > 0.95) {
+                        data[i] = Math.min(255, data[i] * (0.9 + Math.random() * 0.2));
+                        data[i+1] = Math.min(255, data[i+1] * (0.9 + Math.random() * 0.2));
+                        data[i+2] = Math.min(255, data[i+2] * (0.9 + Math.random() * 0.2));
+                    }
+                }
+            }
+            
+            context.putImageData(imageData, 0, 0);
+            
+            // 添加一些随机线条模拟印章磨损
+            if (effect === "heavy") {
+                context.save();
+                context.strokeStyle = "rgba(0,0,0,0.1)";
+                context.lineWidth = 1;
+                
+                for (let i = 0; i < 5; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const length = canvas.width * (0.1 + Math.random() * 0.3);
+                    const x1 = canvas.width/2 + Math.cos(angle) * canvas.width/4;
+                    const y1 = canvas.height/2 + Math.sin(angle) * canvas.height/4;
+                    const x2 = x1 + Math.cos(angle) * length;
+                    const y2 = y1 + Math.sin(angle) * length;
+                    
+                    context.beginPath();
+                    context.moveTo(x1, y1);
+                    context.lineTo(x2, y2);
+                    context.stroke();
+                }
+                
+                context.restore();
+            }
+        }
+
+        // 下载图片
+        document.getElementById("btn").addEventListener("click", function () {
+            const company = companyInput.value.trim() || "电子印章";
+            // 创建一个临时canvas来确保下载的是透明背景
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext("2d", {
+                willReadFrequently: true,
+                alpha: true,
+            });
+
+            // 绘制透明背景
+            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+            // 复制原canvas内容
+            tempCtx.drawImage(canvas, 0, 0);
+
+            const dataURL = tempCanvas.toDataURL("image/png");
+            const alink = document.createElement("a");
+            alink.href = dataURL;
+            alink.download = `${company}_防伪印章.png`;
+            alink.click();
+        });
     </script>
-  </body>
+</body>
 </html>
