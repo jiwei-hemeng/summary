@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片去除白色背景工具</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .upload-area {
+        width: 100%;
+        border: 2px dashed #3498db;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        background-color: white;
+        transition: all 0.3s;
+      }
+
+      .upload-area:hover {
+        background-color: #f0f8ff;
+      }
+
+      .preview-area {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+      }
+
+      .image-box {
+        position: relative;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        background: linear-gradient(
+            45deg,
+            #eee 25%,
+            transparent 25%,
+            transparent 75%,
+            #eee 75%
+          ),
+          linear-gradient(
+            45deg,
+            #eee 25%,
+            transparent 25%,
+            transparent 75%,
+            #eee 75%
+          );
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+
+      .image-box h3 {
+        text-align: center;
+        margin: 10px 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+      }
+
+      canvas {
+        max-width: 100%;
+        display: block;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      button:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+      }
+
+      .slider-container {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .slider-container label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .download-btn {
+        background-color: #27ae60;
+      }
+
+      .download-btn:hover {
+        background-color: #219653;
+      }
+
+      .reset-btn {
+        background-color: #e74c3c;
+      }
+
+      .reset-btn:hover {
+        background-color: #c0392b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>图片去除白色背景工具</h1>
+
+    <div class="container">
+      <div class="upload-area" id="uploadArea">
+        <h2>点击或拖放图片到这里</h2>
+        <p>支持JPG、PNG格式</p>
+        <input
+          type="file"
+          id="fileInput"
+          accept="image/*"
+          style="display: none"
+        />
+      </div>
+
+      <div class="preview-area" id="previewArea" style="display: none">
+        <div class="image-box">
+          <h3>原始图片</h3>
+          <canvas id="originalCanvas"></canvas>
+        </div>
+
+        <div class="image-box">
+          <h3>处理后图片</h3>
+          <canvas id="processedCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="controls" id="controls" style="display: none">
+        <div class="slider-container">
+          <label for="thresholdSlider"
+            >去除强度: <span id="thresholdValue">150</span></label
+          >
+          <input
+            type="range"
+            id="thresholdSlider"
+            min="0"
+            max="255"
+            value="150"
+          />
+        </div>
+
+        <div class="slider-container">
+          <label for="featherSlider"
+            >边缘柔化: <span id="featherValue">5</span></label
+          >
+          <input type="range" id="featherSlider" min="0" max="20" value="5" />
+        </div>
+
+        <button id="processBtn">处理图片</button>
+        <button id="resetBtn" class="reset-btn">重置</button>
+        <button id="downloadBtn" class="download-btn">下载图片</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const uploadArea = document.getElementById("uploadArea");
+        const fileInput = document.getElementById("fileInput");
+        const previewArea = document.getElementById("previewArea");
+        const controls = document.getElementById("controls");
+        const originalCanvas = document.getElementById("originalCanvas");
+        const processedCanvas = document.getElementById("processedCanvas");
+        const thresholdSlider = document.getElementById("thresholdSlider");
+        const thresholdValue = document.getElementById("thresholdValue");
+        const featherSlider = document.getElementById("featherSlider");
+        const featherValue = document.getElementById("featherValue");
+        const processBtn = document.getElementById("processBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        let originalImage = null;
+        let originalCtx = originalCanvas.getContext("2d");
+        let processedCtx = processedCanvas.getContext("2d");
+
+        // 上传区域点击事件
+        uploadArea.addEventListener("click", function () {
+          fileInput.click();
+        });
+
+        // 拖放功能
+        uploadArea.addEventListener("dragover", function (e) {
+          e.preventDefault();
+          uploadArea.style.backgroundColor = "#e1f0fa";
+        });
+
+        uploadArea.addEventListener("dragleave", function () {
+          uploadArea.style.backgroundColor = "white";
+        });
+
+        uploadArea.addEventListener("drop", function (e) {
+          e.preventDefault();
+          uploadArea.style.backgroundColor = "white";
+
+          if (e.dataTransfer.files.length) {
+            handleFile(e.dataTransfer.files[0]);
+          }
+        });
+
+        // 文件选择事件
+        fileInput.addEventListener("change", function () {
+          if (fileInput.files.length) {
+            handleFile(fileInput.files[0]);
+          }
+        });
+
+        // 滑块值显示
+        thresholdSlider.addEventListener("input", function () {
+          thresholdValue.textContent = this.value;
+        });
+
+        featherSlider.addEventListener("input", function () {
+          featherValue.textContent = this.value;
+        });
+
+        // 处理图片按钮
+        processBtn.addEventListener("click", function () {
+          if (originalImage) {
+            removeWhiteBackground();
+          }
+        });
+
+        // 重置按钮
+        resetBtn.addEventListener("click", function () {
+          if (originalImage) {
+            drawOriginalImage();
+          }
+        });
+
+        // 下载按钮
+        downloadBtn.addEventListener("click", function () {
+          if (originalImage) {
+            const link = document.createElement("a");
+            link.download =
+              "no-bg-" + (fileInput.files[0]?.name || "image.png");
+            link.href = processedCanvas.toDataURL("image/png");
+            link.click();
+          }
+        });
+
+        // 处理上传的文件
+        function handleFile(file) {
+          if (!file.type.match("image.*")) {
+            alert("请选择图片文件");
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            originalImage = new Image();
+            originalImage.onload = function () {
+              setupCanvases();
+              drawOriginalImage();
+              previewArea.style.display = "flex";
+              controls.style.display = "flex";
+            };
+            originalImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+
+        // 设置画布大小
+        function setupCanvases() {
+          const maxWidth = Math.min(originalImage.width, 400);
+          const ratio = maxWidth / originalImage.width;
+          const height = originalImage.height * ratio;
+
+          originalCanvas.width = maxWidth;
+          originalCanvas.height = height;
+          processedCanvas.width = maxWidth;
+          processedCanvas.height = height;
+        }
+
+        // 绘制原始图片
+        function drawOriginalImage() {
+          originalCtx.drawImage(
+            originalImage,
+            0,
+            0,
+            originalCanvas.width,
+            originalCanvas.height
+          );
+          processedCtx.drawImage(
+            originalImage,
+            0,
+            0,
+            processedCanvas.width,
+            processedCanvas.height
+          );
+        }
+
+        // 去除白色背景
+        function removeWhiteBackground() {
+          const threshold = parseInt(thresholdSlider.value);
+          const feather = parseInt(featherSlider.value);
+
+          // 先绘制原始图片
+          processedCtx.drawImage(
+            originalImage,
+            0,
+            0,
+            processedCanvas.width,
+            processedCanvas.height
+          );
+
+          // 获取图像数据
+          const imageData = processedCtx.getImageData(
+            0,
+            0,
+            processedCanvas.width,
+            processedCanvas.height
+          );
+          const data = imageData.data;
+
+          // 创建临时canvas用于边缘检测
+          const tempCanvas = document.createElement("canvas");
+          tempCanvas.width = processedCanvas.width;
+          tempCanvas.height = processedCanvas.height;
+          const tempCtx = tempCanvas.getContext("2d");
+          tempCtx.putImageData(imageData, 0, 0);
+
+          // 处理每个像素
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            // 计算与白色的距离
+            const distance = Math.sqrt(
+              Math.pow(255 - r, 2) + Math.pow(255 - g, 2) + Math.pow(255 - b, 2)
+            );
+
+            // 如果接近白色，则设置为透明
+            if (distance < threshold) {
+              data[i + 3] = 0; // 设置alpha通道为0（透明）
+            }
+          }
+
+          // 应用边缘柔化
+          if (feather > 0) {
+            featherEdges(imageData, feather);
+          }
+
+          // 将处理后的图像数据放回canvas
+          processedCtx.putImageData(imageData, 0, 0);
+        }
+
+        // 边缘柔化函数
+        function featherEdges(imageData, radius) {
+          const width = imageData.width;
+          const height = imageData.height;
+          const data = imageData.data;
+
+          // 创建alpha通道的副本
+          const alpha = new Uint8Array(width * height);
+          for (let i = 0; i < data.length; i += 4) {
+            alpha[i / 4] = data[i + 3];
+          }
+
+          // 应用模糊效果
+          for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+              const index = (y * width + x) * 4;
+
+              if (data[index + 3] === 0) continue; // 已经是完全透明
+
+              // 检查周围像素
+              let hasTransparentNeighbor = false;
+              for (let dy = -radius; dy <= radius; dy++) {
+                for (let dx = -radius; dx <= radius; dx++) {
+                  const nx = x + dx;
+                  const ny = y + dy;
+
+                  if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                    const nIndex = ny * width + nx;
+                    if (alpha[nIndex] === 0) {
+                      hasTransparentNeighbor = true;
+                      break;
+                    }
+                  }
+                }
+                if (hasTransparentNeighbor) break;
+              }
+
+              // 如果有透明邻居，则根据距离调整alpha
+              if (hasTransparentNeighbor) {
+                let minDistance = Infinity;
+
+                // 找到最近的透明像素的距离
+                for (let dy = -radius; dy <= radius; dy++) {
+                  for (let dx = -radius; dx <= radius; dx++) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                      const nIndex = ny * width + nx;
+                      if (alpha[nIndex] === 0) {
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < minDistance) {
+                          minDistance = distance;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                // 根据距离调整alpha值
+                if (minDistance <= radius) {
+                  const factor = minDistance / radius;
+                  data[index + 3] = Math.round(data[index + 3] * factor);
+                }
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
