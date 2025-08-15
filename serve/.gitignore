@@ -1,0 +1,4 @@
+node_modules
+proxy_public/uploads/*
+privatePem.txt
+publicPem.txt

@@ -3,3 +3,7 @@ WebRTC/node_modules
 WebRCT.v2/node_modules
 chunksFileUpload/node_modules
 chunksFileUpload/uploads/*
+server/node_modules
+server/proxy_public/uploads/*
+server/privatePem.txt
+server/publicPem.txt

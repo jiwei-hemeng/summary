@@ -1,0 +1,354 @@
+{
+  "handHygieneList": [
+    {
+      "observerId": "HANDHYGIENE_0045",
+      "observerName": "会诊医生",
+      "activeThKey": "0",
+      "errorHandHygiene": "2,3",
+      "activeTdKey": "5",
+      "id": 1666151283152,
+      "userName": "A",
+      "files": "http://10.10.10.252:8001/bCardTumour/download?url=/opt/hais/tumour/BPkN4hZDZ059aa7b51be69185469632d3247e35039ca1666157201216.jpg"
+    },
+    {
+      "observerId": "HANDHYGIENE_0045",
+      "observerName": "会诊医生",
+      "activeThKey": "0",
+      "errorHandHygiene": null,
+      "activeTdKey": "3",
+      "id": 1666156254138,
+      "userName": "A",
+      "files": "http://10.10.10.252:8001/bCardTumour/download?url=/opt/hais/tumour/BPkN4hZDZ059aa7b51be69185469632d3247e35039ca1666157201216.jpg"
+    },
+    {
+      "observerId": null,
+      "observerName": null,
+      "activeThKey": "1",
+      "errorHandHygiene": "TurnOffTapNonstandard,NailsTooLong",
+      "activeTdKey": "errorFlowingWaterWashHands",
+      "id": 1666582824039,
+      "userName": "A",
+      "files": "http://10.10.10.252:8001/bCardTumour/download?url=/opt/hais/tumour/BPkN4hZDZ059aa7b51be69185469632d3247e35039ca1666157201216.jpg"
+    },
+    {
+      "observerId": "5",
+      "observerName": "内科医生",
+      "activeThKey": "1",
+      "errorHandHygiene": "DryHandNonstandard",
+      "activeTdKey": "errorQuickHandsDisinfecting",
+      "id": 1666588372869,
+      "userName": "A",
+      "files": "http://10.10.10.252:8001/bCardTumour/download?url=/opt/hais/tumour/BPkN4hZDZ059aa7b51be69185469632d3247e35039ca1666157201216.jpg"
+    }
+  ],
+  "workList": [
+    {
+      "children": [
+        {
+          "termId": "HANDHYGIENE_0045",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "10",
+          "termName": "会诊医生",
+          "termOrder": 10220,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2021-12-30 02:39:20"
+        },
+        {
+          "termId": "HANDHYGIENE_0047",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "12",
+          "termName": "物理治疗师",
+          "termOrder": 10230,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:00:30"
+        },
+        {
+          "termId": "HANDHYGIENE_0048",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "13",
+          "termName": "医技术员包括放射/心电图/检验等",
+          "termOrder": 10235,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:00:38"
+        },
+        {
+          "termId": "HANDHYGIENE_0049",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "14",
+          "termName": "营养师/牙科/社会工作者",
+          "termOrder": 10240,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:00:24"
+        },
+        {
+          "termId": "HANDHYGIENE_0051",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "16",
+          "termName": "规培医生",
+          "termOrder": 10250,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2021-12-17 08:25:21"
+        },
+        {
+          "termId": "HANDHYGIENE_0053",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "18",
+          "termName": "实习医生",
+          "termOrder": 10260,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:00:46"
+        },
+        {
+          "termId": "HANDHYGIENE_0054",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "19",
+          "termName": "进修医生",
+          "termOrder": 10265,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2021-12-17 08:25:25"
+        },
+        {
+          "termId": "HANDHYGIENE_0040",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "5",
+          "termName": "内科医生",
+          "termOrder": 10195,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 05:59:30"
+        },
+        {
+          "termId": "HANDHYGIENE_0041",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "6",
+          "termName": "外科医生",
+          "termOrder": 10200,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 05:59:35"
+        },
+        {
+          "termId": "HANDHYGIENE_0042",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "7",
+          "termName": "麻醉师",
+          "termOrder": 10205,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:00:05"
+        },
+        {
+          "termId": "HANDHYGIENE_0043",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "8",
+          "termName": "儿科医师",
+          "termOrder": 10210,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 05:59:39"
+        },
+        {
+          "termId": "HANDHYGIENE_0044",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "9",
+          "termName": "妇科医生",
+          "termOrder": 10215,
+          "parentId": "1",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 05:59:45"
+        }
+      ],
+      "name": "临床医生",
+      "key": "1"
+    },
+    {
+      "children": [
+        {
+          "termId": "HANDHYGIENE_0036",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "1",
+          "termName": "护士",
+          "termOrder": 10175,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:01:26"
+        },
+        {
+          "termId": "HANDHYGIENE_0046",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "11",
+          "termName": "医学生",
+          "termOrder": 10225,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:20"
+        },
+        {
+          "termId": "HANDHYGIENE_0050",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "15",
+          "termName": "实习护士和医学生以外的学生",
+          "termOrder": 10245,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:00"
+        },
+        {
+          "termId": "HANDHYGIENE_0052",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "17",
+          "termName": "规培护士",
+          "termOrder": 10255,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:05"
+        },
+        {
+          "termId": "HANDHYGIENE_0037",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "2",
+          "termName": "助产士",
+          "termOrder": 10180,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:01:50"
+        },
+        {
+          "termId": "HANDHYGIENE_0055",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "20",
+          "termName": "进修护士",
+          "termOrder": 10270,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:13"
+        },
+        {
+          "termId": "HANDHYGIENE_0038",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "3",
+          "termName": "实习护士",
+          "termOrder": 10185,
+          "parentId": "2",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:01:34"
+        }
+      ],
+      "name": "护士/助产士",
+      "key": "2"
+    },
+    {
+      "children": [
+        {
+          "termId": "HANDHYGIENE_0056",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "21",
+          "termName": "保洁人员",
+          "termOrder": 10275,
+          "parentId": "3",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:27"
+        },
+        {
+          "termId": "HANDHYGIENE_0039",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "4",
+          "termName": "工人和护工等",
+          "termOrder": 10190,
+          "parentId": "3",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:22"
+        }
+      ],
+      "name": "辅助人员",
+      "key": "3"
+    },
+    {
+      "children": [
+        {
+          "termId": "HANDHYGIENE_0057",
+          "configType": "1",
+          "termTypeId": "WORKKIND",
+          "termTypeName": "职业",
+          "termValue": "99",
+          "termName": "其他",
+          "termOrder": 10280,
+          "parentId": "4",
+          "createTime": null,
+          "lastUpdateTime": "2020-05-08 06:02:30"
+        }
+      ],
+      "name": "其他",
+      "key": "4"
+    }
+  ],
+  "routerList": [
+    {
+      "path": "/index/invoices",
+      "name": "invoices",
+      "title": "路由鉴权",
+      "auth": true
+    },
+    {
+      "path": "/index/vDom",
+      "name": "vDom",
+      "title": "父子组件",
+      "auth": true
+    },
+    {
+      "path": "/index/indexdb",
+      "name": "Indexdb",
+      "title": "Indexdb 学习",
+      "auth": true
+    }
+  ]
+}
