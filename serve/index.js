@@ -15,28 +15,6 @@ app.use(
   })
 );
 app.use(express.static("proxy_public"));
-// app.use(
-//   "/api",
-//   createProxyMiddleware({
-//     target: "http://10.10.10.252:8001",
-//     changeOrigin: true, //是否跨域
-//     secure: false, // 如果是https接口，需要配置这个参数
-//     pathRewrite: {
-//       "/api": "",
-//     },
-//   })
-// );
-// app.use(
-//   "/",
-//   createProxyMiddleware({
-//     target: "http://10.10.10.252:8002",
-//     changeOrigin: true, //是否跨域
-//     secure: false, // 如果是https接口，需要配置这个参数
-//     pathRewrite: {
-//       "/": "",
-//     },
-//   })
-// );
 app.use(
   "/api",
   createProxyMiddleware({
@@ -50,7 +28,7 @@ app.use(
 );
 app.use(
   expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
-    path: [/^\/user\//, /^\/db\//],
+    path: [/^\/user\//, /^\/db\//, /^\/fs\//],
   })
 );
 app.use(express.json());
