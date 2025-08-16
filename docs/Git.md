@@ -46,6 +46,8 @@ git blame -L 1539,1539 lib/component/BasicInfoCard.jsx
 git blame -C -w -L 2,2 lib/index.jsx
 # 搜索提交信息
 git log --grep="闭包陷阱"
+# 搜索包含特定内容的提交
+git log -S "shellSort"
 ```
 
 # Git 配置命令
