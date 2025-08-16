@@ -2,13 +2,13 @@
 
 ### 基本使用
 
-**加入npm包管理器**
+**加入 npm 包管理器**
 
 ```shell
 npm init -y
 ```
 
-**安装webpack**
+**安装 webpack**
 
 ```shell
 npm i webpack webpack-cli -D
@@ -20,7 +20,7 @@ npm i webpack webpack-cli -D
 ./node_modules/.bin/webpack
 ```
 
-> webpack 默认会找到`src/index`作为打包入口，然后从入口分析所有依赖；webpack的默认出口是dist目录下的main.js。当然这些都可以自行配置。
+> webpack 默认会找到`src/index`作为打包入口，然后从入口分析所有依赖；webpack 的默认出口是 dist 目录下的 main.js。当然这些都可以自行配置。
 
 也可以通过配置`package.json`
 
@@ -40,7 +40,7 @@ npm i webpack webpack-cli -D
 npm run build
 ```
 
-### webpack的配置文件
+### webpack 的配置文件
 
 > [参考文档](https://webpack.js.org/configuration)
 
@@ -54,14 +54,14 @@ module.exports = {
   // 打包的出口
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
   },
   // 打包模式 可选production development
   mode: "production",
-}
+};
 ```
 
-### 打包css
+### 打包 css
 
 安装相关插件
 
@@ -77,14 +77,10 @@ module.exports = {
   rules: [
     {
       test: /\.css$/,
-      use: [
-        "style-loader",
-    	"css-loader"
-  	  ]
-    }
-    
-  ]
-}
+      use: ["style-loader", "css-loader"],
+    },
+  ],
+};
 ```
 
 ### 打包图片
@@ -104,22 +100,18 @@ module.exports = {
     // 打包图片
     {
       test: /\.(png|jpg|svg|gif)$/,
-      use: [
-        "file-loader",
-      ]
+      use: ["file-loader"],
     },
     // 打包字体文件
     {
       test: /\.(woff|wofff2|eot|ttf|otf)$/,
-      use: [
-        "file-loader",
-      ]
-    }
-  ]
-}
+      use: ["file-loader"],
+    },
+  ],
+};
 ```
 
-###  如何配置 Webpack 可以让图片以base64方式显示 
+### 如何配置 Webpack 可以让图片以 base64 方式显示
 
 ```shell
 npm install  url-loader file-loader -D
@@ -134,27 +126,27 @@ module.exports = {
       test: /\.(png|jpg|gif|svg)$/, // 匹配图片文件类型
       use: [
         {
-          loader: 'url-loader',
+          loader: "url-loader",
           options: {
             limit: 8192, // 小于等于8KB（8192字节）的图片会被转换成Base64编码
-            name: '[name].[ext]', // 输出文件名格式
-            outputPath: 'images/', // 图片输出目录
+            name: "[name].[ext]", // 输出文件名格式
+            outputPath: "images/", // 图片输出目录
             esModule: false, // 如果你遇到图片路径问题，可以尝试设置此选项为false
           },
         },
       ],
-    }, 
-  ]
-}
+    },
+  ],
+};
 ```
 
-  此外，如果你希望保留图片的原始名称并在文件名前加上哈希值以防止缓存问题，你可以这样调整 `name` 属性 
+此外，如果你希望保留图片的原始名称并在文件名前加上哈希值以防止缓存问题，你可以这样调整 `name` 属性
 
 ```txt
 name: '[hash:8]-[name].[ext]',
 ```
 
-### 打包less
+### 打包 less
 
 安装相关插件
 
@@ -207,15 +199,15 @@ const htmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   // 插件
   plugins: [
-  	new htmlWebpackPlugin({
-  		// title: "Output Management"
-  		template: "./index.html"
-		})
-  ]
-}
+    new htmlWebpackPlugin({
+      // title: "Output Management"
+      template: "./index.html",
+    }),
+  ],
+};
 ```
 
-### 重新打包时清除dist目录
+### 重新打包时清除 dist 目录
 
 安装依赖
 
@@ -230,10 +222,8 @@ npm i clean-webpack-plugin -D
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   // 插件
-  plugins: [
-  	new CleanWebpackPlugin(),
-  ]
-}
+  plugins: [new CleanWebpackPlugin()],
+};
 ```
 
 ### 显示打包进度
@@ -247,14 +237,14 @@ npm i progress-bar-webpack-plugin -D
 （2）配置
 
 ```js
-const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 module.exports = {
   plugins: [
     new ProgressBarPlugin({
-      complete: '█',
+      complete: "█",
     }),
   ],
-}
+};
 ```
 
 （3）运行
@@ -267,7 +257,7 @@ npm run build
 
 > [官网地址](https://webpack.js.org/loaders/babel-loader/#install)
 >
-> 使用babel把es6转为es5
+> 使用 babel 把 es6 转为 es5
 
 安装依赖
 
@@ -294,7 +284,7 @@ module.exports = {
 };
 ```
 
-babel 默认只能转换基本的语法部分，它不会处理es6新增的API。如果需要兼容可要安装插件babel/polyfill
+babel 默认只能转换基本的语法部分，它不会处理 es6 新增的 API。如果需要兼容可要安装插件 babel/polyfill
 
 安装
 
@@ -313,22 +303,22 @@ module.exports = {
   // 打包的出口
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
   },
   // 打包模式 可选production development
   mode: "production",
-}
+};
 ```
 
-### 开启源码map
+### 开启源码 map
 
 ```js
 // webpack.config.js
 const path = require("path");
 module.exports = {
   mode: "development",
-  devtool: "inline-source-map"
-}
+  devtool: "inline-source-map",
+};
 ```
 
 ### 启动开发服务
@@ -349,11 +339,11 @@ module.exports = {
     open: false, // 自动打开浏览器
     port: 3000, // 打开的端口号，默认8080
     hot: true, // 热更新
-  }
-}
+  },
+};
 ```
 
-修改pageage.json文件
+修改 pageage.json 文件
 
 ```json
 {
@@ -378,13 +368,13 @@ module.exports = {
     extensions: [".js", ".json", ".wasm", ".mjs"],
     // 路径别名
     alias: {
-      "@": path.resolve(__dirname, "src")
-    }
-  }
-}
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
+};
 ```
 
-### 使用ESLint
+### 使用 ESLint
 
 安装
 
@@ -401,10 +391,10 @@ module.exports = {
     {
       test: /\.js$/,
       exclude: /node_modules/,
-      use: ["babel-loader", "eslint-loader"]
+      use: ["babel-loader", "eslint-loader"],
     },
-  ]
-}
+  ],
+};
 ```
 
 推荐配置方式
@@ -417,18 +407,18 @@ module.exports = {
       enforce: "pre",
       test: /\.js$/,
       exclude: /node_modules/,
-      use: "eslint-loader"
+      use: "eslint-loader",
     },
     {
       test: /\.js$/,
       exclude: /node_modules/,
-      use: "babel-loader"
+      use: "babel-loader",
     },
-  ]
-}
+  ],
+};
 ```
 
- 初始化代码格式规范
+初始化代码格式规范
 
 ```shell
 # ./node_modules/.bin/eslint.cmd --init
@@ -437,7 +427,7 @@ npx eslint --init
 
 ### 压缩 js 文件
 
-> 使用 uglifyjs-webpack-plugin 将js压缩，减少打包后的 vendor.js , bundle.js 等js的文件大小
+> 使用 uglifyjs-webpack-plugin 将 js 压缩，减少打包后的 vendor.js , bundle.js 等 js 的文件大小
 
 安装
 
@@ -451,13 +441,13 @@ npm install -D uglifyjs-webpack-plugin
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 // webpack.config.js
 module.exports = {
-    plugins: [
-        new UglifyJsPlugin(), // 压缩 JavaScript
-    ],
-}
+  plugins: [
+    new UglifyJsPlugin(), // 压缩 JavaScript
+  ],
+};
 ```
 
-### webpack配置---实现某文件夹下的文件不打包
+### webpack 配置---实现某文件夹下的文件不打包
 
 安装插件
 
@@ -465,29 +455,29 @@ module.exports = {
 cnpm install --save-dev copy-webpack-plugin
 ```
 
-创建static目录并修改webpack配置文件
+创建 static 目录并修改 webpack 配置文件
 
 ```js
 // 在头部引入插件
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 // 在plugins配置数组中添加一项
 plugins: [
   new CopyWebpackPlugin([
     {
-      from: path.resolve(__dirname, '../static'),
-      to: 'static',
-      ignore: ['.*']
-    }
-  ])
-]
+      from: path.resolve(__dirname, "../static"),
+      to: "static",
+      ignore: [".*"],
+    },
+  ]),
+];
 ```
 
 ### 使用多个进程线程可以帮助加快构建速度
 
-#### 使用parallel-webpack插件
+#### 使用 parallel-webpack 插件
 
 ```js
-const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
+const ParallelUglifyPlugin = require("webpack-parallel-uglify-plugin");
 
 module.exports = {
   plugins: [
@@ -500,10 +490,10 @@ module.exports = {
 };
 ```
 
-#### 使用HappyPack插件
+#### 使用 HappyPack 插件
 
 ```js
-const HappyPack = require('happypack');
+const HappyPack = require("happypack");
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 module.exports = {
   module: {
@@ -511,15 +501,15 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: 'happypack/loader?id=js',
+        use: "happypack/loader?id=js",
       },
     ],
   },
   plugins: [
     new HappyPack({
-      id: 'js',
+      id: "js",
       threadPool: happyThreadPool,
-      loaders: ['babel-loader'],
+      loaders: ["babel-loader"],
     }),
   ],
 };
@@ -536,7 +526,7 @@ npm i thread-loader -D
 配置
 
 ```js
-const Os = require('os');
+const Os = require("os");
 module.exports = {
   module: {
     rules: [
@@ -545,17 +535,17 @@ module.exports = {
         use: [
           {
             loader: "thread-loader",
-            options: { 
-              workers: Os.cpus().length
-            }
+            options: {
+              workers: Os.cpus().length,
+            },
           },
           {
             loader: "babel-loader",
-            options: { 
+            options: {
               cacheDirectory: true,
-            }
+            },
           },
-        ]
+        ],
       },
     ],
   },
@@ -567,14 +557,14 @@ module.exports = {
 ```js
 module.exports = {
   cache: {
-    type: 'filesystem', // 使用文件系统缓存
+    type: "filesystem", // 使用文件系统缓存
     buildDependencies: {
       config: [__filename], // 当webpack配置变化时自动失效缓存
     },
-    cacheDirectory: path.resolve(__dirname, '.temp_cache'), // 自定义缓存目录
-    name: 'my-app-cache', // 多配置项目时区分缓存
-    compression: 'gzip', // 压缩缓存内容
-  }
+    cacheDirectory: path.resolve(__dirname, ".temp_cache"), // 自定义缓存目录
+    name: "my-app-cache", // 多配置项目时区分缓存
+    compression: "gzip", // 压缩缓存内容
+  },
 };
 ```
 
@@ -589,14 +579,14 @@ module.exports = {
 ```js
 // webpack.config.js
 module.exports = {
-  entry: './main.jsx',
+  entry: "./main.jsx",
   output: {
-    filename: 'bundle.js'
+    filename: "bundle.js",
   },
   externals: {
-    "echarts": "echarts",
-  }
-}
+    echarts: "echarts",
+  },
+};
 ```
 
 ### 配置项目中某个目录不进行打包
@@ -610,21 +600,21 @@ npm i  webpack copy-webpack-plugin --save-dev
 配置
 
 ```js
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../static'),
-        to: 'static',
-        ignore: ['.*']
-      }
-    ])
-  ]  
-}
+        from: path.resolve(__dirname, "../static"),
+        to: "static",
+        ignore: [".*"],
+      },
+    ]),
+  ],
+};
 ```
 
-###  如何配置 Webpack 可以让图片以base64方式显示 
+### 如何配置 Webpack 可以让图片以 base64 方式显示
 
 安装
 
@@ -632,35 +622,35 @@ module.exports = {
 npm install --save-dev url-loader file-loader
 ```
 
-webpack配置
+webpack 配置
 
 ```js
-const path = require('path');
+const path = require("path");
 
-module.exports = {
-// 其他配置...
-module: {
-    rules: [
-      {
-        test: /\.(png|jpg|gif|svg)$/, // 匹配图片文件类型
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192, // 小于等于8KB（8192字节）的图片会被转换成Base64编码
-              name: '[name].[ext]', // 输出文件名格式
-              outputPath: 'images/', // 图片输出目录
-              esModule: false, // 如果你遇到图片路径问题，可以尝试设置此选项为false
-            },
-          },
-        ],
-      },
-    ],
-  },
-}
+module.exports = {
+  // 其他配置...
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpg|gif|svg)$/, // 匹配图片文件类型
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: 8192, // 小于等于8KB（8192字节）的图片会被转换成Base64编码
+              name: "[name].[ext]", // 输出文件名格式
+              outputPath: "images/", // 图片输出目录
+              esModule: false, // 如果你遇到图片路径问题，可以尝试设置此选项为false
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
 ```
 
- 此外，如果你希望保留图片的原始名称并在文件名前加上哈希值以防止缓存问题，你可以这样调整 `name` 属性 
+此外，如果你希望保留图片的原始名称并在文件名前加上哈希值以防止缓存问题，你可以这样调整 `name` 属性
 
 ```js
 name: '[hash:8]-[name].[ext]',
@@ -668,7 +658,7 @@ name: '[hash:8]-[name].[ext]',
 
 ## vite
 
-### 使用vite 构建 react 项目
+### 使用 vite 构建 react 项目
 
 ```shell
 npm create vite@latest
@@ -689,22 +679,19 @@ yarn add rollup-plugin-external-globals -D
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
-import externalGlobals from 'rollup-plugin-external-globals'
+import externalGlobals from "rollup-plugin-external-globals";
 export default defineConfig({
-  plugins: [
-    react(),
-    visualizer({ open: true }),
-  ],
+  plugins: [react(), visualizer({ open: true })],
   build: {
     rollupOptions: {
       external: ["react", "react-dom"],
       plugins: [
         externalGlobals({
           react: "React",
-          "react-dom": "ReactDOM"
-        })
-      ]
-    }
+          "react-dom": "ReactDOM",
+        }),
+      ],
+    },
   },
 });
 ```
@@ -720,13 +707,11 @@ export default defineConfig({
       "@": "/src/", //格式一定要写对喽不然没有代码提示或者报错
     },
   },
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
 });
 ```
 
-### 配置public 目录
+### 配置 public 目录
 
 ```js
 import react from "@vitejs/plugin-react";
@@ -755,6 +740,28 @@ async function getModules() {
 getModules();
 ```
 
+vue 中使用 import.meta.glob 动态生成路由配置的案例
+
+```js
+const pages = import.meta.glob("../views/**/page.js", {
+  eager: true,
+  import: "default",
+});
+const components = import.meta.glob("../views/**/index.vue");
+const routes = Object.entries(pages).map(([path, meta]) => {
+  const compath = path.replace("/page.js", "index.vue");
+  path = path.replace("../views", "").replace("/page.js", "") ?? "/";
+  const name = path.split("/").filter(Boolean).join("-") ?? "index";
+  const component = components[compath];
+  return {
+    name,
+    path,
+    component,
+    meta,
+  };
+});
+```
+
 ### 获取环境变量
 
 ```js
@@ -769,23 +776,23 @@ export default {
     proxy: {
       "/api": {
         target: "http://localhost:3000",
-        changeOrigin: true,// 是否改变请求头中的源Origin
+        changeOrigin: true, // 是否改变请求头中的源Origin
         rewirite: (path) => path.replace(/^\/api/, ""),
       },
       "/auth": {
         target: "http://localhost:3000",
-        changeOrigin: true,// 是否改变请求头中的源Origin
+        changeOrigin: true, // 是否改变请求头中的源Origin
         rewirite: (path) => path.replace(/^\/auth/, ""),
         ws: true, // 处理websocket请求
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 ```
 
 ### **rollup-plugin-remove-others-console**
 
->  在生产环境中可以根据 git 作者信息移除非自己的 console 语句，无任何配置负担，优化开发体验～ 
+> 在生产环境中可以根据 git 作者信息移除非自己的 console 语句，无任何配置负担，优化开发体验～
 
 安装
 
@@ -796,17 +803,17 @@ npm install rollup-plugin-remove-others-console --save-dev
 配置
 
 ```js
-import { defineConfig } from 'vite';
-import removeConsole from 'rollup-plugin-remove-others-console';
+import { defineConfig } from "vite";
+import removeConsole from "rollup-plugin-remove-others-console";
 
-export default defineConfig({
-  plugins: [removeConsole()],
+export default defineConfig({
+  plugins: [removeConsole()],
 });
 ```
 
-###  vite-plugin-vconsole 
+### vite-plugin-vconsole
 
->  集成 VConsole，帮助开发者在移动设备上进行调试 
+> 集成 VConsole，帮助开发者在移动设备上进行调试
 
 ```shell
 npm install vite-plugin-vconsole --save-dev
@@ -815,22 +822,22 @@ npm install vite-plugin-vconsole --save-dev
 配置
 
 ```js
-import { defineConfig } from 'vite';
-import vconsole from 'vite-plugin-vconsole';
+import { defineConfig } from "vite";
+import vconsole from "vite-plugin-vconsole";
 
-export default defineConfig({
-  plugins: [
-    vconsole({
-      entry: 'src/main.js',
-      enabled: process.env.NODE_ENV === 'development',
-    }),
-  ],
+export default defineConfig({
+  plugins: [
+    vconsole({
+      entry: "src/main.js",
+      enabled: process.env.NODE_ENV === "development",
+    }),
+  ],
 });
 ```
 
-###  vite-plugin-find-image-duplicates
+### vite-plugin-find-image-duplicates
 
->  在构建时查找项目中的重复图像，优化资源管理 
+> 在构建时查找项目中的重复图像，优化资源管理
 
 ```shell
 npm install vite-plugin-find-image-duplicates -D
@@ -839,17 +846,17 @@ npm install vite-plugin-find-image-duplicates -D
 配置
 
 ```js
-import { defineConfig } from "vite";
-import findImageDuplicates from "vite-plugin-find-image-duplicates";
+import { defineConfig } from "vite";
+import findImageDuplicates from "vite-plugin-find-image-duplicates";
 
-export default defineConfig({
-  plugins: [findImageDuplicates({ imagePath: ["src/assets/images"] })],
+export default defineConfig({
+  plugins: [findImageDuplicates({ imagePath: ["src/assets/images"] })],
 });
 ```
 
-###  vite-plugin-qrcode 
+### vite-plugin-qrcode
 
->  Vite 开发服务器启动时显示 QR 码，方便移动设备访问本地开发环境 
+> Vite 开发服务器启动时显示 QR 码，方便移动设备访问本地开发环境
 
 ```shell
 npm install --save-dev vite-plugin-qrcode
@@ -858,17 +865,16 @@ npm install --save-dev vite-plugin-qrcode
 配置
 
 ```js
-import { defineConfig } from "vite";
-import { qrcode } from "vite-plugin-qrcode";
+import { defineConfig } from "vite";
+import { qrcode } from "vite-plugin-qrcode";
 
-export default defineConfig({
-  plugins: [qrcode()],
+export default defineConfig({
+  plugins: [qrcode()],
 });
 ```
 
- 在开发模式下，使用下面的命令启动 
+在开发模式下，使用下面的命令启动
 
 ```shell
 vite --host
 ```
-
