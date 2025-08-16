@@ -1,0 +1,33 @@
+{
+  "name": "viteforvue",
+  "version": "0.0.14",
+  "private": true,
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "deploy": "sh ./deploy.sh"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "ant-design-vue": "^4.2.6",
+    "cropperjs": "^2.0.1",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.12.0",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-vue": "^10.4.0",
+    "prettier": "^3.6.2",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "vite": "^6.3.5",
+    "vite-plugin-cdn-import": "^1.0.1",
+    "vite-plugin-vue-devtools": "^7.7.7"
+  }
+}

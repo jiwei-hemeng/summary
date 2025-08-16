@@ -7,3 +7,5 @@ server/node_modules
 server/proxy_public/uploads/*
 server/privatePem.txt
 server/publicPem.txt
+vueforVite/node_modules
+vueforVite/dist
