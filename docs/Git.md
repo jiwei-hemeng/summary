@@ -122,7 +122,7 @@ drop：我要丢弃该commit（缩写:d）
 
 我们按 `i` 进入编辑页面
 
-![img](./assets/images/git_rebase.jpg)
+![git_rebase](../assets/images/git_rebase.jpg)
 
 上面的意思就是把第二次、第三次提交都合并到第一次提交上
 
@@ -352,7 +352,7 @@ https://raw.hellogithub.com/hosts
 
 # git pull 使用变基模式
 
-> 我们都知道`git push` 命令是 `git fetch`、`git merge` 两个命令的组合，但是这种模式会让提交历史变得很复杂，难以追溯问题，其解决方案就是使用git push 的变基模式
+> 我们都知道`git push` 命令是 `git fetch`、`git merge` 两个命令的组合，但是这种模式会让提交历史变得很复杂，难以追溯问题，其解决方案就是使用 git push 的变基模式
 
 ```shell
 git pull --rebase
@@ -372,16 +372,16 @@ git config --global pull.rebase false
 
 使用变基有一个额外的问题是：如果你本地文件有更改的话，变基会失败，因为变基前服务区必须是干净的，可以通过以下两个方案解决：
 
-+ `git pull` 前，先使用`git commit` 提交代码
-+ `git pull` 前，先使用`git stash` 将代码暂存
+- `git pull` 前，先使用`git commit` 提交代码
+- `git pull` 前，先使用`git stash` 将代码暂存
 
 执行完 `git pull --rebase`之后如果有合并冲突，使用以下三种方式处理这些冲突：
 
-+ `git rebase --abort` 会放弃合并，回到rebase操作之前的状态，之前的提交的不会丢弃；
+- `git rebase --abort` 会放弃合并，回到 rebase 操作之前的状态，之前的提交的不会丢弃；
 
-+ `git rebase --skip` 则会将引起冲突的commits丢弃掉（慎用！！）；
+- `git rebase --skip` 则会将引起冲突的 commits 丢弃掉（慎用！！）；
 
-+ `git rebase --continue` 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
+- `git rebase --continue` 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
 
   ```shell
   git add .
@@ -419,16 +419,15 @@ git cherry-pick --abort
 git config --global core.hashAlgorithm sha256
 ```
 
-# git revert  
+# git revert
 
 > git revert 是 Git 中用于撤销一个或多个历史提交的命令。与 git reset 不同，git revert 不会直接修改 Git 历史，而是通过创建一个新的提交来“反向”应用某个提交的内容，撤销该提交的所有修改。因此，git revert 是一个安全的操作，尤其适合在多人协作的项目中使用，因为它不会改变历史提交记录，而是以新的提交形式记录撤销的操作
->
 
 常见用途：
 
-+ 撤销某次提交：可以撤销某次提交的修改内容，而不破坏历史。
-+ 在公开分支上撤销提交：因为 git revert 不会改变提交历史，所以适合在公开分支（如 master 或 main）上撤销不需要的提交，而不影响其他开发者的工作。
-+ 创建反向提交：通过 git revert，可以创建一个新的提交，该提交是撤销某个错误提交的反向修改。
+- 撤销某次提交：可以撤销某次提交的修改内容，而不破坏历史。
+- 在公开分支上撤销提交：因为 git revert 不会改变提交历史，所以适合在公开分支（如 master 或 main）上撤销不需要的提交，而不影响其他开发者的工作。
+- 创建反向提交：通过 git revert，可以创建一个新的提交，该提交是撤销某个错误提交的反向修改。
 
 ```shell
 # 撤销指定提交
@@ -443,33 +442,33 @@ git revert abc1234 def5678 ghi9012
 
 命令的常用选项及参数
 
-+ ` --no-commit `  执行撤销操作，但不创建提交，而是将更改保留在工作区和暂存区。此选项允许你在查看更改后决定是否提交 
+- `--no-commit` 执行撤销操作，但不创建提交，而是将更改保留在工作区和暂存区。此选项允许你在查看更改后决定是否提交
 
   ```shell
   git revert --no-commit abc1234
   ```
 
-+  `--edit`：默认情况下，`git revert` 会自动生成提交信息。使用 `--edit` 选项可以手动编辑提交信息，通常用于当你需要详细描述撤销操作时。 
+- `--edit`：默认情况下，`git revert` 会自动生成提交信息。使用 `--edit` 选项可以手动编辑提交信息，通常用于当你需要详细描述撤销操作时。
 
-  ```shell
-  git revert --edit abc1234
-  ```
+```shell
+git revert --edit abc1234
+```
 
-+  `--no-edit`：如果你希望跳过编辑提交信息的步骤，可以使用该选项 
+- `--no-edit`：如果你希望跳过编辑提交信息的步骤，可以使用该选项
 
-  ```shell
-  git revert --no-edit abc1234
-  ```
+```shell
+git revert --no-edit abc1234
+```
 
-+  `-n` 或 `--no-commit`：与 `--no-commit` 相同，将更改保留在工作区和暂存区，而不自动提交。 
+- `-n` 或 `--no-commit`：与 `--no-commit` 相同，将更改保留在工作区和暂存区，而不自动提交。
 
-  ```shell
-  git revert -n abc1234
-  ```
+```shell
+git revert -n abc1234
+```
 
-总结： 假如依次提交了a--> a-->c-->d-->f  使用`git revert c` 撤销以后仅仅只是撤销了c 而 d、f 依然在
+总结： 假如依次提交了 a--> a-->c-->d-->f 使用`git revert c` 撤销以后仅仅只是撤销了 c 而 d、f 依然在
 
-# 生成ssl证书
+# 生成 ssl 证书
 
 ```shell
 # 查看 openssl 是否安装
@@ -481,4 +480,3 @@ openssl req -new -key server.key -out server.csr
 # 生成自签名证书
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 ```
-
