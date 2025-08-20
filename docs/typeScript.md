@@ -247,6 +247,27 @@ let a: any[] = [];
 push(a, 1, 2, 3);
 ```
 
+## vue 相关
+
+### 在 Composition API 中获取组件实例的引用
+
+```ts
+import {ref} from "vue";
+
+// 这是一个泛型函数，接受一个组件构造函数作为参数
+export default function <T extends new (...args: any[]) => void>(_comp: T) {
+  // 返回一个 ref，其值的类型是指定组件构造函数的实例类型
+  return ref<InstanceType<T>>();
+}
+```
+
+使用
+```ts
+import useCompRef from "./useCompRef";
+const formRef = useCompRef(ELForm)
+formRef.value?.submit()
+```
+
 ## TypeScript 内置方法
 
 ### Uppercase 化为大写
