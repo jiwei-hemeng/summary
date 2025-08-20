@@ -268,6 +268,78 @@ const formRef = useCompRef(ELForm)
 formRef.value?.submit()
 ```
 
+## 泛型（Generics）
+
+函数泛型
+
+```ts
+// 简单的身份函数
+function echo<T>(arg: T): T {
+    return arg;
+}
+
+const result = echo("hello");  // T 被推断为 string
+const result2 = echo<number>(123); // 显式指定 T 为 number
+```
+
+接口泛型
+
+```ts
+interface ApiResponse<T> {
+    code: number;
+    data: T;  // data 的类型由使用时的 T 决定
+    message: string;
+}
+
+// 使用
+const userResponse: ApiResponse<User> = {
+    code: 200,
+    data: { id: 1, name: "John" },  // data 必须是 User 类型
+    message: "success"
+};
+
+const productResponse: ApiResponse<Product> = {
+    code: 200,
+    data: { id: 1, price: 100 },  // data 必须是 Product 类型
+    message: "success"
+};
+```
+
+类泛型
+
+```ts
+class Box<T> {
+    private content: T;
+    
+    constructor(value: T) {
+        this.content = value;
+    }
+    
+    getValue(): T {
+        return this.content;
+    }
+}
+
+// 使用
+const numberBox = new Box<number>(42);
+const stringBox = new Box<string>("hello");
+```
+
+类型别名泛型
+
+```ts
+type Pair<T, U> = {
+    first: T;
+    second: U;
+};
+
+// 使用
+const numberStringPair: Pair<number, string> = {
+    first: 1,
+    second: "hello"
+};
+```
+
 ## TypeScript 内置方法
 
 ### Uppercase 化为大写
