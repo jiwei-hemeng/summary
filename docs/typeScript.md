@@ -268,6 +268,23 @@ const formRef = useCompRef(ELForm)
 formRef.value?.submit()
 ```
 
+## TypeScript （TS）中的InstanceType
+
+> TypeScript （TS）中的InstanceType是内置类型操作符，用于从类构造函数中提取实例类型。其核心功能是获取类构造函数的实例类型，常用于类型推断和通用函数定义
+
+```ts
+class MyClass {  
+  name: string;  
+  age: number;  
+  constructor(name: string, age: number) {  
+    this.name = name;  
+    this.age = age;  
+  }  
+}  
+type MyInstance = InstanceType<typeof MyClass>;  
+let instance: MyInstance = new MyClass("John", 25);  
+```
+
 ## 泛型（Generics）
 
 函数泛型
