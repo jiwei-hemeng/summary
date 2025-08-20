@@ -1687,3 +1687,38 @@ while (count--) {
   }
 </style>
 ```
+
+# vue 中动态的导入静态资源
+
+## await import() - 动态导入
+
+```js
+async getIconImage() {
+  const arr = [
+    "union",
+    "vector",
+    "vector1",
+    "vector2",
+    "vector3",
+    "group",
+    "vector4",
+    "vector5",
+  ];
+  const imgObj = [];
+  for (let item of arr) {
+    imgObj.push(await this.loadImage(item));
+  }
+  this.imgObj = imgObj;
+}
+async loadImage(name) {
+  const module = await import(`./${name}.png`);
+  return module.default; // 返回解析后的 URL
+}
+```
+## new URL(xxx, import.meta.url) - 资源路径解析
+
+```js
+// 获取相对于当前文件的资源路径
+const imagePath = new URL('./assets/image.png', import.meta.url);
+const configPath = new URL('../config/app.json', import.meta.url);
+```
