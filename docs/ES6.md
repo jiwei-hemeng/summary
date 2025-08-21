@@ -746,3 +746,40 @@ const setting = await import("./setting.json", {
 })
 ```
 
+## js 实现class 的私有变量
+
+es2020新语法
+
+```js
+class Counter {
+  #count = 0; // 私有字段
+  increment() {
+    this.#count++;
+  }
+  getValue() {
+    return this.#count;
+  }
+}
+const c = new Counter();
+c.increment();
+console.log(c.getValue()); // 输出: 1
+console.log(c.#count); // 错误: #count is not defined
+```
+兼容写法
+
+```js
+const fileMap = new WeakMap();
+class A {
+  constructor() {
+    fileMap.set(this, {
+      name: "11111",
+    });
+  }
+  getName() {
+    console.log(fileMap.get(this).name);
+  }
+}
+const a = new A();
+a.getName();
+console.log(a.name);
+```
