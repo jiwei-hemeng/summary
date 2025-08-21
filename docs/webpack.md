@@ -711,6 +711,25 @@ export default defineConfig({
 });
 ```
 
+### 对第三方包进行分包处理
+
+```js
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      manualChunks(id) {
+        if (id.includes('node_modules')) {
+          // 可以进一步细分 vendor chunk
+          if (id.includes('react')) return 'vendor-react'
+          if (id.includes('lodash')) return 'vendor-lodash'
+          return 'vendor'
+        }
+      }
+    },
+  },
+})
+```
+
 ### 配置 public 目录
 
 ```js
