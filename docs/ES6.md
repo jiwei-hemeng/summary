@@ -783,3 +783,39 @@ const a = new A();
 a.getName();
 console.log(a.name);
 ```
+
+## js 访问器属性
+
+### es6 新特性
+
+```js
+class User {
+  constructor(price, num) {
+    this.price = price;
+    this.num = num;
+  }
+  get total() {
+    return this.price * this.num;
+  }
+}
+
+const user = new User(100, 2);
+console.log("变化前", user.total);
+user.num = 5;
+console.log("变化后", user.total);
+```
+
+### es5 兼容写法
+
+```js
+function User2(price, num) {
+  this.price = price;
+  this.num = num;
+  Object.defineProperty(this, "total", {
+    get() {
+      return this.price * this.num;
+    }
+  });
+}
+```
+
