@@ -247,6 +247,37 @@ let a: any[] = [];
 push(a, 1, 2, 3);
 ```
 
+### 获取函数参数的类型
+
+```ts
+import { login } from "./api";
+// 0 表示第一个参数
+const params : Parameters<typeof login>[0] = {
+  username: "jiwei",
+  pwd: "123123"
+}
+```
+
+### 防抖函数如何做类型标注
+
+```ts
+function sum(a: number, b: number) {
+  return a + b;
+}
+declare function debounce<T extends any[]> (
+  fn: (...args: T) => any,
+  delay: number
+): (...args: T) => void;
+const dSum = debounce(sum, 200);
+const a = dSum(1, 2)
+```
+
+### 获取函数返回值的类型
+
+```ts
+const resp: ReturnType<typeof login> ={}
+```
+
 ## vue 相关
 
 ### 在 Composition API 中获取组件实例的引用
