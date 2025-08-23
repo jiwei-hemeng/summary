@@ -4,7 +4,7 @@
     <JIcon name="certificate-copy" color="#f00" size="28px"></JIcon>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import JIcon from "@/components/JIcon.vue"
 import { reactive, toRef, toRefs } from "vue"
 const state = reactive({

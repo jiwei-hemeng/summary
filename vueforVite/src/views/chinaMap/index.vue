@@ -2,14 +2,14 @@
 <template>
   <div id="chinaMap"></div>
 </template>
-<script setup>
-import { onMounted } from "vue";
-import * as echarts from "echarts";
+<script setup lang="ts">
+import { onMounted } from "vue"
+import * as echarts from "echarts"
 onMounted(async () => {
-  const res = await fetch("/assets/map/china.json");
-  const chinaJson = await res.text();
-  const myChart = echarts.init(document.getElementById("chinaMap"));
-  echarts.registerMap("china", chinaJson); //注册可用的地图
+  const res = await fetch("/assets/map/china.json")
+  const chinaJson = await res.text()
+  const myChart = echarts.init(document.getElementById("chinaMap"))
+  echarts.registerMap("china", chinaJson) //注册可用的地图
   var option = {
     // 存放需要绘制图片类型，以及样式设置
     geo: {
@@ -52,10 +52,10 @@ onMounted(async () => {
         formatter: "{b}<br/>{c} (p / km2)"
       }
     }
-  };
+  }
 
-  myChart.setOption(option);
-});
+  myChart.setOption(option)
+})
 </script>
 <style scoped>
 #chinaMap {

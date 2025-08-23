@@ -4,7 +4,7 @@ import { createApp } from "vue";
 import pinia from "@/stores";
 import App from "@/App.vue";
 import router from "@/router";
-import IndexDB from "@/utils/indexDB.js";
+import IndexDB from "@/utils/indexDB";
 import "@/assets/main.css";
 IndexDB.getIndexDB().then(() => {
   const app = createApp(App);

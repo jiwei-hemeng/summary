@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "strict": false,
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "vue": [
+        "node_modules/vue/dist/vue.esm-bundler.js"
+      ],
+      "pinia": [
+        "node_modules/pinia/dist/pinia.mjs"
+      ],
+      "echarts": [
+        "node_modules/echarts/lib/echarts.d.ts"
+      ],
+      "vue-router": [
+        "node_modules/vue-router/dist/vue-router.d.ts"
+      ],
+      "ant-design-vue": [
+        "node_modules/ant-design-vue/lib/index.d.ts"
+      ],
+      "@ant-design/icons-vue": [
+        "node_modules/@ant-design/icons-vue/lib/index.d.ts"
+      ],
+      "@ant-design/icons-vue/*": [
+        "node_modules/@ant-design/icons-vue/*"
+      ]
+    },
+    "types": [
+      "vite/client"
+    ],
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "src/**/*",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
+}

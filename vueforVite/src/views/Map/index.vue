@@ -1,44 +1,44 @@
 <template>
   <div id="container"></div>
 </template>
-<script>
+<script lang="ts">
 export default {
   name: "BMapTest"
-};
+}
 </script>
-<script setup>
-import { onMounted } from "vue";
-const BMAP_ANCHOR_TOP_RIGHT = window.BMAP_ANCHOR_TOP_RIGHT;
-const BMapGL = window.BMapGL;
+<script setup lang="ts">
+import { onMounted } from "vue"
+const BMapGL = (window as any).BMapGL
+const BMAP_ANCHOR_TOP_RIGHT = BMapGL?.BMAP_ANCHOR_TOP_RIGHT
 onMounted(() => {
-  const myCity = new BMapGL.LocalCity();
-  myCity.get(myFun);
+  const myCity = new BMapGL.LocalCity()
+  myCity.get(myFun)
   function myFun(result) {
-    const cityName = result.name;
-    const map = new BMapGL.Map("container");
-    const point = new BMapGL.Point(result.center.lng, result.center.lat);
-    map.centerAndZoom(point, 11);
+    const cityName = result.name
+    const map = new BMapGL.Map("container")
+    const point = new BMapGL.Point(result.center.lng, result.center.lat)
+    map.centerAndZoom(point, 11)
     const zoomCtrl = new BMapGL.ZoomControl({
       anchor: BMAP_ANCHOR_TOP_RIGHT
-    }); // 添加缩放控件
-    map.addControl(zoomCtrl);
+    }) // 添加缩放控件
+    map.addControl(zoomCtrl)
 
     const opts = {
       position: point, // 指定文本标注所在的地理位置
       offset: new BMapGL.Size(-30, -15) // 设置文本偏移量
-    };
-    const label = new BMapGL.Label("", opts);
+    }
+    const label = new BMapGL.Label("", opts)
     label.setContent(`
         <div class="overlay">${cityName}</div>
-        `);
+        `)
     label.setStyle({
       border: "0 none",
       padding: 0
-    });
-    map.addOverlay(label);
-    map.enableScrollWheelZoom();
+    })
+    map.addOverlay(label)
+    map.enableScrollWheelZoom()
   }
-});
+})
 </script>
 <style scoped>
 #container {
@@ -46,6 +46,7 @@ onMounted(() => {
   height: 400px;
   margin: 20px auto;
 }
+
 :deep(.overlay) {
   width: 60px;
   height: 30px;
@@ -58,6 +59,7 @@ onMounted(() => {
   line-height: 30px;
   font-family: "微软雅黑";
 }
+
 /* 去掉版权信息 */
 :deep(.anchorBL) {
   display: none;
