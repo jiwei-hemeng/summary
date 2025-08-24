@@ -164,6 +164,7 @@ Host jw
   ```shell
   # 语法 ssh -L 本地端口:目标主机:目标端口 用户名@ssh服务器地址
   ssh -L 9000:localhost:8080 user@ssh-server-address
+  ssh -L 80:localhost:8080 -p 8022 u0_a238@192.168.100.3 
   ```
 
   这样，当你尝试访问本地机器的9000端口时，实际上你是在访问远程服务器上的8080端口
