@@ -172,16 +172,13 @@ delete person.cls;
 console.log(person);
 ```
 
-### Proxy的优势如下
+Proxy和Object.defineProperty的区别
 
-- Proxy可以直接监听整个对象而非属性。
-- Proxy可以直接监听数组的变化。
-- Proxy有13中拦截方法，如`ownKeys、deleteProperty、has` 等是 `Object.defineProperty` 不具备的。
-- Proxy返回的是一个新对象，我们可以只操作新的对象达到目的，而`Object.defineProperty`只能遍历对象属性直接修改;
-
-### Object.defineProperty 的优势如下
-
-- 兼容性好，支持 IE9，而 Proxy 的存在浏览器兼容性问题,而且无法用 [polyfill](https://zhida.zhihu.com/search?content_id=131587309&content_type=Article&match_order=1&q=polyfill&zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3NDA3MzkzNTUsInEiOiJwb2x5ZmlsbCIsInpoaWRhX3NvdXJjZSI6ImVudGl0eSIsImNvbnRlbnRfaWQiOjEzMTU4NzMwOSwiY29udGVudF90eXBlIjoiQXJ0aWNsZSIsIm1hdGNoX29yZGVyIjoxLCJ6ZF90b2tlbiI6bnVsbH0.1DH-hcuOx6H111XpWPE5daGsq7HeX-KJr26DE8UfJzk&zhida_source=entity) 磨平。
+- 本质区别
+  - Proxy 是在拦击对象的基本方法，而Object.defineProperty 只是众多对象基本方法中的其中一个
+- 框架上的区别
+  - `Object.defineProperty`只能拦截对象现有属性的读写，在vue中需要提供`$set`、`$get `  对于push 等数组需要通过原型链的方法放在原型链进行重写
+  - Proxy  对读写提供了全面无死角的拦击, Proxy有13中拦截方法，如`ownKeys、deleteProperty、has` 等是 `Object.defineProperty` 不具备的
 
 ## Reflect
 
