@@ -975,6 +975,18 @@ body {
 }
 ```
 
+关于swap
+
+> swap 的作用是，让浏览器先用系统默认字体渲染文本，等自定义字体下载完成后再替换掉。这样用户可以第一时间看到内容，避免了 FOIT。
+
+```css
+@font-face {
+  font-family: 'MyAwesomeFont';
+  src: url('/fonts/my-awesome-font.woff2') format('woff2');
+  font-display: swap;
+}
+```
+
 ## 圣杯布局
 
 > 两边固定，中间自适应的布局叫圣杯布局
@@ -2077,3 +2089,13 @@ scroll() 可以接受两个参数
   animation-timeline: --my-scroller;
 }
 ```
+
+## css 混合色彩
+
+```css
+:root {
+  --main-color: #0066cc;
+  --hover-color: color-mix(in srgb, var(--main-color), white 20%);
+}
+```
+
