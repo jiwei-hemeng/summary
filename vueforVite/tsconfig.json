@@ -3,6 +3,8 @@
     "target": "ESNext",
     "module": "ESNext",
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "noImplicitAny": false,
     "strict": false,
     "baseUrl": "./",

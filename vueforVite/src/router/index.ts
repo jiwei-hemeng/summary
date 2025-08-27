@@ -67,6 +67,12 @@ const router = createRouter({
           name: "pageEcharts",
           component: () => import("@/views/pageEcharts/index.vue"),
           meta: { requiresAuth: false, title: "分页图表" }
+        },
+        {
+          path: "/customsRef",
+          name: "customsRef",
+          component: () => import("@/views/customsRef/index.vue"),
+          meta: { requiresAuth: false, title: "防抖式的响应式" }
         }
       ]
     },
