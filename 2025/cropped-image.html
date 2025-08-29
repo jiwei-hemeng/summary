@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: center;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+      }
+      .image-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      .crop-frame {
+        display: none;
+        position: absolute;
+        border: 3px dashed #28a745; /* 视觉反馈更明显 */
+        box-sizing: border-box;
+        cursor: move;
+      }
+      .resize-handle {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: #28a745;
+        cursor: nwse-resize;
+      }
+      .preview-area {
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        background: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <input type="file" id="imageInput" accept="image/*" />
+      <div class="image-wrapper">
+        <canvas id="mainCanvas"></canvas>
+        <div class="crop-frame" id="cropFrame"></div>
+      </div>
+      <button id="cropButton" disabled>Crop & Download</button>
+      <div class="preview-area">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+    </div>
+
+    <script>
+      const imageInput = document.getElementById("imageInput");
+      const mainCanvas = document.getElementById("mainCanvas");
+      const ctx = mainCanvas.getContext("2d");
+      const cropFrame = document.getElementById("cropFrame");
+      const previewCanvas = document.getElementById("previewCanvas");
+      const previewCtx = previewCanvas.getContext("2d");
+      const cropButton = document.getElementById("cropButton");
+
+      let image = new Image();
+      let cropData = { x: 100, y: 100, width: 150, height: 150 };
+      let isDragging = false;
+
+      // 初始尺寸设为 0（数值），避免拉伸
+      mainCanvas.width = 0;
+      mainCanvas.height = 0;
+
+      imageInput.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        image.src = URL.createObjectURL(file);
+        image.onload = () => {
+          // 固定画布演示尺寸（也可按比例自适应）
+          mainCanvas.width = 600;
+          mainCanvas.height = 450;
+
+          // 绘制整图到画布
+          ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+          ctx.drawImage(image, 0, 0, mainCanvas.width, mainCanvas.height);
+
+          // 启用裁剪
+          updateCropFrame();
+          cropButton.disabled = false;
+        };
+      });
+
+      function updateCropFrame() {
+        cropFrame.style.display = "block";
+        cropFrame.style.left = `${cropData.x}px`;
+        cropFrame.style.top = `${cropData.y}px`;
+        cropFrame.style.width = `${cropData.width}px`;
+        cropFrame.style.height = `${cropData.height}px`;
+        cropFrame.innerHTML =
+          '<div class="resize-handle" style="bottom: -6px; right: -6px;"></div>';
+      }
+
+      cropFrame.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        if (e.target.classList.contains("resize-handle")) {
+          cropFrame.dataset.mode = "resize";
+        } else {
+          cropFrame.dataset.mode = "move";
+        }
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const rect = mainCanvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        if (cropFrame.dataset.mode === "move") {
+          cropData.x = Math.max(
+            0,
+            Math.min(
+              mouseX - cropData.width / 2,
+              mainCanvas.width - cropData.width
+            )
+          );
+          cropData.y = Math.max(
+            0,
+            Math.min(
+              mouseY - cropData.height / 2,
+              mainCanvas.height - cropData.height
+            )
+          );
+        } else if (cropFrame.dataset.mode === "resize") {
+          cropData.width = Math.max(50, mouseX - cropData.x);
+          cropData.height = Math.max(50, mouseY - cropData.y);
+          // 限制在画布范围内
+          cropData.width = Math.min(
+            cropData.width,
+            mainCanvas.width - cropData.x
+          );
+          cropData.height = Math.min(
+            cropData.height,
+            mainCanvas.height - cropData.y
+          );
+        }
+
+        updateCropFrame();
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        cropFrame.dataset.mode = "";
+      });
+
+      cropButton.addEventListener("click", () => {
+        if (!image.width) return;
+
+        previewCanvas.width = cropData.width;
+        previewCanvas.height = cropData.height;
+
+        // 将画布坐标映射回原图坐标
+        const scaleX = image.width / mainCanvas.width;
+        const scaleY = image.height / mainCanvas.height;
+
+        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        previewCtx.drawImage(
+          image,
+          cropData.x * scaleX,
+          cropData.y * scaleY,
+          cropData.width * scaleX,
+          cropData.height * scaleY,
+          0,
+          0,
+          cropData.width,
+          cropData.height
+        );
+
+        const link = document.createElement("a");
+        link.download = "cropped-image.png";
+        link.href = previewCanvas.toDataURL("image/png");
+        link.click();
+      });
+    </script>
+  </body>
+</html>
