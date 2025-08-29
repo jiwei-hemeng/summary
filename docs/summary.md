@@ -119,6 +119,14 @@ document.querySelector("button")?.addEventListener("click", async () => {
           "image/*": [".png", ".gif", ".jpeg", ".jpg"],
         },
       },
+      {
+        description: "Excel Files",
+        accept: {
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            [".xlsx"],
+          "application/vnd.ms-excel": [".xls"],
+        },
+      },
     ],
     excludeAcceptAllOption: true,
     multiple: false,
