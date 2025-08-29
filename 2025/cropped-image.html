@@ -28,6 +28,7 @@
         height: 12px;
         background: #28a745;
         cursor: nwse-resize;
+        border-radius: 50%;
       }
       .preview-area {
         margin-top: 20px;
@@ -54,9 +55,9 @@
         <div class="crop-frame" id="cropFrame"></div>
       </div>
       <button id="cropButton" disabled>Crop & Download</button>
-      <div class="preview-area">
+      <!-- <div class="preview-area">
         <canvas id="previewCanvas"></canvas>
-      </div>
+      </div> -->
     </div>
 
     <script>
@@ -64,12 +65,13 @@
       const mainCanvas = document.getElementById("mainCanvas");
       const ctx = mainCanvas.getContext("2d");
       const cropFrame = document.getElementById("cropFrame");
-      const previewCanvas = document.getElementById("previewCanvas");
-      const previewCtx = previewCanvas.getContext("2d");
-      const cropButton = document.getElementById("cropButton");
 
+      const cropButton = document.getElementById("cropButton");
+      let scale = 1;
+      let originX = 0;
+      let originY = 0;
       let image = new Image();
-      let cropData = { x: 100, y: 100, width: 150, height: 150 };
+      let cropData = { x: 100, y: 100, width: 100, height: 100 };
       let isDragging = false;
 
       // 初始尺寸设为 0（数值），避免拉伸
@@ -83,8 +85,8 @@
         image.src = URL.createObjectURL(file);
         image.onload = () => {
           // 固定画布演示尺寸（也可按比例自适应）
-          mainCanvas.width = 600;
-          mainCanvas.height = 450;
+          mainCanvas.width = image.width;
+          mainCanvas.height = image.height;
 
           // 绘制整图到画布
           ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
@@ -160,7 +162,8 @@
 
       cropButton.addEventListener("click", () => {
         if (!image.width) return;
-
+        const previewCanvas = document.createElement("canvas");
+        const previewCtx = previewCanvas.getContext("2d");
         previewCanvas.width = cropData.width;
         previewCanvas.height = cropData.height;
 
@@ -182,10 +185,45 @@
         );
 
         const link = document.createElement("a");
-        link.download = "cropped-image.png";
+        link.download = `cropped-image-${Date.now()}.png`;
         link.href = previewCanvas.toDataURL("image/png");
         link.click();
       });
+      document
+        .querySelector(".image-wrapper")
+        .addEventListener("wheel", (e) => {
+          e.preventDefault();
+          if (e.deltaY < 0) {
+            scale += 0.2;
+          } else {
+            scale -= 0.2;
+          }
+          scale = Math.max(1, Math.min(3, scale)); // 限制缩放范围
+          screenX = e.offsetX;
+          screenY = e.offsetY;
+          draw();
+        });
+      function draw() {
+        ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+        ctx.save();
+        const swidth = image.width * scale;
+        const sHeight = image.height * scale;
+        const scaleFactor = swidth / image.width;
+        const sx = scaleFactor * originY - originY;
+        const sy = scaleFactor * originX - originX;
+        ctx.drawImage(
+          image,
+          sx,
+          sy,
+          swidth,
+          sHeight,
+          0,
+          0,
+          mainCanvas.width,
+          mainCanvas.height
+        );
+        ctx.restore();
+      }
     </script>
   </body>
 </html>
