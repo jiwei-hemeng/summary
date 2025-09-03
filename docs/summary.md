@@ -162,6 +162,27 @@ window.addEventListener("load", (e) => {
 });
 ```
 
+在iframe 中使用
+
+```html
+<iframe id="childFrame" src="https://child.com"></iframe>
+<script>
+  const iframe = document.getElementById('childFrame');
+    // 发送消息给iframe
+  iframe.onload = () => {
+    iframe.contentWindow.postMessage({ type: 'greeting', text: 'Hello from parent' }, 		'https://child.com');
+  };
+     // 接收来自iframe的消息
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://child.com') return;
+    console.log('Parent received:', event.data);
+    if (event.data.type === 'response') {
+      alert(event.data.text);
+    }
+  });
+</script>
+```
+
 ### 广播频道-BroadcastChannel
 
 > BroadcastChannel API 提供了一种简单的方法来实现跨窗口、跨标签页和跨框架之间的通信，而无需使用 WebSocket 或 SSE。它是一个非常便捷的工具，可以帮助我们将实时通信功能集成到我们的 Web 应用程序中
