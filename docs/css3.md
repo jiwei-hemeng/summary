@@ -147,12 +147,22 @@ font-size: clamp(12px, 2rem, 24px);
 ```css
 .button {
   background-color: red;
-  &.warning {
+  padding: 1.5rem;
+  .warning {
     background-color: blue;
   }
-  & .icon {
+  &-header { /* 等效于 .card-header */
+    font-size: 1.2em;
+  }
+  &:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  .icon {
     width: 1rem;
     height: 1rem;
+  }
+  @media (width <= 768px) {
+    padding: 1.1rem;
   }
 }
 ```
@@ -500,9 +510,9 @@ h5:has(+ p) {
 
 ### :placeholder-shown
 
->  输入框在显示占位符时将应用特殊字体和边框样式 
+> 输入框在显示占位符时将应用特殊字体和边框样式
 
-[mdn地址](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:placeholder-shown)
+[mdn 地址](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:placeholder-shown)
 
 ```css
 input {
@@ -975,15 +985,15 @@ body {
 }
 ```
 
-关于swap
+关于 swap
 
 > swap 的作用是，让浏览器先用系统默认字体渲染文本，等自定义字体下载完成后再替换掉。这样用户可以第一时间看到内容，避免了 FOIT。
 
 ```css
-@font-face {
-  font-family: 'MyAwesomeFont';
-  src: url('/fonts/my-awesome-font.woff2') format('woff2');
-  font-display: swap;
+@font-face  {
+    font-family: "MyAwesomeFont";
+    src: url("/fonts/my-awesome-font.woff2")  format("woff2");
+    font-display: swap;
 }
 ```
 
@@ -2098,4 +2108,3 @@ scroll() 可以接受两个参数
   --hover-color: color-mix(in srgb, var(--main-color), white 20%);
 }
 ```
-
