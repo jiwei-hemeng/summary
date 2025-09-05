@@ -14,6 +14,11 @@
       .image-wrapper {
         position: relative;
         display: inline-block;
+        overflow: hidden;
+        display: block;
+        min-height: 300px;
+        margin: 20px 0;
+        border: 2px solid #ddd;
       }
       .crop-frame {
         display: none;
@@ -21,6 +26,7 @@
         border: 3px dashed #28a745; /* 视觉反馈更明显 */
         box-sizing: border-box;
         cursor: move;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
       }
       .resize-handle {
         position: absolute;
