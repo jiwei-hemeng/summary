@@ -1,30 +1,30 @@
 ## typeScript
 
-### 什么是typeScript?
+### 什么是 typeScript?
 
-> TypeScript是JavaScript的超集，TypeScript的数据类型就是JavaScript的数据类型，大致可以分为基本数据类型和对象类型，基本类型包括boolean、number、string、undefine以及在ES6中的新类型Symbol和ES10中的新类型BigInt
+> TypeScript 是 JavaScript 的超集，TypeScript 的数据类型就是 JavaScript 的数据类型，大致可以分为基本数据类型和对象类型，基本类型包括 boolean、number、string、undefine 以及在 ES6 中的新类型 Symbol 和 ES10 中的新类型 BigInt
 
-+ TypeScript 是添加了类型系统的 JavaScript，适用于任何规模的项目。
-+ TypeScript 是一门静态类型、弱类型的语言。
-+ TypeScript 是完全兼容 JavaScript 的，它不会修改 JavaScript 运行时的特性。
-+ TypeScript 可以编译为 JavaScript，然后运行在浏览器、Node.js 等任何能运行 JavaScript 的环境中。
-+ TypeScript 拥有很多编译选项，类型检查的严格程度由你决定。
+- TypeScript 是添加了类型系统的 JavaScript，适用于任何规模的项目。
+- TypeScript 是一门静态类型、弱类型的语言。
+- TypeScript 是完全兼容 JavaScript 的，它不会修改 JavaScript 运行时的特性。
+- TypeScript 可以编译为 JavaScript，然后运行在浏览器、Node.js 等任何能运行 JavaScript 的环境中。
+- TypeScript 拥有很多编译选项，类型检查的严格程度由你决定。
 
-### boolean类型
+### boolean 类型
 
-boolean类型是最基本的数据类型，只有false和true两个值，在TypeScript可以通过以下代码来声明boolean类型
+boolean 类型是最基本的数据类型，只有 false 和 true 两个值，在 TypeScript 可以通过以下代码来声明 boolean 类型
 
 ```ts
 let isDone: boolean = false;
 ```
 
-其中需要注意的是使用构造函数Boolean构造的对象并不死boolean值，而是一个对象：
+其中需要注意的是使用构造函数 Boolean 构造的对象并不死 boolean 值，而是一个对象：
 
 ```ts
 let createByNewBoolean: Boolean = new Boolean(1);
 ```
 
-### number类型
+### number 类型
 
 ```ts
 let decLiteral: number = 6;
@@ -33,12 +33,12 @@ let hexLiteral: number = 0xf00d;
 //二进制数
 let binaryLiteral: number = 0b1010;
 //八进制数
-let octalLiteral: number = 0O744;
+let octalLiteral: number = 0o744;
 let notNumber: number = NaN;
 let infinityNumber: number = Infinity;
 ```
 
-### 字符串string
+### 字符串 string
 
 ```ts
 let myName: string = "Tom";
@@ -56,38 +56,38 @@ let numberArray: number[] = [1, 1, 2, 3];
 **数组泛型**
 
 ```ts
-let numberArray: Array<number> = [1, 2, 3, 4, 5]
+let numberArray: Array<number> = [1, 2, 3, 4, 5];
 ```
 
-**any在数组中的使用**
+**any 在数组中的使用**
 
 ```ts
-let list: any[] = ['xcatliu', 25, { website: 'http://xcatliu.com' }];
+let list: any[] = ["xcatliu", 25, { website: "http://xcatliu.com" }];
 ```
 
 ### void
 
-在JavaScript中没有void的概念，在TypeScript中void表示不是任何类型，常用于函数没有返回值：
+在 JavaScript 中没有 void 的概念，在 TypeScript 中 void 表示不是任何类型，常用于函数没有返回值：
 
 ```ts
 function alertName(): void {
-    alert('My name is Tom');
+  alert("My name is Tom");
 }
 ```
 
-### Any类型
+### Any 类型
 
-如果变量是一个普通的类型，在赋值的过程中是不可以改变类型的，例如一下如果声明为string类型如果渎职number则会报错：
+如果变量是一个普通的类型，在赋值的过程中是不可以改变类型的，例如一下如果声明为 string 类型如果渎职 number 则会报错：
 
 ```ts
 ley myNumber: string = "six";
 myNumber = 6; // 报错
 ```
 
-但是如果是any类型，则可以赋值为任意类型：
+但是如果是 any 类型，则可以赋值为任意类型：
 
 ```ts
-let myFavoriteNumber: any = 'seven';
+let myFavoriteNumber: any = "seven";
 myFavoriteNumber = 7;
 ```
 
@@ -105,51 +105,51 @@ myFavoriteNumber = 7;
 
 ```ts
 function getLength(something: string | number): number {
-    return something.length;
+  return something.length;
 }
 ```
 
-在上述例子中会报错，因为number是没有length属性的，如果访问共有属性则没有问题，例子如下：
+在上述例子中会报错，因为 number 是没有 length 属性的，如果访问共有属性则没有问题，例子如下：
 
 ```ts
 function getString(something: string | number): string {
-    return something.toString();
+  return something.toString();
 }
 ```
 
 ## 什么是接口
 
-> 接口是一个非常重要的概念，它是对于行为的抽象，具体的行为是需要由类去实现的。在TypeScript中接口是一个非常灵活的概念，除了可用于对类的一部分行为进行抽象外，也可以用于对对象的`形状`进行描述，这里的形状就可以理解为对象的属性。
+> 接口是一个非常重要的概念，它是对于行为的抽象，具体的行为是需要由类去实现的。在 TypeScript 中接口是一个非常灵活的概念，除了可用于对类的一部分行为进行抽象外，也可以用于对对象的`形状`进行描述，这里的形状就可以理解为对象的属性。
 
 一个简单的例子如下:
 
 ```ts
 interface Person {
-    name: string;
-    age: number;
+  name: string;
+  age: number;
 }
 let tom: Person = {
-    name: "Tom",
-    age: 25
-}
+  name: "Tom",
+  age: 25,
+};
 ```
 
-在上面的例子中，我们定义来一个接口Person，接着定义了一个变量tom，它的类型是Person，这样就约束了tom的属性必须和接口一致，如果少了或者多了属性都会报错。
+在上面的例子中，我们定义来一个接口 Person，接着定义了一个变量 tom，它的类型是 Person，这样就约束了 tom 的属性必须和接口一致，如果少了或者多了属性都会报错。
 
 ### 可选属性
 
 ```ts
 interface Person {
-    name: string;
-    age?: number;
+  name: string;
+  age?: number;
 }
 let tom: Person = {
-    name: "Tom"
-}
+  name: "Tom",
+};
 let jerry: Person = {
-    name: "Jerry",
-    age: 24
-}
+  name: "Jerry",
+  age: 24,
+};
 ```
 
 从上述例子可以看出可以通过?来设置可选属性，如果一个属性设置为可选属性，那么该属性可以存在也可以不存在。通过可选属性可以设置属性存不存在，但是还是不能添加属性，否则回报错
@@ -177,49 +177,49 @@ let jerry: Person = {
 
 ```ts
 interface Person {
-    readonly id: number;
-    name: string;
-    age?: number;
-    [propName: string]: string | number
+  readonly id: number;
+  name: string;
+  age?: number;
+  [propName: string]: string | number;
 }
 
 let jerry: Person = {
-    id: 9527,
-    name: "Jerry",
-    age: 25,
-    gender: "male"
-}
+  id: 9527,
+  name: "Jerry",
+  age: 25,
+  gender: "male",
+};
 
-jerry.id = 213 // 报错，只读属性
+jerry.id = 213; // 报错，只读属性
 ```
 
 ### 函数
 
 ```ts
 function sun(x: number, y: number): number {
-    return x + y;
+  return x + y;
 }
 ```
 
-说明： 表示这是个需要参数x是number 类型、y是number 类型，返回值是number 类型 的函数
+说明： 表示这是个需要参数 x 是 number 类型、y 是 number 类型，返回值是 number 类型 的函数
 
 如果是函数表达式可以如下定义：
 
 ```ts
 let sum = function (x: number, y: number): number {
-    return x + y;
-}
+  return x + y;
+};
 ```
 
 可选参数
 
 ```ts
 function buildName(firstName: string, lastName?: string) {
-    if (lastName) {
-        return firstName + " " + lastName;
-    } else {
-        return firstName;
-    }
+  if (lastName) {
+    return firstName + " " + lastName;
+  } else {
+    return firstName;
+  }
 }
 ```
 
@@ -227,11 +227,11 @@ function buildName(firstName: string, lastName?: string) {
 
 ```ts
 function buildName(firstName: string, lastName: string = "Cat") {
-    if (lastName) {
-        return firstName + " " + lastName;
-    } else {
-        return firstName;
-    }
+  if (lastName) {
+    return firstName + " " + lastName;
+  } else {
+    return firstName;
+  }
 }
 ```
 
@@ -239,9 +239,9 @@ function buildName(firstName: string, lastName: string = "Cat") {
 
 ```ts
 function push(array, ...items) {
-    items.forEach(function(item) {
-        array.push(item);
-    });
+  items.forEach(function (item) {
+    array.push(item);
+  });
 }
 let a: any[] = [];
 push(a, 1, 2, 3);
@@ -252,10 +252,10 @@ push(a, 1, 2, 3);
 ```ts
 import { login } from "./api";
 // 0 表示第一个参数
-const params : Parameters<typeof login>[0] = {
+const params: Parameters<typeof login>[0] = {
   username: "jiwei",
-  pwd: "123123"
-}
+  pwd: "123123",
+};
 ```
 
 ### 防抖函数如何做类型标注
@@ -264,18 +264,18 @@ const params : Parameters<typeof login>[0] = {
 function sum(a: number, b: number) {
   return a + b;
 }
-declare function debounce<T extends any[]> (
+declare function debounce<T extends any[]>(
   fn: (...args: T) => any,
   delay: number
 ): (...args: T) => void;
 const dSum = debounce(sum, 200);
-const a = dSum(1, 2)
+const a = dSum(1, 2);
 ```
 
 ### 获取函数返回值的类型
 
 ```ts
-const resp: ReturnType<typeof login> ={}
+const resp: ReturnType<typeof login> = {};
 ```
 
 ## vue 相关
@@ -283,7 +283,7 @@ const resp: ReturnType<typeof login> ={}
 ### 在 Composition API 中获取组件实例的引用
 
 ```ts
-import {ref} from "vue";
+import { ref } from "vue";
 
 // 这是一个泛型函数，接受一个组件构造函数作为参数
 export default function <T extends new (...args: any[]) => void>(_comp: T) {
@@ -293,27 +293,28 @@ export default function <T extends new (...args: any[]) => void>(_comp: T) {
 ```
 
 使用
+
 ```ts
 import useCompRef from "./useCompRef";
-const formRef = useCompRef(ELForm)
-formRef.value?.submit()
+const formRef = useCompRef(ELForm);
+formRef.value?.submit();
 ```
 
-## TypeScript （TS）中的InstanceType
+## TypeScript （TS）中的 InstanceType
 
-> TypeScript （TS）中的InstanceType是内置类型操作符，用于从类构造函数中提取实例类型。其核心功能是获取类构造函数的实例类型，常用于类型推断和通用函数定义
+> TypeScript （TS）中的 InstanceType 是内置类型操作符，用于从类构造函数中提取实例类型。其核心功能是获取类构造函数的实例类型，常用于类型推断和通用函数定义
 
 ```ts
-class MyClass {  
-  name: string;  
-  age: number;  
-  constructor(name: string, age: number) {  
-    this.name = name;  
-    this.age = age;  
-  }  
-}  
-type MyInstance = InstanceType<typeof MyClass>;  
-let instance: MyInstance = new MyClass("John", 25);  
+class MyClass {
+  name: string;
+  age: number;
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+}
+type MyInstance = InstanceType<typeof MyClass>;
+let instance: MyInstance = new MyClass("John", 25);
 ```
 
 ## 泛型（Generics）
@@ -323,33 +324,45 @@ let instance: MyInstance = new MyClass("John", 25);
 ```ts
 // 简单的身份函数
 function echo<T>(arg: T): T {
-    return arg;
+  return arg;
 }
 
-const result = echo("hello");  // T 被推断为 string
+const result = echo("hello"); // T 被推断为 string
 const result2 = echo<number>(123); // 显式指定 T 为 number
+```
+
+函数名后面尖括号的部分<T>，就是类型参数，参数要放在一对尖括号（<>）里面。本例只有一个类型参数 T，可以将其理解为类型声明需要的变量，需要在调用时传入具体的参数类型
+
+多个类型参数的例子
+
+```ts
+function map<T, U>(arr: T[], f: (arg: T) => U): U[] {
+  return arr.map(f);
+}
+// 用法实例
+const newarr = map<string, number>(["1", "2", "3"], (n) => parseInt(n)); // 返回 [1, 2, 3]
 ```
 
 接口泛型
 
 ```ts
 interface ApiResponse<T> {
-    code: number;
-    data: T;  // data 的类型由使用时的 T 决定
-    message: string;
+  code: number;
+  data: T; // data 的类型由使用时的 T 决定
+  message: string;
 }
 
 // 使用
 const userResponse: ApiResponse<User> = {
-    code: 200,
-    data: { id: 1, name: "John" },  // data 必须是 User 类型
-    message: "success"
+  code: 200,
+  data: { id: 1, name: "John" }, // data 必须是 User 类型
+  message: "success",
 };
 
 const productResponse: ApiResponse<Product> = {
-    code: 200,
-    data: { id: 1, price: 100 },  // data 必须是 Product 类型
-    message: "success"
+  code: 200,
+  data: { id: 1, price: 100 }, // data 必须是 Product 类型
+  message: "success",
 };
 ```
 
@@ -357,15 +370,15 @@ const productResponse: ApiResponse<Product> = {
 
 ```ts
 class Box<T> {
-    private content: T;
-    
-    constructor(value: T) {
-        this.content = value;
-    }
-    
-    getValue(): T {
-        return this.content;
-    }
+  private content: T;
+
+  constructor(value: T) {
+    this.content = value;
+  }
+
+  getValue(): T {
+    return this.content;
+  }
 }
 
 // 使用
@@ -377,14 +390,14 @@ const stringBox = new Box<string>("hello");
 
 ```ts
 type Pair<T, U> = {
-    first: T;
-    second: U;
+  first: T;
+  second: U;
 };
 
 // 使用
 const numberStringPair: Pair<number, string> = {
-    first: 1,
-    second: "hello"
+  first: 1,
+  second: "hello",
 };
 ```
 
@@ -458,9 +471,9 @@ interface PartialUser {
 type PartialUser = Partial<User>;
 ```
 
-###  Required 设置为必需
+### Required 设置为必需
 
-与Partial相反，Required可以将接口中的可选属性设置为必需。
+与 Partial 相反，Required 可以将接口中的可选属性设置为必需。
 
 ```ts
 interface User {
@@ -497,7 +510,7 @@ user.role = "USER"; // 将属性'role'设置为只读后，再次对'role'设值
 
 ### Record 映射一个类型的属性到另一个类型
 
-构造一个对象类型，其属性key是`Keys`,属性value是`Tpye`。被用于映射一个类型的属性到另一个类型。
+构造一个对象类型，其属性 key 是`Keys`,属性 value 是`Tpye`。被用于映射一个类型的属性到另一个类型。
 
 ```ts
 interface Address {
@@ -533,7 +546,7 @@ type UserPartial = Pick<User, "name" | "age">;
 
 ### Omit 剔除某些属性
 
-`Omit`是TypeScript3.5新增的一个辅助类型，它的作用主要是：以一个类型为基础支持剔除某些属性，然后返回一个新类型。
+`Omit`是 TypeScript3.5 新增的一个辅助类型，它的作用主要是：以一个类型为基础支持剔除某些属性，然后返回一个新类型。
 
 ```ts
 interface User {
@@ -550,7 +563,7 @@ interface UserPartial {
 type UserPartial = Omit<User, "password">;
 ```
 
-### Exclude  属性排除
+### Exclude 属性排除
 
 将类型中其中一些属性排除，并创建排除属性后的新类型。
 
