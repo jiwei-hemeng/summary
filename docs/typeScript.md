@@ -319,7 +319,9 @@ let instance: MyInstance = new MyClass("John", 25);
 
 ## 泛型（Generics）
 
-函数泛型
+> [相关链接](https://www.bookstack.cn/read/wangdoc-typescript-tutorial/docs-generics.md)
+
+### 函数泛型
 
 ```ts
 // 简单的身份函数
@@ -343,7 +345,62 @@ function map<T, U>(arr: T[], f: (arg: T) => U): U[] {
 const newarr = map<string, number>(["1", "2", "3"], (n) => parseInt(n)); // 返回 [1, 2, 3]
 ```
 
-接口泛型
+类型参数的约束条件
+
+```ts
+function comp<T extends { length: number }>(a: T, b: T) {
+  if (a.length >= b.length) {
+    return a;
+  }
+  return b;
+}
+```
+
+上面示例中，T extends { length: number }就是约束条件，表示类型参数 T 必须满足{ length: number }，否则就会报错
+
+```ts
+comp([1, 2], [1, 2, 3]); // 正确
+comp("ab", "abc"); // 正确
+comp(1, 2); // 报错
+```
+
+类型参数的约束条件采用下面的形式。
+
+```ts
+<TypeParameter extends ConstraintType>
+```
+
+上面语法中，TypeParameter 表示类型参数，extends 是关键字，这是必须的，ConstraintType 表示类型参数要满足的条件，即类型参数应该是 ConstraintType 的子类型。
+
+类型参数可以同时设置约束条件和默认值，前提是默认值必须满足约束条件。
+
+```ts
+type Fn<A extends string, B extends string = "world"> = [A, B];
+type Result = Fn<"hello">; // ["hello", "world"]
+```
+
+上面示例中，类型参数 A 和 B 都有约束条件，并且 B 还有默认值。所以，调用 Fn 的时候，可以只给出 A 的值，不给出 B 的值。
+
+如果有多个类型参数，一个类型参数的约束条件，可以引用其他参数。
+
+```ts
+<T, U extends T>
+// 或者
+<T extends U, U>
+```
+
+上面示例中，U 的约束条件引用 T，或者 T 的约束条件引用 U，都是正确的。
+
+但是，约束条件不能引用类型参数自身。
+
+```ts
+<T extends T>               // 报错
+<T extends U, U extends T>  // 报错
+```
+
+上面示例中，T 的约束条件不能是 T 自身。同理，多个类型参数也不能互相约束（即 T 的约束条件是 U、U 的约束条件是 T），因为互相约束就意味着约束条件就是类型参数自身。
+
+### 接口泛型
 
 ```ts
 interface ApiResponse<T> {
@@ -366,7 +423,7 @@ const productResponse: ApiResponse<Product> = {
 };
 ```
 
-类泛型
+### 类泛型
 
 ```ts
 class Box<T> {
@@ -386,7 +443,7 @@ const numberBox = new Box<number>(42);
 const stringBox = new Box<string>("hello");
 ```
 
-类型别名泛型
+### 类型别名泛型
 
 ```ts
 type Pair<T, U> = {
