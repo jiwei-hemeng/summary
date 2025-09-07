@@ -73,6 +73,12 @@ const router = createRouter({
           name: "customsRef",
           component: () => import("@/views/customsRef/index.vue"),
           meta: { requiresAuth: false, title: "防抖式的响应式" }
+        },
+        {
+          path: "/slideIn",
+          name: "slideIn",
+          component: () => import("@/views/slideIn/index.vue"),
+          meta: { requiresAuth: false, title: "滑动式特效" }
         }
       ]
     },
