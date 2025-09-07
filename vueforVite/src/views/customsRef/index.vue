@@ -6,5 +6,5 @@
 </template>
 <script setup lang="ts">
 import { useDebouncedRef } from '@/hook/useDebouncedRef.ts'
-const text = useDebouncedRef('', 500)
+const text = useDebouncedRef<string>('', 500)
 </script>

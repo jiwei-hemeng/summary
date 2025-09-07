@@ -25,6 +25,13 @@ const getCamera = () => {
       })
   }
 }
+function closeCamera() {
+  if (video.value && video.value.srcObject) {
+    const tracks = (video.value.srcObject as MediaStream).getTracks()
+    tracks.forEach(track => track.stop())
+    video.value.srcObject = null
+  }
+}
 // 拍照 绘制图片
 const takePhoto = () => {
   if (canvasDom.value && video.value) {
@@ -38,14 +45,8 @@ const takePhoto = () => {
     console.log(imgSrc.value)
     image.value.push(imgSrc.value)
   }
-  function closeCamera() {
-    if (video.value && video.value.srcObject) {
-      const tracks = (video.value.srcObject as MediaStream).getTracks()
-      tracks.forEach(track => track.stop())
-      video.value.srcObject = null
-    }
-  }
-  video.value.srcObject.getTracks()[0].stop()
+
+  (video.value?.srcObject as any)?.getTracks()[0].stop()
 }
 </script>
 <template>

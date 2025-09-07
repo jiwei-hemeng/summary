@@ -27,7 +27,7 @@ defineOptions({
 })
 
 const isDrawing = ref(false)
-const ctx = ref(null)
+const ctx = ref()
 const canvas = ref()
 const canvasWidth = ref()
 const canvasHeight = ref()
@@ -41,13 +41,13 @@ onMounted(() => {
   ctx.value.lineCap = "round" // 设置线条端点样式
   ctx.value.strokeStyle = "#000" // 设置线条颜色
 })
-function startDrawing(event) {
+function startDrawing(event: Event) {
   isDrawing.value = true
   const { x, y } = getCanvasCoordinates(event)
   ctx.value.beginPath()
   ctx.value.moveTo(x, y)
 }
-function draw(event) {
+function draw(event: Event) {
   if (!isDrawing.value) return
   const { x, y } = getCanvasCoordinates(event)
   ctx.value.lineTo(x, y)
@@ -68,11 +68,15 @@ function saveCanvas() {
   link.download = "signature.png"
   link.click()
 }
-function getCanvasCoordinates(event) {
+function getCanvasCoordinates(event: {
+  type: string | string[]; touches?: {
+    clientX?: any; clientY?: any
+  }[]; clientX?: any; clientY?: any
+}) {
   const rect = canvas.value.getBoundingClientRect()
   const isTouch = event.type.includes("touch")
-  const clientX = isTouch ? event.touches[0].clientX : event.clientX
-  const clientY = isTouch ? event.touches[0].clientY : event.clientY
+  const clientX = isTouch && event.touches ? event.touches[0].clientX : event.clientX
+  const clientY = isTouch && event.touches ? event.touches[0].clientY : event.clientY
   return {
     x: clientX - rect.left,
     y: clientY - rect.top
@@ -89,7 +93,7 @@ const state = ref({
 const { onChange } = useWatchFields(state, ["name", "age"])
 
 // 注册事件监听器，获取字段变化信息
-onChange((data) => {
+onChange((data: { changedFields: any; fieldChangeMap: any }) => {
   fancyConsole.warn("变化字段:", data.changedFields)
   fancyConsole.info("字段变化前后值:", data.fieldChangeMap)
 })
