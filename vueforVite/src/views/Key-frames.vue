@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { ref, nextTick } from "vue"
+import { useTemplateRef, ref } from "vue"
 let isDevelop = ref(false)
-let reftDom = ref(null)
+let reftDom = useTemplateRef<HTMLElement>("reftDom")
 function developChange() {
+  if (!reftDom.value) {
+    return
+  }
   if (isDevelop.value) {
     reftDom.value.style.display = "block"
-    nextTick(() => {
-      reftDom.value.classList.add("sideLeftIn")
-    })
+    reftDom.value.classList.add("sideLeftIn")
   } else {
     reftDom.value.classList.add("sideLeftOut")
   }
 }
 function leftAnimationend() {
+  if (!reftDom.value) {
+    return
+  }
   isDevelop.value = !isDevelop.value
   if (isDevelop.value) {
     reftDom.value.style.display = "none"

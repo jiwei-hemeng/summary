@@ -27,5 +27,5 @@ interface symbolId {
   color?: string
   size?: string | number
 }
-const symbolId: Ref<string> = computed<string>(() => `#icon-${props.name}`)
+const symbolId = computed(() => `#icon-${props.name}`)
 </script>
