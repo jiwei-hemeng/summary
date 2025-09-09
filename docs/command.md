@@ -356,6 +356,18 @@ kill [pid]
 
 在Chrome浏览器中，当遇到“您的连接不是私密连接”的警告时，输入“thisisunsafe”是一个临时的绕过机制，允许用户忽略安全警告并继续访问网站。但需要注意的是，这样做会使您的连接变得不安全，容易受到中间人攻击或其他安全威胁。然而，在某些情况下，用户可能了解并确认访问的网站是安全的，或者用户需要访问该网站以完成特定的工作或任务。此时，用户可以在当前页面上（而不是在地址栏中）输入“thisisunsafe”，然后按回车键。Chrome浏览器会识别这个命令，并允许用户继续访问网站
 
+### --disable-web-security
+
+> 开发过程冲不可避免的会遇到跨域问题，有时候
+
+![配置图片](../assets/images/cors_20250909193542_81_1.png)
+
+```txt
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=D:\chrometempdata
+```
+
+ ‌> 重要警告：`D:\chrometempdata` 是咱们自己创建的本地文件夹 ，随便建一个就行
+
 ### Windows 下实现端口映射
 
 **查询某一个 IP 的所有端口映射情况**
