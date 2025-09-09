@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-check
 // base64 文件转为file 对象
 export function base64UrlToFile(base64Url, filename) {
   const arr = base64Url.split(",");
@@ -21,8 +21,8 @@ function bufToBlob(buf, mimeType) {
 
 /**
  * 下载文件
- * @params {string} url
- * @params {string} filename
+ * @param {string} url
+ * @param {string} filename
  */
 export function downloadFile(url, filename) {
   const alink = document.createElement("a");
@@ -35,8 +35,8 @@ export function downloadFile(url, filename) {
 
 /**
  * 文件切片
- * @params {file} file
- * @params {number} chunkSize
+ * @param {File} file
+ * @param {number} chunkSize
  */
 
 export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
@@ -50,9 +50,16 @@ export function chunkFile(file, chunkSize = 1024 * 1024 * 10) {
   }
 }
 /**
- * 将多个切片文件合成一个文件
- * @params {array[file]}
- * @return {file}
+ * 将大文件转换为Blob对象
+ * @param {Array<ArrayBuffer|File|Blob>} bigFile - 需要转换的文件对象，可以是File、ArrayBuffer或ArrayBuffer数组
+ * @returns {Blob} 返回一个新的Blob对象，类型为application/octet-stream
+ * @example
+ * // 使用File对象
+ * const file = document.querySelector('input[type="file"]').files[0];
+ * const blob = chunkFileToFile(file);
+ * // 使用ArrayBuffer
+ * const arrayBuffer = new ArrayBuffer(1024);
+ * const blob = chunkFileToFile(arrayBuffer);
  */
 export function chunkFileToFile(bigFile) {
   return new Blob(bigFile, {
@@ -62,8 +69,8 @@ export function chunkFileToFile(bigFile) {
 
 /**
  * 获取文件的扩展名
- * @params {string} filename
- * @return {string}
+ * @param {string} filename
+ * @returns {string}
  */
 
 export function getFileExtension(filename) {

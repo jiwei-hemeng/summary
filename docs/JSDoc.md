@@ -1,12 +1,12 @@
 # JSDoc 基础知识
 
-JSDoc和TypeScript都解决了编写和维护纯JavaScript代码的问题。然而，它们采用了不同的方法，各有利弊。
+JSDoc 和 TypeScript 都解决了编写和维护纯 JavaScript 代码的问题。然而，它们采用了不同的方法，各有利弊。
 
-## JSDoc相对于TypeScript的优势
+## JSDoc 相对于 TypeScript 的优势
 
-- **灵活性和兼容性**JSDoc只是JavaScript注释，这意味着它可以添加到任何JavaScript代码库中，而不受语言版本的限制，并且不像TypeScript那样与编译器绑定。
-- **代码注释**JSDoc不仅可以用于类型检查，还可以用于添加更多的文档，描述函数的工作原理，并生成文档网站，从而提供价值以增强代码的可维护性和理解性。
-- **无需编译步骤**这是从TypeScript转换到JSDoc最具动力的原因之一。TypeScript需要编译将TypeScript代码转换为JavaScript，以便浏览器能够理解，而JSDoc不需要任何其他步骤，因为它们只是“注释”，这是JavaScript本身支持的特性。与每次进行更改时都需要使用必要的TypeScript构建流程相比，这可以简化并加快开发工作流程。
+- **灵活性和兼容性**JSDoc 只是 JavaScript 注释，这意味着它可以添加到任何 JavaScript 代码库中，而不受语言版本的限制，并且不像 TypeScript 那样与编译器绑定。
+- **代码注释**JSDoc 不仅可以用于类型检查，还可以用于添加更多的文档，描述函数的工作原理，并生成文档网站，从而提供价值以增强代码的可维护性和理解性。
+- **无需编译步骤**这是从 TypeScript 转换到 JSDoc 最具动力的原因之一。TypeScript 需要编译将 TypeScript 代码转换为 JavaScript，以便浏览器能够理解，而 JSDoc 不需要任何其他步骤，因为它们只是“注释”，这是 JavaScript 本身支持的特性。与每次进行更改时都需要使用必要的 TypeScript 构建流程相比，这可以简化并加快开发工作流程。
 
 ## 使用
 
@@ -28,41 +28,41 @@ jsdoc yourFile.js -d docs
 
 ```js
 /** The name of the language JSDoc is written for*/
-const language = "JavaScript"
+const language = "JavaScript";
 ```
 
 ## 为值添加类型
 
 ```js
-/** 
+/**
  * This represents the writer of this blog
  * @type {string}
  */
-const writerName = "Elijah"
+const writerName = "Elijah";
 ```
 
 ## 向对象和数组添加类型
 
 ```js
-/** 
-* @type {Array<string>}
-*/
-const colours = ['red', 'blue', 'green']
+/**
+ * @type {Array<string>}
+ */
+const colours = ["red", "blue", "green"];
 
 /**
  * @type {number[]}
  */
-const primeNumbers = [1, 2, 3, 5, 7]
+const primeNumbers = [1, 2, 3, 5, 7];
 ```
 
-两种方法在JSDoc中都是有效的（与Typescript相同）。
+两种方法在 JSDoc 中都是有效的（与 Typescript 相同）。
 
 通过使用 @typedef 指令可以创建一个对象类型。
 
 ```js
 /**
- * * @typedef {Object} User - A user schema 
- * @property {number} id 
+ * * @typedef {Object} User - A user schema
+ * @property {number} id
  * @property {string} username
  * @property {string} email
  * @property {Array<number>} postLikes
@@ -75,8 +75,8 @@ const person1 = {
   username: "Elijah",
   email: "elijah@user.com",
   postLikes: [44, 22, 24, 39],
-  friends: ['fede', 'Elijah']
-}
+  friends: ["fede", "Elijah"],
+};
 ```
 
 ## 输入函数（参数、返回值和预期错误类型）
@@ -89,7 +89,7 @@ const person1 = {
  * @returns {number} The result of the division.
  */
 function divideNumbers(dividend, divisor) {
-    return dividend/divisor;
+  return dividend / divisor;
 }
 ```
 
@@ -110,10 +110,10 @@ function divideNumbers(dividend, divisor) {
  * @throws {ZeroDivisionError} Argument divisor must be non-zero
  */
 function divideNumbers(dividend, divisor) {
-    if (divisor === 0) {
-        throw new DivisionByZeroError('Cannot Divide by zero')
-    }
-    return dividend/divisor;
+  if (divisor === 0) {
+    throw new DivisionByZeroError("Cannot Divide by zero");
+  }
+  return dividend / divisor;
 }
 ```
 
@@ -158,54 +158,52 @@ class Rectangle {
 
 ```js
 /**
-  * Possible title for this article
-  * @type {string} 
-  * @author Elijah [elijah@example.com]
+ * Possible title for this article
+ * @type {string}
+ * @author Elijah [elijah@example.com]
  */
-const articleTitle =  "Demystifying JSDoc"
+const articleTitle = "Demystifying JSDoc";
 ```
 
 ## 版本控制
 
 ```js
-/** 
+/**
  * @version 1.0.0
- * @type {number} 
+ * @type {number}
  * */
-const meaningOfLife = 42
+const meaningOfLife = 42;
 ```
 
 ## 有用的链接
 
 ```js
-/** 
+/**
  * How to use the link tags
  * Also see the {@link https://jsdoc.app/tags-inline-link.html official docs} for more information
  * @tutorial getting-started
  * */
-function myFunction (){
-}
+function myFunction() {}
 ```
 
-## @import 标签 
+## @import 标签
 
 ```js
 /**
  * @import {User} from "./user.js"
-*/
+ */
 
 /**
  * 获取用户年龄
  * @params {User} user
  * @returns {number}
-*/
+ */
 
 function getUserAge(user) {
   return user.age;
 }
 ```
 
-##  @ts-check 单行注释
+## @ts-check 单行注释
 
 使用 // @ts-check 单行注释，可以对 JS 文件开启 TS 级别的校验，这能帮我们过滤一些干扰项。不仅如此，如果声明的类型和实际类型不符，VS Code 还能给出有益的报错信息。
-
