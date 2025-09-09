@@ -187,3 +187,25 @@ function myFunction (){
 }
 ```
 
+## @import 标签 
+
+```js
+/**
+ * @import {User} from "./user.js"
+*/
+
+/**
+ * 获取用户年龄
+ * @params {User} user
+ * @returns {number}
+*/
+
+function getUserAge(user) {
+  return user.age;
+}
+```
+
+##  @ts-check 单行注释
+
+使用 // @ts-check 单行注释，可以对 JS 文件开启 TS 级别的校验，这能帮我们过滤一些干扰项。不仅如此，如果声明的类型和实际类型不符，VS Code 还能给出有益的报错信息。
+

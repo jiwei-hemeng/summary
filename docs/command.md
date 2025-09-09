@@ -358,15 +358,13 @@ kill [pid]
 
 ### --disable-web-security
 
-> 开发过程冲不可避免的会遇到跨域问题，有时候
-
 ![配置图片](../assets/images/cors_20250909193542_81_1.png)
 
 ```txt
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir=D:\chrometempdata
 ```
 
- ‌> 重要警告：`D:\chrometempdata` 是咱们自己创建的本地文件夹 ，随便建一个就行
+>  重要警告：`D:\chrometempdata` 是咱们自己创建的本地文件夹 ，随便建一个就行
 
 ### Windows 下实现端口映射
 
