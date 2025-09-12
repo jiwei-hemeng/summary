@@ -458,6 +458,32 @@ const numberStringPair: Pair<number, string> = {
 };
 ```
 
+## ts 中的 infer
+
+```ts
+// 场景一: 获取函数类型的返回值
+
+type sum = (a: number, b: number) => number;
+type RETEN<T> = T extends (...arg: any[]) => infer R ? R : T;
+const sumResult: RETEN<sum> = 123;
+
+// 场景二: 获取函数类型的第一个参数
+
+type FirsArg<T> = T extends (a: infer R, ...arg: any[]) => any ? R : T;
+const fa: FirsArg<sum> = 123;
+
+// 场景三: 获取函数类型的第一个参数
+
+type PromiseType<T> = T extends Promise<infer R> ? R : T;
+const pt: PromiseType<Promise<string>> = "123";
+
+// 场景四: 获取数组的类型
+
+type ArrayType<T> = T extends (infer U)[] ? U : T;
+
+type ItemType = ArrayType<[number, string, null]>;
+```
+
 ## TypeScript 内置方法
 
 ### Uppercase 化为大写
