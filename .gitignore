@@ -9,3 +9,5 @@ server/privatePem.txt
 server/publicPem.txt
 vueforVite/node_modules
 vueforVite/dist
+reactForVite/dist
+reactForVite/node_modules

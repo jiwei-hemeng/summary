@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/index/invoices",
+    "name": "invoices",
+    "title": "路由鉴权",
+    "auth": true
+  },
+  {
+    "path": "/index/vDom",
+    "name": "vDom",
+    "title": "父子组件",
+    "auth": true
+  },
+  {
+    "path": "/index/indexdb",
+    "name": "Indexdb",
+    "title": "Indexdb 学习",
+    "auth": true
+  }
+]
