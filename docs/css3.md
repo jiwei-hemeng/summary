@@ -2108,3 +2108,78 @@ scroll() 可以接受两个参数
   --hover-color: color-mix(in srgb, var(--main-color), white 20%);
 }
 ```
+
+#  SCSS  
+
+##  循环 
+
+>  在 SCSS 中，循环是一种强大的控制结构，可以帮助你高效地生成重复样式。主要有两种类型的循环：`@for` 和 `@each`。以下是对这两种循环的详细讲解和示例。 
+
+### `@for` 循环
+
+**through**
+
+```scss
+@for $i from 1 through 5 {
+  .item-#{$i} {
+    width: 20px * $i; // 20px, 40px, 60px, 80px, 100px
+  }
+}
+```
+
+ 在这个例子中，循环创建了 `.item-1` 到 `.item-5` 的类，每个类的宽度依次增加。 
+
+**to**
+
+```scss
+@for $i from 1 to 5 {
+  .item-#{$i} {
+    margin-bottom: 10px * $i; // 10px, 20px, 30px, 40px
+  }
+}
+```
+
+###  @each 循环
+
+**迭代列表**
+
+```scss
+$colors: red, green, blue;
+
+@each $color in $colors {
+  .bg-#{$color} {
+    background-color: $color;
+  }
+}
+```
+
+**迭代映射**
+
+```scss
+$font-sizes: (
+  small: 12px,
+  medium: 16px,
+  large: 20px,
+);
+
+@each $name, $size in $font-sizes {
+  .font-#{$name} {
+    font-size: $size;
+  }
+}
+```
+
+**循环中的条件语句**
+
+```scss
+$breakpoints: (small: 600px, medium: 900px, large: 1200px);
+
+@each $name, $value in $breakpoints {
+  @media (max-width: $value) {
+    .container-#{$name} {
+      padding: 20px;
+    }
+  }
+}
+```
+
