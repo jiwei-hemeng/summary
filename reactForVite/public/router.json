@@ -16,5 +16,11 @@
     "name": "Indexdb",
     "title": "Indexdb 学习",
     "auth": true
+  },
+  {
+    "path": "/index/useAsync",
+    "name": "useAsync",
+    "title": "useAsync 学习",
+    "auth": false
   }
 ]

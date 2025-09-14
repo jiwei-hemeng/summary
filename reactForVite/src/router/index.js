@@ -5,4 +5,5 @@ export const router = {
   vDom: lazy(() => import("@/pages/vDom.jsx")),
   Indexdb: lazy(() => import("@/pages/indexdb.jsx")),
   share: lazy(() => import("@/pages/share.jsx")),
+  useAsync: lazy(() => import("@/pages/testUseAsync.jsx")),
 };
