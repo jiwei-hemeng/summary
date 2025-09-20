@@ -81,6 +81,18 @@ console.log(fun.get("hack"));
 
 以上代码中obj 虽然是用闭包模拟的私有变量，但其依旧可以被外界所修改，一样是不安全的，那么该如何防范
 
+```js
+const fun = (() => {
+  const obj = Object.create(null);
+  obj.a = 1;
+  return {
+    get(key) {
+      return obj[key];
+    },
+  };
+})();
+```
+
 ## 闭包时解决内存泄漏的示例
 
 ```js
