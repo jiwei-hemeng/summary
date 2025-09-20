@@ -656,6 +656,10 @@ module.exports = {
 name: '[hash:8]-[name].[ext]',
 ```
 
+### transpileDependencies
+
+transpileDependencies 是 Vue CLI 配置项，用于指定需要转译的依赖库。默认情况下，babel-loader 会忽略 node_modules 目录中的文件，但通过该配置可强制对特定依赖库进行转译，以确保兼容性。
+
 ## vite
 
 ### 使用 vite 构建 react 项目
