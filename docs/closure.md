@@ -57,6 +57,30 @@ p();
 2. 在事件处理程序中创建闭包但忘记移除事件监听器
 3. 定时器中使用闭包但没有清除定时器
 
+## 关于闭包提权的问题引发的一系列思考
+
+```js
+const fun = (() => {
+  const obj = { a: 1 };
+  return {
+    get(key) {
+      return obj[key];
+    },
+  };
+})();
+
+Object.defineProperty(Object.prototype, "hack", {
+  get() {
+    return this;
+  },
+});
+const tt = fun.get("hack");
+tt.b = 123;
+console.log(fun.get("hack"));
+```
+
+以上代码中obj 虽然是用闭包模拟的私有变量，但其依旧可以被外界所修改，一样是不安全的，那么该如何防范
+
 ## 闭包时解决内存泄漏的示例
 
 ```js
