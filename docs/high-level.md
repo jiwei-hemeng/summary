@@ -393,3 +393,43 @@ for (let i = 0; i < 1000; i++) {
 }
 document.body.appendChild(frag); // 然后用appendChild插入文档中
 ```
+
+## 将class 转为 function 的完整写法
+
+````js
+class MyClass {
+  constructor() {
+    this.name = "MyClassInstance";
+  }
+  getName() {
+    return this.name;
+  }
+}
+````
+
+转为function 后
+
+```js
+"use strict";
+function MyClass() {
+  if (new.target === undefined) {
+    throw new Error("MyClass 只能通过new 调用");
+  }
+  this.name = "MyClassInstance";
+}
+Object.defineProperty(MyClass.prototype, "getName", {
+  value: function () {
+    if (new.target !== undefined) {
+      throw new Error("getName 不允许被new 调用");
+    }
+    return this.name;
+  },
+  enumerable: false, // 不可被遍历
+  configurable: true,
+});
+
+const p = new MyClass();
+console.log(p.name);
+console.log(p.getName());
+```
+
