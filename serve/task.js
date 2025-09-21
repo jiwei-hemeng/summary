@@ -36,6 +36,11 @@ class SuperTask {
   }
 }
 
+/**
+ * 模拟异步任务
+ * @param {number} time - 任务执行时间
+ * @returns {Promise}
+ */
 function timeout(time) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -46,6 +51,12 @@ function timeout(time) {
 
 const superTask = new SuperTask(2);
 export default superTask;
+/**
+ * 添加任务
+ * @param {number} time - 任务执行时间
+ * @param {string} name - 任务名称
+ * @returns {void}
+ */
 function addTask(time, name) {
   superTask.addTask(() => {
     return timeout(time).then(() => {
