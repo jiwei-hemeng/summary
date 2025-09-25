@@ -196,6 +196,8 @@ function myFunction() {}
 /**
  * 获取用户年龄
  * @params {User} user
+ * @params {string} user.id - 用户唯一ID
+ * @params {number} user.age - 用户年龄
  * @returns {number}
  */
 
