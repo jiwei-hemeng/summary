@@ -394,9 +394,9 @@ for (let i = 0; i < 1000; i++) {
 document.body.appendChild(frag); // 然后用appendChild插入文档中
 ```
 
-## 将class 转为 function 的完整写法
+## 将 class 转为 function 的完整写法
 
-````js
+```js
 class MyClass {
   constructor() {
     this.name = "MyClassInstance";
@@ -405,9 +405,9 @@ class MyClass {
     return this.name;
   }
 }
-````
+```
 
-转为function 后
+转为 function 后
 
 ```js
 "use strict";
@@ -433,3 +433,79 @@ console.log(p.name);
 console.log(p.getName());
 ```
 
+## 异步任务队列
+
+```js
+/**
+ * 并发任务类
+ */
+class SuperTask {
+  /**
+   * @param {number} parallelConut - 并行数量
+   */
+  constructor(parallelConut = 2) {
+    this.parallelConut = parallelConut;
+    this.taskQueue = []; // 任务队列
+    this.runningCount = 0; // 当前正在运行的任务数量
+  }
+
+  /**
+   * 执行任务
+   */
+
+  run() {
+    while (this.runningCount < this.parallelConut && this.taskQueue.length) {
+      const task = this.taskQueue.shift();
+      task().finally(() => {
+        this.runningCount--;
+        this.run();
+      });
+      this.runningCount++;
+    }
+  }
+
+  /**
+   * 添加任务
+   * @param {Function} task - 任务函数，必须返回一个 Promise
+   */
+  addTask(task) {
+    this.taskQueue.push(task);
+    this.run();
+  }
+}
+
+/**
+ * 模拟异步任务
+ * @param {number} time - 任务执行时间
+ * @returns {Promise}
+ */
+function timeout(time) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
+const superTask = new SuperTask(2);
+export default superTask;
+/**
+ * 添加任务
+ * @param {number} time - 任务执行时间
+ * @param {string} name - 任务名称
+ * @returns {void}
+ */
+function addTask(time, name) {
+  superTask.addTask(() => {
+    return timeout(time).then(() => {
+      console.log(`任务 ${name} 结束`);
+    });
+  });
+}
+addTask(10000, "1"); // 10000 执行任务
+addTask(5000, "2"); // 5000 执行任务
+addTask(3000, "3"); // 8000 执行任务
+addTask(4000, "4"); // 12000 执行任务
+addTask(5000, "5"); // 15000 执行任务
+addTask(6000, "6"); // 18000 执行任务
+```
