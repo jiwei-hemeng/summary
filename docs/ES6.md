@@ -829,3 +829,13 @@ const [a, b] = {
 console.log(a, b); // 1,2
 ```
 
+## Object.defineProperty
+
+```js
+Object.defineProperties(obj, {
+  name: { value: 'John', writable: true },
+  age: { get() { return this._age; }, set(v) { this._age = v; } }
+});
+```
+
+**注意：** value 和  get、set 不能一起使用
