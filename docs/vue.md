@@ -1724,6 +1724,8 @@ const configPath = new URL('../config/app.json', import.meta.url);
 ```
 # v-bind() 函数在css 中使用
 
+> [v-bind参考文档](https://cn.vuejs.org/api/sfc-css-features.html#v-bind-in-css)
+
 ```html
 <template>
   <p>示例文字</p>
