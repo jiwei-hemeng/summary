@@ -1722,3 +1722,21 @@ async loadImage(name) {
 const imagePath = new URL('./assets/image.png', import.meta.url);
 const configPath = new URL('../config/app.json', import.meta.url);
 ```
+# v-bind() 函数在css 中使用
+
+```html
+<template>
+  <p>示例文字</p>
+</template>
+
+<script setup>
+import { ref } from "vue";
+const textColor = ref("red");
+</script>
+
+<style scoped>
+p {
+  color: v-bind("textColor");
+}
+</style>
+```
