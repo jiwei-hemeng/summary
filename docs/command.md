@@ -424,6 +424,26 @@ pause
 
 按 Win + R 输入taskschd.msc打开任务计划程序，右侧点击【创建任务】按照引导完成即可
 
+自动删除指定的目录
+
+```bat
+@echo off
+chcp 65001
+REM 删除 node_modules/.cache 目录及其内容
+set CACHE_DIR=D:\klsz\roc_new_safe_web\node_modules\.cache
+
+echo 正在删除 %CACHE_DIR% 目录...
+if exist "%CACHE_DIR%" (
+  rmdir /s /q "%CACHE_DIR%"
+  echo 成功删除 %CACHE_DIR% 目录。
+) else (
+  echo %CACHE_DIR% 目录不存在，无需删除。
+)
+echo clean completed at %date% %time% >> D:\AutoRun\clean_log.txt
+echo 操作完成。
+@REM pause
+```
+
 ### windows禁用系统更新的方法
 
  #### 彻底关闭更新服务（永久禁用） 
