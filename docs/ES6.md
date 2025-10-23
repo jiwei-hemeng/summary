@@ -786,20 +786,27 @@ console.log(a.name);
 ### es6 新特性
 
 ```js
-class User {
-  constructor(price, num) {
-    this.price = price;
-    this.num = num;
+class Person {
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
-  get total() {
-    return this.price * this.num;
+
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  set fullName(value) {
+    const [first, last] = value.split(" ");
+    this.firstName = first;
+    this.lastName = last;
   }
 }
 
-const user = new User(100, 2);
-console.log("变化前", user.total);
-user.num = 5;
-console.log("变化后", user.total);
+const user = new Person("John", "Doe");
+console.log(user.fullName); // 输出: John Doe
+user.fullName = "Jane Smith";
+console.log(user.firstName);
 ```
 
 ### es5 兼容写法
