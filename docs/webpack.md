@@ -660,6 +660,38 @@ name: '[hash:8]-[name].[ext]',
 
 transpileDependencies 是 Vue CLI 配置项，用于指定需要转译的依赖库。默认情况下，babel-loader 会忽略 node_modules 目录中的文件，但通过该配置可强制对特定依赖库进行转译，以确保兼容性。
 
+### 通过 splitChunks 将 Vue、Vue Router 等第三方库单独打包为 vendor.js
+
+```js
+optimization: {
+  splitChunks: {
+    chunks: "all",
+    chunks: "all",
+    minSize: 20000,
+    maxSize: 250000,
+    minChunks: 1,
+    maxAsyncRequests: 6,
+    maxInitialRequests: 4,
+    automaticNameDelimiter: "~",
+    cacheGroups: {
+      vendors: {
+        test: /[\\/]node_modules[\\/]/, // 提取来自 node_modules 的模块
+        name: "vendors",
+        priority: -10, // 优先级，数字越大优先级越高
+      },
+      common: {
+        minSize: 0, // 最小尺寸，0 表示即使很小的模块也会被提取
+        minChunks: 2, // 至少被引用两次的模块才会被提取
+        name: "common",
+        priority: -20,
+        reuseExistingChunk: true, // 如果已存在相同的 chunk，则复用
+      },
+      default: false, // 禁用默认的 default 缓存组
+    },
+  }
+}
+```
+
 ## vite
 
 ### 使用 vite 构建 react 项目
