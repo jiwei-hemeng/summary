@@ -382,6 +382,39 @@ logWithStyle("error", "这个Bug我改不动了！"); // 红色警告
 logWithStyle("success", "Bug已祭天！"); // 绿色嘚瑟
 ```
 
+### 浏览器指纹
+
+```js
+function getCanvasFingerprint() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const text = 'hello, fingerprint!';
+
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(0, 0, 100, 60);
+    ctx.fillStyle = '#069';
+    ctx.fillText(text, 2, 15);
+
+    return canvas.toDataURL();
+}
+
+function hashFingerprint(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return hash;
+}
+
+const dataUrl = getCanvasFingerprint();
+const fingerprint = hashFingerprint(dataUrl);
+
+console.log('你的Canvas指纹是：', fingerprint);
+```
+
 ### 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
 
 - `CSS`不会阻塞`DOM`解析，但是会阻塞`DOM`渲染，严谨一点则是`CSS`会阻塞`render tree`的生成，进而会阻塞`DOM`的渲染
