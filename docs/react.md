@@ -907,6 +907,36 @@ export default function App() {
 }
 ```
 
+## useTransition
+
+> useTransition Hook 。它允许开发者将一些非紧急的 UI 更新标记为 “过渡更新”，与紧急的用户交互（如输入框输入、按钮点击）区分开来，确保用户操作的即时响应，同时在空闲时间处理那些相对不那么急迫的更新，从而提升应用的整体流畅度。useTransition 的核心原理基于 React 的并发模式（Concurrent Mode）。在并发模式下，React 可以暂停、中止或重新启动渲染任务，根据任务的优先级灵活调度。useTransition 会将更新任务标记为低优先级，使得高优先级的用户交互事件能够优先得到处理，避免界面出现假死或卡顿现象。
+
+```jsx
+import React, { useState, useTransition } from'react';
+
+function App() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const handleToggle = () => {
+    startTransition(() => {
+      setIsOpen(!isOpen);
+    });
+  };
+  return (
+    <div>
+      <button onClick={handleToggle}>
+        {isPending? 'Loading...' : isOpen? 'Close' : 'Open'}
+      </button>
+      {isOpen && (
+        <div>
+          {/* 此处为复杂的UI内容 */}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
 ## 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
