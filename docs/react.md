@@ -782,62 +782,6 @@ const Index = () => {
 export default Index;
 ```
 
-结合 Suspense 组件
-
-```jsx
-import React, { useState, useTransition, Suspense } from "react";
-
-function UserList() {
-  // 模拟异步获取用户列表数据
-  const fetchUsers = () =>
-    new Promise(
-      (resolve) =>
-        setTimeout(() =>
-          resolve([
-            /* 模拟用户数据 */
-          ])
-        ),
-      1000
-    );
-
-  return (
-    <Suspense fallback={<div>Loading users...</div>}>
-      {fetchUsers().then((users) => (
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>{user.name}</li>
-          ))}
-        </ul>
-      ))}
-    </Suspense>
-  );
-}
-
-function App() {
-  const [showAllUsers, setShowAllUsers] = useState(true);
-  const [isPending, startTransition] = useTransition();
-
-  const handleToggle = () => {
-    startTransition(() => {
-      setShowAllUsers(!showAllUsers);
-    });
-  };
-
-  return (
-    <div>
-      <button onClick={handleToggle}>
-        {isPending
-          ? "Loading..."
-          : showAllUsers
-          ? "Show Filtered Users"
-          : "Show All Users"}
-      </button>
-      {showAllUsers && <UserList />}
-    </div>
-  );
-}
-```
-
 ## useContext
 
 `useContext` 是一个 React Hook，可以让你读取和订阅组件中的 [context](https://react.docschina.org/learn/passing-data-deeply-with-context)。
@@ -1009,6 +953,62 @@ function App() {
           {/* 此处为复杂的UI内容 */}
         </div>
       )}
+    </div>
+  );
+}
+```
+
+结合 Suspense 组件
+
+```jsx
+import React, { useState, useTransition, Suspense } from "react";
+
+function UserList() {
+  // 模拟异步获取用户列表数据
+  const fetchUsers = () =>
+    new Promise(
+      (resolve) =>
+        setTimeout(() =>
+          resolve([
+            /* 模拟用户数据 */
+          ])
+        ),
+      1000
+    );
+
+  return (
+    <Suspense fallback={<div>Loading users...</div>}>
+      {fetchUsers().then((users) => (
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.name}</li>
+          ))}
+        </ul>
+      ))}
+    </Suspense>
+  );
+}
+
+function App() {
+  const [showAllUsers, setShowAllUsers] = useState(true);
+  const [isPending, startTransition] = useTransition();
+
+  const handleToggle = () => {
+    startTransition(() => {
+      setShowAllUsers(!showAllUsers);
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleToggle}>
+        {isPending
+          ? "Loading..."
+          : showAllUsers
+          ? "Show Filtered Users"
+          : "Show All Users"}
+      </button>
+      {showAllUsers && <UserList />}
     </div>
   );
 }
