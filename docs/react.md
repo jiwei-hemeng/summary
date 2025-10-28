@@ -24,27 +24,6 @@ export default class AuthRoute extends Component {
   }
 }
 ```
-# react lazy 的原理
-
-```jsx
-function myLazy(loadFn) {
-  let component, error;
-  let loaded = false;
-  const promise = loadFn()
-    .then((mod) => {
-      component = mod.default;
-      loaded = true;
-    })
-    .catch((err) => {
-      error = err;
-    });
-  return function MyLazyComponent(props) {
-    if (error) throw error;
-    if (loaded) return React.createElement(component, props);
-    throw promise; // 关键点：抛出 Promise，让 Suspense 处理
-  };
-}
-```
 
 # 关于ref的使用步骤
 
@@ -160,7 +139,7 @@ export default class App extends React.Component{
 }
 ```
 
-**编程式导航**
+## 编程式导航
 
 ```js
 const { history } = this.props;
@@ -171,6 +150,27 @@ history.push({
 	id: 123,
   }
 })
+```
+## react lazy 的原理
+
+```jsx
+function myLazy(loadFn) {
+  let component, error;
+  let loaded = false;
+  const promise = loadFn()
+    .then((mod) => {
+      component = mod.default;
+      loaded = true;
+    })
+    .catch((err) => {
+      error = err;
+    });
+  return function MyLazyComponent(props) {
+    if (error) throw error;
+    if (loaded) return React.createElement(component, props);
+    throw promise; // 关键点：抛出 Promise，让 Suspense 处理
+  };
+}
 ```
 
 # setState() 修改state
