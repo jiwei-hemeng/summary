@@ -78,6 +78,8 @@ git config --system --list
 git config --list --global
 #查看当前仓库配置信息
 git config --local  --list
+# 配置大小写敏感
+git config core.ignorecase false
 ```
 
 # git 缓存命令
