@@ -766,6 +766,35 @@ export default defineConfig({
 })
 ```
 
+### vite 自定义插件
+
+plugins/git-hash.js
+
+```js
+import { execSync } from "child_process";
+export default function gitHash() {
+  const hash = execSync("git rev-parse --short HEAD").toString().trim();
+  return {
+    name: "git-hash",
+    transformIndexHtml(html) {
+      return html.replace(
+        "</head>",
+        `<meta name="git-hash" content="${hash}"></head>`
+      );
+    },
+  };
+}
+// vite.config.js
+import gitHash from "./plugins/git-hash";
+plugins: [gitHash()];
+```
+
+vite.config.js
+
+```js
+import gitHash from "./plugins/git-hash";
+plugins: [gitHash()];
+```
 ### 配置 public 目录
 
 ```js
