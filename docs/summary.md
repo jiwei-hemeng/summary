@@ -707,7 +707,8 @@ JSON.stringify 转为字符串再 JSON.parse
 
 structuredClone()
 
-缺点不能拷贝函数类型 ， 不能拷贝原型链上的
+缺点不能拷贝函数类型 ， 不会遍历或复制原型链
+
 ### 复制到剪切板
 
 [相关连接](https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html)
