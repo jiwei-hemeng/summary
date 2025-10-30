@@ -784,9 +784,6 @@ export default function gitHash() {
     },
   };
 }
-// vite.config.js
-import gitHash from "./plugins/git-hash";
-plugins: [gitHash()];
 ```
 
 vite.config.js
