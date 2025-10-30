@@ -705,6 +705,9 @@ JSON.stringify 转为字符串再 JSON.parse
 - 无法拷贝 Map、Set、 RegExp 这些特殊数据类型
 - 循环引用会报错
 
+structuredClone()
+
+缺点不能拷贝函数类型 ， 不能拷贝原型链上的
 ### 复制到剪切板
 
 [相关连接](https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html)
