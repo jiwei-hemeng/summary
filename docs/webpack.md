@@ -766,6 +766,33 @@ export default defineConfig({
 })
 ```
 
+设置分包大小
+
+```js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // 将 antd 拆分为一个独立的 chunk
+          antd: ["antd"],
+          // 将 lodash 拆分为一个独立的 chunk
+          lodash: ["lodash"],
+        },
+        chunkFileNames: "chunks/[name]-[hash].js", // 设置 chunk 的文件名
+      },
+      treeshake: {
+        moduleSideEffects: "warn", // 警告未使用的模块
+      },
+    },
+  },
+});
+```
+
 ### vite 自定义插件
 
 plugins/git-hash.js
