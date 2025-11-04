@@ -333,6 +333,11 @@ git reset HEAD~
 # 撤销了最后的提交（git commit ）、git add 和工作目录中的所有工作。
 git reset --hard HEAD~
 ```
+git commit 之后想要撤回可以使用
+
+```shell
+git reset HEAD~1
+```
 
 HEAD 说明：
 
