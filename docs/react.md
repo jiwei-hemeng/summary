@@ -1014,6 +1014,35 @@ function App() {
 }
 ```
 
+## useActionState
+
+> 一种用于处理异步操作的新模式。在此之前，你需要手动管理加载状态、错误以及乐观更新；现在，React 会自动处理这些逻辑。
+
+```jsx
+import { useActionState } from "react";
+function UpdateName() {
+  const [error, submitAction, isPending] = useActionState(
+    async (previousState, formData) => {
+      const error = await updateName(formData.get("name"));
+      if (error) {
+        return error;
+      }
+      redirect("/profile");
+    },
+    null
+  );
+  return (
+    <form action={submitAction}>
+      <input type="text" name="name" />
+      <button type="submit" disabled={isPending}>
+        Update
+      </button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+}
+```
+
 ## 自定义hook
 
 > 说明： 在开发中，我们会有一些数据希望通过localStorage进行存储，如果每一个里面都有这样的逻辑，那么代码就会变得非常冗余，此时我们就可以使用自定义的hook。
