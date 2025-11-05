@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>QT集成百度地图-坐标显示(WX: xyinfome)</title>
+    <style>
+      body {
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      #map-container {
+        width: 100%;
+        height: 500px; /* 稍微减少地图高度以容纳信息区域 */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+      .info-panel {
+        background-color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+      }
+      .input-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
+      .input-field {
+        flex: 1;
+        min-width: 200px;
+      }
+      .input-field label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+      .input-field input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .coordinates-display {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #4dabf7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #339af0;
+      }
+      #copy-btn {
+        background-color: #40c057;
+      }
+      #copy-btn:hover {
+        background-color: #37b24d;
+      }
+      #clear-btn {
+        background-color: #fa5252;
+      }
+      #clear-btn:hover {
+        background-color: #f03e3e;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="https://api.map.baidu.com/api?type=webgl&v=3.0&ak=aGN9YxPVeRXDy62UG3Zle0aDybp58LoE"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="info-panel">
+        <h3>地图点击坐标信息</h3>
+        <div class="input-group">
+          <div class="input-field">
+            <label for="lng">经度:</label>
+            <input type="text" id="lng" readonly />
+          </div>
+          <div class="input-field">
+            <label for="lat">纬度:</label>
+            <input type="text" id="lat" readonly />
+          </div>
+          <div class="input-field">
+            <label for="address">具体位置:</label>
+            <input type="text" id="address" readonly />
+          </div>
+        </div>
+        <div class="coordinates-display">
+          <strong>完整坐标信息:</strong>
+          <span id="full-coords">尚未获取坐标</span>
+        </div>
+        <div class="action-buttons">
+          <button id="copy-btn">复制坐标</button>
+          <button id="clear-btn">清空信息</button>
+        </div>
+      </div>
+      <div id="map-container"></div>
+    </div>
+
+    <script>
+      // 初始化地图
+      var map = new BMapGL.Map("map-container");
+      var geolocation = new BMapGL.Geolocation();
+      // 开启SDK辅助定位
+      geolocation.enableSDKLocation();
+
+      geolocation.getCurrentPosition(function (r) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+          var mk = new BMapGL.Marker(r.point);
+          map.addOverlay(mk);
+          map.panTo(r.point);
+          // 设置初始中心点和缩放级别（郑州）
+          var initialPoint = new BMapGL.Point(r.point.lng, r.point.lat);
+          map.centerAndZoom(initialPoint, 12);
+          map.enableScrollWheelZoom(true); // 启用滚轮缩放
+
+          // 添加地图控件
+          map.addControl(new BMapGL.NavigationControl());
+          map.addControl(new BMapGL.ScaleControl());
+          map.addControl(new BMapGL.LocationControl());
+
+          // 添加地图点击事件监听[8](@ref)
+          map.addEventListener("click", function (e) {
+            var point = e.point;
+            var lng = point.lng;
+            var lat = point.lat;
+
+            // 更新文本框显示经纬度[8](@ref)
+            document.getElementById("lng").value = lng.toFixed(6);
+            document.getElementById("lat").value = lat.toFixed(6);
+            document.getElementById("full-coords").textContent =
+              lng.toFixed(6) + ", " + lat.toFixed(6);
+
+            // 清空地址字段，等待逆地理编码结果
+            document.getElementById("address").value = "获取中...";
+
+            // 使用逆地理编码获取具体位置[7](@ref)
+            var geocoder = new BMapGL.Geocoder();
+            geocoder.getLocation(point, function (result) {
+              if (result) {
+                var address = result.address;
+                document.getElementById("address").value = address;
+              } else {
+                document.getElementById("address").value = "无法获取具体地址";
+              }
+            });
+          });
+          // 复制坐标到剪贴板
+          document
+            .getElementById("copy-btn")
+            .addEventListener("click", function () {
+              var coordsText =
+                document.getElementById("full-coords").textContent;
+              if (coordsText !== "尚未获取坐标") {
+                navigator.clipboard
+                  .writeText(coordsText)
+                  .then(function () {
+                    alert("坐标已复制到剪贴板: " + coordsText);
+                  })
+                  .catch(function () {
+                    // 兼容旧浏览器
+                    var tempInput = document.createElement("input");
+                    tempInput.value = coordsText;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(tempInput);
+                    alert("坐标已复制到剪贴板: " + coordsText);
+                  });
+              } else {
+                alert("请先点击地图获取坐标");
+              }
+            });
+
+          // 清空信息
+          document
+            .getElementById("clear-btn")
+            .addEventListener("click", function () {
+              document.getElementById("lng").value = "";
+              document.getElementById("lat").value = "";
+              document.getElementById("address").value = "";
+              document.getElementById("full-coords").textContent =
+                "尚未获取坐标";
+            });
+        } else {
+          alert("failed" + this.getStatus());
+        }
+      });
+    </script>
+  </body>
+</html>
