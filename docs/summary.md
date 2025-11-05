@@ -415,6 +415,55 @@ const fingerprint = hashFingerprint(dataUrl);
 console.log('你的Canvas指纹是：', fingerprint);
 ```
 
+### Intl API：原生国际化 API
+
+多语言货币格式化（适配中英文）：
+
+```js
+const price = 123223342344.5698765;
+
+// 人民币格式（自动加 ¥ 和千分位）
+const cnyPrice = new Intl.NumberFormat("zh-CN", {
+style: "currency",
+currency: "CNY",
+}).format(price);
+
+// 美元格式（自动加 $ 和千分位）
+const usdPrice = new Intl.NumberFormat("en-US", {
+style: "currency",
+currency: "USD",
+}).format(price);
+
+console.log(cnyPrice, usdPrice); // ¥123,223,342,344.57 $123,223,342,344.57
+```
+
+日期本地化（不用手动拼接年月日）
+
+```js
+const now = new Date();
+
+// 中文日期：2025年11月3日 15:40:22
+const cnDate = new Intl.DateTimeFormat("zh-CN", {
+year: "numeric",
+month: "long",
+day: "numeric",
+hour: "2-digit",
+minute: "2-digit",
+second: "2-digit",
+}).format(now);
+
+// 英文日期：November 3, 2025, 03:40:22 PM
+const enDate = new Intl.DateTimeFormat("en-US", {
+year: "numeric",
+month: "long",
+day: "numeric",
+hour: "2-digit",
+minute: "2-digit",
+second: "2-digit",
+}).format(now);
+console.log(cnDate, enDate); // 2025年11月5日 13:18:39 November 5, 2025 at 01:18:39 PM
+```
+
 ### 分析 JS 与 CSS 是否阻塞 DOM 的渲染和解析
 
 - `CSS`不会阻塞`DOM`解析，但是会阻塞`DOM`渲染，严谨一点则是`CSS`会阻塞`render tree`的生成，进而会阻塞`DOM`的渲染
