@@ -382,16 +382,25 @@
 ```json
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
     "allowSyntheticDefaultImports": false,
+    "moduleResolution": "bundler",
     "baseUrl": "./",
     "paths": {
       "@/*": [
         "src/*"
       ]
-    }
+    },
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": []
   },
+  "types": [
+    "webpack-env",
+  ],
   "exclude": [
     "node_modules",
     "dist"
