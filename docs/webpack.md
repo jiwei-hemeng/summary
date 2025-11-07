@@ -778,6 +778,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          vendor:['vue','vue-router''pinia'],
+          utils:['lodash-es','axios'],
           // 将 antd 拆分为一个独立的 chunk
           antd: ["antd"],
           // 将 lodash 拆分为一个独立的 chunk
