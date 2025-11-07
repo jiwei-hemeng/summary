@@ -821,6 +821,34 @@ vite.config.js
 import gitHash from "./plugins/git-hash";
 plugins: [gitHash()];
 ```
+
+### Vite的optimizeDeps配置项
+
+> Vite的optimizeDeps配置项用于在开发环境中预构建依赖项，以加速项目启动和热更新。以下是核心配置选项和使用方法：
+
+核心配置项
+
++ include：指定需要预构建的依赖项（如'vue'、'axios'等），适用于体积较大或频繁使用的库。 ‌
++ exclude：强制排除某些依赖项，避免不必要的预构建。 ‌
++ force：设置为true可强制重新预构建，忽略缓存。 ‌
++ needsInterop：处理CommonJS格式的依赖兼容性问题（实验性）。 ‌
+
+使用场景
+
++ 项目启动慢：通过预构建node_modules中的大型依赖（如element-plus、echarts）减少首次加载时间。 ‌
++ 优化热更新：减少运行时编译开销，提升开发效率
+
+```js
+export default defineConfig({
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'dayjs'],
+    exclude: ['some-large-lib'],
+    force: false,
+    needsInterop: ['some-cjs-library']
+  }
+});
+```
+
 ### 配置 public 目录
 
 ```js
