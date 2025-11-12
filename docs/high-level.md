@@ -509,3 +509,85 @@ addTask(4000, "4"); // 12000 执行任务
 addTask(5000, "5"); // 15000 执行任务
 addTask(6000, "6"); // 18000 执行任务
 ```
+
+## 可暂停、终止、重启的异步队列
+
+```js
+class PausableTaskQueue {
+  constructor() {
+    this.queue = [];
+    this.isPaused = false;
+    this.currentTask = null;
+  }
+
+  // 添加任务到队列
+  add(task) {
+    this.queue.push(task);
+    this.run();
+  }
+
+  // 运行队列中的任务
+  async run() {
+    if (this.isPaused || this.currentTask) {
+      return;
+    }
+
+    const task = this.queue.shift();
+    if (!task) {
+      return;
+    }
+
+    this.currentTask = task;
+
+    try {
+      await task();
+    } catch (error) {
+      console.error("任务执行出错：", error);
+    } finally {
+      this.currentTask = null;
+      if (!this.isPaused) {
+        this.run();
+      }
+    }
+  }
+
+  // 暂停队列
+  pause() {
+    this.isPaused = true;
+  }
+
+  // 恢复队列
+  resume() {
+    if (this.isPaused) {
+      this.isPaused = false;
+      this.run();
+    }
+  }
+
+  // 清空队列
+  clear() {
+    this.queue = [];
+  }
+}
+
+// 使用示例
+const queue = new PausableTaskQueue();
+
+// 模拟异步任务
+const createTask = (id) => async () => {
+  console.log(`任务 ${id} 开始执行`);
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟异步操作
+  console.log(`任务 ${id} 执行完成`);
+};
+
+// 添加任务
+queue.add(createTask(1));
+queue.add(createTask(2));
+queue.add(createTask(3));
+
+// 暂停队列
+queue.pause(); // 此时任务会暂停执行，后续添加的任务也不会立即执行
+
+// 恢复队列
+queue.resume(); // 队列恢复执行，会继续执行未完成的任务
+```
