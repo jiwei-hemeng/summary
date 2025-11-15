@@ -6,6 +6,11 @@ class JwInput extends JwCompenent {
   };
   onChange(e) {
     this.state.value = e.target.value;
+    this.dispatchEvent(
+      new CustomEvent("change", {
+        detail: e.target.value,
+      })
+    );
   }
   render() {
     return this.html`
