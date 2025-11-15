@@ -1,0 +1,18 @@
+{
+  "name": "web-compenent",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.2.2"
+  },
+  "dependencies": {
+    "@vue/reactivity": "^3.5.24",
+    "lit-html": "^3.3.1"
+  }
+}
