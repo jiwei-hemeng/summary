@@ -3,16 +3,20 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>【每日一练】84—纯CSS3实现一只小猫笑脸动画</title>
+  <title>纯CSS3实现一只小猫笑脸动画</title>
   <style>
     body {
-      margin: 0px;
+      margin: 0;
+      padding: 0;
+      height: 100dvh;
       background: linear-gradient(85deg, #ff216d, #2196f3);
     }
 
     .mao_box {
-      position: relative;
-      top: 300px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .mao {
