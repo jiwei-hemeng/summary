@@ -744,6 +744,39 @@ newVal.s3.a = 66;
 console.log("newVal", newVal, oldVal);
 ```
 
+```js
+function deepClone(obj, map = new WeakMap()) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+  // 解决循环引用
+  if (map.has(obj)) {
+    return map.get(obj);
+  }
+  let result = {};
+  if (obj instanceof Array) {
+    result = [];
+  } else if (obj instanceof Date) {
+    result = new Date();
+  } else if (obj instanceof Set) {
+    result = new Set();
+  } else if (obj instanceof Map) {
+    result = new Map();
+  } else if (obj instanceof WeakMap) {
+    result = new WeakMap();
+  } else if (obj instanceof WeakSet) {
+    result = new WeakSet();
+  }
+  map.set(obj, result);
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = deepClone(obj[key], map);
+    }
+  }
+  return result;
+}
+```
+
 **深度克隆的其他方法：**
 
 JSON.stringify 转为字符串再 JSON.parse
