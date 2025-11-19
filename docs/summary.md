@@ -122,8 +122,9 @@ document.querySelector("button")?.addEventListener("click", async () => {
       {
         description: "Excel Files",
         accept: {
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            [".xlsx"],
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+            ".xlsx",
+          ],
           "application/vnd.ms-excel": [".xls"],
         },
       },
@@ -162,21 +163,24 @@ window.addEventListener("load", (e) => {
 });
 ```
 
-在iframe 中使用
+在 iframe 中使用
 
 ```html
 <iframe id="childFrame" src="https://child.com"></iframe>
 <script>
-  const iframe = document.getElementById('childFrame');
-    // 发送消息给iframe
+  const iframe = document.getElementById("childFrame");
+  // 发送消息给iframe
   iframe.onload = () => {
-    iframe.contentWindow.postMessage({ type: 'greeting', text: 'Hello from parent' }, 		'https://child.com');
+    iframe.contentWindow.postMessage(
+      { type: "greeting", text: "Hello from parent" },
+      "https://child.com"
+    );
   };
-     // 接收来自iframe的消息
-  window.addEventListener('message', (event) => {
-    if (event.origin !== 'https://child.com') return;
-    console.log('Parent received:', event.data);
-    if (event.data.type === 'response') {
+  // 接收来自iframe的消息
+  window.addEventListener("message", (event) => {
+    if (event.origin !== "https://child.com") return;
+    console.log("Parent received:", event.data);
+    if (event.data.type === "response") {
       alert(event.data.text);
     }
   });
@@ -385,34 +389,34 @@ logWithStyle("success", "Bug已祭天！"); // 绿色嘚瑟
 ### 浏览器指纹
 
 ```js
-function getCanvasFingerprint() {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const text = 'hello, fingerprint!';
+function getCanvasFingerprint() {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const text = "hello, fingerprint!";
 
-    ctx.textBaseline = 'top';
-    ctx.font = '14px Arial';
-    ctx.fillStyle = '#f60';
-    ctx.fillRect(0, 0, 100, 60);
-    ctx.fillStyle = '#069';
-    ctx.fillText(text, 2, 15);
+  ctx.textBaseline = "top";
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "#f60";
+  ctx.fillRect(0, 0, 100, 60);
+  ctx.fillStyle = "#069";
+  ctx.fillText(text, 2, 15);
 
-    return canvas.toDataURL();
+  return canvas.toDataURL();
 }
 
-function hashFingerprint(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i);
-        hash |= 0;
-    }
-    return hash;
+function hashFingerprint(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash;
 }
 
-const dataUrl = getCanvasFingerprint();
-const fingerprint = hashFingerprint(dataUrl);
+const dataUrl = getCanvasFingerprint();
+const fingerprint = hashFingerprint(dataUrl);
 
-console.log('你的Canvas指纹是：', fingerprint);
+console.log("你的Canvas指纹是：", fingerprint);
 ```
 
 ### Intl API：原生国际化 API
@@ -424,14 +428,14 @@ const price = 123223342344.5698765;
 
 // 人民币格式（自动加 ¥ 和千分位）
 const cnyPrice = new Intl.NumberFormat("zh-CN", {
-style: "currency",
-currency: "CNY",
+  style: "currency",
+  currency: "CNY",
 }).format(price);
 
 // 美元格式（自动加 $ 和千分位）
 const usdPrice = new Intl.NumberFormat("en-US", {
-style: "currency",
-currency: "USD",
+  style: "currency",
+  currency: "USD",
 }).format(price);
 
 console.log(cnyPrice, usdPrice); // ¥123,223,342,344.57 $123,223,342,344.57
@@ -444,22 +448,22 @@ const now = new Date();
 
 // 中文日期：2025年11月3日 15:40:22
 const cnDate = new Intl.DateTimeFormat("zh-CN", {
-year: "numeric",
-month: "long",
-day: "numeric",
-hour: "2-digit",
-minute: "2-digit",
-second: "2-digit",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
 }).format(now);
 
 // 英文日期：November 3, 2025, 03:40:22 PM
 const enDate = new Intl.DateTimeFormat("en-US", {
-year: "numeric",
-month: "long",
-day: "numeric",
-hour: "2-digit",
-minute: "2-digit",
-second: "2-digit",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
 }).format(now);
 console.log(cnDate, enDate); // 2025年11月5日 13:18:39 November 5, 2025 at 01:18:39 PM
 ```
@@ -725,26 +729,6 @@ console.log(new BigNumber(0.04).sqrt(2));
 [lodash 深拷贝 cloneDeep 函数](https://www.lodashjs.com/docs/lodash.cloneDeep#_clonedeepvalue) 、[深入剖析 JavaScript 中深浅拷贝](https://baijiahao.baidu.com/s?id=1765652696079292086&wfr=spider&for=pc)
 
 ```js
-function deepCopy(target) {
-  let newObj = Array.isArray(target) ? [] : {};
-  for (key in target) {
-    if (typeof target[key] === "object" && target[key] !== null) {
-      newObj[key] = deepCopy(target[key]);
-    } else {
-      // 简单数据类型
-      newObj[key] = target[key];
-    }
-  }
-  return newObj;
-}
-let oldVal = { s1: 123, s2: [1, 2, 3], s3: { a: 1, b: 2 } };
-let newVal = deepCopy(oldVal);
-newVal.s1 = 456;
-newVal.s3.a = 66;
-console.log("newVal", newVal, oldVal);
-```
-
-```js
 function deepClone(obj, map = new WeakMap()) {
   if (typeof obj !== "object" || obj === null) {
     return obj;
@@ -753,20 +737,7 @@ function deepClone(obj, map = new WeakMap()) {
   if (map.has(obj)) {
     return map.get(obj);
   }
-  let result = {};
-  if (obj instanceof Array) {
-    result = [];
-  } else if (obj instanceof Date) {
-    result = new Date();
-  } else if (obj instanceof Set) {
-    result = new Set();
-  } else if (obj instanceof Map) {
-    result = new Map();
-  } else if (obj instanceof WeakMap) {
-    result = new WeakMap();
-  } else if (obj instanceof WeakSet) {
-    result = new WeakSet();
-  }
+  let result = new obj.__proto__.constructor();
   map.set(obj, result);
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
