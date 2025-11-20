@@ -729,22 +729,60 @@ console.log(new BigNumber(0.04).sqrt(2));
 [lodash 深拷贝 cloneDeep 函数](https://www.lodashjs.com/docs/lodash.cloneDeep#_clonedeepvalue) 、[深入剖析 JavaScript 中深浅拷贝](https://baijiahao.baidu.com/s?id=1765652696079292086&wfr=spider&for=pc)
 
 ```js
-function deepClone(obj, map = new WeakMap()) {
-  if (typeof obj !== "object" || obj === null) {
-    return obj;
-  }
-  // 解决循环引用
-  if (map.has(obj)) {
-    return map.get(obj);
-  }
-  let result = new obj.__proto__.constructor();
-  map.set(obj, result);
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key] = deepClone(obj[key], map);
+function deepClone(obj) {
+  const map = new WeakMap();
+
+  function _deepClone(obj) {
+    // 基本数据类型的克隆（包括 null 和 undefined）
+    if (obj === null || typeof obj !== "object") {
+      return obj;
     }
+
+    // 检查是否已经克隆过，防止循环引用
+    if (map.has(obj)) {
+      return map.get(obj);
+    }
+
+    // 克隆函数
+    if (typeof obj === "function") {
+      // 创建一个新的匿名函数，继承原函数体
+      // 注意: 这样做的局限性在于不能保留原函数的作用域链
+      let result = function () {
+        return obj.apply(this, arguments);
+      };
+
+      // 拷贝静态属性
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          result[key] = _deepClone(obj[key]);
+        }
+      }
+
+      // 保留原函数的 prototype 和 constructor
+      result.prototype = _deepClone(obj.prototype);
+      return result;
+    }
+
+    // 特殊对象类型的克隆
+    if (obj instanceof Date) {
+      return new Date(obj.getTime());
+    }
+    if (obj instanceof RegExp) {
+      return new RegExp(obj);
+    }
+
+    // 数组或普通对象的克隆
+    let result = new obj.__proto__.constructor();
+    map.set(obj, result); // 提前设置，避免无限递归
+
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        result[key] = _deepClone(obj[key]);
+      }
+    }
+    return result;
   }
-  return result;
+  return _deepClone(obj);
 }
 ```
 
