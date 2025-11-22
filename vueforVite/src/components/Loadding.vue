@@ -94,11 +94,13 @@
 }
 
 @keyframes loading-v3 {
+
   25%,
   50% {
     height: 60px;
     transform: translateY(-30px);
   }
+
   75%,
   100% {
     height: 14px;

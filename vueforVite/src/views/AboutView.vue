@@ -10,7 +10,7 @@ const url = computed(() => {
 })
 const store = useToken()
 function setToken() {
-  store.setToken(Date.now())
+  store.setToken(Date.now().toString())
 }
 </script>
 <template>

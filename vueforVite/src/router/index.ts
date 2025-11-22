@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import { useToken } from "@/stores/useInfo";
 import pinia from "@/stores/index";
 import { Modal } from "ant-design-vue";
-const store = useToken(pinia);
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -109,6 +108,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
+  const store = useToken(pinia);
   document.title = typeof to.meta.title === "string" ? to.meta.title : "默认标题";
   if (to.meta.requiresAuth && !store.isLogin) {
     console.log("没有访问权限");
