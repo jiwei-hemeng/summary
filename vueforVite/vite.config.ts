@@ -79,6 +79,7 @@ export default ({ mode }) => {
               // 可以进一步细分 vendor chunk
               if (id.includes("echarts")) return "vendor-echarts";
               if (id.includes("lodash")) return "vendor-lodash";
+              if (id.includes("vue")) return "vendor-vue";
               if (id.includes("pinia")) return "vendor-pinia";
               return "vendor";
             } else if (isGroup(groupHome, id)) {
