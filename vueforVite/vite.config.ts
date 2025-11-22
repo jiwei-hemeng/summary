@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
+import gitHash from "./plugins/git-hash";
 // 插件
 import { visualizer } from "rollup-plugin-visualizer";
 import importToCDN from "vite-plugin-cdn-import";
@@ -13,8 +14,13 @@ export default ({ mode }) => {
       vue({
         vapor: true // 启用 Vapor 模式
       }),
-      visualizer({ open: false, gzipSize: true, brotliSize: true })
+      visualizer({ open: false, gzipSize: true, brotliSize: true }),
+      gitHash()
     ],
+    optimizeDeps: {
+      include: ["vue", "vue-router", "dayjs"],
+      force: false
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -73,6 +79,7 @@ export default ({ mode }) => {
               // 可以进一步细分 vendor chunk
               if (id.includes("echarts")) return "vendor-echarts";
               if (id.includes("lodash")) return "vendor-lodash";
+              if (id.includes("vue")) return "vendor-vue";
               if (id.includes("pinia")) return "vendor-pinia";
               return "vendor";
             } else if (isGroup(groupHome, id)) {
