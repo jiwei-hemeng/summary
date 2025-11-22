@@ -1,0 +1,81 @@
+/** 使用 flex 布局将内容居中显示，并设置全屏高度、渐变背景。 */
+body {
+  margin: 0;
+  background: linear-gradient(to bottom, #eff5ff, #c3cfe2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+/* * container容器 */
+.container {
+  display: flex;
+  flex: 1;
+  max-width: 1440px;
+  padding: 0 3rem;
+  margin: 0 auto;
+  overflow: auto;
+  align-items: flex-start;
+  justify-content: center;
+}
+/* * 卡片基础样式 */
+.card {
+  flex: 1 1 1%;
+  position: relative;
+  opacity: 0.2;
+  transition: flex 600ms cubic-bezier(0.25, 1, 0.5, 1), opacity 250ms ease;
+} /** * 鼠标悬停在卡片元素上时，调整卡片的弹性基础尺寸，使其占据容器30%的空间宽度，实现悬停时的视觉效果变化。 */
+.card:hover {
+  cursor: pointer;
+  flex-basis: 30%;
+}
+/* * 卡片内部结构样式 */
+.card-inner {
+  margin: 0.25rem;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+/* * 图片容器样式 * 通过相对定位和绝对定位控制图片填充方式。 */
+.card picture {
+  width: 100%;
+  height: 0;
+  padding-bottom: 600px;
+  overflow: hidden;
+  position: relative;
+}
+.card picture img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* * 当前激活或鼠标悬停的卡片样式 * 将其透明度设为完全不透明以突出显示。 */
+.card.is-active,
+.card:hover {
+  opacity: 1;
+}
+/* * 特定卡片的顶部间距调整规则，实现错落层次感。 */
+.card:nth-child(2),
+.card:nth-child(5),
+.card:nth-child(9) {
+  margin-top: 0;
+}
+.card:nth-child(2),
+.card:nth-child(4),
+.card:nth-child(6),
+.card:nth-child(8),
+.card:nth-child(10) {
+  margin-top: 2.5%;
+}
+.card:nth-child(3),
+.card:nth-child(7) {
+  margin-top: 5%;
+}
