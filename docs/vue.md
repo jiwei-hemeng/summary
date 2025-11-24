@@ -8,6 +8,20 @@ vue3.0 新特征
 - setup 函数有 props、ctx 两个参数。其中 props 对应 vue2.0 的 props(响应式的，不能解构)，ctx 对应 this(非响应式的，可以解构)
 - 在 setup 中 return 回去的数据在视图中才能用到
 
+## vue 为啥会使用vDOM
+
++ 框架的设计
+  - vue、react 等架构的最小颗粒度是组件，如果不使用vDOM，组件每次状态更新都需要全量更新整个组件，这样是非常浪费性能的，而且vDOM 正好完美的解决了这个同点
++ 多端兼容
+  - vDOM 是对节点的描述，比如view 在浏览器环境中将描述为div 而在小程序中将描述为view 组件，这也就是为什么vue、react可以多端开发的原因
+
+## vue3 对模版编译的优化
+
++ 更新类型标记（patch flag）
++ 缓存静态内容
++ 树结构打平
++ 事件缓存
+  
 ## ref 和 reactive 的异同点
 
 > [探寻 Vue3 中 ref 的神奇之处，为什么说它比 reactive 更强大？](https://mp.weixin.qq.com/s/SUbubs9jPDqI1EyAie-AVw)
