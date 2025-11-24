@@ -55,20 +55,33 @@ Function.prototype.bind = function (context, ...params) {
 
 ```js
 Function.prototype.call = function (context, ...params) {
-  if(typeof context === 'undefined' || context === null) {
-    context = window;
+  // 1. 如果 context 是 undefined 或 null，则设置为全局对象
+  //    在非浏览器环境（如 Node.js）中，globalThis 会自动指向正确的全局对象
+  context = context === undefined || context === null ? globalThis : Object(context);
+
+  // 2. 使用 Symbol 作为临时属性的键，避免与现有属性冲突
+  //    添加描述提高调试友好性
+  const key = Symbol('Function.prototype.call temporary property');
+
+  // 3. 缓存 this，防止多次访问 this 可能带来的副作用
+  const func = this;
+
+  // 4. 确保 func 是函数
+  if (typeof func !== 'function') {
+    throw new TypeError('必须是函数才能调用 call 方法');
   }
-  let self = this, result;
-  let key = Symbol("KEY");
-  context[key] = self;
-  if(params) {
-    result = context[key](...params);
-  } else {
-    result = context[key]();  
+
+  // 5. 绑定函数到临时属性
+  context[key] = func;
+
+  try {
+    // 6. 调用函数并传递参数，捕获异常确保属性一定被清理
+    return context[key](...params);
+  } finally {
+    // 7. 清理临时属性，使用 try-finally 确保即使在调用中抛出错误也会清理
+    delete context[key];
   }
-  delete context[key]
-  return result;
-}
+};
 ```
 
 ##  构造函数的成员
