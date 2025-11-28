@@ -733,6 +733,27 @@ object-position: center;
 
 父盒子给 display: flex;align-items: center;justify-content: center;
 
+## 关于pointer-events
+
+你有一个覆盖在其他元素上的遮罩层（如半透明的 div），但又不想让它拦截鼠标事件时，可以设置：
+```css
+.overlay {
+    pointer-events: none; /* 鼠标事件穿透遮罩层 */
+}
+```
+在某些情况下，你可能希望某个元素在某些条件下不响应鼠标事件。例如，一个按钮在禁用状态下不响应点击事件
+
+```css
+button:disabled {
+    cursor: no-drop;
+    color: #e5e5e5;
+    pointer-events: none; /* 禁用按钮的鼠标事件 */
+}
+```
+
+**注意：**`pointer-events: none; ` 属性和`cursor: no-drop;`属性互斥
+
+
 ## less 中的混入(mixin)
 
 > 混入作用：提取公用的代码，在组合新的功能，可以混入公用的代码，提高逻辑的复用。
