@@ -22,5 +22,11 @@
     "name": "useAsync",
     "title": "useAsync 学习",
     "auth": false
+  },
+  {
+    "path": "/index/useWorker",
+    "name": "testUseWorker",
+    "title": "useWorker 学习",
+    "auth": false
   }
 ]

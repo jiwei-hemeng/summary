@@ -26,6 +26,9 @@ export default function Index() {
         <Link className={styles.alink} to="/index/Indexdb">
           Indexdb
         </Link>
+        <Link className={styles.alink} to="/index/useWorker">
+          useWorker
+        </Link>
       </div>
       <Outlet />
     </div>

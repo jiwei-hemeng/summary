@@ -1,7 +1,7 @@
 import { computed } from "vue";
-export function useComputed(fn) {
+export function useComputed(fn: Function) {
   const map = new Map();
-  return function (...args) {
+  return function (...args: any[]) {
     const key = generateKey(args);
     if (map.has(key)) {
       return map.get(key);
@@ -16,9 +16,9 @@ export function useComputed(fn) {
  * @param args 参数数组
  * @returns 返回生成的唯一键
  */
-function generateKey(args) {
+function generateKey(args: any) {
   return args
-    .map((arg) => {
+    .map((arg: any) => {
       if (typeof arg === "object" && arg !== null) {
         return Object.entries(arg)
           .sort(([a], [b]) => a.localeCompare(b))
@@ -36,7 +36,7 @@ function generateKey(args) {
  * @param {number} row.quantity - 数量
  * @returns {number} - 返回该行的总价
  */
-function totalPrice(row) {
+function totalPrice(row: { price: number; quantity: number }) {
   return row.price * row.quantity;
 }
 

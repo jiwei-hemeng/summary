@@ -45,18 +45,17 @@ function App() {
     console.log("baseUrl", baseUrl);
     const resp = await fetch(baseUrl + "router.json");
     const routers = await resp.json();
-    await indexdbHelper.removeDataByIndex(
-      "routers",
-      "moduleType",
-      "routersList"
-    );
+    // await indexdbHelper.removeDataByIndex(
+    //   "routers",
+    //   "moduleType",
+    //   "routersList"
+    // );
     routers.map((item) => {
       indexdbHelper.save({ ...item, moduleType: "routersList" }, "routers");
     });
     setRouter(routers);
   }
   useEffect(() => {
-    console.log("import.meta", import.meta.env);
     getRouter();
   }, []);
   return (

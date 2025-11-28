@@ -6,4 +6,5 @@ export const router = {
   Indexdb: lazy(() => import("@/pages/indexdb.jsx")),
   share: lazy(() => import("@/pages/share.jsx")),
   useAsync: lazy(() => import("@/pages/testUseAsync.jsx")),
+  testUseWorker: lazy(() => import("@/pages/testUseWorker.jsx")),
 };
