@@ -514,39 +514,42 @@ addTask(6000, "6"); // 18000 执行任务
 
 ```js
 class PausableTaskQueue {
-  constructor() {
+  constructor(concurrency = 2) {
     this.queue = [];
     this.isPaused = false;
-    this.currentTask = null;
+    this.concurrency = concurrency; // 最大并行任务数量
+    this.runningCount = 0; // 当前正在执行的任务数量
   }
 
   // 添加任务到队列
   add(task) {
+    if (typeof task !== 'function') {
+      console.error("任务必须是函数");
+      return;
+    }
+
     this.queue.push(task);
     this.run();
   }
 
   // 运行队列中的任务
   async run() {
-    if (this.isPaused || this.currentTask) {
+    if (this.isPaused || this.queue.length === 0 || this.runningCount >= this.concurrency) {
       return;
     }
 
     const task = this.queue.shift();
-    if (!task) {
-      return;
-    }
-
-    this.currentTask = task;
+    this.runningCount++; // 正在执行的任务数增加
 
     try {
       await task();
     } catch (error) {
       console.error("任务执行出错：", error);
     } finally {
-      this.currentTask = null;
+      this.runningCount--; // 任务执行完毕，减少计数
+
       if (!this.isPaused) {
-        this.run();
+        this.run(); // 继续尝试执行下一个任务
       }
     }
   }
@@ -560,7 +563,11 @@ class PausableTaskQueue {
   resume() {
     if (this.isPaused) {
       this.isPaused = false;
-      this.run();
+
+      // 恢复执行，直到达到并行任务数上限
+      while (this.runningCount < this.concurrency) {
+        this.run();
+      }
     }
   }
 
@@ -568,10 +575,19 @@ class PausableTaskQueue {
   clear() {
     this.queue = [];
   }
+
+  // 获取当前队列状态
+  getStatus() {
+    return {
+      isPaused: this.isPaused,
+      runningCount: this.runningCount,
+      pendingTasks: this.queue.length,
+    };
+  }
 }
 
 // 使用示例
-const queue = new PausableTaskQueue();
+const queue = new PausableTaskQueue(2); // 并行度为 2
 
 // 模拟异步任务
 const createTask = (id) => async () => {
@@ -579,15 +595,18 @@ const createTask = (id) => async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟异步操作
   console.log(`任务 ${id} 执行完成`);
 };
-
-// 添加任务
-queue.add(createTask(1));
-queue.add(createTask(2));
-queue.add(createTask(3));
+let index = 1
+while (index < 1000) {
+  queue.add(createTask(index))
+  index++
+}
 
 // 暂停队列
-queue.pause(); // 此时任务会暂停执行，后续添加的任务也不会立即执行
+queue.pause(); // 此时任务会暂停执行
 
 // 恢复队列
-queue.resume(); // 队列恢复执行，会继续执行未完成的任务
+queue.resume(); // 队列恢复执行，会继续执行未完成的任务，最多同时运行 2 个任务
+
+// 检查状态
+console.log(queue.getStatus());
 ```
