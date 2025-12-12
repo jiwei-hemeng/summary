@@ -431,3 +431,104 @@
   "npm.scriptRunner": "yarn",
 }
 ```
+
+# 关于 code-snippets
+
+点击 文件 -> 首选项 -> 用户代码片段 (Windows/Linux) 或 Code -> 首选项 -> 用户代码片段 (macOS)。
+
+```json
+{
+  "vue2 template": {
+    "prefix": "vue2",
+    "body": [
+      "<!-- Created on: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND -->",
+      "<template>",
+      "  <div class=\"execution\">",
+      "  </div>",
+      "</template>",
+      "<script>",
+      "  import { mapGetters } from \"vuex\";",
+      "  export default {",
+      "  name: \"$TM_FILENAME_BASE\",",
+      "    data() {",
+      "      return {}",
+      "    },",
+      "    computed: {",
+      "      ...mapGetters([\"userOrgInfo\"]),",
+      "    },",
+      "    created() {",
+      "    },",
+      "    mounted() {",
+      "    },",
+      "    methods: {",
+      "    },",
+      "    watch: {",
+      "    }",
+      "  }",
+      "</script>",
+      "<style lang=\"scss\" scoped>",
+      "</style>"
+    ],
+    "description": "vue2 模版"
+  },
+  "Vue2 Computed Property": {
+    "prefix": "vcomputed",
+    "body": [
+      "computed: {",
+      "  ${1:computedProperty}() {",
+      "    return ${2}",
+      "  }",
+      "},"
+    ],
+    "description": "using computed in Vue2."
+  },
+  "New Vue Instance": {
+    "prefix": "newvue",
+    "body": [
+      "new Vue({",
+      "  el: '${1:#app}',",
+      "  data: {",
+      "    ${2:message}: '${3:Hello Vue!}'",
+      "  },",
+      "  methods: {",
+      "    ${4:toggleMessage}() {",
+      "      this.${2:message} = this.${2:message} === '${3:Hello Vue!}' ? '${5:Goodbye Vue!}' : '${3:Hello Vue!}';",
+      "    }",
+      "  }",
+      "});"
+    ],
+    "description": "using new Vue in Vue2."
+  },
+  "Vue2 v-model Binding": {
+    "prefix": "vmodel",
+    "body": [
+      "<input v-model=\"${1:modelValue}\" type=\"${2:text}\" />",
+      "<p>${1:modelValue}</p>"
+    ],
+    "description": "using v-model in Vue2."
+  },
+  "Vue2 Conditional Rendering": {
+    "prefix": "vif",
+    "body": [
+      "<div v-if=\"${1:condition}\">",
+      "  ${2:Content shown when condition is true}",
+      "</div>",
+      "<div v-else>",
+      "  ${3:Content shown when condition is false}",
+      "</div>"
+    ],
+    "description": "using v-if in Vue2."
+  },
+  "Vue2 v-for Loop": {
+    "prefix": "vfor",
+    "body": [
+      "<ul>",
+      "  <li v-for=\"${1:item} in ${2:items}\" :key=\"${1:item}.id\">",
+      "    {{ ${1:item}.${3:name} }}",
+      "  </li>",
+      "</ul>"
+    ],
+    "description": "using v-for in Vue2."
+  }
+}
+```
