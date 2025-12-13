@@ -12,5 +12,6 @@ export default class JwCompenent extends HTMLElement {
       const content = this.render();
       render(content, this.shadowRoot);
     });
+    this.mounted && this.mounted();
   }
 }
