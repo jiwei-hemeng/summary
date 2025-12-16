@@ -234,3 +234,74 @@ customElements.define('task-list', TaskList, { extends: 'ul' });
 </script>
 ```
 
+## lit-html 基本使用
+
+```js
+import { LitElement, html } from "lit";
+import { repeat } from "lit/directives/repeat.js"; // 循环
+import { when } from "lit/directives/when.js"; // 条件渲染
+class MyComponent extends LitElement {
+  static get properties() {
+    return {
+      name: { type: String },
+      age: { type: Number },
+      items: {
+        type: Array,
+      },
+      loading: Boolean,
+    };
+  }
+
+  constructor() {
+    super();
+    this.name = "John Doe";
+    this.age = 30;
+    this.loading = false;
+    this.items = [
+      { id: 1, name: "第一项" },
+      { id: 2, name: "第二项" },
+    ];
+  }
+
+  render() {
+    return html`
+      <style>
+        p {
+          color: blue;
+        }
+      </style>
+      <p>Hello, my name is ${this.name}. I am ${this.age} years old.</p>
+      <slot name="header"></slot>
+      <ul>
+        ${repeat(
+          this.items,
+          (item) => item.id,
+          (item) => html`<li>${item.text}</li>`
+        )}
+      </ul>
+      ${when(
+        this.loading,
+        () => html`<p>Loading...</p>`,
+        () => html`<p>Content loaded</p>`
+      )}
+      <button @click="${this._onClick}">Update Age</button>
+    `;
+  }
+
+  _onClick() {
+    this.age += 1; // 自动触发重新渲染
+  }
+
+  updated(changedProperties) {
+    changedProperties.forEach((oldValue, propName) => {
+      console.log(`${propName} changed from ${oldValue} to ${this[propName]}`);
+    });
+  }
+  firstUpdated() {
+    // 可以在这里访问 Shadow DOM 内的元素
+    this.shadowRoot.querySelector("button")?.focus();
+  }
+}
+
+customElements.define("my-component", MyComponent);
+```
