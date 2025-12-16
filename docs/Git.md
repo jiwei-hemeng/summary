@@ -500,3 +500,14 @@ openssl req -new -key server.key -out server.csr
 # 生成自签名证书
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 ```
+
+# git bisect
+
+git bisect 是一个Git命令，用于通过二分搜索算法快速定位引入特定问题（如bug）的提交。它适用于查找任何属性变化的提交，例如性能回归或功能修复。‌
+
+```shell
+git bisect start
+git bisect bad  # 当前版本是坏的
+git bisect good v2.6.13-rc2  # 已知好的版本
+git bisect reset # 退出 bisect 会话并恢复原状态。‌
+```
