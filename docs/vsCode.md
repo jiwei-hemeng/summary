@@ -1,6 +1,6 @@
 # 配置
 
-第一步，打开设置，快捷键 *Ctrl + ,*
+第一步，打开设置，快捷键 _Ctrl + ,_
 
 第二步，打开 `setting.json`
 
@@ -11,13 +11,13 @@
   "editor.smoothScrolling": true,
   "editor.cursorBlinking": "expand",
   "editor.cursorSmoothCaretAnimation": "on",
-  "workbench.list.smoothScrolling": true,
+  "workbench.list.smoothScrolling": true
 }
 ```
 
 # 鼠标控制大小
 
-按下 *Ctrl + 鼠标滚轮* 可调节大小
+按下 _Ctrl + 鼠标滚轮_ 可调节大小
 
 ```js
 {
@@ -30,7 +30,7 @@
 ```json
 {
   "editor.guides.bracketPairs": true,
-  "editor.bracketPairColorization.enabled": true,
+  "editor.bracketPairColorization.enabled": true
 }
 ```
 
@@ -44,7 +44,7 @@
   // 这能减少“插入新行”和“接受建议”命令之间的歧义
   "editor.acceptSuggestionOnEnter": "smart",
   // 代码补全列表中，优先选择最近的建议
-  "editor.suggestSelection": "recentlyUsedByPrefix",
+  "editor.suggestSelection": "recentlyUsedByPrefix"
 }
 ```
 
@@ -52,7 +52,7 @@
 
 ```json
 {
-  "editor.suggest.insertMode": "replace",
+  "editor.suggest.insertMode": "replace"
 }
 ```
 
@@ -63,7 +63,7 @@
   "editor.autoClosingBrackets": "beforeWhitespace",
   "editor.autoClosingDelete": "always",
   "editor.autoClosingOvertype": "always",
-  "editor.autoClosingQuotes": "beforeWhitespace",
+  "editor.autoClosingQuotes": "beforeWhitespace"
 }
 ```
 
@@ -73,7 +73,7 @@
 {
   // 关闭缩进猜测
   "editor.detectIndentation": false,
-  "editor.tabSize": 2,
+  "editor.tabSize": 2
 }
 ```
 
@@ -81,7 +81,7 @@
 
 ```json
 {
-  "window.dialogStyle": "custom",
+  "window.dialogStyle": "custom"
 }
 ```
 
@@ -89,15 +89,15 @@
 
 ```json
 {
-  "typescript.locale": "zh-CN",
+  "typescript.locale": "zh-CN"
 }
 ```
 
-# 生成的html模板中的语言改为中文
+# 生成的 html 模板中的语言改为中文
 
 ```json
 {
-  "emmet.variables": {"lang": "zh-CN"}
+  "emmet.variables": { "lang": "zh-CN" }
 }
 ```
 
@@ -105,7 +105,7 @@
 
 ```json
 {
-  "files.trimTrailingWhitespace": false,
+  "files.trimTrailingWhitespace": false
 }
 ```
 
@@ -127,7 +127,7 @@
     "**/dist": true,
     "**/tmp": true,
     "**/yarn.lock": true
-  },
+  }
 }
 ```
 
@@ -135,7 +135,7 @@
 
 ```json
 {
-  "explorer.copyRelativePathSeparator": "/",
+  "explorer.copyRelativePathSeparator": "/"
 }
 ```
 
@@ -143,7 +143,7 @@
 
 ```json
 {
-  "update.mode": "manual",
+  "update.mode": "manual"
 }
 ```
 
@@ -151,7 +151,7 @@
 
 ```json
 {
-  "editor.stickyScroll.enabled": true,
+  "editor.stickyScroll.enabled": true
 }
 ```
 
@@ -363,19 +363,19 @@
 
 # files.watcherExclude
 
-> 排除对node_modules的文件监听，减少内存的使用
+> 排除对 node_modules 的文件监听，减少内存的使用
 
 ```json
 {
   "files.watcherExclude": {
     "**/node_modules/*/**": true,
     "**/dist/*/**": true,
-    "**/.git/**": true,
-  },
+    "**/.git/**": true
+  }
 }
 ```
 
-# 配置路径别名，方便ctrl跳转
+# 配置路径别名，方便 ctrl 跳转
 
 在项目的根目录上创建文件`jsconfig.json`
 
@@ -389,46 +389,35 @@
     "moduleResolution": "bundler",
     "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "types": []
   },
-  "types": [
-    "webpack-env",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "types": ["webpack-env"],
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*"]
 }
 ```
 
 # vscode 常用插件
 
-+ Chinese (Simplified) (简体中文) - 汉化插件
-+ ESLint - js代码语法校验
-+ Prettier - Code formatter - 代码格式化插件
-+ Live Server - 本地代码服务器
-+ open-in-browser - 右键通过浏览器打开网页文件
-+ gitlens - git 历史提交记录
-+ Vue - Official - vue3 的语法扩展程序
-+ Postcode - 类似于postman的插件
-+ Draw.io Integration
-+ 文心快码 ( Baidu Comate ) AI 辅助代码工具
+- Chinese (Simplified) (简体中文) - 汉化插件
+- ESLint - js 代码语法校验
+- Prettier - Code formatter - 代码格式化插件
+- Live Server - 本地代码服务器
+- open-in-browser - 右键通过浏览器打开网页文件
+- gitlens - git 历史提交记录
+- Vue - Official - vue3 的语法扩展程序
+- Postcode - 类似于 postman 的插件
+- Draw.io Integration
+- 文心快码 ( Baidu Comate ) AI 辅助代码工具
 
-# npm 脚本使用yarn 打包
+# npm 脚本使用 yarn 打包
 
 ```json
 {
-  "npm.scriptRunner": "yarn",
+  "npm.scriptRunner": "yarn"
 }
 ```
 
@@ -524,7 +513,6 @@
     "body": [
       "<ul>",
       "  <li v-for=\"${1:item} in ${2:items}\" :key=\"${1:item}.id\">",
-      "    {{ ${1:item}.${3:name} }}",
       "  </li>",
       "</ul>"
     ],
