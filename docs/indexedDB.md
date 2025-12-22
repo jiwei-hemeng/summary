@@ -544,3 +544,71 @@ await db.removeItem("routers");
 await db.clear()
 ```
 
+# Dexie 库使用实践
+
+Dexie 是一个轻量级的 JavaScript 库，用于简化 IndexedDB 的使用。Dexie 提供了更友好、更简洁的接口来操作 IndexedDB
+
+安装
+
+```shell
+pnpm add dexie
+```
+
+创建数据库
+
+```js
+import Dexie from "dexie";
+// 创建数据库实例
+const db = new Dexie("testDexieDb");
+// 定义数据库版本和表结构
+db.version(1).stores({
+  friends: "++id, name, age, *tags", // ++id表示自增主键，*tags表示数组索引
+});
+```
+
+添加数据
+
+```js
+// 添加单条记录
+await db.friends.add({ name: "李四", age: 28, tags: ["同事", "篮球"] });
+// 批量添加
+await db.friends.bulkAdd([
+  { name: "王五", age: 32, tags: ["同学"] },
+  { name: "赵六", age: 25, tags: ["朋友", "游戏"] },
+]);
+```
+
+查询数据
+
+```js
+// 获取所有记录
+const allFriends = await db.friends.toArray();
+// 按主键查
+const friend = await db.friends.get(1);
+// 条件查询
+const youngFriends = await db.friends.where("age").below(30).toArray();
+// 多条件查询
+const results = await db.friends
+  .where("age")
+  .between(20, 35)
+  .and((friend) => friend.tags.includes("篮球"))
+  .toArray();
+```
+
+更新数据
+
+```js
+// 更新单条记录
+await db.friends.update(1, { age: 26 });
+// 批量更新
+await db.friends.where("age").below(30).modify({ status: "young" });
+```
+
+删除数据
+
+```js
+// 删除单条记录
+await db.friends.delete(1);
+// 批量删除
+await db.friends.where("age").above(60).delete();
+```
