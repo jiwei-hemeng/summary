@@ -852,6 +852,24 @@ element.scrollIntoViewIfNeeded();
 
 **scrollIntoViewIfNeeded** 可以接受一个 Boolean 型参数，和 scrollIntoView 不同，true 为默认值，但不是滚动到顶部，而是让元素在可视区域中居中对齐；false 时元素可能顶部或底部对齐，视乎元素靠哪边更近
 
+scrollTo 函数
+
+```js
+// 方式1：直接传坐标
+element.scrollTo(x, y); 
+
+// 方式2：传配置对象（推荐）
+element.scrollTo({
+  top: 100,           // 垂直位置（像素）
+  left: 0,            // 水平位置
+  behavior: 'smooth'  // 滚动动画
+});
+```
+
+区别
+
+scrollIntoView 是“让元素可见”，scrollTo 是“滚到指定位置”，根据需求选择即可。
+
 ### URL 的编码与解码
 
 - 编码使用 encodeURI()函数---> 解码使用 decodeURI()函数
