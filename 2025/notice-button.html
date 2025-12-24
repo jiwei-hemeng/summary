@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>消息提示</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 24px;
+        font-weight: 500;
+      }
+      .main {
+        padding: 20px;
+        text-align: center;
+        height: 300px;
+      }
+      .buttons {
+        margin-top: 60px;
+      }
+      .notice-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+        color: white;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        background: var(--color-info);
+      }
+      .notice-button.success {
+        background: var(--color-success);
+      }
+      .notice-button.error {
+        background: var(--color-error);
+      }
+      .notice-button.warning {
+        background: var(--color-warning);
+      }
+      .notice-button.info {
+        background: var(--color-info);
+      }
+      /* 通知样式部分 */
+      :root {
+        --color-info: #1890ff;
+        --color-success: #52c41a;
+        --color-warning: #faad14;
+        --color-error: #ff4d4f;
+      }
+      #notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+      }
+      .notice {
+        position: relative;
+        margin-bottom: 10px;
+        padding: 16px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+        background: #fff;
+        width: 320px;
+        animation: fadeInRight 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+        overflow: hidden;
+      }
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translate3d(100%, 0, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      .slideOutRight {
+        animation: slideOutRight 0.3s forwards;
+      }
+      @keyframes slideOutRight {
+        from {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+        to {
+          opacity: 0;
+          transform: translate3d(100%, 0, 0);
+        }
+      }
+      .notice-close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .notice-close-button:hover {
+        background-color: #e81123;
+      }
+      .notice-close-button::before {
+        content: "×";
+        color: #999;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .notice-close-button:hover::before {
+        color: #fff;
+      }
+      .notice-container {
+        display: flex;
+        align-items: flex-start;
+      }
+      .notice-icon {
+        width: 26px;
+        text-align: center;
+        margin-right: 16px;
+        flex-shrink: 0;
+      }
+      .notice-icon::before {
+        font-size: 26px;
+        display: block;
+      }
+      .notice-info .notice-icon::before {
+        content: "ℹ";
+        color: var(--color-info);
+      }
+      .notice-success .notice-icon::before {
+        content: "✓";
+        color: var(--color-success);
+      }
+      .notice-warning .notice-icon::before {
+        content: "⚠";
+        color: var(--color-warning);
+      }
+      .notice-error .notice-icon::before {
+        content: "✖";
+        color: var(--color-error);
+      }
+      .notice-content-wrapper {
+        flex: 1;
+        min-width: 0;
+      }
+      .notice-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 17px;
+        color: #17233d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .notice-content {
+        font-size: 13px;
+        color: #515a6e;
+        line-height: 1.5;
+        margin-bottom: 8px;
+      }
+      .notice-time {
+        font-size: 10px;
+        color: #999;
+        text-align: right;
+      }
+      .notice-progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 100%;
+        background-color: #f0f0f0;
+      }
+      .notice-progress-bar {
+        height: 100%;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+      .notice-info .notice-progress-bar {
+        background-color: var(--color-info);
+      }
+      .notice-success .notice-progress-bar {
+        background-color: var(--color-success);
+      }
+      .notice-warning .notice-progress-bar {
+        background-color: var(--color-warning);
+      }
+      .notice-error .notice-progress-bar {
+        background-color: var(--color-error);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header"><h1>消息提示</h1></div>
+      <div class="main">
+        <div class="buttons">
+          <button class="notice-button info" id="notice1">信息</button>
+          <button class="notice-button success" id="notice2">成功</button>
+          <button class="notice-button warning" id="notice3">警告</button>
+          <button class="notice-button error" id="notice4">错误</button>
+          <button class="notice-button info" id="notice5">不自动关闭</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      // 通知管理器
+      const NoticeManager = (function () {
+        const container = document.createElement("div");
+        container.id = "notification-container";
+        document.body.appendChild(container);
+        let noticeId = 0;
+        const notices = new Map(); // 创建通知
+        function createNotice(options) {
+          const id = ++noticeId;
+          const type = options.type || "info";
+          const title = options.title || "";
+          const message = options.message || "";
+          const timeout = options.timeout || 3000;
+          const autoClose = options.autoClose !== false; // 创建通知元素
+          const noticeEl = document.createElement("div");
+          noticeEl.className = `notice notice-${type}`;
+          noticeEl.id = `notice-${id}`;
+          noticeEl.innerHTML = `
+          <div class="notice-container">
+            <div class="notice-icon"></div>
+            <div class="notice-content-wrapper">
+              ${title ? `<div class="notice-title">${title}</div>` : ""}
+              <div class="notice-content">${message}</div>
+              <div class="notice-time">${getCurrentTime()}</div>
+            </div>
+          </div>
+          <div class="notice-close-button" data-id="${id}"></div>
+            ${
+              autoClose
+                ? `
+                    <div class="notice-progress">
+                      <div class="notice-progress-bar" id="progress-${id}"></div>
+                    </div>
+                  `
+                : ""
+            }
+          `;
+          container.appendChild(noticeEl);
+          const closeBtn = noticeEl.querySelector(".notice-close-button");
+          closeBtn.addEventListener("click", () => destroyNotice(id)); // 创建通知实例对象
+          const noticeInstance = {
+            id: id,
+            element: noticeEl,
+            startTime: Date.now(),
+            timeout: timeout,
+            autoClose: autoClose,
+            timer: null,
+            destroyed: false,
+          };
+          notices.set(id, noticeInstance); // 如果启用自动关闭，初始化进度条并设置定时器
+          if (autoClose) {
+            const progressBar = document.getElementById(`progress-${id}`);
+            if (progressBar) {
+              progressBar.style.width = "100%";
+            }
+            updateProgressBar(id);
+            noticeInstance.timer = setTimeout(() => destroyNotice(id), timeout);
+          }
+          return id;
+        } // 更新进度条
+        function updateProgressBar(id) {
+          const notice = notices.get(id);
+          if (!notice || notice.destroyed || !notice.autoClose) return;
+          const elapsed = Date.now() - notice.startTime;
+          const progress = Math.max(0, 100 - (elapsed / notice.timeout) * 100);
+          const progressBar = document.getElementById(`progress-${id}`);
+          if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+          }
+          if (progress > 0) {
+            requestAnimationFrame(() => updateProgressBar(id));
+          }
+        } // 销毁通知
+        function destroyNotice(id) {
+          const notice = notices.get(id);
+          if (!notice || notice.destroyed) return;
+          if (notice.timer) {
+            clearTimeout(notice.timer);
+          }
+          notice.destroyed = true;
+          notices.delete(id);
+          const noticeEl = document.getElementById(`notice-${id}`);
+          if (noticeEl) {
+            noticeEl.classList.add("slideOutRight");
+            setTimeout(() => {
+              if (noticeEl.parentNode) {
+                noticeEl.parentNode.removeChild(noticeEl);
+              }
+            }, 300);
+          }
+        } // 获取当前时间
+        function getCurrentTime() {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, "0");
+          const day = String(now.getDate()).padStart(2, "0");
+          const hours = String(now.getHours()).padStart(2, "0");
+          const minutes = String(now.getMinutes()).padStart(2, "0");
+          const seconds = String(now.getSeconds()).padStart(2, "0");
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        } // 公开接口
+        return {
+          info: (options) => createNotice({ ...options, type: "info" }),
+          success: (options) => createNotice({ ...options, type: "success" }),
+          warning: (options) => createNotice({ ...options, type: "warning" }),
+          error: (options) => createNotice({ ...options, type: "error" }),
+        };
+      })();
+      // 绑定按钮事件
+      document.getElementById("notice1").addEventListener("click", () => {
+        NoticeManager.info({
+          title: "消息提示",
+          message: "我是消息提示消息提示消息提示消息提示",
+        });
+      });
+      document.getElementById("notice2").addEventListener("click", () => {
+        NoticeManager.success({
+          title: "成功提示",
+          message: "我是消息提示消息提示消息提示消息提示",
+        });
+      });
+      document.getElementById("notice3").addEventListener("click", () => {
+        NoticeManager.warning({
+          title: "警告提示",
+          message: "我是消息提示消息提示消息提示消息提示",
+        });
+      });
+      document.getElementById("notice4").addEventListener("click", () => {
+        NoticeManager.error({
+          title: "错误提示",
+          message: "我是消息提示消息提示消息提示消息提示",
+        });
+      });
+      document.getElementById("notice5").addEventListener("click", () => {
+        NoticeManager.info({
+          title: "常驻通知",
+          message: "这条通知不会自动关闭，需要手动点击关闭按钮",
+          autoClose: false,
+        });
+      });
+    </script>
+  </body>
+</html>
