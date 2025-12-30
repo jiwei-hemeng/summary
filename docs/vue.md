@@ -1692,7 +1692,9 @@ while (count--) {
   .svg-icon {
     width: 18px;
     height: 22px;
-    fill: #2d8cf0; /* 默认颜色 */
+    color: #2d8cf0;
+    fill: currentColor;
+    vertical-align: middle;
     transition: fill 0.3s ease; /* 添加过渡效果 */
   }
 
