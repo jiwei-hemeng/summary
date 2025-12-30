@@ -1693,13 +1693,12 @@ while (count--) {
     width: 18px;
     height: 22px;
     color: #2d8cf0;
-    fill: currentColor;
     vertical-align: middle;
     transition: fill 0.3s ease; /* 添加过渡效果 */
   }
 
   .svg-icon:hover {
-    fill: #ffffff; /* 悬停时的颜色 */
+     color: #FFFFFF;
   }
 </style>
 ```
@@ -1726,6 +1725,8 @@ while (count--) {
   </symbol>
 </svg>
 ```
+
+**注意** path 标签上的  `fill="currentColor"` 属性
 
 # vue 中动态的导入静态资源
 
