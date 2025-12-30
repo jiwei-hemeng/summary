@@ -1685,7 +1685,7 @@ while (count--) {
 
 ```html
 <svg aria-hidden="true" class="svg-icon">
-  <use xlink:href="#iconvstongyongxiazai"></use>
+  <use xlink:href="#icon-score"></use>
   <title>模板下载</title>
 </svg>
 <style>
@@ -1702,6 +1702,29 @@ while (count--) {
     fill: #ffffff; /* 悬停时的颜色 */
   }
 </style>
+```
+引入的svg 内容
+
+```html
+<svg style="display: none">
+  <symbol id="icon-score" viewBox="0 0 1024 1024">
+    <path
+      d="M447.715556 910.222222H91.022222V113.777778h728.177778v327.68h-52.110222V165.888H143.132444v692.224h304.583112V910.222222zM611.214222 890.083556L542.72 910.222222l20.138667-68.380444 321.877333-321.763556L932.977778 568.32 611.214222 890.083556z"
+      fill="currentColor"
+      p-id="5585"
+    ></path>
+    <path
+      d="M499.256889 613.717333H343.153778l-28.216889 67.470223H251.448889L391.509333 361.813333H455.111111l138.126222 319.374223h-65.763555zM477.866667 561.265778l-56.206223-134.144-56.888888 134.144zM522.24 305.834667h136.533333v28.444444h-136.533333z"
+      fill="currentColor"
+      p-id="5586"
+    ></path>
+    <path
+      d="M576.284444 251.790222h28.444445v136.533334h-28.444445z"
+      fill="currentColor"
+      p-id="5587"
+    ></path>
+  </symbol>
+</svg>
 ```
 
 # vue 中动态的导入静态资源
