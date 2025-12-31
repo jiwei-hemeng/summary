@@ -526,5 +526,7 @@ git push origin v1.6
 # 一次提交本地的所有标签到远程仓库的命令：
 git push origin --tags
 # 删除本地的标签：
-git tag -d v0.9
+git tag -d v1.2
+# 到这一步我们只是删除了本地 V1.2的版本,可是线上V1.2的版本还是存在,如何办?这时我们可以推送的空的同名版本到线下,达到删除线上版本的目标:
+git push origin :refs/tags/V1.2
 ```
