@@ -511,3 +511,20 @@ git bisect bad  # 当前版本是坏的
 git bisect good v2.6.13-rc2  # 已知好的版本
 git bisect reset # 退出 bisect 会话并恢复原状态。‌
 ```
+
+# git tag
+
+```shell
+# 在当前分支的当前提交节点，新建轻量级标签（无需指定任何额外参数） ：
+git tag v1.0.0_lw
+# 新建附注标签，`-a` 参数后接标签名称，`-m` 参数添加标签说明：
+git tag -a v1.6 -m "version 1.6"
+# 对过去指定的提交（commit id）上打标签，指定对应 commit id（示例中的 9fceb02） 即可，若不指定 commit id，即默认在当前 HEAD 上打标签：
+git tag -a v1.6 9fceb02 -m "version 1.6"
+# 提交一个标签到远程仓库的命令：
+git push origin v1.6
+# 一次提交本地的所有标签到远程仓库的命令：
+git push origin --tags
+# 删除本地的标签：
+git tag -d v0.9
+```
