@@ -815,6 +815,19 @@ async function clipboardReadText() {
 copyToClipboard("哈哈哈");
 ```
 
+粘贴图片
+
+```js
+async function copyImage(url) {
+  const img = await fetch(url);
+  const blob = await img.blob();
+  await navigator.clipboard.write([
+    new ClipboardItem({ [blob.type]: blob })
+  ]);
+  console.log('图片复制成功');
+}
+```
+
 ### URLSearchParams
 
 **获取 url 参数**
