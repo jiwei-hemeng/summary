@@ -708,7 +708,7 @@ img {
 
 fill: 默认值。内容拉伸填满整个 content box, 不保证保持原有的比例。contain: 保持原有尺寸比例。长度和高度中长的那条边跟容器大小一致，短的那条等比缩放，可能会有留白。cover: 保持原有尺寸比例。宽度和高度中短的那条边跟容器大小一致，长的那条等比缩放。可能会有部分区域不可见。（常用）none: 保持原有尺寸比例。同时保持替换内容原始尺寸大小。scale-down:保持原有尺寸比例,如果容器尺寸大于图片内容尺寸，保持图片的原有尺寸，不会放大失真；容器尺寸小于图片内容尺寸，用法跟 contain 一样。
 
-常与`object-position`配合 
+常与`object-position`配合
 
 ```css
 object-fit: cover;
@@ -733,26 +733,27 @@ object-position: center;
 
 父盒子给 display: flex;align-items: center;justify-content: center;
 
-## 关于pointer-events
+## 关于 pointer-events
 
 你有一个覆盖在其他元素上的遮罩层（如半透明的 div），但又不想让它拦截鼠标事件时，可以设置：
+
 ```css
 .overlay {
-    pointer-events: none; /* 鼠标事件穿透遮罩层 */
+  pointer-events: none; /* 鼠标事件穿透遮罩层 */
 }
 ```
+
 在某些情况下，你可能希望某个元素在某些条件下不响应鼠标事件。例如，一个按钮在禁用状态下不响应点击事件
 
 ```css
 button:disabled {
-    cursor: no-drop;
-    color: #e5e5e5;
-    pointer-events: none; /* 禁用按钮的鼠标事件 */
+  cursor: no-drop;
+  color: #e5e5e5;
+  pointer-events: none; /* 禁用按钮的鼠标事件 */
 }
 ```
 
 **注意：**`pointer-events: none; ` 属性和`cursor: no-drop;`属性互斥
-
 
 ## less 中的混入(mixin)
 
@@ -2137,11 +2138,11 @@ scroll() 可以接受两个参数
 }
 ```
 
-#  SCSS  
+# SCSS
 
-##  循环 
+## 循环
 
->  在 SCSS 中，循环是一种强大的控制结构，可以帮助你高效地生成重复样式。主要有两种类型的循环：`@for` 和 `@each`。以下是对这两种循环的详细讲解和示例。 
+> 在 SCSS 中，循环是一种强大的控制结构，可以帮助你高效地生成重复样式。主要有两种类型的循环：`@for` 和 `@each`。以下是对这两种循环的详细讲解和示例。
 
 ### `@for` 循环
 
@@ -2155,7 +2156,7 @@ scroll() 可以接受两个参数
 }
 ```
 
- 在这个例子中，循环创建了 `.item-1` 到 `.item-5` 的类，每个类的宽度依次增加。 
+在这个例子中，循环创建了 `.item-1` 到 `.item-5` 的类，每个类的宽度依次增加。
 
 **to**
 
@@ -2167,7 +2168,7 @@ scroll() 可以接受两个参数
 }
 ```
 
-###  @each 循环
+### @each 循环
 
 **迭代列表**
 
@@ -2200,7 +2201,11 @@ $font-sizes: (
 **循环中的条件语句**
 
 ```scss
-$breakpoints: (small: 600px, medium: 900px, large: 1200px);
+$breakpoints: (
+  small: 600px,
+  medium: 900px,
+  large: 1200px,
+);
 
 @each $name, $value in $breakpoints {
   @media (max-width: $value) {
@@ -2211,3 +2216,74 @@ $breakpoints: (small: 600px, medium: 900px, large: 1200px);
 }
 ```
 
+### 媒体查询的 scss 封装
+
+```scss
+@mixin respond-to($breakname) {
+  @if $breakname == "phone" {
+    @media (min-width: 320px) and (max-width: 480px) {
+      @content;
+    }
+  } @else if $breakname == "pad" {
+    @media (min-width: 481px) and (max-width: 768px) {
+      @content;
+    }
+  }
+}
+```
+
+使用
+
+```scss
+.hearder {
+  width: 25%;
+  @include respond-to("phone") {
+    width: 100%;
+  }
+  @include respond-to("pad") {
+    width: 50%;
+  }
+}
+```
+
+进一步优化
+
+```scss
+// 定义一个集合类型
+$breakpoints: (
+  "phone": (
+    320px,
+    480px,
+  ),
+  "pad": (
+    481px,
+    768px,
+  ),
+  "notebook": (
+    769px,
+    1024px,
+  ),
+  "desktop": (
+    1025px,
+    1200px,
+  ),
+  "tv": 1201px,
+);
+
+@mixin respond-to($breakname) {
+  $bp: map-get($breakpoints, $breakname);
+  // 判断是否是数组
+  @if type-of($bp) == "list" {
+    $min: nth($bp, 1);
+    $max: nth($bp, 2);
+
+    @media (min-width: $min) and (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $bp) {
+      @content;
+    }
+  }
+}
+```
