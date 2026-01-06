@@ -54,6 +54,61 @@ getmac
 # 查看某个文件夹被哪个进程（PID）占用
 Get-Process | Where-Object { $_.Path -like "*文件夹路径*" } | Select-Object Id, ProcessName
 ```
+### 关于 diskpart 命令
+
+```shell
+# 启动 diskpart
+diskpart
+# 列出所有磁盘
+list disk
+# 选择磁盘（X 为磁盘编号，如 0、1）
+select disk X
+# 列出所选磁盘上的所有分区
+list partition
+# 选择分区（X 为分区编号）
+select partition X
+# 创建主分区，大小为 XXXX MB
+create partition primary size=XXXX
+# 快速格式化为 NTFS 文件系统
+format fs=ntfs quick
+# 分配盘符（如 C、D 等）
+assign letter=X
+# 将分区标记为活动分区（用于系统引导）
+active
+# 删除所选分区（⚠️ 数据会丢失）
+delete partition
+# 清除磁盘上所有分区和数据（⚠️ 慎用）
+clean
+# 退出
+exit
+```
+
+常见使用场景示例
+
+创建新分区
+
+```shell
+diskpart
+list disk
+select disk 1
+clean
+create partition primary size=50000
+format fs=ntfs quick
+assign letter=D
+exit
+```
+
+设置活动分区（用于系统引导）
+
+```shell
+diskpart
+list disk
+select disk 0
+list partition
+select partition 1
+active
+exit
+```
 
 ### cmd 安装 jdk 并配置环境变量
 
