@@ -386,6 +386,39 @@ logWithStyle("error", "这个Bug我改不动了！"); // 红色警告
 logWithStyle("success", "Bug已祭天！"); // 绿色嘚瑟
 ```
 
+### 日志监控：收集线上错误信息
+
+```js
+window.addEventListener("error", (event) => {                  
+  console.error("全局错误：", event.error);                  
+  // 发送错误信息到后端                  
+  fetch("/api/log/error", {                  
+    method: "POST",                  
+    body: JSON.stringify({                  
+      message: event.error.message,                  
+      stack: event.error.stack,                  
+      url: window.location.href,                  
+      userAgent: navigator.userAgent                  
+    })                  
+  });                  
+});                  
+
+// 监听Promise错误                  
+window.addEventListener("unhandledrejection", (event) => {                  
+  console.error("Promise错误：", event.reason);                  
+  // 发送错误信息到后端                  
+  fetch("/api/log/error", {                  
+    method: "POST",                  
+    body: JSON.stringify({                  
+      message: event.reason.message,                  
+      stack: event.reason.stack,                  
+      url: window.location.href,                  
+      userAgent: navigator.userAgent                  
+    })                  
+  });                  
+});
+```
+
 ### 浏览器指纹
 
 ```js
