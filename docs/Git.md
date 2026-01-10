@@ -48,6 +48,8 @@ git blame -C -w -L 2,2 lib/index.jsx
 git log --grep="闭包陷阱"
 # 搜索包含特定内容的提交
 git log -S "shellSort"
+# 搜索并显示文件名和行号
+git grep -n "闭包提权"
 ```
 
 # Git 配置命令
@@ -333,6 +335,7 @@ git reset HEAD~
 # 撤销了最后的提交（git commit ）、git add 和工作目录中的所有工作。
 git reset --hard HEAD~
 ```
+
 git commit 之后想要撤回可以使用
 
 ```shell
@@ -420,7 +423,8 @@ git cherry-pick --continue
 git cherry-pick --abort
 ```
 
-cherry Pick合并连续的提交
+cherry Pick 合并连续的提交
+
 ```shell
 git cherry-pick 790d4d8a..4c46672e
 ```
@@ -503,7 +507,7 @@ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 
 # git bisect
 
-git bisect 是一个Git命令，用于通过二分搜索算法快速定位引入特定问题（如bug）的提交。它适用于查找任何属性变化的提交，例如性能回归或功能修复。‌
+git bisect 是一个 Git 命令，用于通过二分搜索算法快速定位引入特定问题（如 bug）的提交。它适用于查找任何属性变化的提交，例如性能回归或功能修复。‌
 
 ```shell
 git bisect start
