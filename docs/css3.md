@@ -2287,3 +2287,28 @@ $breakpoints: (
   }
 }
 ```
+
+### scss 的模块化
+
+编译时
+
+```scss
+@use "./common.scss" as common;
+.foo {
+  color: common.$color;
+}
+```
+
+@use 下的私有使用
+
+```scss
+$_n: 6;
+```
+
+表示该变量在当前模块下私有
+
+运行时
+
+```scss
+@import url("./common.scss);
+```
