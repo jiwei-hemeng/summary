@@ -1,11 +1,11 @@
 :root {
   /* 颜色 */
-  --color-primary: #1890ff;    /* 主色，按钮、链接 */
-  --color-success: #52c41a;    /* 成功，比如“已支付” */
-  --color-danger: #f5222d;    /* 错误，比如“删除” */
+  --color-primary: #1890ff; /* 主色，按钮、链接 */
+  --color-success: #52c41a; /* 成功，比如“已支付” */
+  --color-danger: #f5222d; /* 错误，比如“删除” */
   /* 字号 */
-  --font-size-large: 16px;      /* （标题、按钮文字） */
-  --font-size-normal: 14px;     /* 正文 */
+  --font-size-large: 16px; /* （标题、按钮文字） */
+  --font-size-normal: 14px; /* 正文 */
   /* 字重 */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -59,26 +59,35 @@
   gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md);
   border-radius: 6px;
+  border: 0 none;
+  outline: none;
   transition: all 0.15s ease;
+}
+.button--primary {
+  background: var(--primary-500);
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+/* 变体 */
 
-  /* 变体 */
-  &--primary {
-    background: var(--primary-500);
-    color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
+.button--outline {
+  border: 1px solid var(--primary-500);
+  background: transparent;
+  color: var(--color-primary);
+}
 
-  &--outline {
-    border: 1px solid var(--border-light);
-    background: transparent;
-  }
+/* 尺寸 */
+.button--sm {
+  padding: 6px var(--space-sm);
+}
+.button--lg {
+  padding: var(--space-md) var(--space-lg);
+}
 
-  /* 尺寸 */
-  &--sm { padding: 6px var(--space-sm); }
-  &--lg { padding: var(--space-md) var(--space-lg); }
-
-  /* 交互 */
-  &:hover:not(:disabled) { transform: translateY(-1px); }
-  &:active { transform: scale(0.98); }
-
+/* 交互 */
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.button:active {
+  transform: scale(0.98);
 }
