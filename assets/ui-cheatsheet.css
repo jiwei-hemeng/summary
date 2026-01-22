@@ -1,0 +1,75 @@
+:root {
+  /* 颜色 */
+  --color-primary: #1890ff;    /* 主色，按钮、链接 */
+  --color-success: #52c41a;    /* 成功，比如“已支付” */
+  --color-danger: #f5222d;    /* 错误，比如“删除” */
+  /* 字号 */
+  --font-size-large: 16px;      /* （标题、按钮文字） */
+  --font-size-normal: 14px;     /* 正文 */
+  /* 字重 */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  /* 边距 */
+  --small-padding: 8px;
+  --normal-padding: 12px;
+  --large-padding: 16px;
+  /* 行高 */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.75;
+  /* 品牌色 */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-500: #3b82f6;
+  --primary-900: #1e3a8a;
+
+  /* 功能色 */
+  --success-500: #10b981;
+  --warning-500: #f59e0b;
+  --error-500: #ef4444;
+  --info-500: #06b6d4;
+
+  /* 中性色 */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-500: #6b7280;
+  --gray-900: #111827;
+
+  /* 语义应用 */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-500);
+  --bg-surface: white;
+  --bg-muted: var(--gray-50);
+  --border-light: var(--gray-100);
+}
+
+.button {
+  /* 基础样式 */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+
+  /* 变体 */
+  &--primary {
+    background: var(--primary-500);
+    color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  &--outline {
+    border: 1px solid var(--border-light);
+    background: transparent;
+  }
+
+  /* 尺寸 */
+  &--sm { padding: 6px var(--space-sm); }
+  &--lg { padding: var(--space-md) var(--space-lg); }
+
+  /* 交互 */
+  &:hover:not(:disabled) { transform: translateY(-1px); }
+  &:active { transform: scale(0.98); }
+}
