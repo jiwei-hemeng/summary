@@ -42,6 +42,14 @@
   --bg-surface: white;
   --bg-muted: var(--gray-50);
   --border-light: var(--gray-100);
+
+  /* 间距系统（8pt网格） */
+  --space-unit: 8px;
+  --space-xs: calc(var(--space-unit) * 1); /* 8px */
+  --space-sm: calc(var(--space-unit) * 2); /* 16px */
+  --space-md: calc(var(--space-unit) * 3); /* 24px */
+  --space-lg: calc(var(--space-unit) * 5); /* 40px */
+  --space-xl: calc(var(--space-unit) * 7); /* 56px */
 }
 
 .button {
@@ -72,4 +80,5 @@
   /* 交互 */
   &:hover:not(:disabled) { transform: translateY(-1px); }
   &:active { transform: scale(0.98); }
+
 }
