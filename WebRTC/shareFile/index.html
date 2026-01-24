@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>接收文件</title>
+  </head>
+  <body>
+    <!-- file2.html -->
+    <div><button id="copy-link">复制链接</button></div>
+    <h2>接收文件</h2>
+    <div id="status">等待连接...</div>
+    <a id="downloadLink" style="display: none">下载</a>
+
+    <script>
+      let pc;
+      const copyToClipboard = async (text) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          alert("复制成功");
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+
+          // 设置样式使其不可见
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          textarea.style.left = "-9999px";
+          textarea.style.top = "-9999px";
+
+          // 添加到文档中
+          document.body.appendChild(textarea);
+
+          // 选中文本
+          textarea.select();
+          textarea.setSelectionRange(0, textarea.value.length);
+
+          // 执行复制命令
+          const success = document.execCommand("copy");
+
+          // 清理临时元素
+          document.body.removeChild(textarea);
+          alert("复制成功");
+        }
+      };
+      const ws = new WebSocket(`ws://172.20.10.4:8080`);
+      let receivedBuffers = [];
+      let fileMetadata = null;
+      let selfId = null;
+      const status = document.querySelector("#status");
+      const link = document.getElementById("downloadLink");
+      ws.onmessage = async (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === "offer") {
+          pc = new RTCPeerConnection();
+          pc.ondatachannel = (e) => {
+            const dc = e.channel;
+            dc.onmessage = (event) => {
+              if (typeof event.data === "string") {
+                const meta = JSON.parse(event.data);
+                if (meta.type === "file-metadata") {
+                  fileMetadata = meta;
+                  status.textContent = `正在接收: ${meta.name}`;
+                  link.style.display = "block";
+                }
+              } else {
+                receivedBuffers.push(event.data);
+                status.textContent = `接收中... ${(
+                  (receivedBuffers.reduce((a, b) => a + b.byteLength, 0) /
+                    (fileMetadata?.size || 1)) *
+                  100
+                ).toFixed(1)}%`;
+              }
+            };
+          };
+
+          pc.onicecandidate = (e) => {
+            if (e.candidate) {
+              ws.send(
+                JSON.stringify({
+                  target: msg.from, // 👈 直接使用 msg.from（server.js 已注入）
+                  type: "candidate",
+                  candidate: e.candidate,
+                }),
+              );
+            }
+          };
+          // 添加连接状态监控
+          pc.onconnectionstatechange = () => {
+            console.log("Connection state:", pc.connectionState);
+            if (pc.connectionState === "failed") {
+              console.error("WebRTC 连接失败！可能是 ICE 或 SDP 问题");
+            }
+          };
+
+          // 添加 ICE 收集状态
+          pc.onicegatheringstatechange = () => {
+            console.log("ICE gathering state:", pc.iceGatheringState);
+          };
+          try {
+            await pc.setRemoteDescription(msg.sdp);
+            console.log("setRemoteDescription 成功");
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            ws.send(
+              JSON.stringify({
+                target: msg.from,
+                type: "answer",
+                sdp: {
+                  type: answer.type, // 显式类型
+                  sdp: answer.sdp, // 显式 SDP 字符串
+                },
+              }),
+            );
+          } catch (err) {
+            console.error("setRemoteDescription 失败:", err); // 👈 看这里！
+          }
+        } else if (msg.type === "candidate") {
+          await pc.addIceCandidate(msg.candidate);
+        } else if (msg.type === "id") {
+          selfId = msg.id;
+        }
+      };
+      link.addEventListener("click", () => {
+        const blob = new Blob(receivedBuffers, {
+          type: "application/octet-stream",
+        });
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = fileMetadata.name;
+        link.style.display = "";
+        link.textContent = `下载 ${fileMetadata.name}`;
+        status.textContent = "✅ 接收完成！";
+      });
+      document.querySelector("#copy-link").addEventListener("click", () => {
+        copyToClipboard(
+          location.origin + "/WebRTC/shareFile/send.html?id=" + selfId,
+        );
+      });
+    </script>
+  </body>
+</html>

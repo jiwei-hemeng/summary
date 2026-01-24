@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>发送文件</title>
+  </head>
+  <body>
+    <input type="file" id="fileInput" />
+    <button onclick="sendOffer()">发送文件</button>
+    <div id="status"></div>
+
+    <script>
+      let pc, dc, targetId, selfId;
+      const ws = new WebSocket(`ws://172.20.10.4:8080`);
+      const status = document.querySelector("#status");
+      function getURLQuery(url) {
+        const querySearch = {};
+        url.replace(/([^?&=]+)=([^&]*)/g, (_, key, value) => {
+          querySearch[key] = value;
+        });
+        return querySearch;
+      }
+      ws.onmessage = async (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === "id") {
+          selfId = msg.id;
+          const searchParams = getURLQuery(location.search);
+          targetId = searchParams.id; // 手动输入对方的 ID
+        } else if (msg.type === "answer") {
+          await pc.setRemoteDescription(msg.sdp);
+        } else if (msg.type === "candidate") {
+          await pc.addIceCandidate(msg.candidate);
+        }
+      };
+
+      async function sendOffer() {
+        const file = document.getElementById("fileInput").files[0];
+        if (!file) return alert("请选择文件！");
+
+        pc = new RTCPeerConnection();
+        dc = pc.createDataChannel("file");
+        const fileReader = new FileReader();
+
+        let sent = 0;
+        const chunkSize = 16 * 1024; // 16KB
+        let arrayBuffer;
+
+        dc.onopen = () => {
+          fileReader.onload = async (e) => {
+            arrayBuffer = e.target.result;
+            status.textContent = "发送中... 0%";
+            for (let i = 0; i < arrayBuffer.byteLength; i += chunkSize) {
+              const chunk = arrayBuffer.slice(i, i + chunkSize);
+              dc.send(chunk);
+              sent += chunk.byteLength;
+              status.textContent = `发送中... ${(
+                (sent / file.size) *
+                100
+              ).toFixed(1)}%`;
+              await new Promise((r) => setTimeout(r, 1)); // 避免主线程阻塞
+            }
+            dc.send(
+              JSON.stringify({
+                type: "file-metadata",
+                name: file.name,
+                size: file.size,
+              }),
+            );
+          };
+          fileReader.readAsArrayBuffer(file);
+        };
+
+        pc.onicecandidate = (e) => {
+          if (e.candidate) {
+            ws.send(
+              JSON.stringify({
+                target: targetId,
+                type: "candidate",
+                candidate: e.candidate,
+                from: selfId,
+              }),
+            );
+          }
+        };
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        ws.send(
+          JSON.stringify({
+            from: selfId,
+            target: targetId,
+            type: "offer",
+            sdp: pc.localDescription,
+          }),
+        );
+      }
+    </script>
+  </body>
+</html>
