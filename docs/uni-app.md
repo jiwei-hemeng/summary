@@ -5,7 +5,6 @@ uniapp 应用的生命周期分成三类：应用级别；页面级别、组件�
 - 应用级别
 
   > [官方链接](https://uniapp.dcloud.net.cn/collocation/App.html#applifecycle)
-
   - onLaunch 当`uni-app` 初始化完成时触发（全局只触发一次）
   - onShow 当 `uni-app` 启动，或从后台进入前台显示
   - onHide 当 `uni-app` 从前台进入后台
@@ -15,7 +14,6 @@ uniapp 应用的生命周期分成三类：应用级别；页面级别、组件�
 - 页面级别
 
   > [官方链接](https://uniapp.dcloud.net.cn/tutorial/page.html#lifecycle)
-
   - onLoad 监听页面加载，该钩子被调用时，响应式数据、计算属性、方法、侦听器、props、slots 已设置完成，其参数为上个页面传递的数据
   - onShow 监听页面显示，页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面
   - onHide 监听页面隐藏
@@ -732,3 +730,76 @@ export default {
   ```
 
 - webview 渲染下，在 app.wxss 或页面的 wxss 中使用标签名选择器（或一些其他特殊选择器）来直接指定样式会影响到页面和全部组件。通常情况下这是不推荐的做
+
+## H5调用微信扫一扫
+
+安装
+
+```shell
+npm install weixin-jsapi --save
+```
+
+封装
+
+```js
+import { Toast } from "vant"; //引入vant框架提示方法
+import wx from "weixin-jsapi"; // 引入微信js-sdk
+import { getSign } from "@/api/common";
+export function requestWxConfig() {
+  const url = window.location.href.split("#")[0];
+  getSign({ url }).then((res) => {
+    if (res.code == 0) {
+      let wxinfo = res.data;
+      wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+        appId: "wxbec32ae3d8b95af4", // 必填，公众号的唯一标识
+        timestamp: wxinfo.timestamp, // 必填，生成签名的时间戳
+        nonceStr: wxinfo.nonceStr, // 必填，生成签名的随机串
+        signature: wxinfo.signature, // 必填，签名，见附录1
+        jsApiList: ["checkJsApi", "scanQRCode"], // 必填，需要使用的JS接口列表，
+      });
+      wx.error(function (res) {
+        Toast(res.errMsg);
+        console.log("微信config配置失败res", res);
+      });
+    } else {
+      console.log("api接口报错==>", res);
+    }
+  });
+}
+/**
+ * 点击扫描按钮的时候执行onScanQRCode方法
+ */
+export function onScanQRCode() {
+  wx.scanQRCode({
+    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+    success: (res) => {
+      // 当needResult 为 1 时，扫码返回的结果
+      console.log("wx.scanQRCode成功res==>", res);
+    },
+    fail: (err) => {
+      Toast(err.errMsg);
+      console.log("wx.scanQRCode失败===>", err);
+    },
+  });
+}
+```
+
+使用
+
+```html
+<template>
+  <div @click="onScan">点击扫码</div>
+</template>
+<script setup>
+  import { onMounted } from "vue";
+  import { onScanQRCode, requestWxConfig } from "@/utils/common";
+  onMounted(() => {
+    requestWxConfig(); //获取微信签名，注入权限验证配置
+  });
+  const onScan = () => {
+    onScanQRCode();
+  };
+</script>
+```
