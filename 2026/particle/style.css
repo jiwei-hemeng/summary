@@ -1,0 +1,51 @@
+/* 清除默认内外边距，统一盒模型 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 页面基础样式 */
+body {
+  min-height: 100vh; /* 占满整个视口高度 */
+  background: #00040d; /* 深色背景，突出粒子 */
+  overflow: hidden; /* 隐藏滚动条 */
+}
+
+/* 粒子样式 */
+.particle {
+  position: absolute; /* 绝对定位，方便控制位置 */
+  background: var(--bg-color); /* 粒子本身是白色 */
+  /* border-radius: 50%; 圆形粒子 */
+  /* 阴影效果：内层增加质感，外层蓝色光晕 */
+  box-shadow:
+    inset 0 0 2px #121212,
+    0 0 5px #1235f4,
+    0 0 10px #1235f4;
+  animation: animate linear forwards; /* 应用动画 */
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+/* 粒子动画：控制移动和消失 */
+@keyframes animate {
+  0% {
+    opacity: 1; /* 初始完全可见 */
+    transform: translate(0, 0) scale(1); /* 初始位置 */
+  }
+  100% {
+    opacity: 0; /* 最终完全透明 */
+    /* 移动到目标位置（使用CSS变量） */
+    transform: translate(var(--move-x), var(--move-y)) scale(1);
+  }
+}

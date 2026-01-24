@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>粒子背景效果</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <script>
+      // 获取body元素，用于添加粒子
+      let body = document.querySelector("body");
+      function getRandomHexColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      // 创建粒子的函数（接收鼠标坐标x,y）
+      function createParticle(x, y) {
+        // 创建一个div作为粒子
+        let particle = document.createElement("div");
+        // 添加粒子样式类
+        particle.classList.add("particle");
+
+        // 设置粒子初始位置（鼠标当前位置）
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+
+        // 生成随机移动距离（左右、上下方向）
+        let moveX = (Math.random() - 0.5) * 400; // -200到200之间的随机值
+        let moveY = (Math.random() - 0.5) * 400;
+
+        // 把随机距离存入CSS变量，供动画使用
+        particle.style.setProperty("--move-x", `${moveX}px`);
+        particle.style.setProperty("--move-y", `${moveY}px`);
+        particle.style.setProperty("--bg-color", `${getRandomHexColor()}`);
+
+        // 生成随机大小（8px到12px之间）
+        let size = Math.random() * 4 + 8;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+
+        // 生成随机动画时长（2s到5s之间）
+        let duration = Math.random() * 3 + 2;
+        particle.style.animationDuration = `${duration}s`;
+
+        // 把粒子添加到页面
+        body.appendChild(particle);
+
+        // 动画结束后移除粒子（避免元素堆积）
+        setTimeout(() => {
+          particle.remove();
+        }, duration * 1000);
+      }
+
+      // 监听鼠标移动事件，每次移动都创建粒子
+      document.addEventListener("mousemove", (e) => {
+        createParticle(e.clientX, e.clientY);
+      });
+    </script>
+  </body>
+</html>
