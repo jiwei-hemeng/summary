@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>文字烟花</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <style>
+      :root {
+        --primary-blue: #3a8dde;
+        --secondary-blue: #7ecfff;
+        --ui-bg: rgba(20, 24, 40, 0.92);
+        --input-bg: rgba(30, 40, 70, 0.9);
+        --border-color: rgba(80, 120, 255, 0.25);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      html,
+      body {
+        width: 100vw;
+        height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
+        overflow: hidden;
+        background: #000;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+          Arial, sans-serif;
+        user-select: none;
+        overscroll-behavior: none;
+      }
+
+      #canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        height: calc(var(--vh, 1vh) * 100);
+        touch-action: none;
+      }
+
+      /* 移动端专用UI容器 */
+      .mobile-ui {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: var(--ui-bg);
+        color: #fff;
+        font-size: 16px;
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
+        padding: env(safe-area-inset-bottom, 0) 0 0 0;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .mobile-ui.collapsed {
+        transform: translateY(calc(100% - 50px));
+      }
+
+      .ui-handle {
+        width: 100%;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 0;
+        cursor: pointer;
+      }
+
+      .handle-bar {
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
+
+      .ui-content {
+        padding: 0 20px 20px;
+      }
+
+      .input-group {
+        margin-bottom: 16px;
+      }
+
+      #textInput {
+        width: 100%;
+        font-size: 16px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(80, 120, 255, 0.4);
+        outline: none;
+        background: var(--input-bg);
+        color: #fff;
+        transition: all 0.2s;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      #textInput::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      #textInput:focus {
+        border-color: var(--primary-blue);
+        box-shadow:
+          inset 0 2px 8px rgba(0, 0, 0, 0.3),
+          0 0 0 3px rgba(58, 141, 222, 0.15);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .btn {
+        flex: 1;
+        font-size: 16px;
+        padding: 15px 5px;
+        border-radius: 16px;
+        border: none;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue) 0%,
+          var(--secondary-blue) 100%
+        );
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(58, 141, 222, 0.3);
+        transition: all 0.2s;
+        min-height: 48px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .btn:active::after {
+        left: 100%;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+        box-shadow: 0 2px 10px rgba(58, 141, 222, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      #shareBtn {
+        background: linear-gradient(135deg, #9c27b0 0%, #e91e63 100%);
+        box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+      }
+
+      #shareBtn:active {
+        box-shadow: 0 2px 10px rgba(156, 39, 176, 0.4);
+      }
+
+      /* 触摸提示 */
+      .touch-hint {
+        position: fixed;
+        top: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        z-index: 5;
+        animation: fadeInOut 3s ease-in-out;
+        pointer-events: none;
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        20%,
+        80% {
+          opacity: 1;
+        }
+      }
+
+      /* 性能模式切换 */
+      .performance-toggle {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 6px 12px;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 12px;
+        backdrop-filter: blur(5px);
+      }
+
+      .toggle-switch {
+        width: 40px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .toggle-switch.active {
+        background: var(--primary-blue);
+      }
+
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.3s;
+      }
+
+      .toggle-switch.active::after {
+        transform: translateX(20px);
+      }
+
+      /* 移动端手势区域 */
+      .gesture-area {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 150px;
+        z-index: 1;
+        touch-action: pan-x pan-y;
+      }
+
+      /* 响应式调整 */
+      @media (max-width: 480px) {
+        .mobile-ui {
+          border-radius: 20px 20px 0 0;
+        }
+
+        .ui-content {
+          padding: 0 16px 16px;
+        }
+
+        #textInput {
+          font-size: 15px;
+          padding: 12px 14px;
+        }
+
+        .btn {
+          font-size: 15px;
+          padding: 14px 5px;
+          min-height: 44px;
+        }
+
+        .button-group {
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .ui-content {
+          padding: 0 12px 12px;
+        }
+
+        #textInput {
+          font-size: 14px;
+          padding: 10px 12px;
+        }
+
+        .btn {
+          font-size: 14px;
+          padding: 12px 5px;
+          min-height: 42px;
+        }
+      }
+
+      /* 横屏模式 */
+      @media (orientation: landscape) and (max-height: 500px) {
+        .mobile-ui {
+          top: 0;
+          bottom: auto;
+          border-radius: 0 0 20px 20px;
+          padding: 0 0 env(safe-area-inset-bottom, 0) 0;
+          max-width: 400px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .mobile-ui.collapsed {
+          transform: translate(-50%, calc(-100% + 50px));
+        }
+
+        .ui-content {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          padding: 12px 16px;
+        }
+
+        .input-group {
+          flex: 1;
+          margin-bottom: 0;
+        }
+
+        .button-group {
+          flex: 0 0 auto;
+          margin-top: 0;
+        }
+
+        .gesture-area {
+          bottom: 0;
+        }
+      }
+
+      /* 全面屏适配 */
+      @supports (padding: max(0px)) {
+        .mobile-ui {
+          padding-left: max(16px, env(safe-area-inset-left));
+          padding-right: max(16px, env(safe-area-inset-right));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <!-- 触摸提示（首次显示） -->
+    <div class="touch-hint" id="touchHint">点击屏幕任意位置发射随机烟花</div>
+
+    <!-- 性能模式切换 -->
+    <div class="performance-toggle" id="perfToggle">
+      <span>性能模式</span>
+      <div class="toggle-switch" id="perfSwitch"></div>
+    </div>
+
+    <!-- 手势区域 -->
+    <div class="gesture-area" id="gestureArea"></div>
+
+    <!-- 移动端优化UI -->
+    <div class="mobile-ui" id="mobileUI">
+      <div class="ui-handle" id="uiHandle">
+        <div class="handle-bar"></div>
+      </div>
+      <div class="ui-content">
+        <div class="input-group">
+          <input
+            type="text"
+            id="textInput"
+            placeholder="输入文字，用 | 分隔"
+            maxlength="30"
+            value="祝我娟娟|2026|马到成功|颜值在线|烦恼退散|快乐满点"
+            enterkeyhint="done"
+          />
+        </div>
+        <div class="button-group">
+          <button id="launchBtn" class="btn">发射烟花</button>
+          <button id="shareBtn" class="btn">分享</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==================== 移动端适配 ====================
+      // 修复移动端视口高度问题
+      function setVH() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
+
+      // 防止双击缩放
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        function (event) {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false,
+      );
+
+      // ==================== 核心烟花系统 ====================
+      class MobileFireworks {
+        constructor() {
+          this.canvas = document.getElementById("canvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.W = window.innerWidth;
+          this.H = window.innerHeight;
+
+          // 性能模式
+          this.performanceMode = false;
+          this.maxParticles = 1500; // 移动端减少最大粒子数
+
+          // 粒子系统
+          this.particles = [];
+          this.ascendFireworks = [];
+          this.textParticles = [];
+          this.textAscendFireworks = [];
+
+          // 文字队列
+          this.textQueue = [];
+          this.textLoopStr = "";
+          this.isTextAnimating = false;
+
+          // 触摸状态
+          this.touchActive = false;
+          this.lastTouchTime = 0;
+          this.touchCooldown = 300; // 触摸冷却时间
+
+          // 初始化
+          this.init();
+        }
+
+        init() {
+          this.setupCanvas();
+          this.setupUI();
+          this.setupGestures();
+          this.startAnimation();
+
+          // 初始显示触摸提示
+          this.showTouchHint();
+
+          // 监听性能模式切换
+          document
+            .getElementById("perfSwitch")
+            .addEventListener("click", () => {
+              this.togglePerformanceMode();
+            });
+
+          // 启动背景烟花
+          this.startBackgroundFireworks();
+        }
+
+        setupCanvas() {
+          // 设置DPI以提高移动端清晰度
+          const dpr = window.devicePixelRatio || 1;
+          this.canvas.width = this.W * dpr;
+          this.canvas.height = this.H * dpr;
+          this.ctx.scale(dpr, dpr);
+          this.canvas.style.width = `${this.W}px`;
+          this.canvas.style.height = `${this.H}px`;
+
+          // 监听resize
+          window.addEventListener("resize", () => {
+            this.W = window.innerWidth;
+            this.H = window.innerHeight;
+            this.canvas.width = this.W * dpr;
+            this.canvas.height = this.H * dpr;
+            this.ctx.scale(dpr, dpr);
+            this.canvas.style.width = `${this.W}px`;
+            this.canvas.style.height = `${this.H}px`;
+          });
+
+          // 设置视口高度
+          setVH();
+          window.addEventListener("resize", setVH);
+          window.addEventListener("orientationchange", setVH);
+        }
+
+        setupUI() {
+          const textInput = document.getElementById("textInput");
+          const launchBtn = document.getElementById("launchBtn");
+          const shareBtn = document.getElementById("shareBtn");
+          const uiHandle = document.getElementById("uiHandle");
+          const mobileUI = document.getElementById("mobileUI");
+
+          // 发射按钮
+          launchBtn.addEventListener("click", () => {
+            this.launchTextFirework(textInput.value);
+            // 点击后收起UI
+            mobileUI.classList.add("collapsed");
+          });
+
+          // 回车键发射
+          textInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              this.launchTextFirework(textInput.value);
+              textInput.blur(); // 隐藏键盘
+            }
+          });
+
+          // 分享按钮
+          shareBtn.addEventListener("click", () => {
+            this.shareText(textInput.value);
+          });
+
+          // UI折叠/展开
+          uiHandle.addEventListener("click", () => {
+            mobileUI.classList.toggle("collapsed");
+          });
+
+          // 点击输入框时展开UI
+          textInput.addEventListener("focus", () => {
+            mobileUI.classList.remove("collapsed");
+          });
+
+          // 虚拟键盘弹出时调整UI
+          if ("visualViewport" in window) {
+            const visualViewport = window.visualViewport;
+            visualViewport.addEventListener("resize", () => {
+              if (visualViewport.height < window.innerHeight) {
+                // 键盘弹出
+                mobileUI.style.bottom = `${window.innerHeight - visualViewport.height}px`;
+              } else {
+                // 键盘收起
+                mobileUI.style.bottom = "0";
+              }
+            });
+          }
+        }
+
+        setupGestures() {
+          const gestureArea = document.getElementById("gestureArea");
+          const canvas = this.canvas;
+
+          // 点击发射随机烟花
+          gestureArea.addEventListener("click", (e) => {
+            if (Date.now() - this.lastTouchTime < this.touchCooldown) return;
+            this.lastTouchTime = Date.now();
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            this.createTouchFirework(x, y);
+          });
+
+          // 长按连续发射
+          let longPressTimer;
+          gestureArea.addEventListener("touchstart", (e) => {
+            if (e.touches.length > 1) return; // 防止多指操作
+
+            longPressTimer = setTimeout(() => {
+              const touch = e.touches[0];
+              const rect = canvas.getBoundingClientRect();
+              const x = touch.clientX - rect.left;
+              const y = touch.clientY - rect.top;
+
+              // 长按位置持续发射
+              this.startContinuousFireworks(x, y);
+            }, 500);
+          });
+
+          gestureArea.addEventListener("touchend", () => {
+            clearTimeout(longPressTimer);
+            this.stopContinuousFireworks();
+          });
+
+          gestureArea.addEventListener("touchmove", (e) => {
+            if (this.touchActive && e.touches[0]) {
+              const touch = e.touches[0];
+              const rect = canvas.getBoundingClientRect();
+              const x = touch.clientX - rect.left;
+              const y = touch.clientY - rect.top;
+
+              // 移动时发射
+              if (Date.now() - this.lastTouchTime > 100) {
+                this.createTouchFirework(x, y);
+                this.lastTouchTime = Date.now();
+              }
+            }
+          });
+
+          // 双指缩放和旋转手势（调整烟花参数）
+          let initialDistance = null;
+          gestureArea.addEventListener("touchstart", (e) => {
+            if (e.touches.length === 2) {
+              initialDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY,
+              );
+            }
+          });
+
+          gestureArea.addEventListener("touchmove", (e) => {
+            if (e.touches.length === 2 && initialDistance !== null) {
+              const currentDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY,
+              );
+
+              // 缩放调整烟花大小
+              const scale = currentDistance / initialDistance;
+              this.adjustFireworkSize(Math.min(Math.max(scale, 0.5), 2));
+            }
+          });
+
+          gestureArea.addEventListener("touchend", () => {
+            initialDistance = null;
+          });
+        }
+
+        showTouchHint() {
+          const hint = document.getElementById("touchHint");
+          hint.style.display = "block";
+
+          setTimeout(() => {
+            hint.style.display = "none";
+          }, 3000);
+        }
+
+        togglePerformanceMode() {
+          this.performanceMode = !this.performanceMode;
+          const switchEl = document.getElementById("perfSwitch");
+          switchEl.classList.toggle("active");
+
+          if (this.performanceMode) {
+            this.maxParticles = 800; // 性能模式下进一步减少粒子
+            // 清理一些粒子
+            this.particles = this.particles.slice(-this.maxParticles);
+            this.textParticles = this.textParticles.slice(
+              -this.maxParticles / 2,
+            );
+          } else {
+            this.maxParticles = 1500;
+          }
+        }
+
+        // ==================== 烟花功能 ====================
+        createTouchFirework(x, y) {
+          const colors = this.getRandomColors(3);
+
+          // 创建多个小烟花
+          for (let i = 0; i < 3; i++) {
+            const color = colors[i];
+            const offsetX = (Math.random() - 0.5) * 30;
+            const offsetY = (Math.random() - 0.5) * 30;
+
+            const particles = this.createFirework(
+              x + offsetX,
+              y + offsetY,
+              color,
+              this.performanceMode ? 15 : 25,
+              this.performanceMode ? 2 : 3,
+              this.performanceMode ? 1.5 : 2,
+            );
+
+            this.particles.push(...particles);
+          }
+
+          // 限制粒子数量
+          if (this.particles.length > this.maxParticles) {
+            this.particles = this.particles.slice(-this.maxParticles);
+          }
+        }
+
+        startContinuousFireworks(x, y) {
+          this.touchActive = true;
+          this.continuousInterval = setInterval(() => {
+            this.createTouchFirework(x, y);
+          }, 200);
+        }
+
+        stopContinuousFireworks() {
+          this.touchActive = false;
+          if (this.continuousInterval) {
+            clearInterval(this.continuousInterval);
+          }
+        }
+
+        adjustFireworkSize(scale) {
+          // 可以在这里调整粒子大小
+          // 暂时只做演示，实际可以应用到所有新创建的粒子
+        }
+
+        launchTextFirework(str) {
+          if (!str || str.trim().length === 0) return;
+
+          this.textLoopStr = str;
+          this.textQueue = str
+            .split("|")
+            .filter((part) => part.trim().length > 0);
+          this.textParticles = [];
+          this.textAscendFireworks = [];
+          this.isTextAnimating = true;
+
+          this.nextTextFirework();
+        }
+
+        nextTextFirework() {
+          if (this.textQueue.length === 0) {
+            setTimeout(() => {
+              if (this.textLoopStr) {
+                this.textQueue = this.textLoopStr
+                  .split("|")
+                  .filter((part) => part.trim().length > 0);
+                this.textParticles = [];
+                this.textAscendFireworks = [];
+                this.isTextAnimating = true;
+                this.nextTextFirework();
+              }
+            }, 1200);
+            return;
+          }
+
+          const textChar = this.textQueue.shift();
+          const x = this.W * (0.33 + 0.33 * Math.random());
+          const y = this.H * (0.1 + 0.1 * Math.random());
+          const color = this.getRandomColor();
+          const sx = x + (Math.random() - 0.5) * 80;
+          const sy = this.H;
+
+          this.textAscendFireworks.push(
+            new AscendFirework(sx, sy, x, y, color, textChar),
+          );
+        }
+
+        startBackgroundFireworks() {
+          setInterval(() => {
+            if (this.ascendFireworks.length < (this.performanceMode ? 4 : 8)) {
+              this.launchBackgroundFirework();
+            }
+          }, 1000);
+        }
+
+        launchBackgroundFirework() {
+          const tx = Math.random() * this.W * 0.9 + this.W * 0.05;
+          const ty = Math.random() * this.H * 0.4 + this.H * 0.1;
+          const sx = tx + (Math.random() - 0.5) * 80;
+          const sy = this.H;
+          const color = this.getRandomColor();
+
+          this.ascendFireworks.push(
+            new AscendFirework(sx, sy, tx, ty, color, null),
+          );
+        }
+
+        shareText(text) {
+          if (!text) return;
+
+          const shareData = {
+            title: "文字烟花",
+            text: `来看看我创建的文字烟花：${text}`,
+            url: window.location.href,
+          };
+
+          if (navigator.share && navigator.canShare(shareData)) {
+            navigator
+              .share(shareData)
+              .catch((err) => console.log("分享取消:", err));
+          } else {
+            // 降级方案：复制到剪贴板
+            navigator.clipboard
+              .writeText(`${text} - 来自文字烟花`)
+              .then(() => {
+                alert("文字已复制到剪贴板，可以分享给朋友了！");
+              })
+              .catch((err) => {
+                prompt("请复制以下文字分享：", `${text} - 来自文字烟花`);
+              });
+          }
+        }
+
+        // ==================== 工具方法 ====================
+        getRandomColor() {
+          const colors = [
+            "#ff5252",
+            "#ffd740",
+            "#40c4ff",
+            "#69f0ae",
+            "#fff176",
+            "#b388ff",
+            "#ff80ab",
+            "#fff",
+            "#ff6b6b",
+            "#4ecdc4",
+            "#45b7d1",
+            "#96ceb4",
+          ];
+          return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        getRandomColors(count) {
+          const colors = [];
+          for (let i = 0; i < count; i++) {
+            colors.push(this.getRandomColor());
+          }
+          return colors;
+        }
+
+        createFirework(x, y, color, count = 25, speed = 3, size = 1.8) {
+          const particles = [];
+          const actualCount = this.performanceMode
+            ? Math.floor(count * 0.7)
+            : count;
+
+          for (let i = 0; i < actualCount; i++) {
+            const angle = Math.PI * 2 * (i / actualCount);
+            const vx =
+              Math.cos(angle) * (Math.random() * speed * 0.7 + speed * 0.3);
+            const vy =
+              Math.sin(angle) * (Math.random() * speed * 0.7 + speed * 0.3);
+
+            particles.push(
+              new Particle(
+                x,
+                y,
+                color,
+                vx,
+                vy,
+                size + Math.random() * 0.5,
+                1,
+                0.015 + Math.random() * 0.01,
+                0.02,
+              ),
+            );
+          }
+          return particles;
+        }
+
+        createTextParticles(text, x, y, color) {
+          // 性能模式减少文字粒子数量
+          const fontSize = this.performanceMode ? 70 : 94;
+          const step = this.performanceMode ? 8 : 6;
+
+          const offCanvas = document.createElement("canvas");
+          const offCtx = offCanvas.getContext("2d");
+
+          offCanvas.width = fontSize * text.length;
+          offCanvas.height = fontSize * 1.2;
+
+          offCtx.clearRect(0, 0, offCanvas.width, offCanvas.height);
+          offCtx.font = `bold ${fontSize}px Arial, sans-serif`;
+          offCtx.textAlign = "center";
+          offCtx.textBaseline = "middle";
+          offCtx.fillStyle = "#fff";
+          offCtx.fillText(text, offCanvas.width / 2, offCanvas.height / 2);
+
+          const imageData = offCtx.getImageData(
+            0,
+            0,
+            offCanvas.width,
+            offCanvas.height,
+          );
+          const particles = [];
+
+          for (let i = 0; i < imageData.width; i += step) {
+            for (let j = 0; j < imageData.height; j += step) {
+              const idx = (j * imageData.width + i) * 4;
+              if (imageData.data[idx + 3] > 128) {
+                const tx = x - offCanvas.width / 2 + i;
+                const ty = y - offCanvas.height / 2 + j;
+                const duration = 32;
+                const vx = (tx - x) / duration;
+                const vy = (ty - y) / duration;
+
+                const particle = new Particle(
+                  x,
+                  y,
+                  color,
+                  vx,
+                  vy,
+                  this.performanceMode ? 1.8 : 2.2,
+                  1,
+                  0.012 + Math.random() * 0.01,
+                  0,
+                );
+
+                particle.targetX = tx;
+                particle.targetY = ty;
+                particle.state = "explode";
+                particle.frameCount = 0;
+
+                particles.push(particle);
+              }
+            }
+          }
+          return particles;
+        }
+
+        // ==================== 动画循环 ====================
+        startAnimation() {
+          const animate = () => {
+            // 拖影效果
+            this.ctx.globalAlpha = 0.18;
+            this.ctx.fillStyle = "#000";
+            this.ctx.fillRect(0, 0, this.W, this.H);
+            this.ctx.globalAlpha = 1;
+
+            // 更新所有粒子
+            this.updateAndDrawParticles();
+            this.updateAndDrawAscendFireworks();
+            this.updateAndDrawTextFireworks();
+
+            requestAnimationFrame(animate.bind(this));
+          };
+
+          animate();
+        }
+
+        updateAndDrawParticles() {
+          // 更新普通烟花粒子
+          this.particles = this.particles.filter((p) => p.isAlive());
+          this.particles.forEach((p) => {
+            p.update();
+            p.draw(this.ctx);
+          });
+
+          // 限制粒子数量
+          if (this.particles.length > this.maxParticles) {
+            this.particles = this.particles.slice(-this.maxParticles);
+          }
+        }
+
+        updateAndDrawAscendFireworks() {
+          for (let i = this.ascendFireworks.length - 1; i >= 0; i--) {
+            const fw = this.ascendFireworks[i];
+            fw.draw(this.ctx);
+
+            if (fw.update()) {
+              const particles = this.createFirework(
+                fw.x,
+                fw.y,
+                fw.color,
+                this.performanceMode ? 20 : 30,
+                this.performanceMode ? 2 : 2.5,
+                this.performanceMode ? 1.2 : 1.5,
+              );
+
+              this.particles.push(...particles);
+              this.ascendFireworks.splice(i, 1);
+            }
+          }
+        }
+
+        updateAndDrawTextFireworks() {
+          // 更新上升中的文字烟花
+          for (let i = this.textAscendFireworks.length - 1; i >= 0; i--) {
+            const fw = this.textAscendFireworks[i];
+            fw.draw(this.ctx);
+
+            if (fw.update()) {
+              const particles = this.createTextParticles(
+                fw.textChar,
+                fw.x,
+                fw.y,
+                fw.color,
+              );
+              this.textParticles.push(...particles);
+              this.textAscendFireworks.splice(i, 1);
+
+              setTimeout(() => this.nextTextFirework(), 300);
+            }
+          }
+
+          // 更新文字粒子动画
+          this.textParticles = this.textParticles.filter((p) => p.isAlive());
+          let allDisappear = true;
+
+          for (const p of this.textParticles) {
+            if (p.targetX !== undefined && p.targetY !== undefined) {
+              switch (p.state) {
+                case "explode":
+                  p.x += p.vx;
+                  p.y += p.vy;
+                  p.frameCount++;
+
+                  this.ctx.save();
+                  this.ctx.globalAlpha = 0.7;
+                  p.draw(this.ctx);
+                  this.ctx.restore();
+
+                  if (p.frameCount >= 32) {
+                    p.x = p.targetX;
+                    p.y = p.targetY;
+                    p.state = "hold";
+                    p.frameCount = 0;
+                  }
+                  allDisappear = false;
+                  break;
+
+                case "hold":
+                  p.frameCount++;
+                  p.alpha = 1;
+                  p.draw(this.ctx);
+
+                  if (p.frameCount > 38) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 2 + Math.random() * 2;
+                    p.vx = Math.cos(angle) * speed;
+                    p.vy = Math.sin(angle) * speed;
+                    p.state = "disperse";
+                    p.frameCount = 0;
+                  }
+                  allDisappear = false;
+                  break;
+
+                case "disperse":
+                  p.x += p.vx;
+                  p.y += p.vy;
+                  p.vx *= 0.96;
+                  p.vy *= 0.96;
+                  p.alpha *= 0.94;
+                  p.draw(this.ctx);
+
+                  if (p.alpha > 0.05) allDisappear = false;
+                  break;
+              }
+            } else {
+              p.update();
+              p.draw(this.ctx);
+              allDisappear = false;
+            }
+          }
+
+          // 限制文字粒子数量
+          const maxTextParticles = this.maxParticles / 2;
+          if (this.textParticles.length > maxTextParticles) {
+            this.textParticles = this.textParticles.slice(-maxTextParticles);
+          }
+        }
+      }
+
+      // ==================== 粒子类 ====================
+      class Particle {
+        constructor(x, y, color, vx, vy, size, alpha, fade, gravity = 0.02) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.vx = vx;
+          this.vy = vy;
+          this.size = size;
+          this.alpha = alpha;
+          this.fade = fade;
+          this.gravity = gravity;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += this.gravity;
+          this.alpha -= this.fade;
+        }
+
+        draw(ctx) {
+          if (this.alpha <= 0) return;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(this.alpha, 0);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        isAlive() {
+          return this.alpha > 0;
+        }
+      }
+
+      class AscendFirework {
+        constructor(sx, sy, tx, ty, color, textChar) {
+          this.x = sx;
+          this.y = sy;
+          this.tx = tx;
+          this.ty = ty;
+          this.color = color;
+          this.textChar = textChar;
+          this.vx = (tx - sx) / 36;
+          this.vy = (ty - sy) / 36;
+          this.age = 0;
+          this.exploded = false;
+        }
+
+        update() {
+          if (this.exploded) return false;
+
+          this.x += this.vx;
+          this.y += this.vy;
+          this.age++;
+
+          if (
+            (Math.abs(this.x - this.tx) < 2 &&
+              Math.abs(this.y - this.ty) < 2) ||
+            this.age > 40
+          ) {
+            this.exploded = true;
+            return true;
+          }
+          return false;
+        }
+
+        draw(ctx) {
+          if (this.exploded) return;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 12;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // ==================== 启动应用 ====================
+      window.addEventListener("DOMContentLoaded", () => {
+        // 防止页面滚动
+        document.body.addEventListener(
+          "touchmove",
+          (e) => {
+            if (
+              e.target === document.body ||
+              e.target === document.documentElement
+            ) {
+              e.preventDefault();
+            }
+          },
+          { passive: false },
+        );
+
+        // 初始化应用
+        new MobileFireworks();
+      });
+    </script>
+  </body>
+</html>
