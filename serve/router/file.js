@@ -18,7 +18,7 @@ function mergeChunks(fileName, totalChunks) {
     __dirname,
     "proxy_public",
     "uploads",
-    fileName
+    fileName,
   );
   const writeStream = fs.createWriteStream(mergedFilePath);
   for (let i = 0; i < totalChunks; i++) {
@@ -26,7 +26,7 @@ function mergeChunks(fileName, totalChunks) {
       __dirname,
       "proxy_public",
       "uploads",
-      `${fileName}.part${i}`
+      `${fileName}.part${i}`,
     );
     console.log(`Merging chunk ${i} from ${chunkPath}`);
     const chunk = fs.readFileSync(chunkPath);
@@ -60,10 +60,10 @@ router.post("/uploadSliceFile", upload2.single("file"), (req, res) => {
     __dirname,
     "/proxy_public",
     "uploads",
-    `${fileName}.part${chunkIndex}`
+    `${fileName}.part${chunkIndex}`,
   );
   console.log(
-    `Received chunk ${chunkIndex} of ${totalChunks}, chunkPath is ${chunkPath}`
+    `Received chunk ${chunkIndex} of ${totalChunks}, chunkPath is ${chunkPath}`,
   );
   fs.rename(req.file.path, chunkPath, (err) => {
     if (err) {
