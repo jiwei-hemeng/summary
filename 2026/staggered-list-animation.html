@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>列表项交错动画</title>
+    <style>
+      li {
+        padding: 0;
+        transition: all 0.3s ease;
+        transition-delay: calc((sibling-index() - 1) * 100ms);
+
+        @starting-style {
+          opacity: 0;
+          margin-left: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+      <li>cbshdbch</li>
+    </ul>
+  </body>
+</html>
