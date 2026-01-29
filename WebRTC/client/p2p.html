@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -105,7 +105,7 @@
       };
       document.title = target === "offer" ? "发起方" : "接收方";
       message.log("信令通道（WebSocket）创建中......");
-      const socket = new WebSocket("wss://023gmdmb-5000.inc1.devtunnels.ms/");
+      const socket = new WebSocket("/");
       socket.onopen = () => {
         message.log("信令通道创建成功！");
         target === "offer" && (button.style.display = "block");
@@ -139,7 +139,10 @@
         if (e.candidate) {
           message.log("搜集并发送候选人");
           socket.send(
-            JSON.stringify({ type: `${target}_ice`, iceCandidate: e.candidate })
+            JSON.stringify({
+              type: `${target}_ice`,
+              iceCandidate: e.candidate,
+            }),
           );
         } else {
           message.log("候选人收集完成！");
@@ -163,7 +166,7 @@
         message.log(
           `------ WebRTC ${
             target === "offer" ? "发起方" : "接收方"
-          }流程开始 ------`
+          }流程开始 ------`,
         );
         message.log("将媒体轨道添加到轨道集");
         stream.getTracks().forEach((track) => {
