@@ -70,6 +70,49 @@ span::after {
   --primary-color: #000;
 }
 ```
+## 类型安全：typed attr()
+
+这是 attr() 函数的升级版，支持类型检查和回退值，在 HTML 和 CSS 之间搭建了强大的桥梁。
+
+### 传递颜色
+
+```html
+<div data-bg="white" data-fg="deeppink"></div>
+<style>
+  .theme {
+    background: attr(data-bg color, black); /* 类型：颜色，默认：黑色 */
+    color: attr(data-fg color, white);
+  }
+</style>
+```
+
+### 传递数字
+
+```html
+<div class="grid" data-columns="3">…</div>
+<style>
+  .grid {
+    --columns: attr(data-columns number, 3);
+    grid-template-columns: repeat(var(--columns), 1fr);
+  }
+</style>
+```
+
+### 类型验证（枚举值）
+
+```html
+<li scroll-snap="start"></li>
+<li scroll-snap="center"></li>
+<li scroll-snap="end"></li>
+<li scroll-snap="nothing"></li>
+<style>
+  [scroll-snap] {
+    scroll-snap-align: attr(scroll-snap type(start | center | end));
+  }
+</style>
+```
+
+type() 函数会验证属性值是否在允许的关键字列表中，无效值会被优雅地回退。
 
 **CSS 局部变量**
 
@@ -578,6 +621,20 @@ p:first-of-type::first-letter {
 ```css
 transform: translate(-24%) scale(0.6);
 ```
+
+## 兄弟元素定位：sibling-index() 与 sibling-count()
+
+```css
+li {
+  padding: 0;
+  transition: all 0.3s ease;
+  transition-delay: calc((sibling-index() - 1) * 100ms);
+
+  @starting-style {
+    opacity: 0;
+    margin-left: 100px;
+  }
+}
 
 ## 什么是 [aspect-ratio](https://so.csdn.net/so/search?q=aspect&spm=1001.2101.3001.7020)?
 
