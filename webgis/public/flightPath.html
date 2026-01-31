@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zn-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ol@v7.3.0/ol.css"
+    />
+    <style>
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+      #controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="controls">
+      <button onclick="startFlight()">开始飞行</button>
+      <button onclick="stopFlight()">停止</button>
+      <button onclick="resetFlight()">重置</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+    <script>
+      const token = "3ae5c8d194b04200a60fd8ab69b05365";
+
+      const map = new ol.Map({
+        target: "map",
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+              url: `https://t0.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${token}`,
+            }),
+          }),
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+              url: `https://t0.tianditu.gov.cn/cta_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cta&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${token}`,
+            }),
+          }),
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([116.4, 39.9]),
+          zoom: 5,
+        }),
+      });
+
+      // 飞行路径
+      const waypoints = [
+        [116.4, 39.9], // 北京
+        [113.5, 34.8], // 郑州
+        [108.9, 34.2], // 西安
+        [104.1, 30.6], // 成都
+        [114.1, 22.3], // 香港
+      ];
+
+      const coordinates = waypoints.map((coord) => ol.proj.fromLonLat(coord));
+
+      // 创建轨迹线
+      const flightPath = new ol.geom.LineString(coordinates);
+      const pathLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [
+            new ol.Feature({
+              geometry: flightPath,
+            }),
+          ],
+        }),
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: "rgba(0, 150, 255, 0.6)",
+            width: 2,
+            lineDash: [5, 5],
+          }),
+        }),
+      });
+
+      // 创建飞机图标
+      const planeFeature = new ol.Feature({
+        geometry: new ol.geom.Point(coordinates[0]),
+      });
+
+      const planeLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [planeFeature],
+        }),
+        style: new ol.style.Style({
+          image: new ol.style.Icon({
+            src:
+              "data:image/svg+xml;utf8," +
+              encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                    fill="%230070ff"/>
+                </svg>
+              `),
+            scale: 1.5,
+            rotation: 0,
+          }),
+        }),
+      });
+
+      // 添加标记点
+      const markers = waypoints.map((coord, index) => {
+        const point = new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat(coord)),
+          name: `航点 ${index + 1}`,
+        });
+        return point;
+      });
+
+      const markersLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: markers,
+        }),
+        style: new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 5,
+            fill: new ol.style.Fill({
+              color: "#ff5500",
+            }),
+            stroke: new ol.style.Stroke({
+              color: "#fff",
+              width: 2,
+            }),
+          }),
+        }),
+      });
+
+      map.addLayer(pathLayer);
+      map.addLayer(markersLayer);
+      map.addLayer(planeLayer);
+
+      // 飞行动画控制
+      let animationId = null;
+      let currentSegment = 0;
+      let progress = 0;
+      const speed = 0.01; // 飞行速度
+
+      function interpolate(start, end, factor) {
+        return [
+          start[0] + (end[0] - start[0]) * factor,
+          start[1] + (end[1] - start[1]) * factor,
+        ];
+      }
+
+      function calculateRotation(start, end) {
+        const dx = end[0] - start[0];
+        const dy = end[1] - start[1];
+        const mathAngle = Math.atan2(dy, dx);
+        return Math.PI / 2 - mathAngle; // 转换为 OpenLayers 图标旋转方向
+      }
+
+      function animateFlight() {
+        if (currentSegment >= coordinates.length - 1) {
+          stopFlight();
+          return;
+        }
+
+        const start = coordinates[currentSegment];
+        const end = coordinates[currentSegment + 1];
+
+        progress += speed;
+
+        if (progress >= 1) {
+          progress = 0;
+          currentSegment++;
+          if (currentSegment >= coordinates.length - 1) {
+            stopFlight();
+            return;
+          }
+        }
+
+        const currentPos = interpolate(start, end, progress);
+        const rotation = calculateRotation(start, end);
+
+        planeFeature.getGeometry().setCoordinates(currentPos);
+        planeLayer.getStyle().getImage().setRotation(rotation);
+
+        animationId = requestAnimationFrame(animateFlight);
+      }
+
+      function startFlight() {
+        if (!animationId) {
+          animateFlight();
+        }
+      }
+
+      function stopFlight() {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+      }
+
+      function resetFlight() {
+        stopFlight();
+        currentSegment = 0;
+        progress = 0;
+        planeFeature.getGeometry().setCoordinates(coordinates[0]);
+        planeLayer.getStyle().getImage().setRotation(0);
+      }
+
+      // 显示飞行信息
+      const infoDiv = document.createElement("div");
+      infoDiv.style.cssText = `
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial;
+        `;
+      infoDiv.innerHTML = `
+            <strong>飞行信息</strong><br>
+            航线: 北京 → 郑州 → 西安 → 成都 → 香港<br>
+            总航段: ${waypoints.length - 1}段
+        `;
+      map.getTargetElement().appendChild(infoDiv);
+
+      // 调整视图
+      map.getView().fit(flightPath.getExtent(), {
+        padding: [100, 100, 100, 100],
+        duration: 1000,
+      });
+    </script>
+  </body>
+</html>
