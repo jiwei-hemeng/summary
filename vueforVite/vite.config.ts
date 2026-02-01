@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
+import viteAutoImport from "unplugin-auto-import/vite";
 import gitHash from "./plugins/git-hash";
 // 插件
 import { visualizer } from "rollup-plugin-visualizer";
@@ -15,6 +16,10 @@ export default ({ mode }) => {
         vapor: true // 启用 Vapor 模式
       }),
       visualizer({ open: false, gzipSize: true, brotliSize: true }),
+      viteAutoImport({
+        imports: ["vue", "pinia", "vue-router"],
+        dts: "./auto-imports.d.ts"
+      }),
       gitHash()
     ],
     optimizeDeps: {

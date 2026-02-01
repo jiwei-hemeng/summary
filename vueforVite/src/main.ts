@@ -1,12 +1,10 @@
-// @ts-nocheck
-import { createApp } from "vue";
-import pinia from "@/stores";
 import App from "@/App.vue";
 import router from "@/router";
 import IndexDB from "@/utils/indexDB";
 import slideIn from "@/directives/v-slide-in";
 import lazyLoad from "@/directives/v-lazy-load";
 import "@/assets/main.css";
+import pinia from "./stores";
 IndexDB.getIndexDB().then(() => {
   const app = createApp(App);
   app.directive("slide-in", slideIn);
