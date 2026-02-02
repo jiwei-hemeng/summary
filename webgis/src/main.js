@@ -63,3 +63,14 @@ draw.on("drawend", (e) => {
   // 可选：移除绘制交互（防止重复绘制）
   // map.removeInteraction(draw);
 });
+
+// 开始绘制（可通过按钮调用）
+function startDrawing() {
+  map.addInteraction(draw);
+}
+
+// 停止并清除
+function clearDrawings() {
+  vectorSource.clear();
+  map.removeInteraction(draw);
+}
