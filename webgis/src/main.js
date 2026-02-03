@@ -12,6 +12,8 @@ import { Draw } from "ol/interaction";
 import "ol/ol.css";
 import "./style.css";
 const mapDom = document.querySelector("#map");
+document.querySelector("#start").addEventListener("click", startDrawing);
+document.querySelector("#end").addEventListener("click", clearDrawings);
 const token = import.meta.env.VITE_APP_TOKEN;
 const map = new Map({
   target: mapDom,
@@ -51,7 +53,6 @@ const draw = new Draw({
   type: "Polygon", // 绘制多边形（四边形）
   maxPoints: 4, // 限制最多4个点（形成四边形）
 });
-map.addInteraction(draw);
 
 map.addLayer(vectorLayer);
 // 监听绘制完成事件

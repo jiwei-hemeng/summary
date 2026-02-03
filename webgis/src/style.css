@@ -21,3 +21,17 @@ body {
   position: fixed;
   inset: 0;
 }
+.btn-group {
+  position: fixed;
+  right: 20px;
+  top: 8px;
+  z-index: 200;
+  button {
+    background-color: var(--color-success);
+    color: #fff;
+    font-size: var(--font-size-sm);
+    border: 0 none;
+    outline: none;
+    cursor: pointer;
+  }
+}
