@@ -70,6 +70,18 @@ peer.ontrack = (e) => {
 };
 ```
 
+### 怎么把这个流发给对方的浏览器
+
+```js
+// 创建一个P2P连接对象
+const pc = new RTCPeerConnection();
+
+// 把本地媒体流的每一条轨道(音频、视频)都添加到连接中
+localStream.getTracks().forEach(track => {
+  pc.addTrack(track, localStream);
+});
+```
+
 ### 收集候选人
 
 ```js
