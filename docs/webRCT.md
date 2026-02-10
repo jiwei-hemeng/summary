@@ -75,7 +75,10 @@ peer.ontrack = (e) => {
 ```js
 // 创建一个P2P连接对象
 const pc = new RTCPeerConnection();
-
+const localStream = await navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true,
+});
 // 把本地媒体流的每一条轨道(音频、视频)都添加到连接中
 localStream.getTracks().forEach(track => {
   pc.addTrack(track, localStream);
