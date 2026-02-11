@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>地图数据可视化</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #f5f7fa;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: #333;
+      }
+      .header {
+        background: #fff;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e8e8e8;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #262626;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .title-icon {
+        width: 32px;
+        height: 32px;
+        background: #1890ff;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 16px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #595959;
+      }
+      .breadcrumb-item {
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        color: #8c8c8c;
+      }
+      .breadcrumb-item:hover {
+        color: #1890ff;
+        background: #f0f5ff;
+      }
+      .breadcrumb-item.active {
+        color: #262626;
+        font-weight: 500;
+        background: transparent;
+        cursor: default;
+      }
+      .breadcrumb-separator {
+        color: #d9d9d9;
+        user-select: none;
+      }
+      .controls {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 8px 16px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        background: #fff;
+        color: #595959;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        outline: none;
+      }
+      .btn:hover {
+        color: #1890ff;
+        border-color: #1890ff;
+      }
+      .btn:disabled {
+        color: #bfbfbf;
+        border-color: #d9d9d9;
+        cursor: not-allowed;
+        background: #f5f5f5;
+      }
+      .btn-primary {
+        background: #1890ff;
+        border-color: #1890ff;
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: #40a9ff;
+        border-color: #40a9ff;
+        color: #fff;
+      }
+      .main-container {
+        flex: 1;
+        display: flex;
+        padding: 24px;
+        gap: 24px;
+        max-width: 1600px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .map-container {
+        flex: 1;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e8e8e8;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      #map-chart {
+        width: 100%;
+        height: 100%;
+        min-height: 600px;
+      }
+      .sidebar {
+        width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .panel {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e8e8e8;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .panel-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #262626;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel-title::before {
+        content: "";
+        width: 4px;
+        height: 16px;
+        background: #1890ff;
+        border-radius: 2px;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .stat-card {
+        background: #fafafa;
+        border-radius: 6px;
+        padding: 16px;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+        transition: all 0.2s;
+      }
+      .stat-card:hover {
+        background: #f0f5ff;
+        border-color: #d6e4ff;
+      }
+      .stat-value {
+        font-size: 22px;
+        font-weight: 600;
+        color: #1890ff;
+        margin-bottom: 4px;
+        line-height: 1;
+      }
+      .stat-label {
+        color: #8c8c8c;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .region-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .region-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .region-list::-webkit-scrollbar-track {
+        background: #f5f5f5;
+        border-radius: 3px;
+      }
+      .region-list::-webkit-scrollbar-thumb {
+        background: #d9d9d9;
+        border-radius: 3px;
+      }
+      .list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        margin-bottom: 6px;
+        background: #fafafa;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+      }
+      .list-item:hover {
+        background: #f0f5ff;
+        border-color: #d6e4ff;
+      }
+      .list-item-name {
+        color: #262626;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .rank-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #595959;
+      }
+      .rank-num.top {
+        background: #1890ff;
+        color: #fff;
+      }
+      .list-item-value {
+        color: #1890ff;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .tips {
+        color: #8c8c8c;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+      .tips p {
+        margin-bottom: 6px;
+        padding-left: 12px;
+        position: relative;
+      }
+      .tips p::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #1890ff;
+      }
+      .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 0.3s;
+      }
+      .loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f0f0f0;
+        border-top-color: #1890ff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-text {
+        color: #595959;
+        margin-top: 12px;
+        font-size: 14px;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "echarts": "../node_modules/echarts/dist/echarts.esm.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">地图数据可视化</div>
+      <div class="breadcrumb" id="breadcrumb">
+        <span class="breadcrumb-item active" data-level="0">全国</span>
+      </div>
+      <div class="controls">
+        <button class="btn" id="btn-reset" disabled>返回上级</button>
+        <button class="btn btn-primary" id="btn-refresh">刷新数据</button>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <div class="map-container">
+        <div id="map-chart"></div>
+        <div class="loading-overlay" id="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">正在加载地图数据...</div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="panel">
+          <div class="panel-title">数据统计</div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="stat-count">34</div>
+              <div class="stat-label" id="stat-label">省级行政区</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-avg">8,542</div>
+              <div class="stat-label">平均数值</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-max">15,230</div>
+              <div class="stat-label">最高数值</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-min">1,205</div>
+              <div class="stat-label">最低数值</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">区域排行</div>
+          <div class="region-list" id="region-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // 1. 先导入 echarts 作为 ES Module
+      import * as echarts from "echarts";
+      const chartDom = document.getElementById("map-chart");
+      const myChart = echarts.init(chartDom);
+
+      let currentLevel = 0;
+      let history = [];
+      let geoJsonCache = {};
+      let mapData = {};
+
+      function showLoading(text = "正在加载地图数据...") {
+        document.querySelector(".loading-text").textContent = text;
+        document.getElementById("loading").classList.remove("hidden");
+      }
+
+      function hideLoading() {
+        document.getElementById("loading").classList.add("hidden");
+      }
+
+      function generateData(count, names) {
+        const data = [];
+        const values = [];
+        for (let i = 0; i < count; i++) {
+          const value = Math.floor(Math.random() * 15000) + 1000;
+          values.push(value);
+          data.push({
+            name: names[i],
+            value: value,
+          });
+        }
+        return { data, values };
+      }
+
+      async function loadChinaMap() {
+        try {
+          showLoading();
+          const response = await fetch(
+            "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json",
+          );
+          const geoJson = await response.json();
+
+          geoJsonCache["china"] = geoJson;
+          echarts.registerMap("china", geoJson);
+
+          const provinceNames = geoJson.features
+            .map((f) => f.properties.name)
+            .filter((n) => n);
+          const { data, values } = generateData(
+            provinceNames.length,
+            provinceNames,
+          );
+
+          mapData["china"] = data;
+          currentLevel = 0;
+          history = [{ name: "china", title: "全国", data: data }];
+
+          renderMap("china", data, "全国数据分布");
+          updateSidebar(data, "省级行政区", 34);
+          updateStats(values, 34, "省级行政区");
+          updateBreadcrumb(["全国"]);
+
+          hideLoading();
+        } catch (error) {
+          console.error("加载地图失败:", error);
+          hideLoading();
+        }
+      }
+      async function loadProvinceMap(provinceName) {
+        try {
+          showLoading(`正在加载${provinceName}...`);
+
+          const chinaGeoJson = geoJsonCache["china"];
+          const provinceFeature = chinaGeoJson.features.find(
+            (f) => f.properties.name === provinceName,
+          );
+
+          if (!provinceFeature) {
+            throw new Error("未找到该省份数据");
+          }
+
+          const adcode = provinceFeature.properties.adcode;
+          const response = await fetch(
+            `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`,
+          );
+          const geoJson = await response.json();
+
+          const mapKey = `province_${adcode}`;
+          geoJsonCache[mapKey] = geoJson;
+          echarts.registerMap(mapKey, geoJson);
+
+          const cityNames = geoJson.features
+            .map((f) => f.properties.name)
+            .filter((n) => n);
+
+          if (cityNames.length === 0) {
+            throw new Error("该省份暂无市级数据");
+          }
+
+          const { data, values } = generateData(cityNames.length, cityNames);
+          mapData[mapKey] = data;
+
+          currentLevel = 1;
+          history.push({
+            name: mapKey,
+            title: provinceName,
+            data: data,
+            parent: "china",
+          });
+
+          renderMap(mapKey, data, `${provinceName} - 市级数据`);
+          updateSidebar(data, "市级行政区", cityNames.length);
+          updateStats(values, cityNames.length, "市级行政区");
+          updateBreadcrumb(["全国", provinceName]);
+
+          document.getElementById("btn-reset").disabled = false;
+          hideLoading();
+        } catch (error) {
+          console.error("加载省份地图失败:", error);
+          hideLoading();
+        }
+      }
+      async function loadCityMap(cityName, provinceMapKey) {
+        try {
+          showLoading(`正在加载${cityName}...`);
+
+          const provinceGeoJson = geoJsonCache[provinceMapKey];
+          const cityFeature = provinceGeoJson.features.find(
+            (f) => f.properties.name === cityName,
+          );
+
+          if (!cityFeature) {
+            throw new Error("未找到该城市数据");
+          }
+
+          const adcode = cityFeature.properties.adcode;
+          let adcodeArr = [460400, 460300, 441900, 442000, 620200];
+          let response;
+          if (adcodeArr.includes(adcode)) {
+            response = await fetch(
+              `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`,
+            );
+          } else {
+            response = await fetch(
+              `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`,
+            );
+          }
+          const geoJson = await response.json();
+
+          if (!geoJson.features || geoJson.features.length === 0) {
+            throw new Error("暂无区级数据");
+          }
+
+          const mapKey = `city_${adcode}`;
+          geoJsonCache[mapKey] = geoJson;
+          echarts.registerMap(mapKey, geoJson);
+
+          const districtNames = geoJson.features
+            .map((f) => f.properties.name)
+            .filter((n) => n);
+          const { data, values } = generateData(
+            districtNames.length,
+            districtNames,
+          );
+          mapData[mapKey] = data;
+
+          currentLevel = 2;
+          history.push({
+            name: mapKey,
+            title: cityName,
+            data: data,
+            parent: provinceMapKey,
+          });
+
+          renderMap(mapKey, data, `${cityName} - 区级数据`);
+          updateSidebar(data, "区级行政区", districtNames.length);
+          updateStats(values, districtNames.length, "区级行政区");
+
+          const provinceName = history[1].title;
+          updateBreadcrumb(["全国", provinceName, cityName]);
+
+          hideLoading();
+        } catch (error) {
+          console.error("加载市级地图失败:", error);
+          hideLoading();
+        }
+      }
+
+      function renderMap(mapName, data, title) {
+        const option = {
+          backgroundColor: "#fff",
+          title: {
+            text: title,
+            left: "center",
+            top: 16,
+            textStyle: {
+              color: "#262626",
+              fontSize: 18,
+              fontWeight: 500,
+            },
+          },
+          tooltip: {
+            trigger: "item",
+            backgroundColor: "#fff",
+            borderColor: "#e8e8e8",
+            borderWidth: 1,
+            textStyle: {
+              color: "#262626",
+            },
+            extraCssText: "box-shadow: 0 4px 12px rgba(0,0,0,0.1);",
+            formatter: function (params) {
+              if (!params.value) return params.name;
+              return `<div style="padding: 8px;">
+                    <div style="font-weight: 600; margin-bottom: 4px; color: #262626;">${
+                      params.name
+                    }</div>
+                    <div style="color: #595959;">数值: <span style="font-weight: 600; color: #1890ff;">${params.value.toLocaleString()}</span></div>
+                    ${
+                      currentLevel < 2
+                        ? '<div style="font-size: 12px; color: #8c8c8c; margin-top: 4px;">点击查看详情</div>'
+                        : ""
+                    }
+                  </div>`;
+            },
+          },
+          visualMap: {
+            min: 0,
+            max: 16000,
+            left: 20,
+            bottom: 20,
+            text: ["高", "低"],
+            textStyle: {
+              color: "#595959",
+            },
+            calculable: true,
+            inRange: {
+              color: [
+                "#b8d4f3",
+                "#9ac8f0",
+                "#7cbced",
+                "#5eb0ea",
+                "#40a9ff",
+                "#347cdc",
+              ],
+            },
+            pieces: [
+              { min: 12000, label: "> 12000", color: "#347cdc" },
+              {
+                min: 9000,
+                max: 12000,
+                label: "9000 - 12000",
+                color: "#40a9ff",
+              },
+              { min: 6000, max: 9000, label: "6000 - 9000", color: "#5eb0ea" },
+              { min: 3000, max: 6000, label: "3000 - 6000", color: "#7cbced" },
+              { max: 3000, label: "< 3000", color: "#b8d4f3" },
+            ],
+            outOfRange: {
+              color: "#d9d9d9",
+            },
+          },
+          geo: {
+            map: mapName,
+            roam: true,
+            zoom: 1.1,
+            label: {
+              show: true,
+              color: "#262626",
+              fontSize: 11,
+            },
+            itemStyle: {
+              areaColor: "#f5f5f5",
+              borderColor: "#d9d9d9",
+              borderWidth: 1,
+            },
+            emphasis: {
+              label: {
+                show: true,
+                color: "#1890ff",
+                fontSize: 12,
+                fontWeight: 500,
+              },
+              itemStyle: {
+                areaColor: "#e6f7ff",
+                borderColor: "#1890ff",
+                borderWidth: 1,
+              },
+            },
+          },
+          series: [
+            {
+              name: "数据分布",
+              type: "map",
+              geoIndex: 0,
+              data: data,
+              emphasis: {
+                itemStyle: {
+                  areaColor: "#bae7ff",
+                  borderColor: "#1890ff",
+                  borderWidth: 1,
+                },
+              },
+            },
+          ],
+          animationDuration: 600,
+          animationEasing: "cubicOut",
+        };
+
+        myChart.setOption(option, true);
+      }
+
+      function updateSidebar(data, label, count) {
+        const listContainer = document.getElementById("region-list");
+        document.getElementById("stat-label").textContent = label;
+
+        const sortedData = [...data]
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 15);
+
+        listContainer.innerHTML = sortedData
+          .map(
+            (item, index) => `<div class="list-item" data-name="${item.name}">
+                    <div class="list-item-name">
+                        <span class="rank-num ${index < 3 ? "top" : ""}">${
+              index + 1
+            }</span>
+                        ${item.name}
+                    </div>
+                    <div class="list-item-value">${item.value.toLocaleString()}</div>
+                </div>`,
+          )
+          .join("");
+
+        listContainer.querySelectorAll(".list-item").forEach((item) => {
+          item.addEventListener("click", function () {
+            const name = this.dataset.name;
+            handleRegionClick(name);
+          });
+        });
+      }
+
+      function handleRegionClick(name) {
+        if (currentLevel === 0) {
+          loadProvinceMap(name);
+        } else if (currentLevel === 1) {
+          const currentMap = history[history.length - 1];
+          loadCityMap(name, currentMap.name);
+        } else {
+          myChart.dispatchAction({
+            type: "highlight",
+            name: name,
+          });
+          setTimeout(() => {
+            myChart.dispatchAction({
+              type: "downplay",
+              name: name,
+            });
+          }, 2000);
+        }
+      }
+
+      function updateStats(values, count, label) {
+        document.getElementById("stat-label").textContent = label;
+        const total = values.reduce((a, b) => a + b, 0);
+        const avg = Math.floor(total / values.length);
+        const max = Math.max(...values);
+        const min = Math.min(...values);
+
+        animateNumber("stat-count", count);
+        animateNumber("stat-avg", avg);
+        animateNumber("stat-max", max);
+        animateNumber("stat-min", min);
+      }
+
+      function animateNumber(id, target) {
+        const element = document.getElementById(id);
+        const start = parseInt(element.textContent.replace(/,/g, "")) || 0;
+        const duration = 600;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(start + (target - start) * easeProgress);
+
+          element.textContent = current.toLocaleString();
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      function updateBreadcrumb(items) {
+        const breadcrumb = document.getElementById("breadcrumb");
+        let html = "";
+
+        items.forEach((item, index) => {
+          if (index > 0) {
+            html += '<span class="breadcrumb-separator">/</span>';
+          }
+          const isActive = index === items.length - 1;
+          html += `<span class="breadcrumb-item ${
+            isActive ? "active" : ""
+          }" data-level="${index}">${item}</span>`;
+        });
+
+        breadcrumb.innerHTML = html;
+
+        breadcrumb
+          .querySelectorAll(".breadcrumb-item")
+          .forEach((item, index) => {
+            item.addEventListener("click", function () {
+              navigateToLevel(index);
+            });
+          });
+      }
+
+      function navigateToLevel(level) {
+        if (level >= history.length) return;
+
+        if (level === 0) {
+          resetToChina();
+        } else {
+          const target = history[level];
+          history = history.slice(0, level + 1);
+          currentLevel = level;
+
+          renderMap(
+            target.name,
+            target.data,
+            `${target.title} - ${level === 1 ? "市级" : "区级"}数据`,
+          );
+          updateSidebar(
+            target.data,
+            level === 1 ? "市级行政区" : "区级行政区",
+            target.data.length,
+          );
+          updateStats(
+            target.data.map((d) => d.value),
+            target.data.length,
+            level === 1 ? "市级行政区" : "区级行政区",
+          );
+
+          const breadcrumbItems = history.map((h) => h.title);
+          updateBreadcrumb(breadcrumbItems);
+
+          if (level === 0) {
+            document.getElementById("btn-reset").disabled = true;
+          }
+        }
+      }
+
+      function resetToChina() {
+        currentLevel = 0;
+        history = [history[0]];
+
+        const data = mapData["china"];
+        renderMap("china", data, "全国数据分布");
+        updateSidebar(data, "省级行政区", 34);
+        updateStats(
+          data.map((d) => d.value),
+          34,
+          "省级行政区",
+        );
+        updateBreadcrumb(["全国"]);
+
+        document.getElementById("btn-reset").disabled = true;
+      }
+
+      function goBack() {
+        if (history.length <= 1) return;
+        navigateToLevel(history.length - 2);
+      }
+
+      function refreshData() {
+        const current = history[history.length - 1];
+        const count = current.data.length;
+        const names = current.data.map((d) => d.name);
+        const { data, values } = generateData(count, names);
+
+        mapData[current.name] = data;
+        current.data = data;
+
+        const levelText =
+          currentLevel === 0 ? "全国" : currentLevel === 1 ? "市级" : "区级";
+        renderMap(current.name, data, `${current.title} - ${levelText}数据`);
+        updateSidebar(data, levelText + "行政区", count);
+        updateStats(values, count, levelText + "行政区");
+      }
+
+      myChart.on("click", function (params) {
+        if (params.name && params.name !== "南海诸岛") {
+          handleRegionClick(params.name);
+        }
+      });
+
+      document.getElementById("btn-reset").addEventListener("click", goBack);
+      document
+        .getElementById("btn-refresh")
+        .addEventListener("click", refreshData);
+
+      window.addEventListener("resize", function () {
+        myChart.resize();
+      });
+
+      loadChinaMap();
+    </script>
+  </body>
+</html>
