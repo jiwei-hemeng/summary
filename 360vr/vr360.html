@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Three.js 全景图</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      // 创建场景、相机、渲染器
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      document.body.appendChild(renderer.domElement);
+
+      // 加载单张全景图
+      const textureLoader = new THREE.TextureLoader();
+      const panoramaTexture = textureLoader.load(
+        "https://threejs.org/examples/textures/2294472375_24a3b8ef46_o.jpg",
+      );
+
+      // 创建球体几何体
+      const geometry = new THREE.SphereGeometry(500, 60, 40);
+      geometry.scale(-1, 1, 1); // 反转球体，让贴图显示在内侧
+
+      // 创建材质
+      const material = new THREE.MeshBasicMaterial({
+        map: panoramaTexture,
+      });
+
+      // 创建球体网格
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      // 相机位置
+      camera.position.set(0, 0, 0.1);
+
+      // 控制器
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.rotateSpeed = 0.5;
+      controls.enableZoom = true;
+      controls.enablePan = false;
+
+      // 限制垂直旋转角度（可选）
+      controls.minPolarAngle = 0; // 弧度
+      controls.maxPolarAngle = Math.PI; // 弧度
+
+      // 响应式
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // 全屏功能
+      document.addEventListener("dblclick", () => {
+        if (!document.fullscreenElement) {
+          renderer.domElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      });
+
+      // 动画循环
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
