@@ -399,21 +399,6 @@ showName('fatfish')
 + 模块依赖关系管理
 + 减少网络请求
 
-### import maps 兜底映射
-
-```json
-{
-  "imports": {
-    "jquery": [
-      "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js",
-      "/node_modules/jquery/dist/jquery.js"
-    ]
-  }
-}
-```
-
-先加载CDN的资源，如果挂了，就加载本地node_modules里的资源（回退策略只会生效一次，之后便会缓存所有的功能）。
-
 ## ESM 和 CommonJS
 
 ### 相同点
