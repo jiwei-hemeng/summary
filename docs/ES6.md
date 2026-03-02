@@ -599,6 +599,25 @@ const peopleGroup = Object.groupBy(people, person => person.age);
 console.log("peopleGroup", peopleGroup);
 ```
 
+兼容写法
+
+```js
+// 使用 reduce 进行分组
+const result = data.reduce((acc, item) => {
+    const { type, stake } = item;
+
+    // 初始化该 type 数组
+    if (!acc[type]) {
+        acc[type] = [];
+    }
+
+    // 添加当前项到对应的 type 数组
+    acc[type].push({ type, stake });
+
+    return acc;
+}, {});
+```
+
 ## JS 中 Map 和 WeakMap 有什么区别
 
 + Map和WeakMap最大的区别是它们的**键类型限制**。Map对象可以使用任何类型的值作为键，包括基本数据类型和对象类型，而WeakMap对象的键必须是对象类型。这是因为WeakMap使用对象的引用作为键，并且只有对象才有引用。如果尝试使用基本数据类型作为WeakMap的键，会导致TypeError异常。
