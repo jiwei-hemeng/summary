@@ -175,6 +175,17 @@ const articleTitle = "Demystifying JSDoc";
 const meaningOfLife = 42;
 ```
 
+## 可选参数
+
+```js
+/**  
+ * demo * @param {string} a  
+ * @param {string} b  
+ * @param {boolean} [c=false]  
+ */  
+function foo(a, b, c) {}
+```
+
 ## 有用的链接
 
 ```js
