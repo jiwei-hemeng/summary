@@ -179,7 +179,8 @@ const meaningOfLife = 42;
 
 ```js
 /**  
- * demo * @param {string} a  
+ * demo
+ * @param {string} a  
  * @param {string} b  
  * @param {boolean} [c=false]  
  */  
