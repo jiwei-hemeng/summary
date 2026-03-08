@@ -76,7 +76,7 @@ axios.interceptors.response.use(
     if (error.code === 401) {
       // 清楚token 重新登陆
     }
-  }
+  },
 );
 ```
 
@@ -210,7 +210,7 @@ fetch("/avatars", {
 
 ```js
 let blob = await new Promise((resolve) =>
-  canvasElem.toBlob(resolve, "image/png")
+  canvasElem.toBlob(resolve, "image/png"),
 );
 let response = await fetch("/article/fetch/post/image", {
   method: "POST",
@@ -289,7 +289,7 @@ fetch("http://localhost:3000/ubuntu-18.04.2-desktop-amd64.iso").then(
     }
     // 最后合成的文件对象
     const blob = chunkFileToFile(chunkFile);
-  }
+  },
 );
 ```
 
@@ -316,6 +316,112 @@ const myBlob2 = await response1.json();
 2. fetch 默认不会带 cookie，需要添加配置项： fetch(url, {credentials: 'include'})
 3. fetch 不支持 abort，不支持超时控制，使用 setTimeout 及 Promise.reject 的实现的超时控制并不能阻止请求过程继续在后台运行，造成了流量的浪费
 4. fetch 没有办法原生监测请求的进度，而 XHR 可以
+
+**封装一个完整的 Fetch 工具库**
+
+```js
+class HttpError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.name = "HttpError";
+    this.status = status;
+  }
+}
+
+class HttpClient {
+  constructor(baseURL = "") {
+    this.baseURL = baseURL;
+    this.defaultOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+  }
+  async request(endpoint, options = {}) {
+    const url = this.baseURL + endpoint;
+    const config = {
+      ...this.defaultOptions,
+      ...options,
+      headers: {
+        ...this.defaultOptions.headers,
+        ...options.headers,
+      },
+    };
+    const response = await fetch(url, config); // 处理 HTTP 错误
+    if (!response.ok) {
+      let errorMessage = `HTTP ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // 如果响应不是 JSON，使用状态文本
+        errorMessage = response.statusText || errorMessage;
+      }
+      throw new HttpError(response.status, errorMessage);
+    } // 根据 Content-Type 处理响应
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      return await response.json();
+    }
+    if (contentType?.includes("text/")) {
+      return await response.text();
+    } // 默认为 Blob（适合文件下载）
+    return await response.blob();
+  } // 便捷方法
+  get(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: "GET" });
+  }
+  post(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+  put(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+  delete(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: "DELETE" });
+  } // 文件上传
+  upload(endpoint, file, fieldName = "file", options = {}) {
+    const formData = new FormData();
+    formData.append(fieldName, file);
+    return this.request(endpoint, {
+      ...options,
+      method: "POST",
+      headers: {
+        // 不要设置 Content-Type，浏览器会自动设置
+      },
+      body: formData,
+    });
+  }
+}
+
+// 创建实例
+export const http = new HttpClient("/api");
+
+// 使用示例
+import { http } from "@/utils/http";
+
+// GET 请求
+const user = await http.get(`/users/${userId}`);
+
+// POST 请求
+const newPost = await http.post("/posts", {
+  title: "Hello",
+  content: "World",
+});
+
+// 文件上传
+const fileInput = document.querySelector('input[type="file"]');
+const result = await http.upload("/upload", fileInput.files[0]);
+```
 
 ### https 和 http 的区别主要如下：
 
@@ -359,7 +465,6 @@ const myBlob2 = await response1.json();
 ### Jsonp 的原理和特点是什么
 
 - 原理
-
   - script 标签的 src 属性引进来的 javaScript 文件不受跨域的影响
 
 - 实现
@@ -383,7 +488,6 @@ const myBlob2 = await response1.json();
   ```
 
 - 特点
-
   - 只能发送 get 请求
   - 需要后台配合
 
@@ -468,7 +572,7 @@ service.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // 响应拦截器
@@ -492,7 +596,7 @@ service.interceptors.response.use(
     const message = error.response?.data?.message || "请求失败";
     ElMessage.error(message);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default service;
