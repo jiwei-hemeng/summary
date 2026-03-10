@@ -14,12 +14,20 @@ const peer = new PeerConnection();
 ```js
 // 1. 创建 offer
 let offer = await peerA.createOffer()
-await peerB.setRemoteDescription(offer)
-// 2. 创建B端创建 answer
-let answer = await peerB.createAnswer()
-await peerB.setLocalDescription(answer)
-// 3. 发送端设置 sdp
+
+// A必须先设置自己的本地描述（offer）
 await peerA.setLocalDescription(offer)
+
+// 2. B端接收 offer 并设置为远程描述
+await peerB.setRemoteDescription(offer)
+
+// 3. 创建B端创建 answer
+let answer = await peerB.createAnswer()
+
+// ：B设置本地描述（answer）
+await peerB.setLocalDescription(answer)
+
+// 4. 发送端（A端）设置远程描述（answer）
 await peerA.setRemoteDescription(answer)
 ```
 
