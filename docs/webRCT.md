@@ -193,3 +193,34 @@ peerConnection.ondatachannel = (event) => {
     };
 };
 ```
+
+数据发送方法
+
+```js
+// 发送文本
+dataChannel.send("Hello World");
+
+// 发送 JSON 对象
+dataChannel.send(JSON.stringify({type: "message", content: "hi"}));
+
+// 发送二进制数据
+const buffer = new ArrayBuffer(8);
+const view = new Uint8Array(buffer);
+view[0] = 255;
+dataChannel.send(buffer);
+
+// 发送 Blob
+const blob = new Blob(["Hello"], {type: "text/plain"});
+dataChannel.send(blob);
+
+// 发送文件（分片）
+const file = fileInput.files[0];
+const chunkSize = 16384; // 16KB
+let offset = 0;
+
+while (offset < file.size) {
+    const chunk = file.slice(offset, offset + chunkSize);
+    dataChannel.send(chunk);
+    offset += chunkSize;
+}
+```
