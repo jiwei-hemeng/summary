@@ -47,10 +47,26 @@ xhr.onreadystatechange = function () {
         console.log(res);
     }
 }
-// 上传文件进度触发事件
-xhr.upload.onprogress = function(e) { ... };
+//  监听上传进度
+xhr.upload.onprogress = function(e) {
+  if (e.lengthComputable) {
+    const percentComplete = (e.loaded / e.total) * 100;
+    console.log(`上传进度: ${percentComplete.toFixed(2)}%`);
+    console.log(`已上传: ${e.loaded} 字节`);
+    console.log(`总大小: ${e.total} 字节`);
+  }
+};
 // 文件上传成功时触发的事件
 xhr.upload.onLoad = function(e) {}
+// xhr.onprogress - 监听下载进度
+xhr.onprogress = function(e) {
+  if (e.lengthComputable) {
+    const percentComplete = (e.loaded / e.total) * 100;
+    console.log(`下载进度: ${percentComplete.toFixed(2)}%`);
+    console.log(`已下载: ${e.loaded} 字节`);
+    console.log(`总大小: ${e.total} 字节`);
+  }
+};
 ```
 
 ### axios 的拦截器
