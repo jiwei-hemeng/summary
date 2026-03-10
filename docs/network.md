@@ -329,17 +329,41 @@ class HttpError extends Error {
 }
 
 class HttpClient {
-  constructor(baseURL = "") {
+  constructor(baseURL = "", options = {}) {
     this.baseURL = baseURL;
+    this.token = options.token || null; // 全局 token
+    this.timeout = options.timeout || 10000; // 默认 10 秒超时
+
     this.defaultOptions = {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     };
+
+    // 如果有全局 token，自动加入默认头
+    if (this.token) {
+      this.defaultOptions.headers.Authorization = `Bearer ${this.token}`;
+    }
   }
+
+  // 设置或更新 token
+  setToken(token) {
+    this.token = token;
+    this.defaultOptions.headers.Authorization = token
+      ? `Bearer ${token}`
+      : undefined;
+  }
+
+  // 设置超时时间（毫秒）
+  setTimeout(timeout) {
+    this.timeout = timeout;
+  }
+
   async request(endpoint, options = {}) {
     const url = this.baseURL + endpoint;
+
+    // 合并配置
     const config = {
       ...this.defaultOptions,
       ...options,
@@ -348,30 +372,59 @@ class HttpClient {
         ...options.headers,
       },
     };
-    const response = await fetch(url, config); // 处理 HTTP 错误
-    if (!response.ok) {
-      let errorMessage = `HTTP ${response.status}`;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch {
-        // 如果响应不是 JSON，使用状态文本
-        errorMessage = response.statusText || errorMessage;
+
+    // 创建 AbortController 用于超时控制
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      options.timeout || this.timeout
+    );
+
+    try {
+      const response = await fetch(url, {
+        ...config,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId); // 清除定时器
+
+      if (!response.ok) {
+        let errorMessage = `HTTP ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new HttpError(response.status, errorMessage);
       }
-      throw new HttpError(response.status, errorMessage);
-    } // 根据 Content-Type 处理响应
-    const contentType = response.headers.get("content-type");
-    if (contentType?.includes("application/json")) {
-      return await response.json();
+
+      // 根据 Content-Type 处理响应
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        return await response.json();
+      }
+      if (contentType?.includes("text/")) {
+        return await response.text();
+      }
+      return await response.blob(); // 默认返回 Blob
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      if (error.name === "AbortError") {
+        throw new HttpError(408, "Request timeout");
+      }
+
+      // 重新抛出其他错误（如网络错误、HttpError 等）
+      throw error;
     }
-    if (contentType?.includes("text/")) {
-      return await response.text();
-    } // 默认为 Blob（适合文件下载）
-    return await response.blob();
-  } // 便捷方法
+  }
+
+  // 便捷方法
   get(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: "GET" });
   }
+
   post(endpoint, data, options = {}) {
     return this.request(endpoint, {
       ...options,
@@ -379,6 +432,7 @@ class HttpClient {
       body: JSON.stringify(data),
     });
   }
+
   put(endpoint, data, options = {}) {
     return this.request(endpoint, {
       ...options,
@@ -386,25 +440,35 @@ class HttpClient {
       body: JSON.stringify(data),
     });
   }
+
   delete(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: "DELETE" });
-  } // 文件上传
+  }
+
+  // 文件上传（注意：FormData 会自动设置 Content-Type，不要手动设置）
   upload(endpoint, file, fieldName = "file", options = {}) {
     const formData = new FormData();
     formData.append(fieldName, file);
+
     return this.request(endpoint, {
       ...options,
       method: "POST",
       headers: {
-        // 不要设置 Content-Type，浏览器会自动设置
+        // 不要设置 Content-Type，浏览器会自动设置 multipart/form-data
+        ...options.headers,
       },
       body: formData,
     });
   }
 }
 
+
 // 创建实例
-export const http = new HttpClient("/api");
+export const http = new HttpClient("/api/", {
+  token: "e8fb6114-32bf-432a-b815-b027506b6ed1",
+  timeout: 5000, // 5秒超时
+});
+
 
 // 使用示例
 import { http } from "@/utils/http";
