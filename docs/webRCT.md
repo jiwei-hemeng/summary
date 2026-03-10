@@ -28,15 +28,23 @@ await peerA.setRemoteDescription(answer)
 ### A 端 (发起端)
 
 ```js
-// peerA 端C自nS
+// peerA 端
+let peerA = new RTCPeerConnection(configuration);
+
+// 创建 offer
 let offer = await peerA.createOffer();
-// 向 peerB 传输 offer
+
+// ✅ 立即设置本地描述
+await peerA.setLocalDescription(offer);
+
+// 发送 offer 给 peerB
 socketA.send({ type: "offer", data: offer });
+
+// 监听 answer
 socketA.onmessage = async (evt) => {
   let { type, data } = evt.data;
   if (type == "answer") {
-    // 接收 peerB 传来的 answer
-    await peerA.setLocalDescription(offer);
+    // 收到 answer，设置为远程描述
     await peerA.setRemoteDescription(data);
   }
 };
