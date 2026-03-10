@@ -147,7 +147,7 @@ const dataChannel = peerConnection.createDataChannel("myChannel", {
 // 设置 DataChannel 事件监听
 dataChannel.onopen = () => {
     console.log("DataChannel 已打开");
-    sendData(); // 可以发送数据了
+    dataChannel.send("发送的消息"); // 可以发送数据了
 };
 
 dataChannel.onclose = () => {
