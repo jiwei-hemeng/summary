@@ -126,3 +126,70 @@ socket.onmessage = (e) => {
 };
 ```
 
+## WebRTC createDataChannel 使用总结
+
+创建 DataChannel（发起端）
+
+```js
+// 创建 RTCPeerConnection 实例
+const peerConnection = new RTCPeerConnection(configuration);
+
+// 创建 DataChannel（必须在发起 offer 前创建）
+const dataChannel = peerConnection.createDataChannel("myChannel", {
+    ordered: true,           // 是否保证有序到达
+    maxPacketLifeTime: 3000, // 最大传输时间（毫秒）
+    maxRetransmits: 5,       // 最大重传次数
+    protocol: "my-protocol",  // 自定义协议
+    negotiated: false,       // 是否使用预先协商的ID
+    id: 0                    // 当 negotiated:true 时指定的ID
+});
+
+// 设置 DataChannel 事件监听
+dataChannel.onopen = () => {
+    console.log("DataChannel 已打开");
+    sendData(); // 可以发送数据了
+};
+
+dataChannel.onclose = () => {
+    console.log("DataChannel 已关闭");
+};
+
+dataChannel.onerror = (error) => {
+    console.error("DataChannel 错误:", error);
+};
+
+dataChannel.onmessage = (event) => {
+    console.log("收到消息:", event.data);
+};
+
+// 然后创建并发送 offer
+const offer = await peerConnection.createOffer();
+await peerConnection.setLocalDescription(offer);
+```
+
+接收端处理（响应端）
+
+```js
+// 响应端监听 datachannel 事件
+peerConnection.ondatachannel = (event) => {
+    const receiveChannel = event.channel;
+    
+    receiveChannel.onopen = () => {
+        console.log("接收通道已打开");
+    };
+    
+    receiveChannel.onclose = () => {
+        console.log("接收通道已关闭");
+    };
+    
+    receiveChannel.onerror = (error) => {
+        console.error("接收通道错误:", error);
+    };
+    
+    receiveChannel.onmessage = (event) => {
+        console.log("收到消息:", event.data);
+        // 可以回复消息
+        receiveChannel.send("收到！");
+    };
+};
+```
