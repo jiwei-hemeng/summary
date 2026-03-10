@@ -451,6 +451,38 @@ const fingerprint = hashFingerprint(dataUrl);
 
 console.log("你的Canvas指纹是：", fingerprint);
 ```
+### input 事件输入中文会频繁触发  怎么解决
+
+```js
+let composing = false;
+input.addEventListener("input", function (e) {
+  if (e.isComposing || e.target.composing) {
+    return; // 还在输入法状态，忽略
+  }
+  this.dispatchEvent(
+    new CustomEvent("on-search", {
+      detail: e.target.value,
+    })
+  );
+});
+
+input.addEventListener("compositionstart", function () {
+  composing = true;
+});
+
+input.addEventListener("compositionend", function (e) {
+  composing = false;
+  this.dispatchEvent(
+    new CustomEvent("on-search", {
+      detail: e.target.value,
+    })
+  );
+});
+input.addEventListener("on-search", function (e) {
+  console.log("############", e.target.value);
+});
+
+```
 
 ### Intl API：原生国际化 API
 
