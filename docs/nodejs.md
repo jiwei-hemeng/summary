@@ -1481,3 +1481,30 @@ async function transferFunds(fromId, toId, amount) {
 node --max-old-space-size=4096 your-app.js
 ```
 
+## 可写流（Writable Stream）
+
+```js
+const fs = require('fs');
+
+// 创建一个写入流
+const writeStream = fs.createWriteStream('./output.txt', { encoding: 'utf8' });
+
+// 写入数据（可多次调用）
+writeStream.write('Hello, ');
+writeStream.write('World!\n');
+writeStream.write('This is a new line.\n');
+
+// 结束写入（必须调用）
+writeStream.end();
+
+// 监听写入完成事件
+writeStream.on('finish', () => {
+  console.log('文件写入完成');
+});
+
+// 监听错误事件
+writeStream.on('error', (err) => {
+  console.error('写入失败:', err);
+});
+```
+
