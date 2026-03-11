@@ -330,8 +330,7 @@ const myBlob2 = await response1.json();
 
 1. fetch 只对网络请求报错，对 400，500 都当做成功的请求，服务器返回 400，500 错误码时并不会 reject，只有网络错误这些导致请求不能完成时，fetch 才会被 reject。
 2. fetch 默认不会带 cookie，需要添加配置项： fetch(url, {credentials: 'include'})
-3. fetch 不支持 abort，不支持超时控制，使用 setTimeout 及 Promise.reject 的实现的超时控制并不能阻止请求过程继续在后台运行，造成了流量的浪费
-4. fetch 没有办法原生监测请求的进度，而 XHR 可以
+3. fetch 没有办法原生监测请求的进度，而 XHR 可以
 
 **封装一个完整的 Fetch 工具库**
 
