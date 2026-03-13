@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Three.js 全景图查看器 (优化版)</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      #info {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 8px 16px;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+        pointer-events: none;
+        font-size: 14px;
+        z-index: 100;
+      }
+      #info a {
+        color: #aaccff;
+        pointer-events: auto;
+        text-decoration: none;
+      }
+      #info a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info">
+      🌍 全景图查看器 | 双击进入全屏 | 图片来自
+      <a href="https://threejs.org" target="_blank">Three.js 示例</a>
+    </div>
+
+    <!-- 使用 type="module" 引入 Three.js 核心库和扩展 -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      // 优化点：
+      // 1. 使用 import map 管理依赖，更清晰
+      // 2. 添加加载状态提示和错误处理
+      // 3. 优化球体参数，使用 BackSide 替代手动缩放几何体，语义更明确
+      // 4. 控制器增加一些实用配置
+      // 5. 代码结构微调，提升可读性和维护性
+
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      // --- 初始化场景、相机、渲染器 ---
+      const scene = new THREE.Scene();
+      // 可以设置背景色为深灰，在加载过程中或出现缝隙时可见，但最终会被全景图覆盖
+      scene.background = new THREE.Color(0x111122);
+
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+      // 相机置于球心
+      camera.position.set(0, 0, 0.1); // 微小偏移以避免某些渲染器的近平面裁剪问题
+
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 限制最大 pixel ratio 为 2 以提升性能
+      document.body.appendChild(renderer.domElement);
+
+      // --- 控制器配置 ---
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; // 启用惯性
+      controls.dampingFactor = 0.05; // 惯性系数
+      controls.rotateSpeed = 0.8; // 稍微加快旋转速度
+      controls.enableZoom = true; // 允许缩放（实际上是改变相机与球心的距离，但因为我们在球心，所以效果类似拉近拉远，但为了避免穿帮，建议限制距离）
+      controls.enablePan = false; // 禁止平移，保持位于球心
+      controls.zoomSpeed = 0.8;
+
+      // 限制相机不能太靠近球面，避免反转效果或穿帮 (球半径500，相机距离原点距离建议在0到490之间)
+      controls.minDistance = 0.1;
+      controls.maxDistance = 200; // 限制最大距离，避免看到球外或者边缘变形
+
+      // 限制垂直旋转角度 (0 到 PI 表示可以完全上下看，但通常限制一下避免看到球底部接缝，这里保持完整范围)
+      controls.minPolarAngle = 0; // 0度 (朝天)
+      controls.maxPolarAngle = Math.PI; // 180度 (朝地)
+
+      // 允许无限水平旋转
+      controls.enableRotate = true;
+
+      // --- 加载全景图 ---
+      const textureLoader = new THREE.TextureLoader();
+
+      // 显示加载提示（简单起见，通过标题或控制台）
+      console.log("开始加载全景图...");
+
+      // 加载纹理，添加加载完成和错误处理
+      const panoramaTexture = textureLoader.load(
+        "https://threejs.org/examples/textures/2294472375_24a3b8ef46_o.jpg",
+        (texture) => {
+          console.log("全景图加载完成");
+          // 纹理加载完成后，可以执行一些操作，比如去掉加载提示
+          document.body.style.cursor = "default";
+        },
+        (progress) => {
+          // 可选：加载进度
+          // console.log(`加载进度: ${(progress.loaded / progress.total * 100).toFixed(2)}%`);
+        },
+        (error) => {
+          console.error("全景图加载失败", error);
+          // 错误时显示一个简单的颜色或者提示信息，这里不破坏体验，继续使用黑色背景
+          document.body.style.cursor = "default";
+          // 可以创建一个小提示元素显示错误，但为了简洁，只在控制台输出
+          const errorDiv = document.createElement("div");
+          errorDiv.style.position = "absolute";
+          errorDiv.style.top = "50%";
+          errorDiv.style.left = "50%";
+          errorDiv.style.transform = "translate(-50%, -50%)";
+          errorDiv.style.color = "white";
+          errorDiv.style.backgroundColor = "rgba(255,0,0,0.7)";
+          errorDiv.style.padding = "10px 20px";
+          errorDiv.style.borderRadius = "5px";
+          errorDiv.style.zIndex = "200";
+          errorDiv.textContent = "全景图加载失败，请刷新重试";
+          document.body.appendChild(errorDiv);
+        },
+      );
+
+      // 优化点：使用 Side.BackSide 创建球体内表面材质，比 geometry.scale(-1,1,1) 更直观易懂
+      const material = new THREE.MeshBasicMaterial({
+        map: panoramaTexture,
+        side: THREE.BackSide, // 渲染背面（内表面），这是全景图的标准做法
+      });
+
+      // 创建球体：半径500，分段数64x40 已经足够平滑
+      const geometry = new THREE.SphereGeometry(500, 64, 40);
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      // 可选：添加一些微小的星光或者雾效来增加氛围？但全景图本身已经足够，不加额外元素以保持简洁
+
+      // --- 辅助元素（调试时可取消注释）---
+      // 添加坐标轴辅助，便于观察方向，但正式使用时注释掉
+      // const axesHelper = new THREE.AxesHelper(300);
+      // scene.add(axesHelper);
+
+      // --- 事件监听 ---
+      // 窗口大小自适应
+      window.addEventListener("resize", onWindowResize, false);
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      // 双击全屏 (优化：检查是否支持全屏API)
+      document.addEventListener("dblclick", toggleFullscreen);
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          if (renderer.domElement.requestFullscreen) {
+            renderer.domElement.requestFullscreen();
+          } else if (renderer.domElement.webkitRequestFullscreen) {
+            // Safari
+            renderer.domElement.webkitRequestFullscreen();
+          } else if (renderer.domElement.msRequestFullscreen) {
+            // IE/Edge
+            renderer.domElement.msRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+
+      // 可选：防止移动端下拉页面导致偏移，但通常保留默认
+
+      // --- 动画循环 ---
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // 更新控制器（必须）
+        controls.update();
+
+        // 渲染场景
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // 初始隐藏加载光标
+      document.body.style.cursor = "wait";
+      // 如果纹理缓存很快，可能一闪而过，但没关系
+      // 在加载完成回调中恢复光标，但若已缓存，load会立即调用，光标可能不会显示wait，所以添加一个小延迟以确保光标变化可见？
+      // 但这不是大问题，保持简单。
+
+      // 优雅处理移动端手势：OrbitControls 默认支持触摸，无需额外代码
+
+      console.log("初始化完成，享受全景体验！");
+    </script>
+  </body>
+</html>
