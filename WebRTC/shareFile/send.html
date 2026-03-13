@@ -9,10 +9,11 @@
     <input type="file" id="fileInput" />
     <button onclick="sendOffer()">发送文件</button>
     <div id="status"></div>
-
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
       let pc, dc, targetId, selfId;
-      const ws = new WebSocket(`ws://172.20.10.4:8080`);
+      var vConsole = new VConsole();
+      const ws = new WebSocket(`wss://lqrjb4nv-8080.jpe1.devtunnels.ms`);
       const status = document.querySelector("#status");
       function getURLQuery(url) {
         const querySearch = {};
@@ -37,8 +38,12 @@
       async function sendOffer() {
         const file = document.getElementById("fileInput").files[0];
         if (!file) return alert("请选择文件！");
-
-        pc = new RTCPeerConnection();
+        pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            // 使用 Google 的公共 STUN 服务器
+          ],
+        });
         dc = pc.createDataChannel("file");
         const fileReader = new FileReader();
 

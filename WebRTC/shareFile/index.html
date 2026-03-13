@@ -43,7 +43,7 @@
           alert("复制成功");
         }
       };
-      const ws = new WebSocket(`ws://172.20.10.4:8080`);
+      const ws = new WebSocket(`wss://lqrjb4nv-8080.jpe1.devtunnels.ms`);
       let receivedBuffers = [];
       let fileMetadata = null;
       let selfId = null;
@@ -52,7 +52,11 @@
       ws.onmessage = async (e) => {
         const msg = JSON.parse(e.data);
         if (msg.type === "offer") {
-          pc = new RTCPeerConnection();
+          pc = new RTCPeerConnection({
+            iceServers: [
+              { urls: "stun:stun.l.google.com:19302" }, // 使用 Google 的公共 STUN 服务器
+            ],
+          });
           pc.ondatachannel = (e) => {
             const dc = e.channel;
             dc.onmessage = (event) => {
