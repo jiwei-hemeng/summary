@@ -232,6 +232,32 @@ function debounce(fn, wait = 50) {
 }
 ```
 
+requestAnimationFrame 版
+
+```js
+function debounceWithRAF(fn, delayFrames = 1) {
+  let frameId = null;
+  let framesElapsed = 0;
+
+  return function (...args) {
+    const context = this;
+    cancelAnimationFrame(frameId);
+    framesElapsed = 0;
+
+    function tick() {
+      if (++framesElapsed >= delayFrames) {
+        fn.apply(context, args);
+        frameId = null;
+      } else {
+        frameId = requestAnimationFrame(tick);
+      }
+    }
+
+    frameId = requestAnimationFrame(tick);
+  };
+}
+```
+
 **节流**
 
 > [lodash 节流](https://www.lodashjs.com/docs/lodash.throttle#_throttlefunc-wait0-options)
@@ -246,6 +272,30 @@ function throttle(fn, wait = 50) {
         canRun = true;
       }, wait);
       canRun = false;
+    }
+  };
+}
+```
+
+requestAnimationFrame 版
+
+```js
+function throttleWithRAF(fn, delayFrames = 1) {
+  let frameId = null;
+  let framesElapsed = 0;
+  return function () {
+    const context = this;
+    cancelAnimationFrame(frameId);
+    if (framesElapsed === 0) {
+      fn.call(this, ...arguments);
+      framesElapsed++;
+    } else {
+      frameId = requestAnimationFrame(() => {
+        framesElapsed++;
+        if (framesElapsed >= delayFrames) {
+          framesElapsed = 0;
+        }
+      });
     }
   };
 }
