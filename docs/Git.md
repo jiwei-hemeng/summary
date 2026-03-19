@@ -87,8 +87,11 @@ git config core.ignorecase false
 # git 缓存命令
 
 ```shell
-# 保存当前未commit的代码并添加备注
-git stash save "备注的内容"
+git stash save "备注的内容"                    # 保存当前未commit的代码并添加备注（旧）
+git stash push -m "临时修 bug"                 # 添加说明
+git stash push -m "临时修 bug" -- src/         # 只暂存 src 目录
+git stash push -k -m "临时修 bug"              # -k 保留工作目录
+git stash push -u -m "临时修 bug"              # -u 包含未跟踪文件
 # 列出stash的所有记录
 git stash list
 # 删除stash的所有记录
