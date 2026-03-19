@@ -546,14 +546,6 @@ console.log(cnDate, enDate); // 2025年11月5日 13:18:39 November 5, 2025 at 01
 - typeof 可以用此来判断`number`, `string`, `object`, `boolean`, `function`, `undefined` ，但是对于对象、数组、`null` 返回的值是 `object`
 - `instanceof`运算符用于检测构造函数的 `prototype`属性是否出现在某个实例对象的原型链上,返回值为布尔值，用于指示一个变量是否属于某个对象的实例。
 
-### input 事件和 change 事件的区别
-
-input 输入框的 onchange 事件，要在 input 失去焦点的时候才会触发；
-
-在输入框内容变化的时候不会触发 change，当鼠标在其他地方点一下才会触发；
-
-onchange 事件也可用于单选框与复选框改变后触发的事件。
-
 ### js 触屏事件
 
 ```js
@@ -589,12 +581,6 @@ window.addEventListener("touchcancel", (e) => {
 
   - 栈：由编译器自动分配释放，存放函数的参数值，局部变量等
   - 堆：一般由程序员分配释放，若程序员不释放，程序结束可能由操作系统释放
-
-### 如何获取 Dom 元素？
-
-- _document.getElementById(‘id’)_ 通过 id 获取元素
-- _document.querySelect()_ 通过选择器获取元素
-- _document.querrySelectAll()_ 通过选择器获取一类元素，得到伪数组
 
 ### **原生 javascript 的 dom 操作**
 
@@ -1230,26 +1216,6 @@ await install("lodash", { force: true });
 await install("https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js");
 ```
 
-### 原生 js 实现 base64 转 blob 对象
-
-**创建方法**
-
-```js
-function convertBase64UrlToImgFile(urlData, fileName, fileType) {
-  var bytes = window.atob(urlData);
-  var ab = new ArrayBuffer(bytes.length);
-  var ia = new Int8Array(ab);
-  var i;
-  for (i = 0; i < bytes.length; i++) {
-    ia[i] = bytes.charCodeAt(i);
-  }
-  var blob = new Blob([ab], { type: fileType });
-  blob.lastModifiedDate = new Date();
-  blob.name = fileName;
-  return blob;
-}
-```
-
 **调用方法**
 
 ```js
@@ -1431,58 +1397,6 @@ function GetRandomNum(Min, Max) {
 var num = GetRandomNum(1, 10);
 ```
 
-### 获取随机字符串
-
-```js
-var chars = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-];
-
-function generateMixed(n) {
-  var res = "";
-  for (var i = 0; i < n; i++) {
-    var id = Math.ceil(Math.random() * (chars.length - 1));
-    res += chars[id];
-  }
-  return res;
-}
-```
-
 ### 变量提升
 
 > ES6 之前我们一般使用 var 来声明变量，提升简单来说就是把我们所写的类似于 var a = 123;这样的代码，声明提升到它所在作用域的顶端去执行，到我们代码所在的位置来赋值。
@@ -1649,24 +1563,6 @@ sum(1, 2); // 3
 ```
 
 **注意：** 最后一个参数必须是函数体，其余参数作为传递给函数体的参数。
-
-### 触底加载更多原理
-
-```js
-const body = document.body;
-let page = 0;
-function scrollBotton() {
-  // 页面滚动的距离
-  const scrollTop =
-    document.documentElement.scrollTop || document.body.scrollTop;
-  // 页面可视高度 + 页面滚动的出去的高度 + 偏移值 大于 页面dom文档的高度
-  if (window.innerHeight + scrollTop + 200 >= body.scrollHeight) {
-    console.log("触底了");
-    page++;
-  }
-}
-window.addEventListener("scroll", scrollBotton);
-```
 
 ### MutationObserver 详解
 
