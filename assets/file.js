@@ -78,3 +78,25 @@ export function getFileExtension(filename) {
   const match = extRegex.exec(filename);
   return match ? match[1] : "";
 }
+
+/**
+ * 原生 js 实现 base64 转 blob 对象
+ * @param {string} fileName - 文件名
+ * @param {string} urlData - base64 数据
+ * @param {string} fileType - 文件类型
+ * @returns {Blob}
+ */
+
+function convertBase64UrlToImgFile(urlData, fileName, fileType) {
+  var bytes = window.atob(urlData);
+  var ab = new ArrayBuffer(bytes.length);
+  var ia = new Int8Array(ab);
+  var i;
+  for (i = 0; i < bytes.length; i++) {
+    ia[i] = bytes.charCodeAt(i);
+  }
+  var blob = new Blob([ab], { type: fileType });
+  blob.lastModifiedDate = new Date();
+  blob.name = fileName;
+  return blob;
+}
