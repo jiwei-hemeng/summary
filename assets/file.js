@@ -1,15 +1,22 @@
-// @ts-check
-// base64 文件转为file 对象
+/**
+ * 将base64Url字符串转换为File对象
+ * @param {string} base64Url - base64Url字符串
+ * @param {string} filename - 文件名
+ * @returns {File} 转换后的File对象
+ */
 export function base64UrlToFile(base64Url, filename) {
   const arr = base64Url.split(",");
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
+  if (arr instanceof Array && arr.length === 2) {
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   }
-  return new File([u8arr], filename, { type: mime });
+  return null;
 }
 /***
  * 将ArrayBuffer对学校转为blob对象
