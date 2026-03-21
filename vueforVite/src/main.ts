@@ -14,3 +14,4 @@ IndexDB.getIndexDB().then(() => {
   app.use(router);
   app.mount("#app", true);
 });
+console.log("性能模式已开启");

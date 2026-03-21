@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-nocheck
 import Loadding from "@/components/Loadding.vue"
 import { ConfigProvider } from "ant-design-vue"
 import zhCN from "ant-design-vue/es/locale/zh_CN"
@@ -11,7 +10,7 @@ dayjs.locale("zh-cn")
   <ConfigProvider :locale="zhCN">
     <router-view v-slot="{ Component }">
       <template v-if="Component">
-        <transition mode="nested">
+        <transition mode="out-in" name="nested">
           <suspense>
             <template #default>
               <component :is="Component"></component>

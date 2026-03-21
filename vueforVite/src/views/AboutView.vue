@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-ignore
 import { computed } from "vue"
 import { useToken } from "@/stores/useInfo"
 import { Button as Abutton, Space as ASpace, QRCode as AQRCode } from "ant-design-vue"
@@ -23,7 +22,8 @@ function setToken() {
       设置token
     </Abutton>
     <a-space direction="vertical" align="center">
-      <AQRCode :value="url"
+      <AQRCode
+:value="url"
         icon="https://www.antdv.com/assets/logo.1ef800a8.svg" />
     </a-space>
   </div>

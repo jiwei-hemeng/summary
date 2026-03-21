@@ -7,6 +7,7 @@ import gitHash from "./plugins/git-hash";
 import { visualizer } from "rollup-plugin-visualizer";
 import importToCDN from "vite-plugin-cdn-import";
 import VueDevTools from "vite-plugin-vue-devtools";
+import eslint from "vite-plugin-eslint";
 export default ({ mode }) => {
   return {
     base: mode === "production" ? "./" : "./",
@@ -20,7 +21,16 @@ export default ({ mode }) => {
         imports: ["vue", "pinia", "vue-router"],
         dts: "./auto-imports.d.ts"
       }),
-      gitHash()
+      gitHash(),
+      eslint({
+        // 配置选项
+        include: ["src/**/*.js", "src/**/*.vue", "src/**/*.jsx"],
+        exclude: ["node_modules/**", "dist/**"],
+        cache: false, // 开发时建议关闭缓存
+        fix: true, // 自动修复
+        emitWarning: true,
+        emitError: true
+      })
     ],
     optimizeDeps: {
       include: ["vue", "vue-router", "dayjs"],

@@ -46,7 +46,9 @@ const takePhoto = () => {
     image.value.push(imgSrc.value)
   }
 
-  (video.value?.srcObject as any)?.getTracks()[0].stop()
+  if (video.value && video.value.srcObject instanceof MediaStream) {
+    video.value.srcObject.getTracks()[0].stop()
+  }
 }
 </script>
 <template>
@@ -54,12 +56,13 @@ const takePhoto = () => {
     <div class="body">
       <div class="camera">
         <video ref="video"></video>
-        <canvas style="display: none" id="canvasCamera"
-          ref="canvasDom"></canvas>
+        <canvas
+          id="canvasCamera" ref="canvasDom"
+          style="display: none"></canvas>
       </div>
       <div class="img_body">
         <div class="img_content">
-          <div class="image" v-for="(item, index) in image" :key="index">
+          <div v-for="(item, index) in image" :key="index" class="image">
             <img :src="item" alt="" />
           </div>
         </div>

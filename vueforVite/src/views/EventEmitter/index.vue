@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageTop ref="page-top" />
-    <PageBotton @sysLanguageChange="sysLanguageChange" />
+    <PageBotton @sys-language-change="sysLanguageChange" />
   </div>
 </template>
 <script lang="ts">

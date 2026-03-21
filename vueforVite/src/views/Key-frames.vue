@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { ref, useTemplateRef } from "vue"
 let isDevelop = ref(false)
-let reftDom = useTemplateRef<HTMLElement>("reftDom")
+let reftDom = useTemplateRef<HTMLElement | null>("reftDom")
 function developChange() {
   if (!reftDom.value) {
     return
@@ -28,7 +29,7 @@ function leftAnimationend() {
 </script>
 <template>
   <div class="contain">
-    <div class="left" ref="reftDom" @animationend="leftAnimationend">
+    <div ref="reftDom" class="left" @animationend="leftAnimationend">
       <p class="left-contain">左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容左侧内容</p>
     </div>
     <div class="mid sidebar" @click="developChange">
