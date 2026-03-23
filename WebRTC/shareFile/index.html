@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
@@ -43,7 +43,7 @@
           alert("复制成功");
         }
       };
-      const ws = new WebSocket(`wss://lqrjb4nv-8080.jpe1.devtunnels.ms`);
+      const ws = new WebSocket(`/`);
       let receivedBuffers = [];
       let fileMetadata = null;
       let selfId = null;
@@ -137,9 +137,7 @@
         status.textContent = "✅ 接收完成！";
       });
       document.querySelector("#copy-link").addEventListener("click", () => {
-        copyToClipboard(
-          location.origin + "/WebRTC/shareFile/send.html?id=" + selfId,
-        );
+        copyToClipboard(location.origin + "/send.html?id=" + selfId);
       });
     </script>
   </body>
