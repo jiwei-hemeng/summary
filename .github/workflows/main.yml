@@ -21,6 +21,7 @@ jobs:
           source-repo: git@github.com:jiwei-hemeng/summary.git
           # 注意替换为你的 Gitee 目标仓库地址
           destination-repo: git@gitee.com:jiwei-hemeng/summary.git
+          force_push: true  # 👈 添加这一行，启用强制推送
 
 
       
