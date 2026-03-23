@@ -1021,6 +1021,23 @@ let commitFile = child_process.execSync(command).toString();
 console.log("commitFile", commitFile);
 ```
 
+### 基础配置
+
+```js
+// 最简单的用法
+execSync("echo hello");
+
+// 带配置对象
+execSync("echo hello", {
+  cwd: "/path/to/directory",     // 子进程的工作目录
+  env: { ...process.env, MY_VAR: "value" }, // 环境变量
+  encoding: "utf-8",              // 输出编码，默认 'buffer'
+  timeout: 5000,                  // 超时时间（毫秒）
+  maxBuffer: 1024 * 1024 * 10,    // stdout/stderr 最大缓冲（默认 1MB）
+  killSignal: "SIGTERM",          // 超时时发送的信号
+});
+```
+
 ### 查看WiFi密码的神奇脚本
 
 ```js
