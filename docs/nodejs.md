@@ -379,27 +379,14 @@ router.post("/reguser", async (req, res) => {
 
 ## Node.js 文件系统
 
-**实例**
-
- 创建 input.txt 文件，内容如下： 
-
-```txt
-菜鸟教程官网地址：www.runoob.com
-文件读取实例
-```
-
 **读取文件**
 
 ```js
-const fs = require("fs");
+const fs = require('fs/promises');
 exports.readfile = (fileUrl) => {
   return new Promise((resolve, reject) => {
-    fs.readFile(fileUrl, "utf8", function (err, data) {
-      if (err) {
-        console.error(err);
-        return reject(err);
-      }
-      return resolve(data.toString());
+    fs.readFile('./prompts.json', 'utf8').then((data) => {
+      resolve(data)
     });
   });
 };
@@ -408,18 +395,12 @@ exports.readfile = (fileUrl) => {
 **写入文件**
 
 ```js
-const fs = require("fs");
+const fs = require('fs/promises');
 exports.writeFile = (fileUrl, content) => {
   return new Promise((resolve, reject) => {
-    fs.writeFile(fileUrl, JSON.stringify(content), "utf8", function (err) {
-      if (err) {
-        console.error(err);
-        return reject(err);
-      }
-      return resolve({
-        msg: true,
-      });
-    });
+    fs.writeFile(fileUrl, content, 'utf8').then(() => {
+      resolve()
+    })
   });
 };
 ```
@@ -435,9 +416,9 @@ fs.existsSync(path)
 **获取文件信息**
 
 ```js
-const fs = require("fs");
-fs.stat(path, callback)
-fs.stat(path)
+const fs = require("fs/promises");
+const stats = await fs.stat('./prompts.json');
+console.log(stats);
 ```
 
 **删除文件**
