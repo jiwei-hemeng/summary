@@ -385,7 +385,7 @@ router.post("/reguser", async (req, res) => {
 const fs = require('fs/promises');
 exports.readfile = (fileUrl) => {
   return new Promise((resolve, reject) => {
-    fs.readFile('./prompts.json', 'utf8').then((data) => {
+    fs.readFile(fileUrl, 'utf8').then((data) => {
       resolve(data)
     });
   });
@@ -424,9 +424,8 @@ console.log(stats);
 **删除文件**
 
 ```js
-const fs = require("fs");
-fs.unlink(path, callback)
-fs.unlinkSync(path)
+const fs = require("fs/promises");
+await fs.unlink('./prompts.json');
 ```
 
 **建立目录**
