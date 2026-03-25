@@ -1,11 +1,12 @@
 // server.js
 const express = require("express");
 const http = require("http");
+const path = require("path");
 const WebSocket = require("ws");
 let app = express();
 
 const server = http.createServer(app);
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 // WebSocket 信令服务（附加到同一个 HTTP 服务器）
 const wss = new WebSocket.Server({ server });
 const clients = {};
