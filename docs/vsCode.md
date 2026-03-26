@@ -520,3 +520,27 @@
   }
 }
 ```
+
+# 当前项目中vscode 插件建议
+
+创建文件`.vscode/extensions.json`
+
+```json
+{
+  "recommendations": [
+    "MS-CEINTL.vscode-language-pack-zh-hans",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "dbaeumer.vscode-eslint",
+    "ritwickdey.LiveServer",
+    "CJL.pretty-dark-theme",
+    "bierner.lit-html",
+    "techer.open-in-browser",
+    "rohinivsenthil.postcode",
+    "esbenp.prettier-vscode",
+    "Vue.volar",
+    "hediet.vscode-drawio",
+    "PKief.material-icon-theme"
+  ]
+}
+```
