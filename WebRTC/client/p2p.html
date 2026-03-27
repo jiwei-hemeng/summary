@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -79,41 +79,31 @@
         <video id="local-video" muted></video>
         <button class="start-button" onclick="startLive()">start</button>
       </div>
-      <div class="logger"></div>
     </div>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
-      const message = {
-        el: document.querySelector(".logger"),
-        log(msg) {
-          this.el.innerHTML += `<span>${new Date().toLocaleTimeString()}：${msg}</span><br/>`;
-        },
-        error(msg) {
-          this.el.innerHTML += `<span class="error">${new Date().toLocaleTimeString()}：${msg}</span><br/>`;
-        },
-      };
+      var vConsole = new VConsole();
       const target = location.search.slice(6);
       const localVideo = document.querySelector("#local-video");
       const remoteVideo = document.querySelector("#remote-video");
       const button = document.querySelector(".start-button");
       localVideo.onloadeddata = () => {
-        message.log("播放本地视频");
         localVideo.play();
       };
       remoteVideo.onloadeddata = () => {
-        message.log("播放对方视频");
         remoteVideo.play();
       };
       document.title = target === "offer" ? "发起方" : "接收方";
-      message.log("信令通道（WebSocket）创建中......");
+
       const socket = new WebSocket("/");
       socket.onopen = () => {
-        message.log("信令通道创建成功！");
         target === "offer" && (button.style.display = "block");
       };
-      socket.onerror = () => message.error("信令通道创建失败！");
+      socket.onerror = () => {};
       socket.onmessage = (e) => {
         const { type, sdp, iceCandidate } = JSON.parse(e.data);
         if (type === "answer") {
+          console.log("接收 answer", type, sdp);
           peer.setRemoteDescription(new RTCSessionDescription({ type, sdp }));
         } else if (type === "answer_ice") {
           peer.addIceCandidate(iceCandidate);
@@ -127,17 +117,19 @@
         window.RTCPeerConnection ||
         window.mozRTCPeerConnection ||
         window.webkitRTCPeerConnection;
-      !PeerConnection && message.error("浏览器不支持WebRTC！");
-      const peer = new PeerConnection();
+
+      const peer = new PeerConnection({
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" }, // 使用 Google 的公共 STUN 服务器
+        ],
+      });
       peer.ontrack = (e) => {
         if (e && e.streams) {
-          message.log("收到对方音频/视频流数据...");
           remoteVideo.srcObject = e.streams[0];
         }
       };
       peer.onicecandidate = (e) => {
         if (e.candidate) {
-          message.log("搜集并发送候选人");
           socket.send(
             JSON.stringify({
               type: `${target}_ice`,
@@ -145,47 +137,72 @@
             }),
           );
         } else {
-          message.log("候选人收集完成！");
         }
       };
+      // 方案2：更精细的控制（检查降噪级别）
+      async function getOptimizedAudioStream() {
+        // 先检查支持的降噪级别
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevice = devices.find((d) => d.kind === "audioinput");
+
+        // 获取音频轨道能力
+        let stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            deviceId: audioDevice?.deviceId,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
+
+        const audioTrack = stream.getAudioTracks()[0];
+        const capabilities = audioTrack.getCapabilities();
+
+        console.log("音频能力:", {
+          echoCancellation: capabilities.echoCancellation,
+          noiseSuppression: capabilities.noiseSuppression,
+          autoGainControl: capabilities.autoGainControl,
+          channelCount: capabilities.channelCount,
+          sampleRate: capabilities.sampleRate,
+        });
+
+        // 应用约束
+        await audioTrack.applyConstraints({
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: { ideal: 1 },
+          sampleRate: { ideal: 16000 },
+        });
+
+        return stream;
+      }
       async function startLive(offerSdp) {
-        target === "offer" && (button.style.display = "none");
-        let stream;
-        try {
-          message.log("尝试调取本地摄像头/麦克风");
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true,
-          });
-          message.log("摄像头/麦克风获取成功！");
-          localVideo.srcObject = stream;
-        } catch {
-          message.error("摄像头/麦克风获取失败！");
-          return;
+        if (target === "offer") {
+          button.style.display = "none";
         }
-        message.log(
-          `------ WebRTC ${
-            target === "offer" ? "发起方" : "接收方"
-          }流程开始 ------`,
-        );
-        message.log("将媒体轨道添加到轨道集");
+
+        let stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        localVideo.srcObject = stream;
+
         stream.getTracks().forEach((track) => {
           peer.addTrack(track, stream);
         });
         if (!offerSdp) {
-          message.log("创建本地SDP");
+          console.log("创建 offer");
           const offer = await peer.createOffer();
           await peer.setLocalDescription(offer);
-          message.log(`传输发起方本地SDP`);
           socket.send(JSON.stringify(offer));
         } else {
-          message.log("接收到发送方SDP");
+          console.log("接收 offer，创建 answer");
           await peer.setRemoteDescription(offerSdp);
-          message.log("创建接收方（应答）SDP");
           const answer = await peer.createAnswer();
-          message.log(`传输接收方（应答）SDP`);
-          socket.send(JSON.stringify(answer));
           await peer.setLocalDescription(answer);
+          console.log("发送 answer", answer);
+          socket.send(JSON.stringify(answer));
         }
       }
     </script>
