@@ -120,8 +120,19 @@
 
       const peer = new PeerConnection({
         iceServers: [
-          { urls: "stun:stun.l.google.com:19302" }, // 使用 Google 的公共 STUN 服务器
+          { urls: "stun:stun.l.google.com:19302" },
+          {
+            urls: "turn:openrelay.metered.ca:80",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:443",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
         ],
+        iceCandidatePoolSize: 10,
       });
       peer.ontrack = (e) => {
         if (e && e.streams) {
@@ -130,13 +141,15 @@
       };
       peer.onicecandidate = (e) => {
         if (e.candidate) {
-          socket.send(
-            JSON.stringify({
-              type: `${target}_ice`,
-              iceCandidate: e.candidate,
-            }),
-          );
-        } else {
+          if (peer.localDescription) {
+            console.log("发现 ICE 候选:", e.candidate);
+            socket.send(
+              JSON.stringify({
+                type: `${target}_ice`,
+                iceCandidate: e.candidate,
+              }),
+            );
+          }
         }
       };
       // 方案2：更精细的控制（检查降噪级别）
