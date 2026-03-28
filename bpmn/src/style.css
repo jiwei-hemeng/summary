@@ -1,0 +1,15 @@
+.bpmn-container {
+  display: flex;
+  width: 100%;
+  height: calc(100dvh - 30px);
+}
+.canvas {
+  flex: 3;
+  height: 100%;
+}
+.properties-panel {
+  width: 280px;
+  height: 100%;
+  border-left: 1px solid #ccc;
+  overflow-y: auto;
+}
