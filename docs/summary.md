@@ -644,6 +644,14 @@ document.querySelector("ul").addEventListener("click", function (e) {
 });
 ```
 
+### 查询一个元素及其祖先元素是否包含某个类
+
+```js
+const isDragHandle =
+  e.target.classList.contains("drag-handle") ||
+  e.target.closest(".drag-handle");
+```
+
 ### 获取 html 的自定义属性值
 
 ```html
