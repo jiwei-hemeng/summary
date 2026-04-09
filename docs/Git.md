@@ -537,3 +537,33 @@ git tag -d v1.2
 # 到这一步我们只是删除了本地 V1.2的版本,可是线上V1.2的版本还是存在,如何办?这时我们可以推送的空的同名版本到线下,达到删除线上版本的目标:
 git push origin :refs/tags/V1.2
 ```
+
+## Git代码审计
+
+```sh
+不想一条条输命令？把下面整段复制到项目根目录终端，自动输出完整项目体检报告，省心高效：
+echo "====================================="
+echo "1. 代码贡献排名（最近提交最多的人）"
+echo "====================================="
+git log --pretty=format:"%an" | sort | uniq -c | sort -nr | head -15
+
+echo -e "\n====================================="
+echo "2. 最近一年 Bug 最多的文件 TOP20"
+echo "====================================="
+git log -i -E --grep="fix|bug|broken|hotfix" --name-only --format='' | sort | uniq -c | sort -nr | head -20
+
+echo -e "\n====================================="
+echo "3. 变更最频繁的文件 TOP20"
+echo "====================================="
+git log --name-only --format='' | sort | uniq -c | sort -nr | head -20
+
+echo -e "\n====================================="
+echo "4. 项目每月提交量（看活力/衰退）"
+echo "====================================="
+git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c
+
+echo -e "\n====================================="
+echo "5. 最近一年救火记录（回滚/紧急修复）"
+echo "====================================="
+git log --oneline --since="1 year ago" | grep -iE 'revert|hotfix|emergency|rollback'
+```
