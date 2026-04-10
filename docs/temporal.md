@@ -66,3 +66,43 @@ import { Temporal } from "@js-temporal/polyfill";
 // 方式二：全局注入（适合旧项目）
 import "@js-temporal/polyfill/global";
 ```
+
+# 时间日期格式化
+
+```js
+function formatDate(dateTimeStr) {
+  let datatime = null;
+  if (dateTimeStr) {
+    datatime = Temporal.PlainDateTime.from(dateTimeStr);
+  } else {
+    datatime = Temporal.Now.plainDateTimeISO();
+  }
+  const { year, month, day, hour, second, minute } = datatime;
+
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+    2,
+    "0"
+  )} ${String(hour).padStart(2, "0")}:${String(minute).padStart(
+    2,
+    "0"
+  )}:${String(second).padStart(2, "0")}`;
+}
+```
+
+# 获取下月 的起始日期的方案
+
+```js
+const today = Temporal.Now.plainDateISO();
+// 1. 下月第一天（标准 Temporal 写法）
+const nextMonthFirstDay = today
+  .add({ months: 1 })         // 先加 1 个月 → 2026-05-10
+  .with({ day: 1 });          // 把日改成 1 号 → 2026-05-01
+
+// 2. 下月最后一天（标准 Temporal 写法）
+const nextMonthLastDay = nextMonthFirstDay
+  .add({ months: 1 })         // 到下下月第一天 → 2026-06-01
+  .subtract({ days: 1 });     // 减 1 天 → 就是上月最后一天
+
+console.log("下月第一天：", nextMonthFirstDay.toString()); // 2026-05-01
+console.log("下月最后一天：", nextMonthLastDay.toString()); // 2026-05-31
+```
