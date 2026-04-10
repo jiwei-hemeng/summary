@@ -78,6 +78,12 @@ const router = createRouter({
           name: "slideIn",
           component: () => import("@/views/slideIn/index.vue"),
           meta: { requiresAuth: false, title: "滑动式特效" }
+        },
+        {
+          path: "/viewTransition",
+          name: "viewTransition",
+          component: () => import("@/views/viewTransition/index.vue"),
+          meta: { requiresAuth: false, title: "视图过渡效果" }
         }
       ]
     },
