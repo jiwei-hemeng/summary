@@ -1,13 +1,13 @@
 # Temporal 核心对象
 
-| 类型                   | 用途                       |
-| ---------------------- | -------------------------- |
-| Temporal.PlainDate     | 纯日期（无时区）2026-04-06 |
-| Temporal.PlainTime     | 纯日期（无时区）2026-04-06 |
-| Temporal.PlainDateTime | 日期+时间（无时区）        |
-| Temporal.ZonedDateTime | 带时区的完整日期时间       |
-| Temporal.Instant       | 时间戳（精确时刻）         |
-| Temporal.Duration      | 时间段（加减计算）         |
+|          类型          |            用途            |
+| :--------------------: | :------------------------: |
+|   Temporal.PlainDate   | 纯日期（无时区）2026-04-06 |
+|   Temporal.PlainTime   | 纯日期（无时区）2026-04-06 |
+| Temporal.PlainDateTime |    日期+时间（无时区）     |
+| Temporal.ZonedDateTime |    带时区的完整日期时间    |
+|    Temporal.Instant    |     时间戳（精确时刻）     |
+|   Temporal.Duration    |     时间段（加减计算）     |
 
 # 快速上手
 
@@ -81,10 +81,10 @@ function formatDate(dateTimeStr) {
 
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
     2,
-    "0"
+    "0",
   )} ${String(hour).padStart(2, "0")}:${String(minute).padStart(
     2,
-    "0"
+    "0",
   )}:${String(second).padStart(2, "0")}`;
 }
 ```
@@ -95,13 +95,13 @@ function formatDate(dateTimeStr) {
 const today = Temporal.Now.plainDateISO();
 // 1. 下月第一天（标准 Temporal 写法）
 const nextMonthFirstDay = today
-  .add({ months: 1 })         // 先加 1 个月 → 2026-05-10
-  .with({ day: 1 });          // 把日改成 1 号 → 2026-05-01
+  .add({ months: 1 }) // 先加 1 个月 → 2026-05-10
+  .with({ day: 1 }); // 把日改成 1 号 → 2026-05-01
 
 // 2. 下月最后一天（标准 Temporal 写法）
 const nextMonthLastDay = nextMonthFirstDay
-  .add({ months: 1 })         // 到下下月第一天 → 2026-06-01
-  .subtract({ days: 1 });     // 减 1 天 → 就是上月最后一天
+  .add({ months: 1 }) // 到下下月第一天 → 2026-06-01
+  .subtract({ days: 1 }); // 减 1 天 → 就是上月最后一天
 
 console.log("下月第一天：", nextMonthFirstDay.toString()); // 2026-05-01
 console.log("下月最后一天：", nextMonthLastDay.toString()); // 2026-05-31

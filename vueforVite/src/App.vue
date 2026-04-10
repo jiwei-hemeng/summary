@@ -8,12 +8,12 @@ dayjs.locale("zh-cn")
 </script>
 <template>
   <ConfigProvider :locale="zhCN">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component, route }">
       <template v-if="Component">
         <transition mode="out-in" name="nested">
           <suspense>
             <template #default>
-              <component :is="Component"></component>
+              <component :is="Component" :key="route.fullPath"></component>
             </template>
             <template #fallback>
               <Loadding />
