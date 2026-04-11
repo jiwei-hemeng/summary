@@ -77,3 +77,24 @@ for await (const entry of fileHandle.values()) {
   }
 }
 ```
+
+## 如何优雅降级
+
+```js
+async function selectFile() {
+  const { promise, resolve, reject } = Promise.withResolvers();
+  if (window.showOpenFilePicker) {
+    const [fileHandle] = await window.showOpenFilePicker();
+    const file = await fileHandle.getFile();
+    resolve(file);
+  } else {
+    const inputFile = document.createElement("input");
+    inputFile.setAttribute("type", "file");
+    inputFile.addEventListener("change", (e) => {
+      resolve(e.target.files[0]); // 修正这里
+    });
+    inputFile.click();
+  }
+  return promise;
+}
+```
