@@ -1,10 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>web-compenent</title>
+
+    <!-- 添加一些额外的全局样式，美化轮播图内部的内容（非组件强制） -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      /* 卡片容器，让轮播图更美观 */
+      .demo-container {
+        max-width: 1200px;
+        width: 100%;
+        border-radius: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(2px);
+        padding: 1rem;
+      }
+    </style>
   </head>
   <body>
     <!-- <jw-switch default-checked="false"></jw-switch> -->
@@ -13,10 +49,21 @@
       default-value="2025-12-15, 2026-02-01"
       id="jw-calendar"
     ></jw-calendar> -->
-    <jw-component
+    <!-- <jw-component
       age="20"
       items='[{"id":1,"name":"第一项"},{"id":2,"name":"第二项"}]'
-    ></jw-component>
+    >
+      <div slot="header">我是插槽</div>
+    </jw-component> -->
+    <jw-carousel
+      autoPlay
+      interval="1000"
+      style="width: 100%; max-width: 1200px; margin: 0 auto"
+    >
+      <img slot="item" src="https://picsum.photos/1200/450?1" />
+      <img slot="item" src="https://picsum.photos/1200/450?2" />
+      <img slot="item" src="https://picsum.photos/1200/450?3" />
+    </jw-carousel>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
