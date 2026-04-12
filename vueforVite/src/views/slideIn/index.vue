@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div v-slide-in class="item" v-for="(item, index) in 23" :key="item">
-      <img src=""
-        data-src="/images/lazy-load-image.png"
-        alt="图片加载失败" v-lazy-load />
+    <div v-for="(item) in 23" :key="item" v-slide-in class="item">
+      <img
+        v-lazy-load
+        src=""
+        data-src="/images/lazy-load-image.png" alt="图片加载失败" />
     </div>
   </div>
 </template>

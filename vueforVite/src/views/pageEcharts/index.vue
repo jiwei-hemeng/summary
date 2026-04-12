@@ -2,8 +2,8 @@
   <!-- 图表的容器，一定要有宽高 -->
   <div class="Box">
     <div class="pageButton">
-      <div class="pageNev" id="nev" @click="dataClickNev"></div>
-      <div class="pageNext" id="next" @click="dataClickNext"></div>
+      <div id="nev" class="pageNev" @click="dataClickNev"></div>
+      <div id="next" class="pageNext" @click="dataClickNext"></div>
     </div>
     <div class="chartBox">
       <div id="dataChart" :style="{ width: '100%', height: '100%' }"></div>

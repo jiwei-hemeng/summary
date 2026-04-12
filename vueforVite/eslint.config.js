@@ -37,8 +37,14 @@ export default [
       }
     },
     rules: {
-      "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-      "vue/multi-word-component-names": "off"
+      "no-console": process.env.NODE_ENV === "production" ? "off" : "off",
+      "vue/multi-word-component-names": "off",
+      "vue/order-in-components": [
+        "error",
+        {
+          order: ["alphabetical"] // 按字母顺序
+        }
+      ]
     }
   }
 ];
