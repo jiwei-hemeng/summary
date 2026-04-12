@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^8.0.1"
+    "vite": "^8.0.8"
   },
   "dependencies": {
-    "@bpmn-io/properties-panel": "^3.40.5",
+    "@bpmn-io/properties-panel": "^3.40.6",
     "bpmn-js": "^18.14.0",
     "bpmn-js-i18n-zh": "^1.3.0",
     "bpmn-js-properties-panel": "^5.53.0",
