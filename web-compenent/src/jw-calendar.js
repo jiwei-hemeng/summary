@@ -1,17 +1,20 @@
 import JwCompenent from "./jw-compenent";
 class JwCalendar extends JwCompenent {
-  static observedAttributes = ["default-value"];
+  static get observedAttributes() {
+    return ["default-value", "is-disabled-now-before", "is-disabled-now-after"];
+  }
   constructor() {
     super();
     this.today = new Date();
+    this.isDisabledNowBefore = this.hasAttribute("is-disabled-now-before");
+    this.isDisabledNowAfter = this.hasAttribute("is-disabled-now-after");
     this.today.setHours(0, 0, 0, 0);
     this.hoverDate = null; // 鼠标悬停
     this.currentMon = new Date(
       this.today.getFullYear(),
       this.today.getMonth(),
-      1
-    ); // 弹层当前左月
-    this.maxMonth = 12; // 最多显示 12 个月
+      1,
+    );
     this.state = {
       value: "",
       start: null,
@@ -44,7 +47,7 @@ class JwCalendar extends JwCompenent {
     this.dispatchEvent(
       new CustomEvent("change", {
         detail: e,
-      })
+      }),
     );
   }
   dateBarClick(e) {
@@ -59,7 +62,7 @@ class JwCalendar extends JwCompenent {
       this.currentMon = new Date(
         this.today.getFullYear(),
         this.today.getMonth(),
-        1
+        1,
       );
     } else if (
       !this.shadowRoot.querySelector(".modal-wrap").style.display ||
@@ -68,7 +71,7 @@ class JwCalendar extends JwCompenent {
       this.currentMon = new Date(
         this.state.start.getFullYear(),
         this.state.start.getMonth(),
-        1
+        1,
       );
     }
     this.renderCalendar();
@@ -89,7 +92,7 @@ class JwCalendar extends JwCompenent {
     this.shadowRoot
       .querySelector("#calendarBox")
       .appendChild(
-        this.createMonthTable(this.nextMonth(this.currentMon), "second")
+        this.createMonthTable(this.nextMonth(this.currentMon), "second"),
       );
   }
   nextMonth(d) {
@@ -151,11 +154,18 @@ class JwCalendar extends JwCompenent {
     var td = document.createElement("td");
     var time = d.getTime();
     td.textContent = d.getDate();
-    td.dataset.date = this.format(d); // 不可选（今天之前）
-    if (time < this.today.getTime()) {
+    td.dataset.date = this.format(d);
+    // 不可选（今天之前）
+    if (time < this.today.getTime() && this.isDisabledNowBefore) {
       td.classList.add("disabled", "old");
       return td;
-    } // 已选区间
+    }
+    // 不可选（今天之后）
+    if (time > this.today.getTime() && this.isDisabledNowAfter) {
+      td.classList.add("disabled", "old");
+      return td;
+    }
+    // 已选区间
     if (this.state.start && this.state.end) {
       if (time === this.state.start.getTime()) td.classList.add("start");
       else if (time === this.state.end.getTime()) td.classList.add("end");
@@ -215,7 +225,7 @@ class JwCalendar extends JwCompenent {
   updateBar() {
     if (this.state.start && this.state.end) {
       var nights = Math.ceil(
-        (this.state.end - this.state.start) / (1000 * 60 * 60 * 24)
+        (this.state.end - this.state.start) / (1000 * 60 * 60 * 24),
       );
       return nights;
     }
@@ -230,16 +240,8 @@ class JwCalendar extends JwCompenent {
     return n;
   }
   changeMonth(delta) {
-    var newMon = new Date(this.currentMon);
+    const newMon = new Date(this.currentMon);
     newMon.setMonth(newMon.getMonth() + delta);
-    // 控制范围：最早今天所在月，最多后 maxMonth 个月
-    var minMon = new Date(this.today.getFullYear(), this.today.getMonth(), 1);
-    var maxMon = new Date(
-      this.today.getFullYear(),
-      this.today.getMonth() + this.maxMonth,
-      1
-    );
-    if (newMon < minMon || newMon > maxMon) return;
     this.currentMon = newMon;
     this.renderCalendar();
   }
