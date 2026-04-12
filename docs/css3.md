@@ -635,6 +635,7 @@ li {
     margin-left: 100px;
   }
 }
+```
 
 ## 什么是 [aspect-ratio](https://so.csdn.net/so/search?q=aspect&spm=1001.2101.3001.7020)?
 
@@ -647,7 +648,7 @@ aspect-ratio: 16 / 9; // 纵横比为 16:9
 aspect-ratio: 5 / 4; // 纵横比为 5:4
 ```
 
-`"/"` 和后面的高度比可以省略，默认为 `1` ：
+"/"` 和后面的高度比可以省略，默认为 `1` ：
 
 ```css
 aspect-ratio: 4; // 纵横比为 4:1
