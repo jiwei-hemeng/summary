@@ -40,15 +40,10 @@ customElements.define("dialog-element", Dialog);
   当 custom element首次被插入文档DOM时，被调用, 类似于react 组件的`componentDidMount` 生命周期
 
 - disconnectedCallback
-  
 - 当 custom element从文档DOM中删除时，被调用
-  
 - adoptedCallback
-  
 - 当 custom element被移动到新的文档时，被调用
-  
 - attributeChangedCallback
-  
   - 当 custom element增加、删除、修改自身属性时，被调用
 
 ```js
@@ -62,7 +57,7 @@ class Dialog extends HTMLElement {
     this.dialogText = this.getAttribute("dialog-text");
   }
   static get observedAttributes() {
-    return ["dialog-text", "disabled", "className"];
+    return ["dialog-text", "disabled", "class-name"];
   }
   connectedCallback() {
     console.log("dialog element added to page.");
@@ -277,4 +272,117 @@ class MyComponent extends LitElement {
 }
 
 customElements.define("my-component", MyComponent);
+```
+
+## Web组件基类
+
+```js
+import { html, render } from "lit-html";
+import { reactive, isReactive, effect } from "@vue/reactivity";
+export default class JwComponent extends HTMLElement {
+  html = html;
+  _isDisconnected = false;
+  _cleanups = new Set();
+
+  connectedCallback() {
+    if (this.shadowRoot) return;
+
+    this.attachShadow({ mode: "open" });
+    this._initReactiveState();
+    this._setupRenderEffect();
+
+    // 延迟执行 mounted，确保首次渲染完成
+    requestAnimationFrame(() => {
+      if (!this._isDisconnected) {
+        this.mounted?.();
+      }
+    });
+  }
+
+  disconnectedCallback() {
+    this._isDisconnected = true;
+    this.unmounted?.();
+    this._cleanupEffects();
+  }
+
+  _initReactiveState() {
+    // 支持默认状态
+    const defaultState = this.defaultState?.() || {};
+    this.state = reactive({ ...defaultState, ...this.state });
+  }
+
+  _setupRenderEffect() {
+    const stop = effect(() => {
+      if (this._isDisconnected) return;
+
+      console.log(`[${this.tagName}] rendering...`);
+      const content = this.render();
+
+      // 使用 requestAnimationFrame 优化渲染时机
+      requestAnimationFrame(() => {
+        if (!this._isDisconnected && this.shadowRoot) {
+          render(content, this.shadowRoot);
+        }
+      });
+    });
+
+    this._cleanups.add(stop);
+  }
+
+  _cleanupEffects() {
+    this._cleanups.forEach((cleanup) => {
+      try {
+        cleanup();
+      } catch (error) {
+        console.error("Cleanup error:", error);
+      }
+    });
+    this._cleanups.clear();
+  }
+
+  // 工具方法：批量更新状态
+  setState(updates) {
+    Object.assign(this.state, updates);
+  }
+
+  // 工具方法：强制重新渲染
+  forceUpdate() {
+    if (!this._isDisconnected) {
+      const content = this.render();
+      render(content, this.shadowRoot);
+    }
+  }
+}
+```
+
+基本使用
+
+```js
+import JwComponent from "./JwComponent";
+
+class MyCounter extends JwComponent {
+  state = {
+    count: 1,
+  };
+  mounted() {
+    console.log("Component mounted");
+  }
+
+  increment() {
+    this.setState({ count: this.state.count + 1 });
+  }
+
+  render() {
+    return this.html`
+      <div>
+        <h2>Count: ${this.state.count}</h2>
+        <button @click=${() => this.increment()}>
+          Increment
+        </button>
+      </div>
+    `;
+  }
+}
+
+customElements.define("my-counter", MyCounter);
 ```

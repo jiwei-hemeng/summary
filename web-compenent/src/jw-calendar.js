@@ -1,4 +1,4 @@
-import JwCompenent from "./jw-compenent";
+import JwCompenent from "./jw-compenent-plus";
 class JwCalendar extends JwCompenent {
   static get observedAttributes() {
     return ["default-value", "is-disabled-now-before", "is-disabled-now-after"];
