@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CropperJS v2 - 图片裁剪</title>
+    <style>
+      cropper-canvas {
+        width: 600px;
+        height: 400px;
+        border: 1px solid #ddd;
+        background-color: #f5f5f5;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 4px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <cropper-canvas view-mode="1">
+        <!-- 裁剪图片 -->
+        <cropper-image
+          src="https://picsum.photos/800/600"
+          alt="图片"
+          rotatable
+          scalable
+          translatable
+          crossorigin="anonymous"
+        >
+        </cropper-image>
+        <cropper-handle action="select" plain></cropper-handle>
+        <cropper-selection
+          id="cropper-selection"
+          movable
+          resizable
+          outlined
+          initial-coverage="0.5"
+          min-width="50"
+          min-height="50"
+        >
+          <cropper-grid role="grid" covered></cropper-grid>
+          <cropper-crosshair centered></cropper-crosshair>
+          <cropper-handle
+            action="move"
+            theme-color="rgba(255, 255, 255, 0.35)"
+          ></cropper-handle>
+          <cropper-handle action="n-resize"></cropper-handle>
+          <cropper-handle action="e-resize"></cropper-handle>
+          <cropper-handle action="s-resize"></cropper-handle>
+          <cropper-handle action="w-resize"></cropper-handle>
+          <cropper-handle action="ne-resize"></cropper-handle>
+          <cropper-handle action="nw-resize"></cropper-handle>
+          <cropper-handle action="se-resize"></cropper-handle>
+          <cropper-handle action="sw-resize"></cropper-handle>
+        </cropper-selection>
+      </cropper-canvas>
+
+      <button id="cropBtn">裁剪并显示结果</button>
+      <div id="result" class="result"></div>
+    </div>
+
+    <script src="https://unpkg.com/cropperjs@2.0.0-rc.2/dist/cropper.js"></script>
+    <script>
+      // 等待 DOM 加载完成
+      window.addEventListener("load", () => {
+        const selection = document.getElementById("cropper-selection");
+        const cropBtn = document.getElementById("cropBtn");
+        const resultDiv = document.getElementById("result");
+
+        // 监听裁剪框变化事件（可选）
+        selection.addEventListener("crop", (event) => {
+          console.log("裁剪框变化:", {
+            x: event.detail.x,
+            y: event.detail.y,
+            width: event.detail.width,
+            height: event.detail.height,
+          });
+        });
+
+        // 裁剪按钮点击事件
+        cropBtn.addEventListener("click", async () => {
+          try {
+            // 获取裁剪后的 Canvas
+            const canvas = await selection.$toCanvas({
+              width: 300, // 可选：指定输出宽度
+              height: 300, // 可选：指定输出高度
+              fillColor: "transparent", // 填充色
+            });
+
+            console.log("裁剪成功！", canvas);
+            console.log("Canvas 尺寸:", canvas.width, "x", canvas.height);
+
+            // 显示裁剪结果
+            const img = document.createElement("img");
+            img.src = canvas.toDataURL("image/jpeg", 0.9);
+            img.style.maxWidth = "300px";
+            img.style.maxHeight = "300px";
+            img.style.border = "1px solid #ddd";
+            img.style.borderRadius = "4px";
+
+            // 清空之前的结果并添加新图片
+            resultDiv.innerHTML = "<h3>裁剪结果：</h3>";
+            resultDiv.appendChild(img);
+
+            // 可选：转换为 Blob 用于上传
+            canvas.toBlob(
+              (blob) => {
+                console.log("Blob 大小:", blob.size, "bytes");
+                // 这里可以上传到服务器
+                // const formData = new FormData();
+                // formData.append('image', blob, 'cropped.jpg');
+              },
+              "image/jpeg",
+              0.9
+            );
+          } catch (err) {
+            console.error("裁剪失败:", err);
+            resultDiv.innerHTML = `<p style="color:red">裁剪失败: ${err.message}</p>`;
+          }
+        });
+
+        // 可选：监听键盘事件，Delete 键删除裁剪框
+        selection.setAttribute("keyboard", "");
+      });
+    </script>
+  </body>
+</html>
