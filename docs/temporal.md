@@ -70,7 +70,7 @@ import "@js-temporal/polyfill/global";
 # 时间日期格式化
 
 ```js
-function formatDate(dateTimeStr) {
+function formatDateTime(dateTimeStr, format = "YYYY-MM-DD HH:mm:ss") {
   let datatime = null;
   if (dateTimeStr) {
     datatime = Temporal.PlainDateTime.from(dateTimeStr);
@@ -79,13 +79,13 @@ function formatDate(dateTimeStr) {
   }
   const { year, month, day, hour, second, minute } = datatime;
 
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
-    2,
-    "0",
-  )} ${String(hour).padStart(2, "0")}:${String(minute).padStart(
-    2,
-    "0",
-  )}:${String(second).padStart(2, "0")}`;
+  return format
+    .replace("YYYY", year)
+    .replace("MM", String(month).padStart(2, "0"))
+    .replace("DD", String(day).padStart(2, "0"))
+    .replace("HH", String(hour).padStart(2, "0"))
+    .replace("mm", String(minute).padStart(2, "0"))
+    .replace("ss", String(second).padStart(2, "0"));
 }
 ```
 
