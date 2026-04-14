@@ -75,12 +75,60 @@ return { navigate };
 ## 进阶用法：自定义元素匹配
 
 ```html
-<div class="header" data-view-transition-name="header">
-  <h1>首页标题</h1>
-</div>
+<template>
+  <div>
+    <button @click="toggle">切换页面</button>
+    <div
+      class="test-container"
+      :class="{ active: isActive }">
+      {{ isActive ? '页面B' : '页面A' }}
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+const isActive = ref(false)
+function toggle() {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      isActive.value = !isActive.value
+    })
+  } else {
+    isActive.value = !isActive.value
+  }
+}
+</script>
+
+<style>
+.test-container {
+  view-transition-name: test-container;
+  padding: 20px;
+  background: #f0f0f0;
+}
+
+::view-transition-old(test-container),
+::view-transition-new(test-container) {
+  animation-duration: 0.3s;
+}
+
+/* 旧视图：从左边滑出 */
+::view-transition-old(test-container) {
+  animation: slide-out-left 0.3s ease-in-out;
+}
+
+/* 新视图：从右边滑入 */
+::view-transition-new(test-container) {
+  animation: slide-in-right 0.3s ease-in-out;
+}
+</style>
 ```
 
-**关键点：** data-view-transition-name 属性用于标记同一个逻辑元素
+工作原理
+
++ 定义名称：通过 view-transition-name: test-container 标记元素
++ 触发过渡：调用 document.startViewTransition() 改变 DOM
++ 选择状态：浏览器生成伪元素树，::view-transition-old(test-container) 代表旧快照 ::view-transition-new(test-container) 代表新快照
 
 ## 自定义过渡动画
 
