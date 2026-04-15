@@ -76,9 +76,50 @@
       // ======================
 
       // 红色立方体
+      const rightMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff3333,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const leftMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff8833,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const upMaterial = new THREE.MeshStandardMaterial({
+        color: 0x33ff33,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const downMaterial = new THREE.MeshStandardMaterial({
+        color: 0x3399ff,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const frontMaterial = new THREE.MeshStandardMaterial({
+        color: 0xaa66ff,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const backMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffdd44,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      const materials = [
+        rightMaterial, // 右 (红色)
+        leftMaterial, // 左 (橙色)
+        upMaterial, // 上 (绿色)
+        downMaterial, // 下 (蓝色)
+        frontMaterial, // 前 (紫色)
+        backMaterial, // 后 (黄色)
+      ];
       const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-      const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xff5555 });
-      const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      // 六个面使用同一种颜色
+      // const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xff5555 });
+      // const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      // 六个面使用不同的颜色
+      const box = new THREE.Mesh(boxGeometry, materials);
       box.position.set(-2, 0.5, 0);
       box.castShadow = true;
       scene.add(box);
