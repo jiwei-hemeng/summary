@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D 商品展厅</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+    yishi
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      // ======================
+      // 1. 基础三大件：场景、相机、渲染器
+      // ======================
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xeeeeee); // 展厅背景色
+
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+      camera.position.set(0, 3, 8); // 相机站高一点、远一点
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true; // 开启阴影
+      document.body.appendChild(renderer.domElement);
+
+      // ======================
+      // 2. 鼠标控制器
+      // ======================
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; // 平滑拖拽
+      controls.maxPolarAngle = Math.PI / 2; // 不让视角钻到地下
+
+      // ======================
+      // 3. 灯光（展厅必须要亮！）
+      // ======================
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+      // 让展厅变亮 + 让物体产生真实阴影！
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(5, 10, 5);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
+
+      // ======================
+      // 4. 展厅地板
+      // ======================
+      const floorGeometry = new THREE.PlaneGeometry(20, 20);
+      const floorMaterial = new THREE.MeshLambertMaterial({
+        color: 0xcccccc,
+      });
+      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // ======================
+      // 5. 展厅商品（3个展示物体）
+      // ======================
+
+      // 红色立方体
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshLambertMaterial({ color: 0xff5555 });
+      const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      box.position.set(-2, 0.5, 0);
+      box.castShadow = true;
+      scene.add(box);
+
+      // 黄色球体
+      const sphereGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+      const sphereMaterial = new THREE.MeshLambertMaterial({ color: 0xffff55 });
+      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(0, 0.7, 0);
+      sphere.castShadow = true;
+      scene.add(sphere);
+
+      // 蓝色圆柱
+      const cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+      const cylinderMaterial = new THREE.MeshLambertMaterial({
+        color: 0x5555ff,
+      });
+      const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+      cylinder.position.set(2, 1, 0);
+      cylinder.castShadow = true;
+      scene.add(cylinder);
+
+      // ======================
+      // 6. 渲染循环
+      // ======================
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // 窗口自适应
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>
