@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Three.js - 圆柱体柱体与柱面不同颜色</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: "Microsoft YaHei", sans-serif;
+      }
+      #info {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        pointer-events: none;
+        z-index: 10;
+        backdrop-filter: blur(5px);
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      .instruction {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #ccc;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        pointer-events: none;
+        font-family: monospace;
+      }
+      @media (max-width: 600px) {
+        #info {
+          font-size: 10px;
+          top: 10px;
+          left: 10px;
+        }
+        .instruction {
+          font-size: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info">
+      <strong>圆柱体双色效果</strong> | 柱体: 橙色 (顶/底) | 柱面: 蓝色带光泽
+    </div>
+    <div class="instruction">🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放</div>
+
+    <!-- 引入 Three.js 核心库以及扩展库 -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import {
+        CSS2DRenderer,
+        CSS2DObject,
+      } from "three/addons/renderers/CSS2DRenderer.js";
+
+      // --- 初始化场景、透视相机、渲染器 ---
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x111122); // 深色星空背景
+      scene.fog = new THREE.FogExp2(0x111122, 0.008); // 轻微雾效增强景深
+
+      // 透视相机 (视角, 宽高比, 近平面, 远平面)
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+      camera.position.set(5, 4, 6);
+      camera.lookAt(0, 1, 0);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true; // 开启阴影映射，增强立体感
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 柔和阴影
+      renderer.setPixelRatio(window.devicePixelRatio);
+      document.body.appendChild(renderer.domElement);
+
+      // --- 辅助 CSS2 渲染文字标签 (可选，为了更好说明上下部分颜色)
+      const labelRenderer = new CSS2DRenderer();
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
+      labelRenderer.domElement.style.position = "absolute";
+      labelRenderer.domElement.style.top = "0px";
+      labelRenderer.domElement.style.left = "0px";
+      labelRenderer.domElement.style.pointerEvents = "none";
+      document.body.appendChild(labelRenderer.domElement);
+
+      // --- 轨道控制，允许用户交互，更好地观察圆柱体双色效果 ---
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; // 惯性效果
+      controls.dampingFactor = 0.05;
+      controls.rotateSpeed = 1.0;
+      controls.zoomSpeed = 1.2;
+      controls.panSpeed = 0.8;
+      controls.enableZoom = true;
+      controls.enablePan = true;
+      controls.target.set(0, 1, 0);
+
+      // ========== 核心实现：圆柱体柱体（顶面和底面）与柱面不同颜色 ==========
+      // 思路：创建一个圆柱体几何体，但使用多个材质或者分别构建 Mesh。
+      // 方法：由于 THREE.CylinderGeometry 支持为每个面组指定材质索引，更简单的方式是利用 Group 组合：
+      //       1. 创建一个圆柱体侧面（不带顶底）的 Mesh，使用柱面材质。
+      //       2. 创建两个圆形平面作为顶面和底面，使用不同的材质（柱体材质）。
+      // 这样更直观且容易控制颜色，并且阴影和渲染效果自然。
+      // 另一种方法是使用 ExtrudeGeometry，但性能较差。此处采用 Group + 侧面 + 上下盖，简洁且高效。
+
+      const cylinderGroup = new THREE.Group();
+
+      // 定义几何参数
+      const radiusTop = 0.8;
+      const radiusBottom = 0.8;
+      const height = 2.2;
+      const radialSegments = 48; // 高分段保证圆柱面光滑
+
+      // 1. 创建圆柱体的侧面 (使用 CylinderGeometry 并设置 openEnded = true 来排除顶底)
+      // 注意：CylinderGeometry 参数: radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded
+      // openEnded 为 true 时不会生成顶盖和底盖。
+      const sideGeometry = new THREE.CylinderGeometry(
+        radiusTop,
+        radiusBottom,
+        height,
+        radialSegments,
+        32,
+        true,
+      );
+      // 柱面材质: 鲜艳的蓝色，带高光质感
+      const sideMaterial = new THREE.MeshStandardMaterial({
+        color: 0x3a86ff,
+        roughness: 0.35,
+        metalness: 0.7,
+        emissive: 0x001133,
+        emissiveIntensity: 0.15,
+        flatShading: false,
+      });
+      const cylinderSide = new THREE.Mesh(sideGeometry, sideMaterial);
+      cylinderSide.castShadow = true;
+      cylinderSide.receiveShadow = false; // 侧面接收阴影不是必须，但为了性能可关闭
+      cylinderSide.position.y = 0;
+
+      // 2. 创建顶面 (圆形平面，使用柱体材质，颜色为暖橙色)
+      const topCapGeometry = new THREE.CylinderGeometry(
+        radiusTop,
+        radiusTop,
+        0.05,
+        radialSegments,
+      );
+      // 顶面材质: 橙红色，金属感强一点，与侧面区分明显
+      const topMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff6d3a,
+        roughness: 0.3,
+        metalness: 0.4,
+        emissive: 0x442200,
+        emissiveIntensity: 0.1,
+      });
+      const topCap = new THREE.Mesh(topCapGeometry, topMaterial);
+      topCap.position.y = height / 2;
+      topCap.castShadow = true;
+      topCap.receiveShadow = true;
+
+      // 3. 创建底面 (圆形平面，与顶面同材质，保持柱体颜色一致)
+      const bottomCapGeometry = new THREE.CylinderGeometry(
+        radiusBottom,
+        radiusBottom,
+        0.05,
+        radialSegments,
+      );
+      const bottomMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff6d3a,
+        roughness: 0.3,
+        metalness: 0.4,
+        emissive: 0x331a00,
+        emissiveIntensity: 0.08,
+      });
+      const bottomCap = new THREE.Mesh(bottomCapGeometry, bottomMaterial);
+      bottomCap.position.y = -height / 2;
+      bottomCap.castShadow = true;
+      bottomCap.receiveShadow = true;
+
+      // 将所有部件添加到组，并统一设置位置
+      cylinderGroup.add(cylinderSide);
+      cylinderGroup.add(topCap);
+      cylinderGroup.add(bottomCap);
+
+      // 为了增加美观，在顶面和底面边缘增加微小的倒角效果？不必过于复杂，但可以添加一圈细环增强细节（可选）
+      // 可选: 添加一个细环围绕顶部边缘，强化视觉分割
+      const edgeRingGeometry = new THREE.TorusGeometry(
+        radiusTop + 0.02,
+        0.03,
+        32,
+        100,
+      );
+      const ringMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffaa66,
+        metalness: 0.8,
+        roughness: 0.2,
+      });
+      const topRing = new THREE.Mesh(edgeRingGeometry, ringMaterial);
+      topRing.rotation.x = Math.PI / 2;
+      topRing.position.y = height / 2 + 0.02;
+      cylinderGroup.add(topRing);
+
+      const bottomRing = new THREE.Mesh(edgeRingGeometry, ringMaterial);
+      bottomRing.rotation.x = Math.PI / 2;
+      bottomRing.position.y = -height / 2 - 0.02;
+      cylinderGroup.add(bottomRing);
+
+      // 设置圆柱体组的位置 (原示例中 cylinder.position.set(2, 1, 0)，为了突出显示且不遮挡，我们放置在场景中央偏右前)
+      cylinderGroup.position.set(2, 1, 0);
+      cylinderGroup.castShadow = true;
+      cylinderGroup.receiveShadow = false; // 组整体阴影由子物体负责
+
+      // 调整阴影相关，让每个子物体投射阴影更明显
+      cylinderSide.castShadow = true;
+      topCap.castShadow = true;
+      bottomCap.castShadow = true;
+
+      scene.add(cylinderGroup);
+
+      // --- 添加一个简单的辅助地面，以接收阴影并展示圆柱体的立体感 ---
+      const groundPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(8, 8),
+        new THREE.MeshStandardMaterial({
+          color: 0x2c3e50,
+          roughness: 0.6,
+          metalness: 0.1,
+          side: THREE.DoubleSide,
+        }),
+      );
+      groundPlane.rotation.x = -Math.PI / 2;
+      groundPlane.position.y = -1.2;
+      groundPlane.receiveShadow = true;
+      scene.add(groundPlane);
+
+      // 添加一个辅助网格地板，增强空间参考
+      const gridHelper = new THREE.GridHelper(12, 20, 0x88aaff, 0x335588);
+      gridHelper.position.y = -1.15;
+      gridHelper.material.transparent = true;
+      gridHelper.material.opacity = 0.5;
+      scene.add(gridHelper);
+
+      // 简单的地面辅助线框
+      const axesHelper = new THREE.AxesHelper(4);
+      axesHelper.material.transparent = true;
+      axesHelper.material.opacity = 0.2;
+      scene.add(axesHelper);
+
+      // ========== 添加环境光和点光源 + 定向光，让材质颜色充分展现 ==========
+      // 环境光，均匀照亮
+      const ambientLight = new THREE.AmbientLight(0x404060, 0.65);
+      scene.add(ambientLight);
+
+      // 主光源：方向光，产生立体感
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      directionalLight.position.set(3, 5, 2);
+      directionalLight.castShadow = true;
+      directionalLight.receiveShadow = false;
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+      directionalLight.shadow.camera.near = 0.5;
+      directionalLight.shadow.camera.far = 8;
+      directionalLight.shadow.camera.left = -5;
+      directionalLight.shadow.camera.right = 5;
+      directionalLight.shadow.camera.top = 5;
+      directionalLight.shadow.camera.bottom = -5;
+      scene.add(directionalLight);
+
+      // 辅助背光暖色，增强背面轮廓
+      const backLight = new THREE.PointLight(0xffaa66, 0.5);
+      backLight.position.set(-2, 1.5, -3);
+      scene.add(backLight);
+
+      // 冷色填充光从底部打亮底面边缘
+      const fillLight = new THREE.PointLight(0x6688ff, 0.4);
+      fillLight.position.set(1, -1, 2);
+      scene.add(fillLight);
+
+      // 增加一个微弱的点光源围绕圆柱体区域，让柱面高光更漂亮
+      const extraLight = new THREE.PointLight(0x88aaff, 0.3);
+      extraLight.position.set(2, 1.5, 2);
+      scene.add(extraLight);
+
+      // 可选: 在圆柱体旁边添加一个小球体来演示不同材质反光对比（非必须，只是为了增强视觉趣味）
+      const sphereMat = new THREE.MeshStandardMaterial({
+        color: 0xffaa55,
+        metalness: 0.2,
+        roughness: 0.4,
+      });
+      const smallSphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 32, 32),
+        sphereMat,
+      );
+      smallSphere.position.set(-1.2, 0.2, 1.8);
+      smallSphere.castShadow = true;
+      scene.add(smallSphere);
+
+      // 添加一个简单的CSS2D文本标签，说明不同颜色区域
+      function makeLabel(text, color, position) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.style.color = color;
+        div.style.fontSize = "18px";
+        div.style.fontWeight = "bold";
+        div.style.textShadow = "1px 1px 0px black";
+        div.style.background = "rgba(0,0,0,0.6)";
+        div.style.padding = "4px 10px";
+        div.style.borderRadius = "20px";
+        div.style.borderLeft = `3px solid ${color}`;
+        div.style.fontFamily = "sans-serif";
+        div.style.backdropFilter = "blur(4px)";
+        const labelObj = new CSS2DObject(div);
+        labelObj.position.copy(position);
+        scene.add(labelObj);
+      }
+
+      // 在世界坐标中标记顶面(柱体)和柱面区域的位置 (相对圆柱组位置偏移)
+      const groupPos = cylinderGroup.position;
+      makeLabel(
+        "🔴 柱体 (顶面/底面)",
+        "#ff8c42",
+        new THREE.Vector3(groupPos.x, groupPos.y + 1.3, groupPos.z + 0.9),
+      );
+      makeLabel(
+        "🔵 柱面 (侧面)",
+        "#3a86ff",
+        new THREE.Vector3(groupPos.x + 1.2, groupPos.y + 0.2, groupPos.z + 0.8),
+      );
+
+      // 为了展示原示例中的cylinder效果，但已经通过Group实现，且颜色不同，完全满足要求
+      // 额外添加一个对比小提示：在原示例代码基础上改造，展示柱体(顶底)为橙色调，柱面为蓝色调。
+
+      // 添加一个简单的旋转动画? 为了展示效果，可以轻微自动旋转或者保持静态让用户控制。
+      // 为了让视觉更生动，可以让 extraLight 做简单圆周运动，或者让圆柱体自身不动，更利于观察颜色。
+      // 此处选择让辅助光源缓慢移动，创造光影流动感，从而凸显柱面和柱体的材质差异。
+
+      let time = 0;
+
+      // 也可添加一个背景星空粒子效果增加趣味 (简单)
+      const starGeometry = new THREE.BufferGeometry();
+      const starCount = 800;
+      const starPositions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        starPositions[i * 3] = (Math.random() - 0.5) * 200;
+        starPositions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+        starPositions[i * 3 + 2] = (Math.random() - 0.5) * 80 - 40;
+      }
+      starGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(starPositions, 3),
+      );
+      const starMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.08,
+        transparent: true,
+        opacity: 0.6,
+      });
+      const stars = new THREE.Points(starGeometry, starMaterial);
+      scene.add(stars);
+
+      // --- 简单动画循环 ---
+      function animate() {
+        requestAnimationFrame(animate);
+        time += 0.012;
+
+        // 动态光源效果，让光影流动，凸显侧面材质光泽变化
+        extraLight.position.x = 2 + Math.sin(time) * 0.8;
+        extraLight.position.z = 2 + Math.cos(time * 0.7) * 1.2;
+        fillLight.intensity = 0.45 + Math.sin(time * 1.5) * 0.1;
+
+        // 星星缓慢旋转
+        stars.rotation.y += 0.0005;
+        stars.rotation.x += 0.0003;
+
+        // 更新轨道控制
+        controls.update(); // 仅在需要时更新，但如果有阻尼必须每帧调用
+
+        // 渲染
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+      }
+
+      animate();
+
+      // 窗口适配
+      window.addEventListener("resize", onWindowResize, false);
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      // 控制台输出提示
+      console.log(
+        "圆柱体已创建：柱体（顶面和底面）颜色为橙红色 (#ff6d3a)，柱面颜色为亮蓝色 (#3a86ff)",
+      );
+    </script>
+  </body>
+</html>
