@@ -1,6 +1,12 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
   <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Three.js - 圆柱体柱体与柱面不同颜色</title>
     <style>
       body {
         margin: 0;
@@ -8,36 +14,19 @@
         font-family: Arial;
       }
     </style>
-  </head>
-  <body>
-    <div
-      style="
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        padding: 10px;
-        border-radius: 8px;
-        z-index: 100;
-      "
-    >
-      🎉 Three.js 入门成功！拖拽鼠标查看
-    </div>
-
     <script type="importmap">
       {
         "imports": {
-          "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
         }
       }
     </script>
-
+  </head>
+  <body>
     <script type="module">
       import * as THREE from "three";
       import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
       // 创建场景
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x050b1a);
@@ -156,8 +145,6 @@
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
-
-      console.log("Three.js 入门成功！");
     </script>
   </body>
 </html>
