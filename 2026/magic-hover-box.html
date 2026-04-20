@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>鼠标进入方向检测 - 动画效果</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .container {
+        width: 400px;
+        height: 300px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition: box-shadow 0.3s ease;
+      }
+
+      .container:hover {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      /* ========== 不同方向的进入动画 ========== */
+
+      /* 顶部进入动画 - 从上滑入 + 弹跳 */
+      .container.top {
+        animation: slideInFromTop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      @keyframes slideInFromTop {
+        0% {
+          transform: translateY(-100px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* 底部进入动画 - 从下滑入 + 波浪 */
+      .container.bottom {
+        animation: slideInFromBottom 0.5s ease-out;
+      }
+
+      @keyframes slideInFromBottom {
+        0% {
+          transform: translateY(100px);
+          opacity: 0;
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* 左侧进入动画 - 从左滑入 + 旋转 */
+      .container.left {
+        animation: slideInFromLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      @keyframes slideInFromLeft {
+        0% {
+          transform: translateX(-100px) rotate(-10deg);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0) rotate(0);
+          opacity: 1;
+        }
+      }
+
+      /* 右侧进入动画 - 从右滑入 + 缩放 */
+      .container.right {
+        animation: slideInFromRight 0.5s ease-out;
+      }
+
+      @keyframes slideInFromRight {
+        0% {
+          transform: translateX(100px) scale(0.8);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* ========== 内容动画 ========== */
+
+      /* 顶部进入时的内容动画 */
+      .container.top .content {
+        animation: contentTop 0.5s ease-out;
+      }
+
+      @keyframes contentTop {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* 底部进入时的内容动画 */
+      .container.bottom .content {
+        animation: contentBottom 0.5s ease-out;
+      }
+
+      @keyframes contentBottom {
+        0% {
+          transform: translate(-50%, -50%) translateY(50px);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* 左侧进入时的内容动画 */
+      .container.left .content {
+        animation: contentLeft 0.5s ease-out;
+      }
+
+      @keyframes contentLeft {
+        0% {
+          transform: translate(-50%, -50%) translateX(-50px) rotate(-180deg);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) translateX(0) rotate(0);
+          opacity: 1;
+        }
+      }
+
+      /* 右侧进入时的内容动画 */
+      .container.right .content {
+        animation: contentRight 0.5s ease-out;
+      }
+
+      @keyframes contentRight {
+        0% {
+          transform: translate(-50%, -50%) translateX(50px) rotate(180deg);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) translateX(0) rotate(0);
+          opacity: 1;
+        }
+      }
+
+      .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #333;
+        transition: all 0.3s ease;
+        width: 100%;
+        padding: 20px;
+      }
+
+      .container:hover .content {
+        color: white;
+      }
+
+      h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+      }
+
+      p {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      /* 方向指示器 */
+      .direction-info {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        pointer-events: none;
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      /* 装饰粒子效果 */
+      .particle {
+        position: fixed;
+        pointer-events: none;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        animation: particleFloat 1s ease-out forwards;
+        z-index: 1000;
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--x, 50px), var(--y, -50px)) scale(0);
+          opacity: 0;
+        }
+      }
+
+      /* 波纹效果 */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <h2>✨ Hover Me ✨</h2>
+        <p>从不同方向进入体验动画</p>
+        <p style="font-size: 12px; margin-top: 10px">⬆️ ⬇️ ⬅️ ➡️</p>
+      </div>
+    </div>
+    <div class="direction-info" id="directionInfo">从任意方向进入盒子</div>
+
+    <script>
+      const container = document.querySelector(".container");
+      const directionInfoEl = document.getElementById("directionInfo");
+      let rect = container.getBoundingClientRect();
+      let basicDeg = Math.atan2(rect.height, rect.width);
+
+      // 更新容器尺寸（窗口大小改变时重新计算）
+      function updateRect() {
+        rect = container.getBoundingClientRect();
+        basicDeg = Math.atan2(rect.height, rect.width);
+      }
+
+      window.addEventListener("resize", updateRect);
+
+      // 移除所有方向类
+      function removeAllDirections() {
+        container.classList.remove("top", "bottom", "left", "right");
+      }
+
+      // 更新方向信息显示
+      function updateDirectionInfo(direction, deg) {
+        const icons = {
+          top: "⬆️",
+          bottom: "⬇️",
+          left: "⬅️",
+          right: "➡️",
+        };
+        const angleDeg = ((deg * 180) / Math.PI).toFixed(1);
+        directionInfoEl.innerHTML = `从 ${icons[direction]} ${direction}方进入 | 角度: ${angleDeg}°`;
+
+        // 添加闪烁效果
+        directionInfoEl.style.transform = "translateX(-50%) scale(1.05)";
+        setTimeout(() => {
+          directionInfoEl.style.transform = "translateX(-50%) scale(1)";
+        }, 200);
+      }
+
+      // 创建粒子效果
+      function createParticles(x, y, direction) {
+        const colors = {
+          top: "#ff6b6b",
+          bottom: "#0abde3",
+          left: "#feca57",
+          right: "#5f27cd",
+        };
+
+        for (let i = 0; i < 15; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.left = x + "px";
+          particle.style.top = y + "px";
+          particle.style.background = colors[direction] || "white";
+
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 50 + Math.random() * 80;
+          const vx = Math.cos(angle) * distance;
+          const vy = Math.sin(angle) * distance;
+
+          particle.style.setProperty("--x", vx + "px");
+          particle.style.setProperty("--y", vy + "px");
+
+          document.body.appendChild(particle);
+
+          setTimeout(() => {
+            particle.remove();
+          }, 1000);
+        }
+      }
+
+      // 创建波纹效果
+      function createRipple(e) {
+        const ripple = document.createElement("div");
+        ripple.className = "ripple";
+        ripple.style.left = e.offsetX + "px";
+        ripple.style.top = e.offsetY + "px";
+        ripple.style.width = "10px";
+        ripple.style.height = "10px";
+        container.appendChild(ripple);
+
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      }
+
+      container.addEventListener("mouseenter", (e) => {
+        // 重新获取最新位置
+        updateRect();
+
+        // 计算鼠标相对于盒子中心的偏移
+        const x = e.offsetX - rect.width / 2;
+        const y = rect.height / 2 - e.offsetY;
+        const deg = Math.atan2(y, x);
+
+        // 移除之前的样式
+        removeAllDirections();
+
+        // 根据角度判断进入方向
+        let direction = "";
+
+        if (deg < basicDeg && deg >= -basicDeg) {
+          direction = "right";
+          container.classList.add("right");
+        } else if (deg < -basicDeg && deg >= -Math.PI + basicDeg) {
+          direction = "bottom";
+          container.classList.add("bottom");
+        } else if (deg < Math.PI - basicDeg && deg >= basicDeg) {
+          direction = "top";
+          container.classList.add("top");
+        } else {
+          direction = "left";
+          container.classList.add("left");
+        }
+
+        // 更新显示信息
+        updateDirectionInfo(direction, deg);
+
+        // 创建粒子效果
+        const rectAbs = container.getBoundingClientRect();
+        createParticles(e.clientX, e.clientY, direction);
+
+        // 创建波纹效果
+        createRipple(e);
+
+        console.log(
+          `从 ${direction} 进入 | 角度: ${((deg * 180) / Math.PI).toFixed(2)}°`
+        );
+      });
+
+      // 鼠标离开时恢复样式
+      container.addEventListener("mouseleave", (e) => {
+        removeAllDirections();
+        directionInfoEl.innerHTML = "从任意方向进入盒子";
+
+        // 离开时的粒子效果
+        createParticles(e.clientX, e.clientY, "leave");
+      });
+    </script>
+  </body>
+</html>
