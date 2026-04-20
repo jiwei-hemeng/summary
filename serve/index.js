@@ -12,24 +12,24 @@ app.use(
   cors({
     origin: true, // 发送请求的源
     credentials: true, // 相应的请求
-  })
+  }),
 );
 app.use(express.static("proxy_public"));
 app.use(
-  "/api",
+  "/map-goe",
   createProxyMiddleware({
-    target: "https://www.lilianinfo.com:12000",
+    target: "https://geo.datav.aliyun.com",
     changeOrigin: true, //是否跨域
     secure: false, // 如果是https接口，需要配置这个参数
     pathRewrite: {
-      "/api": "",
+      "/map-goe": "",
     },
-  })
+  }),
 );
 app.use(
   expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
     path: [/^\/user\//, /^\/db\//, /^\/fs\//],
-  })
+  }),
 );
 app.use(express.json());
 app.use("/fs", fileUpaLoad);
