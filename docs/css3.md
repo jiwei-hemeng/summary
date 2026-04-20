@@ -832,6 +832,60 @@ button:disabled {
 }
 ```
 
+## 什么是 Cascade Layers？
+
+`@layer`  允许我们将样式划分为不同的“层”，并手动控制这些层的优先级
+
+### 基本语法
+
+```css
+/* 1. 声明顺序：排在后面的层，优先级越高 */
+@layer reset, framework, components, utilities;
+
+/* 2. 将样式分配到层中 */
+@layer framework {
+  .card { 
+    border: 1px solid silver; /* 即使这里有复杂的嵌套 */
+    padding: 20px;
+  }
+}
+
+@layer components {
+  .card {
+    border: 2px solid blue; /* 这里的样式会胜出，因为它所在的层顺序更靠后 */
+  }
+}
+```
+
+### 杀手级应用：优雅地集成第三方库
+
+```css
+/* 导入外部库并直接分配到 'framework' 层 */
+@import url("https://cdn.example.com/bootstrap.css") layer(framework);
+
+/* 你的业务样式 */
+@layer app {
+  .nav-link { color: hotpink; } 
+}
+```
+
+### 必须掌握的层叠规则
+
+- 非层叠样式（Unlayered Styles）最高：任何没有被包裹在  @layer  内部的样式，其优先级高于所有层内的样式。这被设计用来存放那些“临时补丁”或“紧急覆盖”。
+- 后定义的胜出：在顶部声明  @layer A, B, C;  时，C 的优先级最高。
+- `!important` 的反转效应：这是一个陷阱——当使用了  `!important`  时，层级顺序会发生反转。低优先级层（如  reset）里的`!important`  会覆盖高优先级层（如  utilities）里的  `!important`。💡 建议：  在使用  @layer  的架构中，尽量完全避免  !important。
+
+### 基于目前的最佳实践，推荐在项目中使用如下层级结构来管理样式流：
+
+|        层级 (Layer)         |           描述               |          优先级           |
+| :--------------------------------: | :--------------------------------------: |:----------------------------------:|
+|    reset                  | 消除浏览器差异，基础样式归零         |消除浏览器差异，基础样式归零      |
+|   framework                | 第三方 UI 框架、库的样式            |较低      						  |
+|   design-system             | 团队内部的基础设计规范（颜色、间距变量） |中等     						  |
+|   components             | 业务组件的具体样式 |较高     						  |
+|   utilities           | 原子化工具类（如 .m-0, .text-center）|最高 (Override)    						  |
+
+
 ## 清除浮动
 
 **1. 额外标签法**：给谁清除浮动，就在其后额外添加一个空白标签 。
