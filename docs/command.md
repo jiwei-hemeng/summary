@@ -120,6 +120,12 @@ setx Path "%PATH%;%JAVA_HOME%\bin";
 setx -m CLASSPATH "%JAVA_HOME%\lib;%CLASSPATH%";
 ```
 
+如果要使用`keytool` 命令 可以在git bash 中执行
+
+```sh
+export PATH=$PATH:"/C/Program Files/Java/jdk-21.0.11/bin"
+```
+
 ### PowerShell  常用命令
 
 ```cmd
