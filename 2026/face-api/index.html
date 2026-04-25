@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>📷 人脸实时检测 - 年龄 / 性别 / 表情</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #222;
+        color: white;
+        font-family: Arial;
+        margin: 0;
+        padding: 20px;
+      }
+      #container {
+        position: relative;
+      }
+      #video {
+        border: 3px solid #00e5ff;
+        border-radius: 10px;
+        background: #000;
+        display: block;
+      }
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>📷 人脸实时检测 - 年龄 / 性别 / 表情</h2>
+    <div id="container">
+      <video
+        id="video"
+        width="640"
+        height="480"
+        autoplay
+        muted
+        playsinline
+      ></video>
+      <canvas id="overlay"></canvas>
+    </div>
+
+    <script src="./face-api.min.js"></script>
+    <script>
+      // 模型地址（官方稳定源）
+      const MODEL_URL = "https://vladmandic.github.io/face-api/model/";
+
+      async function run() {
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("overlay");
+        canvas.width = 640;
+        canvas.height = 480;
+        const ctx = canvas.getContext("2d");
+
+        // 1. 打开摄像头
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: 640, height: 480 },
+          });
+          video.srcObject = stream;
+        } catch (e) {
+          alert("请允许摄像头权限");
+          return;
+        }
+
+        // 2. 加载所有模型（包含年龄、性别、表情）
+        console.log("加载模型...");
+        await faceapi.nets.tinyFaceDetector.load(MODEL_URL);
+        await faceapi.nets.faceLandmark68Net.load(MODEL_URL);
+        await faceapi.nets.faceRecognitionNet.load(MODEL_URL);
+        await faceapi.nets.faceExpressionNet.load(MODEL_URL);
+        await faceapi.nets.ageGenderNet.load(MODEL_URL);
+        console.log("✅ 所有模型加载完成！");
+
+        // 3. 实时检测
+        setInterval(async () => {
+          const results = await faceapi
+            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceExpressions()
+            .withAgeAndGender();
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          if (results) {
+            const resized = faceapi.resizeResults(results, {
+              width: 640,
+              height: 480,
+            });
+
+            // 画框 + 关键点 + 表情
+            faceapi.draw.drawDetections(canvas, resized);
+            faceapi.draw.drawFaceLandmarks(canvas, resized);
+            faceapi.draw.drawFaceExpressions(canvas, resized);
+
+            // ========== 核心：显示年龄和性别 ==========
+            const { age, gender, genderProbability } = resized;
+            new faceapi.draw.DrawTextField(
+              [
+                `${Math.round(age)} 岁`,
+                `${gender} (${Math.round(genderProbability * 100)}%)`,
+              ],
+              resized.detection.box.topLeft,
+            ).draw(canvas);
+          }
+        }, 100);
+      }
+
+      run();
+    </script>
+  </body>
+</html>
