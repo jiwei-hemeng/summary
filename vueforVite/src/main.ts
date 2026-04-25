@@ -1,5 +1,6 @@
+import { createApp } from "vue";
 import App from "@/App.vue";
-import router from "@/router";
+import router from "@/router/index";
 import IndexDB from "@/utils/indexDB";
 import slideIn from "@/directives/v-slide-in";
 import lazyLoad from "@/directives/v-lazy-load";

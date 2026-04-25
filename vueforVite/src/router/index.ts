@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 import { useToken } from "@/stores/useInfo";
 import pinia from "@/stores/index";
 import { Modal } from "ant-design-vue";
@@ -18,7 +19,7 @@ const routesList = Object.entries(pages).map(([path, meta]) => {
     component,
     meta
   };
-});
+}) as RouteRecordRaw[];
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [

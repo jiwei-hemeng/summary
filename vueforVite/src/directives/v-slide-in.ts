@@ -14,12 +14,12 @@ const ob = new IntersectionObserver(
   },
   { threshold: 0, rootMargin: `-60px 0px 0px 0px`, root: null }
 );
-function belowViewport(el) {
+function belowViewport(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
   return rect.top > window.innerHeight;
 }
 export default {
-  mounted(el) {
+  mounted(el: HTMLElement) {
     if (!belowViewport(el)) {
       return;
     }
@@ -38,7 +38,7 @@ export default {
     ob.observe(el);
     map.set(el, animattion);
   },
-  unmounted(el) {
+  unmounted(el: HTMLElement) {
     // 清理逻辑代码
     ob.unobserve(el);
   }
