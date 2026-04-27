@@ -1375,3 +1375,27 @@ Fiber 架构
 + 在Fiber架构下，React能够暂停、重排序甚至跳过某些更新任务，实现异步渲染。这意味着在处理大型或复杂的应用场景时，React能够避免长时间阻塞主线程，允许浏览器在渲染过程中适时进行其他操作，比如响应用户的交互，从而改善UI的流畅性和响应速度。
 + Fiber架构并没有取代虚拟DOM和diff算法，反而优化了它们的工作方式。在Fiber架构下，diff过程变得更加可控和灵活，可以根据优先级决定哪些更新应该立即执行，哪些可以延后，从而更好地利用了单线程环境下的有限资源。同时，Fiber也进一步细化了组件更新的过程，使得React能够更加智能地处理组件间的依赖和状态变化。
 
+## Fiber的工作流程：两个阶段
+
++ Render阶段：可中断。遍历Fiber树，计算哪些节点需要更新，给Fiber打上effectTag（比如“插入”、“更新”、“删除”）。这个阶段的代码可以随时中断恢复，因为还没操作真DOM。
++ Commit阶段：不可中断。一次性将effectTag应用到真实DOM上，用户可见变化。这个阶段必须同步完成，不能中断。
+
+所以你的所有生命周期钩子（除componentDidMount/componentDidUpdate）都在Render阶段执行，可能会被多次调用。这也是为什么React 16之后，componentWillMount等被标记为不安全的。
+
+## Fiber如何实现“中断”？——循环+requestIdleCallback
+
+以前是递归调用，一旦开始就难以打断。Fiber改成了循环：从根节点开始，while循环里处理每个工作单元。但React不是一口气跑完，而是主动让出控制权。核心调度函数workLoop（简化版）：
+
+```js
+function workLoop(deadline) {
+  let shouldYield = false;
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    // 检查是否还有剩余时间，或者是否有更高优先级任务
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+  requestIdleCallback(workLoop); // 下次有空再继续
+}
+requestIdleCallback(workLoop);
+```
+
