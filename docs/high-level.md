@@ -143,9 +143,7 @@ eventEmitter.off("sysLanguageChange", sysLanguageChange);
 ### 浏览器都包含哪些进程
 
 1. rowser 进程：浏览器的主进程（负责协调、主控），只有一个。作用有
-
    - 负责浏览器界面显示，与用户交互。如前进，后退等
-
    * 负责各个页面的管理，创建和销毁其他进程
    * 将 Renderer 进程得到的内存中的 Bitmap，绘制到用户界面上
    * 网络资源的管理，下载等
@@ -155,46 +153,35 @@ eventEmitter.off("sysLanguageChange", sysLanguageChange);
 3. GPU 进程：最多一个，用于 3D 绘制等
 
 4. 浏览器渲染进程（浏览器内核）（Renderer 进程，内部是多线程的）：默认每个 Tab 页面一个进程，互不影响。主要作用为
-
    - 页面渲染，脚本执行，事件处理等
 
 ### 浏览器内核（渲染进程）
 
 1. GUI 渲染线程
-
    - 负责渲染浏览器界面，解析 HTML，CSS，构建 DOM 树和 RenderObject 树，布局和绘制等。
-
    * 当界面需要重绘（Repaint）或由于某种操作引发回流(reflow)时，该线程就会执行
    * 注意，**GUI 渲染线程与 JS 引擎线程是互斥的**，当 JS 引擎执行时 GUI 线程会被挂起（相当于被冻结了），GUI 更新会被保存在一个队列中**等到 JS 引擎空闲时**立即被执行。
 
 2. JS 引擎线程
-
    - 也称为 JS 内核，负责处理 Javascript 脚本程序。（例如 V8 引擎）
-
    * JS 引擎线程负责解析 Javascript 脚本，运行代码。
    * JS 引擎一直等待着任务队列中任务的到来，然后加以处理，一个 Tab 页（renderer 进程）中无论什么时候都只有一个 JS 线程在运行 JS 程序
    * 同样注意，**GUI 渲染线程与 JS 引擎线程是互斥的**，所以如果 JS 执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞。
 
 3. 事件触发线程
-
    - 归属于浏览器而不是 JS 引擎，用来控制事件循环（可以理解，JS 引擎自己都忙不过来，需要浏览器另开线程协助）
-
    * 当 JS 引擎执行代码块如 setTimeOut 时（也可来自浏览器内核的其他线程,如鼠标点击、AJAX 异步请求等），会将对应任务添加到事件线程中
    * 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JS 引擎的处理
    * 注意，由于 JS 的单线程关系，所以这些待处理队列中的事件都得排队等待 JS 引擎处理（当 JS 引擎空闲时才会去执行）
 
 4. 定时触发器线程
-
    - 传说中的`setInterval`与`setTimeout`所在线程
-
    * 浏览器定时计数器并不是由 JavaScript 引擎计数的,（因为 JavaScript 引擎是单线程的, 如果处于阻塞线程状态就会影响记计时的准确）
    * 因此通过单独线程来计时并触发定时（计时完毕后，添加到事件队列中，等待 JS 引擎空闲后执行）
    * 注意，W3C 在 HTML 标准中规定，规定要求 setTimeout 中低于 4ms 的时间间隔算为 4ms。
 
 5. 异步 http 请求线程
-
    - 在 XMLHttpRequest 在连接后是通过浏览器新开一个线程请求
-
    * 将检测到状态变更时，如果设置有回调函数，异步线程就**产生状态变更事件**，将这个回调再放入事件队列中。再由 JavaScript 引擎执行。
 
 ## web work
@@ -246,7 +233,7 @@ self.addEventListener(
         self.postMessage("Unknown command: " + data.msg);
     }
   },
-  false
+  false,
 );
 // 关闭 Worker
 self.close();
@@ -351,7 +338,6 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
   > 强烈不建议在此处进行 dom 操作。推荐的做法是在 requestAnimationFrame 里面做 dom 的修改，可以在 requestIdleCallback 里面构建 Document Fragment，然后在下一帧的 requestAnimationFrame 里面应用 Fragment。
 
   ```js
-  requestIdleCallback(myNonEssentialWork, { timeout: 2000 });
   // 任务队列
   const tasks = [
    () => {
@@ -364,20 +350,17 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
      console.log("第三个任务");
    },
   ];
-
-  function myNonEssentialWork (deadline) {
-   // 如果帧内有富余的时间，或者超时
+  requestIdleCallback(function myNonEssentialWork (deadline) {
+  // 如果帧内有富余的时间，或者超时
    while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && tasks.length > 0) {
-     work();
+     const task = tasks.shift();
+     task();
    }
    if (tasks.length > 0)
      requestIdleCallback(myNonEssentialWork);
    }
-  }
-  function work () {
-   tasks.shift()();
-   console.log('执行任务');
-  }
+  }, { timeout: 2000 });
+
   ```
 
 ## createDocumentFragment
@@ -523,7 +506,7 @@ class PausableTaskQueue {
 
   // 添加任务到队列
   add(task) {
-    if (typeof task !== 'function') {
+    if (typeof task !== "function") {
       console.error("任务必须是函数");
       return;
     }
@@ -534,7 +517,11 @@ class PausableTaskQueue {
 
   // 运行队列中的任务
   async run() {
-    if (this.isPaused || this.queue.length === 0 || this.runningCount >= this.concurrency) {
+    if (
+      this.isPaused ||
+      this.queue.length === 0 ||
+      this.runningCount >= this.concurrency
+    ) {
       return;
     }
 
@@ -595,10 +582,10 @@ const createTask = (id) => async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟异步操作
   console.log(`任务 ${id} 执行完成`);
 };
-let index = 1
+let index = 1;
 while (index < 1000) {
-  queue.add(createTask(index))
-  index++
+  queue.add(createTask(index));
+  index++;
 }
 
 // 暂停队列
