@@ -35,20 +35,20 @@ xhr.addEventListener("load", (e) => {
 // 1. 创建xhr对象
 var xhr = new XMLHttpRequest();
 // 2. 调用open，设置请求方式和url
-xhr.open('POST', 'http://www.liulongbin.top:3006/api/addbook');
+xhr.open("POST", "http://www.liulongbin.top:3006/api/addbook");
 // 3. 设置Content-Type属性（通过请求头来设置）
-xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 // 4. 调用send，发送请求
-xhr.send('bookname=水浒&author=施耐庵&publisher=顺义出版社');
+xhr.send("bookname=水浒&author=施耐庵&publisher=顺义出版社");
 // 5. 注册onreadystatechange事件，事件内部使用responseText接受结果
 xhr.onreadystatechange = function () {
-    if (this.readyState === 4) {
-        var res = JSON.parse(xhr.responseText);
-        console.log(res);
-    }
-}
+  if (this.readyState === 4) {
+    var res = JSON.parse(xhr.responseText);
+    console.log(res);
+  }
+};
 //  监听上传进度
-xhr.upload.onprogress = function(e) {
+xhr.upload.onprogress = function (e) {
   if (e.lengthComputable) {
     const percentComplete = (e.loaded / e.total) * 100;
     console.log(`上传进度: ${percentComplete.toFixed(2)}%`);
@@ -57,9 +57,9 @@ xhr.upload.onprogress = function(e) {
   }
 };
 // 文件上传成功时触发的事件
-xhr.upload.onLoad = function(e) {}
+xhr.upload.onLoad = function (e) {};
 // xhr.onprogress - 监听下载进度
-xhr.onprogress = function(e) {
+xhr.onprogress = function (e) {
   if (e.lengthComputable) {
     const percentComplete = (e.loaded / e.total) * 100;
     console.log(`下载进度: ${percentComplete.toFixed(2)}%`);
@@ -106,6 +106,36 @@ let API = axios.create({
   withCredentials: true // 允许携带cookie
   timeout: 5000, // 请求的超时时间
 })
+```
+
+### axios 下载文件失败后拦截请求消息的方法
+
+```js
+// 判断响应类型：如果是 JSON 说明是错误信息
+const contentType =
+  response.headers["content-type"] || response.headers["Content-Type"];
+
+if (contentType && contentType.includes("application/json")) {
+  // 后端返回了 JSON 格式的错误信息
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const errorData = JSON.parse(reader.result);
+      this.$Message.error(errorData.msg || errorData.message || "导出失败");
+    } catch (e) {
+      this.$Message.error("导出失败");
+    }
+  };
+  reader.readAsText(response.data);
+  return;
+}
+
+// 正常导出：处理文件流
+const blob = new Blob([response.data], {
+  type: "application/vnd.ms-excel;charset=UTF-8",
+});
+this.downloadFile(URL.createObjectURL(blob), "安全人员档案.xlsx");
+this.$Message.success("导出成功");
 ```
 
 ### fetch()
@@ -392,7 +422,7 @@ class HttpClient {
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
-      options.timeout || this.timeout
+      options.timeout || this.timeout,
     );
 
     try {
@@ -477,13 +507,11 @@ class HttpClient {
   }
 }
 
-
 // 创建实例
 export const http = new HttpClient("/api/", {
   token: "e8fb6114-32bf-432a-b815-b027506b6ed1",
   timeout: 5000, // 5秒超时
 });
-
 
 // 使用示例
 import { http } from "@/utils/http";
