@@ -4,3 +4,4 @@ server/privatePem.txt
 server/publicPem.txt
 dist
 node_modules
+vueforVite/stats.html
