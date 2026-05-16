@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图片添加水印</title>
+  <script>
+    // 本地读取图像文件渲染到img标签
+    function blobToImg(blob) {
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader()
+        reader.addEventListener('load', () => {
+          let img = new Image()
+          img.src = reader.result
+          img.addEventListener('load', () => resolve(img))
+        })
+        reader.readAsDataURL(blob)
+      })
+    }
+    // 将img标签内容绘制到canvas画布
+    function imgToCanvas(img) {
+      let canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      let ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+      return canvas
+    }
+    // canvas画布上绘制水印并转换为Blob对象
+    function watermark(canvas, text) {
+      return new Promise((resolve, reject) => {
+        let ctx = canvas.getContext('2d')
+        // 设置填充字号和字体，样式
+        ctx.font = "24px 宋体"
+        ctx.fillStyle = "#FFC82C"
+        // 设置右对齐
+        ctx.textAlign = 'right'
+        // 在指定位置绘制文字，这里指定距离右下角20坐标的地方
+        ctx.fillText(text, canvas.width - 20, canvas.height - 20)
+        canvas.toBlob(blob => resolve(blob))
+      })
+    }
+    // 图片添加水印
+    function imgWatermark(dom, text) {
+      let input = document.createElement('input')
+      input.setAttribute('type', 'file')
+      input.setAttribute('accept', 'image/*')
+      input.onchange = async () => {
+        let img = await blobToImg(input.files[0])
+        let canvas = imgToCanvas(img)
+        let blob = await watermark(canvas, text)
+        // 此处将Blob读取到img标签，并在dom内渲染出来；如果是上传文件，可以将blob添加到FormData中
+        let newImage = await blobToImg(blob)
+        dom.appendChild(newImage)
+      }
+      input.click()
+    }
+  </script>
+</head>
+
+<body>
+  <!-- 此div是用来输出结果的 -->
+  <div id="container"></div>
+  <button id="btn">点击</button>
+  <script>
+    let dom = document.querySelector('#container')
+    let btn = document.querySelector('#btn')
+    btn.addEventListener("click", function () {
+      imgWatermark(dom, '水印文字')
+    })
+  </script>
+</body>
+
+</html>

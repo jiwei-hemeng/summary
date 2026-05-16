@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手风琴/折叠面板</title>
+    <style>
+      .accordion {
+        border: 1px solid #ccc;
+        margin-bottom: 5px;
+      }
+      .accordion summary {
+        padding: 10px;
+        cursor: pointer;
+        background: #f0f0f0;
+      }
+      .accordion[open] > p {
+        padding: 10px;
+        animation: fadeIn 0.5s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <details class="accordion">
+      <summary>点击展开第一节</summary>
+      <p>这里是第一节的详细内容...</p>
+    </details>
+    <details class="accordion">
+      <summary>点击展开第二节</summary>
+      <p>这里是第二节的详细内容...</p>
+    </details>
+  </body>
+</html>

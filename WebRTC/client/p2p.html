@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title></title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: aliceblue;
+      }
+      .container {
+        width: 100%;
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-around;
+        padding-top: 20px;
+      }
+      .video-box {
+        position: relative;
+        width: 800px;
+        height: 800px;
+      }
+      #remote-video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        border: 1px solid #eee;
+        background-color: #f2f6fc;
+      }
+      #local-video {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 240px;
+        height: 120px;
+        object-fit: cover;
+        border: 1px solid #eee;
+        background-color: #ebeef5;
+      }
+      .start-button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100px;
+        display: none;
+        line-height: 40px;
+        outline: none;
+        color: #fff;
+        background-color: #409eff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+      }
+      .logger {
+        width: 40%;
+        padding: 14px;
+        line-height: 1.5;
+        color: #4fbf40;
+        border-radius: 6px;
+        background-color: #272727;
+      }
+      .logger .error {
+        color: #dd4a68;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="video-box">
+        <video id="remote-video"></video>
+        <video id="local-video" muted></video>
+        <button class="start-button" onclick="startLive()">start</button>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+      var vConsole = new VConsole();
+      const target = location.search.slice(6);
+      const localVideo = document.querySelector("#local-video");
+      const remoteVideo = document.querySelector("#remote-video");
+      const button = document.querySelector(".start-button");
+      localVideo.onloadeddata = () => {
+        localVideo.play();
+      };
+      remoteVideo.onloadeddata = () => {
+        remoteVideo.play();
+      };
+      document.title = target === "offer" ? "发起方" : "接收方";
+
+      const socket = new WebSocket("/");
+      socket.onopen = () => {
+        target === "offer" && (button.style.display = "block");
+      };
+      socket.onerror = () => {};
+      socket.onmessage = (e) => {
+        const { type, sdp, iceCandidate } = JSON.parse(e.data);
+        if (type === "answer") {
+          console.log("接收 answer", type, sdp);
+          peer.setRemoteDescription(new RTCSessionDescription({ type, sdp }));
+        } else if (type === "answer_ice") {
+          peer.addIceCandidate(iceCandidate);
+        } else if (type === "offer") {
+          startLive(new RTCSessionDescription({ type, sdp }));
+        } else if (type === "offer_ice") {
+          peer.addIceCandidate(iceCandidate);
+        }
+      };
+      const PeerConnection =
+        window.RTCPeerConnection ||
+        window.mozRTCPeerConnection ||
+        window.webkitRTCPeerConnection;
+
+      const peer = new PeerConnection({
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          {
+            urls: "turn:openrelay.metered.ca:80",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:443",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+        ],
+        iceCandidatePoolSize: 10,
+      });
+      peer.ontrack = (e) => {
+        if (e && e.streams) {
+          remoteVideo.srcObject = e.streams[0];
+        }
+      };
+      peer.onicecandidate = (e) => {
+        if (e.candidate) {
+          if (peer.localDescription) {
+            console.log("发现 ICE 候选:", e.candidate);
+            socket.send(
+              JSON.stringify({
+                type: `${target}_ice`,
+                iceCandidate: e.candidate,
+              }),
+            );
+          }
+        }
+      };
+      // 方案2：更精细的控制（检查降噪级别）
+      async function getOptimizedAudioStream() {
+        // 先检查支持的降噪级别
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioDevice = devices.find((d) => d.kind === "audioinput");
+
+        // 获取音频轨道能力
+        let stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            deviceId: audioDevice?.deviceId,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
+
+        const audioTrack = stream.getAudioTracks()[0];
+        const capabilities = audioTrack.getCapabilities();
+
+        console.log("音频能力:", {
+          echoCancellation: capabilities.echoCancellation,
+          noiseSuppression: capabilities.noiseSuppression,
+          autoGainControl: capabilities.autoGainControl,
+          channelCount: capabilities.channelCount,
+          sampleRate: capabilities.sampleRate,
+        });
+
+        // 应用约束
+        await audioTrack.applyConstraints({
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: { ideal: 1 },
+          sampleRate: { ideal: 16000 },
+        });
+
+        return stream;
+      }
+      async function startLive(offerSdp) {
+        if (target === "offer") {
+          button.style.display = "none";
+        }
+
+        let stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        localVideo.srcObject = stream;
+
+        stream.getTracks().forEach((track) => {
+          peer.addTrack(track, stream);
+        });
+        if (!offerSdp) {
+          console.log("创建 offer");
+          const offer = await peer.createOffer();
+          await peer.setLocalDescription(offer);
+          socket.send(JSON.stringify(offer));
+        } else {
+          console.log("接收 offer，创建 answer");
+          await peer.setRemoteDescription(offerSdp);
+          const answer = await peer.createAnswer();
+          await peer.setLocalDescription(answer);
+          console.log("发送 answer", answer);
+          socket.send(JSON.stringify(answer));
+        }
+      }
+    </script>
+  </body>
+</html>

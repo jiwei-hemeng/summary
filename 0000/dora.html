@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H5 拖拽</title>
+  <style>
+    img {
+      width: 300px;
+    }
+
+    #target {
+      width: 400px;
+      height: 400px;
+      background-color: skyblue;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="../assets/images/api-login.2fcc9f35.jpg" id="drap" alt="" draggable ondragstart="drap(event)">
+  <div id="target" ondrop="drop(event)" ondragover="dragover(event)" ondragenter="ondragenter">123</div>
+  <script>
+    function dragover(e) {
+      e.preventDefault();
+    }
+    function drap(e) {
+      e.dataTransfer.setData("Text", e.target.id)
+    }
+    function drop(e) {
+      e.preventDefault();
+      let data = e.dataTransfer.getData("Text");
+      e.target.appendChild(document.querySelector("#" + data))
+    }
+  </script>
+</body>
+
+</html>

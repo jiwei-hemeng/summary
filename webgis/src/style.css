@@ -1,0 +1,37 @@
+:root {
+  --color-primary: #2d8cf0;
+  --color-success: #19be6b;
+  --color-warning: #ff9900;
+  --color-error: #f5222d;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+}
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+#map {
+  position: fixed;
+  inset: 0;
+}
+.btn-group {
+  position: fixed;
+  right: 20px;
+  top: 8px;
+  z-index: 200;
+  button {
+    background-color: var(--color-success);
+    color: #fff;
+    font-size: var(--font-size-sm);
+    border: 0 none;
+    outline: none;
+    cursor: pointer;
+  }
+}

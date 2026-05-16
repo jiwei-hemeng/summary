@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>实时 ASCII 摄像头</title>
+  </head>
+  <body>
+    <pre id="asciiCam" style="font-size: 8px; line-height: 8px"></pre>
+    <script>
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        const video = document.createElement("video");
+        video.srcObject = stream;
+        video.play();
+
+        const chars = "@%#*+=-:. ";
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        video.onplaying = () => {
+          canvas.width = 80;
+          canvas.height = 40;
+
+          setInterval(() => {
+            ctx.drawImage(video, 0, 0, 80, 40);
+            const imgData = ctx.getImageData(0, 0, 80, 40).data;
+            let ascii = "";
+            console.log(imgData);
+            for (let i = 0; i < imgData.length; i += 4) {
+              const brightness =
+                (imgData[i] + imgData[i + 1] + imgData[i + 2]) / 3;
+              ascii +=
+                chars[Math.floor(brightness / 25.5)] +
+                (i % (80 * 4) === 80 * 4 - 4 ? "\n" : "");
+            }
+
+            document.getElementById("asciiCam").textContent = ascii;
+          }, 100);
+        };
+      });
+    </script>
+  </body>
+</html>

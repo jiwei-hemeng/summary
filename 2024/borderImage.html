@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS border-image 特效</title>
+    <style>
+      .card {
+        margin: 0 auto;
+        height: 300px;
+        width: 200px;
+        border: 4px solid;
+        border-image-source: linear-gradient(
+          to right,
+          rgb(18, 194, 233),
+          rgb(196, 113, 237),
+          rgb(246, 79, 89)
+        );
+        border-radius: 3px;
+        border-image-width: 4px;
+        border-image-slice: 27;
+        animation: move 3s infinite linear;
+      }
+      @keyframes move {
+        33% {
+          border-image-source: linear-gradient(
+            to right,
+            rgb(196, 113, 237),
+            rgb(246, 79, 89),
+            rgb(18, 194, 233)
+          );
+        }
+        66% {
+          border-image-source: linear-gradient(
+            to right,
+            rgb(246, 79, 89),
+            rgb(18, 194, 233),
+            rgb(196, 113, 237)
+          );
+        }
+        100% {
+          border-image-source: linear-gradient(
+            to right,
+            rgb(18, 194, 233),
+            rgb(196, 113, 237),
+            rgb(246, 79, 89)
+          );
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card"></div>
+  </body>
+</html>

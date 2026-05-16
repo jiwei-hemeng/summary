@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>新年快乐-福到了</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #000;
+      }
+      .fu-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        width: 200px;
+        height: 200px;
+        background: red;
+      }
+      .fu-box::after {
+        content: "福";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(135deg);
+        text-align: center;
+        line-height: 200px;
+        font-size: 130px;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fu-box"></div>
+  </body>
+</html>

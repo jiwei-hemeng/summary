@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>爱情期许 · 心之所向</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          #0a0a1a 0%,
+          #1a0a2e 40%,
+          #2d1a4e 100%
+        );
+        font-family:
+          "Microsoft YaHei", "PingFang SC", "Helvetica Neue", "华文楷书",
+          "KaiTi", "Georgia", serif;
+        position: relative;
+      }
+
+      /* 浪漫星光 */
+      body::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+          rgba(255, 200, 255, 0.3) 1px,
+          transparent 1px
+        );
+        background-size: 60px 60px;
+        pointer-events: none;
+      }
+
+      /* 心形描边动画 */
+      .heart {
+        margin-bottom: 20px;
+        filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.4));
+      }
+
+      .heart #line {
+        fill: none;
+        stroke: #ff3366;
+        stroke-width: 1.8;
+        stroke-linecap: butt;
+        stroke-linejoin: round;
+        stroke-miterlimit: 4;
+        stroke-opacity: 1;
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: dash 3s linear infinite;
+      }
+
+      .heart #point {
+        fill: none;
+        stroke: #ff6699;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 0.1;
+        stroke-opacity: 1;
+        stroke-dasharray: 0.0001, 0.9999;
+        stroke-dashoffset: 1;
+        animation: dash 3s linear infinite;
+      }
+
+      @keyframes dash {
+        0% {
+          stroke-dashoffset: 1;
+        }
+        80% {
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* 文字容器 */
+      .text-container {
+        text-align: center;
+        margin-top: 20px;
+        z-index: 1;
+      }
+
+      /* 浪漫前缀 */
+      .romance-prefix {
+        font-size: 20px;
+        color: #ff99cc;
+        letter-spacing: 6px;
+        margin-bottom: 15px;
+        opacity: 0;
+        animation: fadeInDown 0.6s ease-out 0.3s forwards;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .romance-prefix span {
+        font-size: 24px;
+        animation: heartbeat 1.5s ease-in-out infinite;
+      }
+
+      /* 主标题 - 爱情期许 */
+      .stroke-text {
+        font-size: 52px;
+        font-weight: bold;
+        letter-spacing: 8px;
+        background: linear-gradient(135deg, #ff6b6b, #ff3366, #ff99cc, #ff6699);
+        background-size: 300% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        position: relative;
+        display: inline-block;
+        animation:
+          textGlow 2s ease-in-out infinite,
+          gradientShift 4s ease infinite;
+      }
+
+      /* 文字描边效果 */
+      .stroke-text::before {
+        content: "与 你 共 白 首";
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 52px;
+        font-weight: bold;
+        letter-spacing: 8px;
+        -webkit-text-stroke: 3px #ff3366;
+        color: transparent;
+        z-index: -1;
+        animation: strokePulse 2s ease-in-out infinite;
+      }
+
+      /* 期许副标题 */
+      .expectation {
+        margin-top: 25px;
+        font-size: 18px;
+        color: rgba(255, 200, 230, 0.9);
+        letter-spacing: 4px;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out 0.5s forwards;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .expectation-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(255, 51, 102, 0.1);
+        border-radius: 30px;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 51, 102, 0.3);
+      }
+
+      /* 浪漫誓言 */
+      .vows {
+        margin-top: 35px;
+        font-size: 16px;
+        color: rgba(255, 220, 240, 0.8);
+        letter-spacing: 2px;
+        line-height: 2;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out 0.8s forwards;
+        border-top: 1px solid rgba(255, 51, 102, 0.4);
+        padding-top: 25px;
+        display: inline-block;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 51, 102, 0.1),
+          transparent
+        );
+        padding-left: 30px;
+        padding-right: 30px;
+        border-radius: 50px;
+      }
+
+      .vows p {
+        margin: 8px 0;
+      }
+
+      .vows .heart-icon {
+        display: inline-block;
+        animation: heartbeat 1.2s ease-in-out infinite;
+        margin: 0 5px;
+      }
+
+      /* 落款 */
+      .signature {
+        margin-top: 30px;
+        font-size: 14px;
+        color: rgba(255, 180, 200, 0.6);
+        letter-spacing: 2px;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease-out 1.1s forwards;
+        font-style: italic;
+      }
+
+      /* 动画关键帧 */
+      @keyframes textGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+        }
+        50% {
+          text-shadow: 0 0 30px rgba(255, 51, 102, 0.7);
+        }
+      }
+
+      @keyframes strokePulse {
+        0%,
+        100% {
+          -webkit-text-stroke: 3px #ff3366;
+          opacity: 0.6;
+        }
+        50% {
+          -webkit-text-stroke: 5px #ff6699;
+          opacity: 1;
+        }
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      /* 漂浮装饰 */
+      .floating-heart {
+        position: fixed;
+        font-size: 20px;
+        opacity: 0.4;
+        pointer-events: none;
+        animation: floatHeart 3s ease-in-out infinite;
+      }
+
+      @keyframes floatHeart {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translateY(-20px) rotate(10deg);
+          opacity: 0.6;
+        }
+      }
+
+      /* 多颗漂浮心形 */
+      .heart-1 {
+        bottom: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+      .heart-2 {
+        top: 15%;
+        right: 8%;
+        animation-delay: 0.5s;
+        font-size: 16px;
+      }
+      .heart-3 {
+        bottom: 20%;
+        right: 12%;
+        animation-delay: 1s;
+        font-size: 14px;
+      }
+      .heart-4 {
+        top: 30%;
+        left: 10%;
+        animation-delay: 1.5s;
+        font-size: 18px;
+      }
+      .heart-5 {
+        bottom: 40%;
+        left: 15%;
+        animation-delay: 0.8s;
+        font-size: 12px;
+      }
+
+      /* 响应式 */
+      @media (max-width: 768px) {
+        .stroke-text,
+        .stroke-text::before {
+          font-size: 28px;
+          letter-spacing: 4px;
+        }
+        .romance-prefix {
+          font-size: 14px;
+        }
+        .expectation {
+          font-size: 13px;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .vows {
+          font-size: 13px;
+          padding: 15px 20px;
+        }
+        .heart {
+          transform: scale(0.8);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 心形描边动画 -->
+    <svg
+      class="heart"
+      viewBox="-5 -5 278 56"
+      version="1.1"
+      id="svg5"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <filter id="blur">
+          <feGaussianBlur stdDeviation="1.6"></feGaussianBlur>
+        </filter>
+      </defs>
+      <g transform="translate(29.1 -127.42)" id="layer1">
+        <path
+          pathLength="1"
+          d="M-28.73 167.2c26.43 9.21 68.46-9.46 85.45-12.03 18.45-2.78 32.82 4.86 28.75 9.83-3.82 4.66-25.77-21.18-14.81-31.5 9.54-8.98 17.64 10.64 16.42 17.06-1.51-6.2 2.95-26.6 14.74-22.11 11.7 4.46-4.33 49.03-15.44 44.08-6.97-3.1 15.44-16.26 26.1-16 23.03.56 55.6 27.51 126.63 3.36"
+          id="line"
+        ></path>
+      </g>
+      <g transform="translate(29.1 -127.42)" id="layer2">
+        <path
+          pathLength="1"
+          d="M-28.73 167.2c26.43 9.21 68.46-9.46 85.45-12.03 18.45-2.78 32.82 4.86 28.75 9.83-3.82 4.66-25.77-21.18-14.81-31.5 9.54-8.98 17.64 10.64 16.42 17.06-1.51-6.2 2.95-26.6 14.74-22.11 11.7 4.46-4.33 49.03-15.44 44.08-6.97-3.1 15.44-16.26 26.1-16 23.03.56 55.6 27.51 126.63 3.36"
+          id="point"
+          filter="url(#blur)"
+        ></path>
+      </g>
+    </svg>
+
+    <!-- 文字内容 -->
+    <div class="text-container">
+      <!-- 浪漫前缀 -->
+      <div class="romance-prefix">
+        <span>💕</span> 给 最 爱 的 你 <span>💕</span>
+      </div>
+
+      <!-- 主标题 - 爱情期许 -->
+      <div class="stroke-text">与 你 共 白 首</div>
+
+      <!-- 期许副标题 -->
+      <div class="expectation">
+        <div class="expectation-item">🌹 一 生 所 爱</div>
+        <div class="expectation-item">💫 岁 岁 年 年</div>
+        <div class="expectation-item">🏠 晨 昏 与 共</div>
+        <div class="expectation-item">✨ 不 负 相 遇</div>
+      </div>
+
+      <!-- 浪漫誓言 -->
+      <div class="vows">
+        <p>💗 愿往后余生 · 冷暖有相知 💗</p>
+        <p>🌙 喜乐有分享 · 共度日月长 🌙</p>
+        <p>⭐ 同量天地宽 · 共度岁月暖 ⭐</p>
+        <p>
+          <span class="heart-icon">💖</span> 执子之手 · 与子偕老
+          <span class="heart-icon">💖</span>
+        </p>
+      </div>
+
+      <!-- 落款 -->
+      <div class="signature">—— 此情不渝 · 心之所向 ——</div>
+    </div>
+
+    <!-- 漂浮心形装饰 -->
+    <div class="floating-heart heart-1">💗</div>
+    <div class="floating-heart heart-2">💖</div>
+    <div class="floating-heart heart-3">💕</div>
+    <div class="floating-heart heart-4">💓</div>
+    <div class="floating-heart heart-5">💝</div>
+  </body>
+</html>

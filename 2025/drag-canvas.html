@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Canvas图片裁剪特效</title>
+    <style>
+      canvas {
+        border: solid 1px #000;
+        margin: 0px auto;
+        display: block;
+        box-sizing: border-box;
+      }
+      .options {
+        display: flex;
+        justify-content: center;
+        height: 44px;
+        align-items: center;
+      }
+      button {
+        margin-left: 15px;
+        padding: 8px 16px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #45a049;
+      }
+      .image-wrapper {
+        position: relative;
+        width: 602px;
+        margin: 20px auto;
+        overflow: hidden;
+      }
+      .crop-frame {
+        display: none;
+        position: absolute;
+        border: 3px dashed #28a745;
+        box-sizing: border-box;
+        cursor: move;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
+      }
+      .resize-handle {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: #28a745;
+        cursor: nwse-resize;
+        border-radius: 50%;
+      }
+      .info {
+        text-align: center;
+        margin: 10px;
+        color: #666;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="info">
+      选择图片后，可以拖动和缩放，然后使用裁剪框选择区域并导出
+    </div>
+
+    <div class="options">
+      <button id="selectImageBtn">选择图片</button>
+      <button id="cropButton">导出图片</button>
+      <button onclick="zoomIn()">放大 +</button>
+      <button onclick="zoomOut()">缩小 -</button>
+      <button onclick="reset()">还原</button>
+    </div>
+    <div class="image-wrapper">
+      <div class="crop-frame" id="cropFrame"></div>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+      class Scene {
+        offset = { x: 0, y: 0 };
+        curOffset = { x: 0, y: 0 };
+        mousePosition = { x: 0, y: 0 };
+        maxScale = 8;
+        minScale = 1.4;
+        scaleStep = 0.2;
+        scale = 1;
+        preScale = 1;
+
+        x = 0;
+        y = 0;
+        image = null;
+        cropData = {
+          x: 100,
+          y: 100,
+          width: 100,
+          height: 100,
+        };
+        isDragging = false;
+
+        constructor(
+          el,
+          options = {
+            width: 600,
+            height: 400,
+          }
+        ) {
+          this.canvas = document.querySelector(el + " #canvas");
+          this.width = options.width;
+          this.height = options.height;
+          this.canvas.width = options.width;
+          this.canvas.height = options.height;
+          this.ctx = this.canvas.getContext("2d");
+          this.cropFrame = document.querySelector(el + " #cropFrame");
+          // 绑定事件处理函数
+          this.onMousedown = this.onMousedown.bind(this);
+          this.onMousemove = this.onMousemove.bind(this);
+          this.onMouseup = this.onMouseup.bind(this);
+          this.onMousewheel = this.onMousewheel.bind(this);
+          this.cropFrameMousedown = this.cropFrameMousedown.bind(this);
+          this.onDocumentMousemove = this.onDocumentMousemove.bind(this);
+          this.onDocumentMouseup = this.onDocumentMouseup.bind(this);
+
+          // 添加事件监听器
+          // this.canvas.addEventListener("mousewheel", this.onMousewheel);
+          document
+            .querySelector(".image-wrapper")
+            .addEventListener("mousewheel", this.onMousewheel);
+          this.canvas.addEventListener("mousedown", this.onMousedown);
+          this.cropFrame.addEventListener("mousedown", this.cropFrameMousedown);
+          document.addEventListener("mousemove", this.onDocumentMousemove);
+          document.addEventListener("mouseup", this.onDocumentMouseup);
+        }
+
+        downLoadFile() {
+          if (!this.image || !this.image.width) {
+            alert("请先选择图片");
+            return;
+          }
+
+          // 创建预览canvas
+          const previewCanvas = document.createElement("canvas");
+          const previewCtx = previewCanvas.getContext("2d");
+
+          // 设置预览canvas尺寸为裁剪框大小
+          previewCanvas.width = this.cropData.width;
+          previewCanvas.height = this.cropData.height;
+
+          // 清除预览canvas
+          previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+          // 计算裁剪区域在原始图像中的坐标和尺寸
+          const scaleFactor = 1 / this.scale;
+          const cropX = (this.cropData.x - this.offset.x) * scaleFactor;
+          const cropY = (this.cropData.y - this.offset.y) * scaleFactor;
+          const cropWidth = this.cropData.width * scaleFactor;
+          const cropHeight = this.cropData.height * scaleFactor;
+
+          // 确保裁剪区域在图像范围内
+          const sourceX = Math.max(0, cropX);
+          const sourceY = Math.max(0, cropY);
+          const sourceWidth = Math.min(cropWidth, this.image.width - sourceX);
+          const sourceHeight = Math.min(
+            cropHeight,
+            this.image.height - sourceY
+          );
+
+          // 如果裁剪区域完全在图像之外，则不导出
+          if (sourceWidth <= 0 || sourceHeight <= 0) {
+            alert("裁剪区域超出图像范围，请调整裁剪框");
+            return;
+          }
+
+          // 绘制裁剪区域到预览canvas
+          previewCtx.drawImage(
+            this.image,
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight, // 源图像区域
+            0,
+            0,
+            this.cropData.width,
+            this.cropData.height // 目标canvas区域
+          );
+
+          // 创建下载链接
+          const link = document.createElement("a");
+          link.download = `cropped-image-${Date.now()}.png`;
+          link.href = previewCanvas.toDataURL("image/png");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+
+        onDocumentMousemove(e) {
+          if (!this.isDragging) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+
+          if (this.cropFrame.dataset.mode === "move") {
+            this.cropData.x = Math.max(
+              0,
+              Math.min(
+                mouseX - this.cropData.width / 2,
+                this.canvas.width - this.cropData.width
+              )
+            );
+            this.cropData.y = Math.max(
+              0,
+              Math.min(
+                mouseY - this.cropData.height / 2,
+                this.canvas.height - this.cropData.height
+              )
+            );
+          } else if (this.cropFrame.dataset.mode === "resize") {
+            this.cropData.width = Math.max(50, mouseX - this.cropData.x);
+            this.cropData.height = Math.max(50, mouseY - this.cropData.y);
+            // 限制在画布范围内
+            this.cropData.width = Math.min(
+              this.cropData.width,
+              this.canvas.width - this.cropData.x
+            );
+            this.cropData.height = Math.min(
+              this.cropData.height,
+              this.canvas.height - this.cropData.y
+            );
+          }
+
+          this.updateCropFrame();
+        }
+
+        onDocumentMouseup() {
+          this.isDragging = false;
+          this.cropFrame.dataset.mode = "";
+        }
+
+        onMousewheel(e) {
+          e.preventDefault();
+
+          this.mousePosition.x = e.offsetX;
+          this.mousePosition.y = e.offsetY;
+
+          if (e.wheelDelta > 0) {
+            // 放大
+            this.scale = parseFloat((this.scaleStep + this.scale).toFixed(2));
+            if (this.scale > this.maxScale) {
+              this.scale = this.maxScale;
+              return;
+            }
+          } else {
+            // 缩小
+            this.scale = parseFloat((this.scale - this.scaleStep).toFixed(2));
+            if (this.scale < this.minScale) {
+              this.scale = this.minScale;
+              return;
+            }
+          }
+
+          this.zoom();
+        }
+
+        zoom() {
+          this.offset.x =
+            this.mousePosition.x -
+            ((this.mousePosition.x - this.offset.x) * this.scale) /
+              this.preScale;
+          this.offset.y =
+            this.mousePosition.y -
+            ((this.mousePosition.y - this.offset.y) * this.scale) /
+              this.preScale;
+
+          this.paint();
+          this.preScale = this.scale;
+          this.curOffset.x = this.offset.x;
+          this.curOffset.y = this.offset.y;
+        }
+
+        cropFrameMousedown(e) {
+          this.isDragging = true;
+          if (e.target.classList.contains("resize-handle")) {
+            this.cropFrame.dataset.mode = "resize";
+          } else {
+            this.cropFrame.dataset.mode = "move";
+          }
+        }
+
+        async selectImage() {
+          return new Promise((resolve) => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+
+              this.image = new Image();
+              this.image.src = URL.createObjectURL(file);
+              this.image.onload = () => {
+                this.reset();
+                this.updateCropFrame();
+                resolve();
+              };
+            };
+            input.click();
+          });
+        }
+
+        updateCropFrame() {
+          if (!this.image) return;
+
+          this.cropFrame.style.display = "block";
+          this.cropFrame.style.left = `${this.cropData.x}px`;
+          this.cropFrame.style.top = `${this.cropData.y}px`;
+          this.cropFrame.style.width = `${this.cropData.width}px`;
+          this.cropFrame.style.height = `${this.cropData.height}px`;
+          this.cropFrame.innerHTML =
+            '<div class="resize-handle" style="bottom: -6px; right: -6px;"></div>';
+        }
+
+        onMousedown(e) {
+          if (e.button === 0) {
+            this.x = e.x;
+            this.y = e.y;
+            window.addEventListener("mousemove", this.onMousemove);
+            window.addEventListener("mouseup", this.onMouseup);
+          }
+        }
+
+        onMousemove(e) {
+          this.offset.x = this.curOffset.x + (e.x - this.x);
+          this.offset.y = this.curOffset.y + (e.y - this.y);
+          this.paint();
+        }
+
+        onMouseup() {
+          this.curOffset.x = this.offset.x;
+          this.curOffset.y = this.offset.y;
+          window.removeEventListener("mousemove", this.onMousemove);
+          window.removeEventListener("mouseup", this.onMouseup);
+        }
+
+        zoomIn() {
+          this.scale += this.scaleStep;
+          if (this.scale > this.maxScale) {
+            this.scale = this.maxScale;
+            return;
+          }
+          this.mousePosition.x = this.width / 2;
+          this.mousePosition.y = this.height / 2;
+          this.zoom();
+        }
+
+        zoomOut() {
+          this.scale -= this.scaleStep;
+          if (this.scale < this.minScale) {
+            this.scale = this.minScale;
+            return;
+          }
+          this.mousePosition.x = this.width / 2;
+          this.mousePosition.y = this.height / 2;
+          this.zoom();
+        }
+
+        // 重置
+        reset() {
+          this.clear();
+          this.scale = 1;
+          this.preScale = 1;
+          this.offset = { x: 0, y: 0 };
+          this.curOffset = { x: 0, y: 0 };
+          this.mousePosition = { x: 0, y: 0 };
+
+          if (this.image) {
+            this.draw();
+          }
+        }
+
+        draw() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.ctx.save();
+          this.ctx.translate(this.offset.x, this.offset.y);
+          this.ctx.scale(this.scale, this.scale);
+          this.ctx.drawImage(
+            this.image,
+            0,
+            0,
+            this.image.width,
+            this.image.height
+          );
+          this.ctx.restore();
+        }
+
+        clear() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        paint() {
+          this.clear();
+          this.ctx.save();
+          this.ctx.translate(this.offset.x, this.offset.y);
+          this.ctx.scale(this.scale, this.scale);
+          this.ctx.drawImage(
+            this.image,
+            0,
+            0,
+            this.image.width,
+            this.image.height
+          );
+          this.ctx.restore();
+        }
+      }
+
+      let scene = new Scene(".image-wrapper");
+
+      document
+        .querySelector("#selectImageBtn")
+        ?.addEventListener("click", () => {
+          scene.selectImage();
+        });
+      document.querySelector("#cropButton")?.addEventListener("click", () => {
+        scene.downLoadFile();
+      });
+
+      // 放大
+      function zoomIn() {
+        scene.zoomIn();
+      }
+
+      // 缩小
+      function zoomOut() {
+        scene.zoomOut();
+      }
+
+      // 还原
+      function reset() {
+        scene.reset();
+      }
+    </script>
+  </body>
+</html>

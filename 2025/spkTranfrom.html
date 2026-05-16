@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>语音转文字实时演示</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      #status {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        background: #ccc;
+      }
+
+      #status.active {
+        background: #00c853;
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(0, 200, 83, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 200, 83, 0);
+        }
+      }
+
+      #transcript {
+        border: 1px solid #ddd;
+        min-height: 150px;
+        padding: 1rem;
+        margin: 1rem 0;
+        white-space: pre-wrap;
+        background: #f8f9fa;
+      }
+
+      .interim {
+        color: #666;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>实时语音转文字演示</h2>
+
+    <div>
+      <span id="status"></span>
+      <button id="toggleBtn">开始识别</button>
+      <span id="lang">当前语言：中文</span>
+    </div>
+
+    <div id="transcript"></div>
+
+    <script>
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
+      const transcriptDiv = document.getElementById("transcript");
+      const statusEl = document.getElementById("status");
+      const toggleBtn = document.getElementById("toggleBtn");
+
+      // 基础配置
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "zh-CN";
+
+      // 状态管理
+      let isRecognizing = false;
+
+      // 事件处理
+      recognition.onstart = () => {
+        isRecognizing = true;
+        statusEl.classList.add("active");
+        toggleBtn.textContent = "停止识别";
+      };
+
+      recognition.onend = () => {
+        isRecognizing = false;
+        statusEl.classList.remove("active");
+        toggleBtn.textContent = "开始识别";
+      };
+
+      recognition.onresult = (event) => {
+        let final = "";
+        let interim = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            final += transcript + "\n";
+          } else {
+            interim += transcript;
+          }
+        }
+
+        transcriptDiv.innerHTML =
+          final.replace(/\n/g, "<br>") +
+          `<span class="interim">${interim}</span>`;
+      };
+
+      recognition.onerror = (event) => {
+        console.error("识别错误:", event.error);
+        alert(`识别错误: ${event.error}`);
+      };
+
+      // 按钮控制
+      toggleBtn.addEventListener("click", () => {
+        if (isRecognizing) {
+          recognition.stop();
+        } else {
+          recognition.start();
+        }
+      });
+
+      // 权限检测
+      if (!("webkitSpeechRecognition" in window)) {
+        transcriptDiv.innerHTML = "⚠️ 当前浏览器不支持语音识别功能";
+        toggleBtn.disabled = true;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片放大镜效果</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+
+      .zoom-container {
+        position: relative;
+        width: 400px;
+        height: 400px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+          0 6px 6px rgba(0, 0, 0, 0.23);
+        border-radius: 10px;
+      }
+
+      .zoom-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .zoom-lens {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border: 3px solid white;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      }
+
+      .zoom-container:hover .zoom-image {
+        transform: scale(2);
+      }
+
+      .zoom-container:hover .zoom-lens {
+        opacity: 1;
+      }
+
+      .zoom-info {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .zoom-container:hover .zoom-info {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .zoom-controls {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .zoom-button {
+        background-color: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .zoom-button:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="zoom-container">
+      <img
+        src="./images/974ffb90.08i19r.png"
+        alt="Random image"
+        class="zoom-image"
+      />
+      <div class="zoom-lens"></div>
+      <div class="zoom-info">Move mouse to explore details</div>
+      <div class="zoom-controls">
+        <button class="zoom-button" id="zoomIn">+</button>
+        <button class="zoom-button" id="zoomOut">-</button>
+      </div>
+    </div>
+
+    <script>
+      const container = document.querySelector(".zoom-container");
+      const image = document.querySelector(".zoom-image");
+      const lens = document.querySelector(".zoom-lens");
+      const zoomInBtn = document.getElementById("zoomIn");
+      const zoomOutBtn = document.getElementById("zoomOut");
+
+      let zoomLevel = 2;
+
+      container.addEventListener("mousemove", (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const lensRadius = lens.offsetWidth / 2;
+
+        let x = e.clientX - left - lensRadius;
+        let y = e.clientY - top - lensRadius;
+
+        x = Math.max(0, Math.min(x, width - lens.offsetWidth));
+        y = Math.max(0, Math.min(y, height - lens.offsetHeight));
+
+        lens.style.left = `${x}px`;
+        lens.style.top = `${y}px`;
+
+        const xPercentage = x / (width - lens.offsetWidth);
+        const yPercentage = y / (height - lens.offsetHeight);
+
+        image.style.transformOrigin = `${xPercentage * 100}% ${
+          yPercentage * 100
+        }%`;
+      });
+
+      function updateZoom() {
+        image.style.transform = `scale(${zoomLevel})`;
+      }
+
+      zoomInBtn.addEventListener("click", () => {
+        zoomLevel = Math.min(zoomLevel + 0.5, 4);
+        updateZoom();
+      });
+
+      zoomOutBtn.addEventListener("click", () => {
+        zoomLevel = Math.max(zoomLevel - 0.5, 1);
+        updateZoom();
+      });
+
+      container.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        zoomLevel = Math.max(1, Math.min(4, zoomLevel + e.deltaY * -0.001));
+        updateZoom();
+      });
+    </script>
+  </body>
+</html>

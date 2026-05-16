@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <p>定位的函数，chrome用起来不好用</p>
+    <script>
+      navigator.geolocation.getCurrentPosition((position) => {
+        const p = document.querySelector("p");
+        const content = `经度:${position.coords.longitude} 纬度：${position.coords.latitude}`;
+        p.innerHTML = content;
+      });
+    </script>
+  </body>
+</html>

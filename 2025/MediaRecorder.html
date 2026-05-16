@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="startRecord">开始录制</button>
+    <button id="stopRecord">停止录制</button>
+    <script>
+      let mediaRecorder;
+      let recordedChunks = [];
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then((stream) => {
+            const video = document.getElementById("video");
+            video.srcObject = stream;
+
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = function (event) {
+              recordedChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = function () {
+              console.log("开始下载");
+              const blob = new Blob(recordedChunks, { type: "video/webm" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "recorded-video.webm";
+              a.click();
+            };
+
+            document
+              .getElementById("startRecord")
+              .addEventListener("click", () => {
+                mediaRecorder.start();
+              });
+
+            document
+              .getElementById("stopRecord")
+              .addEventListener("click", () => {
+                mediaRecorder.stop();
+              });
+          })
+          .catch((error) => {
+            console.error("获取摄像头失败:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

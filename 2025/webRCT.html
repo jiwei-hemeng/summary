@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="start">开始</button>
+    <button id="stop">结束</button>
+    <script>
+      let stream = null;
+      const chunks = [];
+      let recorder = null;
+
+      document.getElementById("start").addEventListener("click", async () => {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true, // not support
+          cursor: "always",
+        });
+        recorder = new MediaRecorder(stream);
+        recorder.start();
+        recorder.addEventListener("dataavailable", (e) => {
+          chunks.push(e.data);
+        });
+        recorder.addEventListener("stop", () => {
+          const blob = new Blob(chunks, { type: "video/webm;codecs=vp8" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "recorded_video.webm";
+          document.body.appendChild(a);
+          a.click();
+          chunks.length = 0;
+        });
+      });
+      document.getElementById("stop").addEventListener("click", () => {
+        // 获取所有的媒体设备并全部停止
+        stream.getTracks().forEach((el) => {
+          el.stop();
+        });
+        recorder.stop();
+      });
+    </script>
+  </body>
+</html>

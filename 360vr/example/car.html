@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D 汽车模拟器</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #87ceeb;
+      }
+      canvas {
+        display: block;
+      }
+      /* Mobile Controls Styling */
+      .controls {
+        position: fixed;
+        bottom: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 10;
+        pointer-events: none; /* Allow clicks/touches to pass through container */
+      }
+      .controls button {
+        pointer-events: auto; /* Enable interaction for buttons */
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        font-size: 18px;
+        border-radius: 5px;
+        touch-action: manipulation; /* Prevents zooming on double tap */
+        user-select: none; /* Prevent text selection */
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE */
+      }
+      .controls .left-controls,
+      .controls .right-controls {
+        display: flex;
+        gap: 10px;
+      }
+      .controls .left-controls {
+        justify-content: flex-start;
+      }
+      .controls .right-controls {
+        justify-content: flex-end;
+      }
+      /* Hide controls on desktop */
+      @media (min-width: 769px) {
+        .controls {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- On-screen Mobile Controls -->
+    <div class="controls">
+      <div class="left-controls">
+        <button id="btn-left">左</button>
+        <button id="btn-right">右</button>
+      </div>
+      <div class="right-controls">
+        <button id="btn-fwd">前</button>
+        <button id="btn-bwd">后</button>
+      </div>
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      let scene, camera, renderer, clock;
+      let car, ground, road, train;
+      const mountains = [];
+      const trees = [];
+      const clouds = [];
+      // Movement state
+      const keyboard = {};
+      const touchControls = {
+        forward: false,
+        backward: false,
+        left: false,
+        right: false,
+      };
+      const carSpeed = 0.15;
+      const turnSpeed = 0.05;
+      const trainSpeed = 0.01;
+      let trainAngle = 0;
+      const trainRadius = 30;
+      init();
+      animate();
+      function init() {
+        // Basic Scene Setup
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb); // Sky blue
+        scene.fog = new THREE.Fog(0x87ceeb, 50, 150); // Add fog
+        clock = new THREE.Clock();
+        // Camera
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          200,
+        );
+        camera.position.set(0, 5, -10); // Initial position slightly behind where the car will be
+        camera.lookAt(0, 0, 0);
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; // Enable shadows
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(50, 50, 25);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.left = -100;
+        directionalLight.shadow.camera.right = 100;
+        directionalLight.shadow.camera.top = 100;
+        directionalLight.shadow.camera.bottom = -100;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 200;
+        scene.add(directionalLight);
+        // --- Create Objects ---
+        // Ground
+        const groundGeometry = new THREE.PlaneGeometry(200, 200);
+        const groundMaterial = new THREE.MeshStandardMaterial({
+          color: 0x55aa55,
+          side: THREE.DoubleSide,
+        }); // Green
+        ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2; // Rotate flat
+        ground.receiveShadow = true;
+        scene.add(ground);
+        // Road
+        const roadGeometry = new THREE.PlaneGeometry(8, 200); // Narrow and long
+        const roadMaterial = new THREE.MeshStandardMaterial({
+          color: 0x444444,
+        }); // Dark grey
+        road = new THREE.Mesh(roadGeometry, roadMaterial);
+        road.rotation.x = -Math.PI / 2;
+        road.position.y = 0.01; // Slightly above ground
+        road.receiveShadow = true;
+        scene.add(road);
+        // Car
+        car = createCar();
+        car.position.set(0, 0.3, 0); // Start on the road
+        scene.add(car);
+        // Mountains
+        createMountains(15);
+        // Trees
+        createTrees(50);
+        // Clouds
+        createClouds(20);
+        // Train
+        train = createTrain();
+        train.position.y = 0.2; // Slightly above ground
+        scene.add(train);
+        // Event Listeners
+        window.addEventListener("resize", onWindowResize, false);
+        window.addEventListener("keydown", (event) => {
+          keyboard[event.key.toLowerCase()] = true;
+        });
+        window.addEventListener("keyup", (event) => {
+          keyboard[event.key.toLowerCase()] = false;
+        });
+        // Touch Controls Listeners
+        setupTouchControls();
+      }
+      function createCar() {
+        const carGroup = new THREE.Group();
+        // Body
+        const bodyGeometry = new THREE.BoxGeometry(1.5, 0.6, 3);
+        const bodyMaterial = new THREE.MeshStandardMaterial({
+          color: 0xff0000,
+        }); // Red
+        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        body.position.y = 0.3;
+        body.castShadow = true;
+        carGroup.add(body);
+        // Cabin
+        const cabinGeometry = new THREE.BoxGeometry(1.3, 0.5, 1.5);
+        const cabinMaterial = new THREE.MeshStandardMaterial({
+          color: 0xcccccc,
+        }); // Light grey
+        const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
+        cabin.position.set(0, 0.75, -0.3); // y = body.y + body.height/2 + cabin.height/2
+        cabin.castShadow = true;
+        carGroup.add(cabin);
+        // Wheels
+        const wheelGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.3, 16);
+        const wheelMaterial = new THREE.MeshStandardMaterial({
+          color: 0x222222,
+        }); // Dark grey/black
+        const wheelPositions = [
+          { x: 0.8, y: 0, z: 1.0 }, // Front right
+          { x: -0.8, y: 0, z: 1.0 }, // Front left
+          { x: 0.8, y: 0, z: -1.0 }, // Back right
+          { x: -0.8, y: 0, z: -1.0 }, // Back left
+        ];
+        wheelPositions.forEach((pos) => {
+          const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+          wheel.rotation.z = Math.PI / 2; // Rotate to stand upright
+          wheel.position.set(pos.x, pos.y + 0.15, pos.z); // Adjust y based on radius
+          wheel.castShadow = true;
+          carGroup.add(wheel);
+        });
+        // Add invisible object for camera tracking point slightly behind the car
+        const cameraTarget = new THREE.Object3D();
+        cameraTarget.position.set(0, 2, -5); // Behind and slightly above
+        carGroup.add(cameraTarget);
+        carGroup.userData.cameraTarget = cameraTarget; // Store reference
+        return carGroup;
+      }
+      /**
+       * 生成随机位置的山脉
+       * @param {number} count - 山脉的数量
+       */
+      function createMountains(count) {
+        const mountainMaterial = new THREE.MeshStandardMaterial({
+          color: 0x8b4513,
+        }); // Brownish
+        const snowMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+        }); // White snow caps
+        for (let i = 0; i < count; i++) {
+          const height = Math.random() * 30 + 10;
+          const radius = Math.random() * 10 + 5;
+          const mountainGeometry = new THREE.ConeGeometry(radius, height, 8); // Low poly cone
+          const mountain = new THREE.Mesh(mountainGeometry, mountainMaterial);
+          mountain.position.x = (Math.random() - 0.5) * 180; // Spread them out
+          mountain.position.z = (Math.random() - 0.5) * 180;
+          // Ensure mountains are far from the central road area
+          if (Math.abs(mountain.position.x) < 20)
+            mountain.position.x += Math.sign(mountain.position.x) * 20;
+          if (Math.abs(mountain.position.z) < 20)
+            mountain.position.z += Math.sign(mountain.position.z) * 20;
+          mountain.position.y = height / 2 - 0.1; // Base on the ground plane
+          mountain.castShadow = true;
+          mountain.receiveShadow = true;
+          scene.add(mountain);
+          mountains.push(mountain);
+          // Add snow cap
+          if (height > 25) {
+            const snowHeight = height * 0.3;
+            const snowRadius = radius * (snowHeight / height) * 0.8; // Tapered snow cap
+            const snowGeometry = new THREE.ConeGeometry(
+              snowRadius,
+              snowHeight,
+              8,
+            );
+            const snowCap = new THREE.Mesh(snowGeometry, snowMaterial);
+            snowCap.position.y = height - snowHeight / 2; // Position on top
+            mountain.add(snowCap); // Add as child
+          }
+        }
+      }
+
+      /**
+       * 生成随机位置的树
+       * @param {number} count - 树的数量
+       */
+      function createTrees(count) {
+        const trunkMaterial = new THREE.MeshStandardMaterial({
+          color: 0x8b4513,
+        }); // Brown
+        const leavesMaterial = new THREE.MeshStandardMaterial({
+          color: 0x228b22,
+        }); // Forest Green
+        for (let i = 0; i < count; i++) {
+          const tree = new THREE.Group();
+          const trunkHeight = Math.random() * 3 + 1;
+          const trunkRadius = trunkHeight * 0.1;
+          const trunkGeometry = new THREE.CylinderGeometry(
+            trunkRadius * 0.7,
+            trunkRadius,
+            trunkHeight,
+            8,
+          );
+          const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+          trunk.position.y = trunkHeight / 2;
+          trunk.castShadow = true;
+          tree.add(trunk);
+          const leavesHeight = Math.random() * 4 + 2;
+          const leavesRadius = leavesHeight * 0.4;
+          const leavesGeometry = new THREE.ConeGeometry(
+            leavesRadius,
+            leavesHeight,
+            6,
+          );
+          const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
+          leaves.position.y = trunkHeight + leavesHeight / 2 - 0.2; // Sit on top of trunk
+          leaves.castShadow = true;
+          tree.add(leaves);
+          // Position the tree randomly, avoiding the road
+          tree.position.x = (Math.random() - 0.5) * 150;
+          tree.position.z = (Math.random() - 0.5) * 150;
+          // Ensure trees are off the road (road width is 8, give some buffer)
+          if (Math.abs(tree.position.x) < 6) {
+            tree.position.x += Math.sign(tree.position.x || 1) * 6; // Move it away if too close
+          }
+          tree.position.y = 0; // Base at ground level
+          scene.add(tree);
+          trees.push(tree);
+        }
+      }
+
+      /**
+       * 生成随机云朵
+       * @param {number} count - 树的云朵
+       */
+      function createClouds(count) {
+        const cloudMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.8,
+        });
+        for (let i = 0; i < count; i++) {
+          const cloud = new THREE.Group();
+          const numSpheres = Math.floor(Math.random() * 5) + 3; // 3 to 7 spheres per cloud
+          for (let j = 0; j < numSpheres; j++) {
+            const sphereSize = Math.random() * 5 + 2;
+            const sphereGeometry = new THREE.SphereGeometry(sphereSize, 8, 8); // Low poly spheres
+            const sphere = new THREE.Mesh(sphereGeometry, cloudMaterial);
+            // Offset spheres slightly to form cloud shape
+            sphere.position.set(
+              (Math.random() - 0.5) * 10,
+              (Math.random() - 0.5) * 3,
+              (Math.random() - 0.5) * 5,
+            );
+            sphere.castShadow = true; // Clouds can cast subtle shadows
+            cloud.add(sphere);
+          }
+          // Position the cloud group high up and spread out
+          cloud.position.x = (Math.random() - 0.5) * 180;
+          cloud.position.z = (Math.random() - 0.5) * 180;
+          cloud.position.y = Math.random() * 20 + 30; // Height range
+          scene.add(cloud);
+          clouds.push(cloud);
+        }
+      }
+      /**
+       * 生成火车
+       */
+      function createTrain() {
+        const trainGroup = new THREE.Group();
+        const colors = [0x4444ff, 0xffaa00, 0x44ff44]; // Blue engine, orange, green cars
+        const carLength = 5;
+        const carWidth = 2;
+        const carHeight = 1.8;
+        const gap = 0.5;
+        for (let i = 0; i < 3; i++) {
+          const carGeometry = new THREE.BoxGeometry(
+            carWidth,
+            carHeight,
+            carLength,
+          );
+          const carMaterial = new THREE.MeshStandardMaterial({
+            color: colors[i],
+          });
+          const trainCar = new THREE.Mesh(carGeometry, carMaterial);
+          trainCar.position.z = -(i * (carLength + gap)); // Position cars behind each other
+          trainCar.castShadow = true;
+          trainCar.receiveShadow = true;
+          trainGroup.add(trainCar);
+          // Simple wheels for each car
+          const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.2, 8);
+          const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+          const wheelPositions = [
+            { x: carWidth / 2 + 0.1, z: carLength / 2 - 0.5 },
+            { x: carWidth / 2 + 0.1, z: -carLength / 2 + 0.5 },
+            { x: -carWidth / 2 - 0.1, z: carLength / 2 - 0.5 },
+            { x: -carWidth / 2 - 0.1, z: -carLength / 2 + 0.5 },
+          ];
+          wheelPositions.forEach((pos) => {
+            const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+            wheel.rotation.x = Math.PI / 2;
+            wheel.position.set(
+              pos.x,
+              -carHeight / 2 + 0.4,
+              trainCar.position.z + pos.z,
+            );
+            wheel.castShadow = true;
+            trainGroup.add(wheel);
+          });
+        }
+        return trainGroup;
+      }
+      function setupTouchControls() {
+        const btnFwd = document.getElementById("btn-fwd");
+        const btnBwd = document.getElementById("btn-bwd");
+        const btnLeft = document.getElementById("btn-left");
+        const btnRight = document.getElementById("btn-right");
+        // Touch start events
+        btnFwd.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault();
+            touchControls.forward = true;
+          },
+          { passive: false },
+        );
+        btnBwd.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault();
+            touchControls.backward = true;
+          },
+          { passive: false },
+        );
+        btnLeft.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault();
+            touchControls.left = true;
+          },
+          { passive: false },
+        );
+        btnRight.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault();
+            touchControls.right = true;
+          },
+          { passive: false },
+        );
+        // Touch end events (using 'touchend' and 'touchcancel')
+        const touchEndHandler = (control) => (e) => {
+          // Check if any remaining touches are on the *same* button
+          let stillTouching = false;
+          if (e.touches) {
+            for (let i = 0; i < e.touches.length; i++) {
+              if (e.touches[i].target === e.target) {
+                stillTouching = true;
+                break;
+              }
+            }
+          }
+          if (!stillTouching) {
+            touchControls[control] = false;
+          }
+        };
+        btnFwd.addEventListener("touchend", touchEndHandler("forward"));
+        btnBwd.addEventListener("touchend", touchEndHandler("backward"));
+        btnLeft.addEventListener("touchend", touchEndHandler("left"));
+        btnRight.addEventListener("touchend", touchEndHandler("right"));
+        btnFwd.addEventListener("touchcancel", touchEndHandler("forward"));
+        btnBwd.addEventListener("touchcancel", touchEndHandler("backward"));
+        btnLeft.addEventListener("touchcancel", touchEndHandler("left"));
+        btnRight.addEventListener("touchcancel", touchEndHandler("right"));
+        // Prevent scrolling on the controls themselves
+        document.querySelector(".controls").addEventListener(
+          "touchmove",
+          (e) => {
+            e.preventDefault();
+          },
+          { passive: false },
+        );
+      }
+      /**
+       * 汽车位置更新
+       */
+      function updateCarMovement(deltaTime) {
+        const effectiveSpeed = carSpeed * (deltaTime * 60); // Normalize speed based on 60fps
+        const effectiveTurnSpeed = turnSpeed * (deltaTime * 60);
+        let moveForward =
+          keyboard["arrowup"] || keyboard["w"] || touchControls.forward;
+        let moveBackward =
+          keyboard["arrowdown"] || keyboard["s"] || touchControls.backward;
+        let turnLeft =
+          keyboard["arrowleft"] || keyboard["a"] || touchControls.left;
+        let turnRight =
+          keyboard["arrowright"] || keyboard["d"] || touchControls.right;
+        if (moveForward) {
+          car.translateZ(effectiveSpeed);
+        }
+        if (moveBackward) {
+          car.translateZ(-effectiveSpeed * 0.7); // Slower reverse
+        }
+        if (turnLeft) {
+          car.rotateY(effectiveTurnSpeed);
+        }
+        if (turnRight) {
+          car.rotateY(-effectiveTurnSpeed);
+        }
+      }
+      function updateTrainMovement(deltaTime) {
+        trainAngle += trainSpeed * (deltaTime * 60); // Normalize speed
+        if (trainAngle > Math.PI * 2) {
+          trainAngle -= Math.PI * 2; // Loop the angle
+        }
+        const trainX = Math.cos(trainAngle) * trainRadius;
+        const trainZ = Math.sin(trainAngle) * trainRadius;
+        train.position.x = trainX;
+        train.position.z = trainZ;
+        // Make train face forward
+        const nextAngle = trainAngle + 0.01; // Look slightly ahead
+        const nextX = Math.cos(nextAngle) * trainRadius;
+        const nextZ = Math.sin(nextAngle) * trainRadius;
+        train.lookAt(nextX, train.position.y, nextZ);
+      }
+      /**
+       * 实时更新相机角度
+       */
+      function updateCamera() {
+        if (!car || !car.userData.cameraTarget) return;
+        const targetPosition = new THREE.Vector3();
+        // Get the world position of the invisible target object added to the car group
+        car.userData.cameraTarget.getWorldPosition(targetPosition);
+        // Smoothly interpolate camera position towards the target
+        camera.position.lerp(targetPosition, 0.05);
+        // Always look at the car's main body position
+        const lookAtPosition = new THREE.Vector3();
+        car.getWorldPosition(lookAtPosition); // Get car's world position
+        lookAtPosition.y += 0.5; // Look slightly above the car's base
+        camera.lookAt(lookAtPosition);
+      }
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      function animate() {
+        requestAnimationFrame(animate);
+        const deltaTime = clock.getDelta();
+        updateCarMovement(deltaTime);
+        updateTrainMovement(deltaTime);
+        updateCamera();
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>

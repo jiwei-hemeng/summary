@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基于three.js三维轨道可视化系统</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        background: #000;
+        color: #fff;
+      }
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      .control-panel {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 320px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 24px;
+        z-index: 100;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .panel-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #60a5fa;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .control-group {
+        margin-bottom: 16px;
+      }
+      .control-label {
+        display: block;
+        font-size: 13px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+      }
+      .slider-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      input[type="range"] {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: #334155;
+        outline: none;
+        appearance: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #60a5fa;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+      .value-display {
+        min-width: 50px;
+        text-align: right;
+        font-size: 14px;
+        color: #e2e8f0;
+        font-weight: 500;
+      }
+      .button-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .btn {
+        flex: 1;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+      .btn-secondary {
+        background: #475569;
+        color: white;
+      }
+      .btn-secondary:hover {
+        background: #334155;
+      }
+      .orbit-list {
+        margin-top: 16px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .orbit-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .orbit-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .orbit-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 12px;
+      }
+      .orbit-name {
+        flex: 1;
+        font-size: 14px;
+      }
+      .orbit-toggle {
+        width: 18px;
+        height: 18px;
+        accent-color: #60a5fa;
+      }
+      /* 美化滚动条 */
+      .orbit-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .orbit-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px;
+      }
+      .orbit-list::-webkit-scrollbar-thumb {
+        background: rgba(96, 165, 250, 0.5);
+        border-radius: 3px;
+      }
+      .orbit-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(96, 165, 250, 0.7);
+      }
+      /* 统计模块样式 */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .stat-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+      .stat-item:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .stat-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #60a5fa;
+        margin-bottom: 2px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      /* 轨道标签样式 */
+      .orbit-label {
+        font-size: 14px; /* 增大字体 */
+        font-weight: 600;
+        text-shadow:
+          0 0 4px rgba(0, 0, 0, 0.8),
+          0 0 8px rgba(255, 255, 255, 0.5); /* 增强阴影效果 */
+        white-space: nowrap;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.5); /* 添加半透明背景 */
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .info-panel {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 16px;
+        z-index: 100;
+        font-size: 13px;
+        color: #94a3b8;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .info-item {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .info-key {
+        color: #60a5fa;
+      }
+      .loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        color: #60a5fa;
+        z-index: 200;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="loading" class="loading">正在加载三维轨道可视化系统...</div>
+    <div id="canvas-container"></div>
+    <div class="control-panel">
+      <div class="panel-title">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        基于three.js三维轨道可视化控制系统
+      </div>
+      <div class="control-group">
+        <div class="control-label">时间缩放</div>
+        <div class="slider-container">
+          <input type="range" id="timeScale" min="0" max="1000" value="100" />
+          <span class="value-display" id="timeScaleValue">100.0x</span>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-primary" id="playPauseBtn">暂停</button>
+        <button class="btn btn-secondary" id="resetBtn">重置</button>
+      </div>
+      <div class="control-group">
+        <div class="control-label">轨道列表</div>
+        <div class="orbit-list" id="orbitList">
+          <!-- 轨道项会动态生成 -->
+        </div>
+      </div>
+      <!-- 新增的统计模块 -->
+      <div class="control-group">
+        <div class="control-label">状态统计</div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="statActiveOrbits">5/5</div>
+            <div class="stat-label">活跃轨道</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statFPS">60</div>
+            <div class="stat-label">帧率(FPS)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statTime">0.0</div>
+            <div class="stat-label">天数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statSpeed">100.0x</div>
+            <div class="stat-label">时间缩放</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statAvgHeight">32800</div>
+            <div class="stat-label">平均轨道高度(km)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statMaxHeight">378029</div>
+            <div class="stat-label">最大轨道高度(km)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statMinHeight">329</div>
+            <div class="stat-label">最小轨道高度(km)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statTotalOrbitLength">1,234,567</div>
+            <div class="stat-label">轨道总周长(km)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info-panel">
+      <div class="info-item">
+        <span class="info-key">操作提示:</span>
+        <span>左键拖动旋转 | 滚轮缩放 | 右键平移</span>
+      </div>
+      <div class="info-item">
+        <span class="info-key">Three.js 版本:</span>
+        <span>0.183.1 (最新版)</span>
+      </div>
+      <div class="info-item">
+        <span class="info-key">当前时间:</span>
+        <span id="currentTime">0.0 天</span>
+      </div>
+    </div>
+    <script type="module">
+      // 导入Three.js最新版本模块
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import {
+        CSS2DRenderer,
+        CSS2DObject,
+      } from "three/addons/renderers/CSS2DRenderer.js";
+      // 全局变量
+      let scene, camera, renderer, controls, labelRenderer;
+      let earth,
+        satellites = [],
+        orbits = [],
+        labels = [];
+      let clock = new THREE.Clock();
+      let isPlaying = true;
+      let timeScale = 100.0;
+      let simulationTime = 0;
+      let frameCount = 0;
+      let lastFpsUpdate = 0;
+      const earthRadius = 6371;
+      // 轨道配置
+      const orbitConfigs = [
+        {
+          name: "低地球轨道 (LEO)",
+          color: 0x4ade80,
+          a: 6700, // 半长轴 (km)
+          e: 0.001, // 偏心率
+          i: 51.6, // 倾角 (度)
+          omega: 0, // 近地点幅角
+          Omega: 0, // 升交点赤经
+          speed: 1.0,
+        },
+        {
+          name: "中地球轨道 (MEO)",
+          color: 0x60a5fa,
+          a: 15000,
+          e: 0.01,
+          i: 55,
+          omega: 0,
+          Omega: 45,
+          speed: 0.5,
+        },
+        {
+          name: "地球静止轨道 (GEO)",
+          color: 0xf472b6,
+          a: 42164,
+          e: 0.0001,
+          i: 0,
+          omega: 0,
+          Omega: 0,
+          speed: 0.1,
+        },
+        {
+          name: "高椭圆轨道 (HEO)",
+          color: 0xfbbf24,
+          a: 20000,
+          e: 0.6,
+          i: 63.4,
+          omega: 270,
+          Omega: 90,
+          speed: 0.3,
+        },
+        {
+          name: "月球轨道",
+          color: 0x94a3b8,
+          a: 384400,
+          e: 0.0549,
+          i: 5.145,
+          omega: 318,
+          Omega: 125,
+          speed: 0.01,
+        },
+      ];
+      // 初始化函数
+      async function init() {
+        // 创建场景
+        scene = new THREE.Scene();
+        // 创建相机
+        camera = new THREE.PerspectiveCamera(
+          60,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000000,
+        );
+        camera.position.set(0, 50000, 100000);
+        // 创建渲染器
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1;
+        document
+          .getElementById("canvas-container")
+          .appendChild(renderer.domElement);
+        // 创建标签渲染器
+        labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = "fixed";
+        labelRenderer.domElement.style.top = "0";
+        labelRenderer.domElement.style.left = "0";
+        labelRenderer.domElement.style.width = "100%";
+        labelRenderer.domElement.style.height = "100%";
+        labelRenderer.domElement.style.pointerEvents = "none";
+        labelRenderer.domElement.style.zIndex = "9998"; // 确保在合适层级
+        document.body.appendChild(labelRenderer.domElement);
+        // 创建轨道控制器
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = true;
+        controls.minDistance = 1000;
+        controls.maxDistance = 500000;
+        // 添加星空背景
+        createStarfield();
+        // 添加地球
+        createEarth();
+        // 添加坐标轴辅助
+        // const axesHelper = new THREE.AxesHelper(10000);
+        // scene.add(axesHelper);
+        // 创建轨道和卫星
+        createOrbitsAndSatellites();
+        // 添加环境光
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        // 添加太阳光
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        sunLight.position.set(100000, 50000, 100000);
+        scene.add(sunLight);
+        // 初始化UI
+        initUI();
+        // 初始化统计数据
+        initStatsData();
+        // 窗口大小调整
+        window.addEventListener("resize", onWindowResize);
+        // 隐藏加载
+        document.getElementById("loading").style.display = "none";
+        // 开始动画循环
+        animate();
+      }
+      // 创建星空背景
+      function createStarfield() {
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 10000;
+        const positions = new Float32Array(starsCount * 3);
+        for (let i = 0; i < starsCount * 3; i++) {
+          positions[i] = (Math.random() - 0.5) * 1000000;
+        }
+        starsGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3),
+        );
+        const starsMaterial = new THREE.PointsMaterial({
+          color: 0xffffff,
+          size: 100,
+          sizeAttenuation: true,
+        });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+      }
+      // 创建地球
+      function createEarth() {
+        const earthGeometry = new THREE.SphereGeometry(earthRadius, 64, 64);
+        const earthMaterial = new THREE.MeshPhongMaterial({
+          shininess: 15,
+          specular: 0x333333,
+        });
+        // 加载地球真实贴图
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+          "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg",
+          (texture) => {
+            earthMaterial.map = texture;
+            earthMaterial.needsUpdate = true;
+          },
+        );
+        earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
+        // 添加大气层效果
+        const atmosphereGeometry = new THREE.SphereGeometry(6450, 64, 64);
+        const atmosphereMaterial = new THREE.MeshBasicMaterial({
+          color: 0x6699ff,
+          transparent: true,
+          opacity: 0.2,
+          side: THREE.BackSide,
+        });
+        const atmosphere = new THREE.Mesh(
+          atmosphereGeometry,
+          atmosphereMaterial,
+        );
+        earth.add(atmosphere);
+      }
+      // 将轨道根数转换为笛卡尔坐标
+      function coe2rv(a, e, i, omega, Omega, nu) {
+        // 角度转弧度
+        i = (i * Math.PI) / 180;
+        omega = (omega * Math.PI) / 180;
+        Omega = (Omega * Math.PI) / 180;
+        nu = (nu * Math.PI) / 180;
+        // 距离中心天体的距离
+        const r = (a * (1 - e * e)) / (1 + e * Math.cos(nu));
+        // 轨道平面内的坐标
+        const x_pqw = r * Math.cos(nu);
+        const y_pqw = r * Math.sin(nu);
+        const z_pqw = 0;
+        // 旋转矩阵
+        const cosO = Math.cos(Omega);
+        const sinO = Math.sin(Omega);
+        const cosi = Math.cos(i);
+        const sini = Math.sin(i);
+        const cosw = Math.cos(omega);
+        const sinw = Math.sin(omega);
+        // 转换到ECI坐标系
+        const x =
+          (cosO * cosw - sinO * sinw * cosi) * x_pqw +
+          (-cosO * sinw - sinO * cosw * cosi) * y_pqw;
+        const y =
+          (sinO * cosw + cosO * sinw * cosi) * x_pqw +
+          (-sinO * sinw + cosO * cosw * cosi) * y_pqw;
+        const z = sinw * sini * x_pqw + cosw * sini * y_pqw;
+        return new THREE.Vector3(x, y, z);
+      }
+      // 创建轨道路径
+      function createOrbitPath(config) {
+        const points = [];
+        const nuStep = 0.1; // 真近点角步长
+        for (let nu = 0; nu <= 360; nu += nuStep) {
+          const point = coe2rv(
+            config.a,
+            config.e,
+            config.i,
+            config.omega,
+            config.Omega,
+            nu,
+          );
+          points.push(point);
+        }
+        const orbitGeometry = new THREE.BufferGeometry().setFromPoints(points);
+        // 使用虚线材质实现流动效果
+        const orbitMaterial = new THREE.LineDashedMaterial({
+          color: config.color,
+          transparent: true,
+          opacity: 0.7,
+          dashSize: 500,
+          gapSize: 300,
+          scale: 1,
+        });
+        const orbit = new THREE.Line(orbitGeometry, orbitMaterial);
+        orbit.computeLineDistances(); // 必须调用才能显示虚线
+        return orbit;
+      }
+      // 创建卫星
+      function createSatellite(config) {
+        const satelliteGeometry = new THREE.SphereGeometry(200, 16, 16);
+        const satelliteMaterial = new THREE.MeshPhongMaterial({
+          color: config.color,
+          emissive: config.color,
+          emissiveIntensity: 0.3,
+        });
+        const satellite = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
+        satellite.userData = {
+          config: config,
+          angle: Math.random() * 360, // 随机初始角度
+        };
+        return satellite;
+      }
+      // 创建轨道标签
+      // 在创建标签函数中修改位置计算
+      function createOrbitLabel(config) {
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "orbit-label";
+        labelDiv.textContent = config.name;
+        labelDiv.style.color = "#" + config.color.toString(16).padStart(6, "0");
+        labelDiv.style.zIndex = "9999";
+        const label = new CSS2DObject(labelDiv);
+        // 将标签放在轨道平面上，稍微高于轨道平面
+        const labelPosition = coe2rv(
+          config.a,
+          config.e,
+          config.i,
+          config.omega,
+          config.Omega,
+          0,
+        );
+        // 将标签稍微向上偏移（沿法向量方向）
+        const inclinationRad = (config.i * Math.PI) / 180;
+        const OmegaRad = (config.Omega * Math.PI) / 180;
+        const omegaRad = (config.omega * Math.PI) / 180;
+        // 计算轨道法向量
+        const normalVector = new THREE.Vector3(
+          -Math.cos(OmegaRad) * Math.sin(inclinationRad),
+          -Math.sin(OmegaRad) * Math.sin(inclinationRad),
+          Math.cos(inclinationRad),
+        ).normalize();
+        // 将标签位置稍微向外偏移，使其更易看见
+        const offset = 1000; // 1000km 偏移
+        labelPosition.add(normalVector.multiplyScalar(offset));
+        label.position.copy(labelPosition);
+        return label;
+      }
+      // 创建所有轨道和卫星
+      function createOrbitsAndSatellites() {
+        orbitConfigs.forEach((config, index) => {
+          // 创建轨道
+          const orbit = createOrbitPath(config);
+          orbit.userData = { config, visible: true };
+          scene.add(orbit);
+          orbits.push(orbit);
+          // 创建卫星
+          const satellite = createSatellite(config);
+          scene.add(satellite);
+          satellites.push(satellite);
+          // 创建轨道标签
+          const label = createOrbitLabel(config);
+          scene.add(label);
+          labels.push(label);
+        });
+      }
+      // 更新卫星位置
+      function updateSatellites(deltaTime) {
+        satellites.forEach((satellite, index) => {
+          const config = satellite.userData.config;
+          let angle = satellite.userData.angle;
+          // 根据轨道周期更新角度
+          // 开普勒第三定律: T^2 = (4π²/μ)a³
+          const mu = 398600.4418; // 地球引力常数 km³/s²
+          const T = 2 * Math.PI * Math.sqrt(Math.pow(config.a, 3) / mu); // 轨道周期，单位：秒
+          const T_days = T / 86400; // 转换为天
+          const angularSpeed = 360 / T_days; // 角速度，度/天
+          // 计算这一帧的模拟时间增量（天）
+          const delta_days = (deltaTime * timeScale) / 86400;
+          angle += angularSpeed * delta_days;
+          if (angle > 360) angle -= 360;
+          satellite.userData.angle = angle;
+          // 更新位置
+          const position = coe2rv(
+            config.a,
+            config.e,
+            config.i,
+            config.omega,
+            config.Omega,
+            angle,
+          );
+          satellite.position.copy(position);
+          // 同步更新标签位置，让标签跟随卫星
+          if (labels[index]) {
+            // 让标签稍微偏离卫星位置，避免重叠
+            const offsetVector = new THREE.Vector3(500, 500, 500); // 500km偏移
+            labels[index].position.copy(position.clone().add(offsetVector));
+          }
+        });
+      }
+      // 初始化UI
+      function initUI() {
+        // 时间缩放滑块
+        const timeScaleSlider = document.getElementById("timeScale");
+        const timeScaleValue = document.getElementById("timeScaleValue");
+        timeScaleSlider.addEventListener("input", (e) => {
+          timeScale = Number(e.target.value);
+          timeScaleValue.textContent = timeScale.toFixed(1) + "x";
+        });
+        // 播放/暂停按钮
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        playPauseBtn.addEventListener("click", () => {
+          isPlaying = !isPlaying;
+          playPauseBtn.textContent = isPlaying ? "暂停" : "播放";
+        });
+        // 重置按钮
+        const resetBtn = document.getElementById("resetBtn");
+        resetBtn.addEventListener("click", () => {
+          simulationTime = 0;
+          satellites.forEach((sat) => {
+            sat.userData.angle = Math.random() * 360;
+          });
+          timeScaleSlider.value = 100;
+          timeScale = 100.0;
+          timeScaleValue.textContent = "100.0x";
+          isPlaying = true;
+          playPauseBtn.textContent = "暂停";
+        });
+        // 轨道列表
+        const orbitList = document.getElementById("orbitList");
+        orbits.forEach((orbit, index) => {
+          const config = orbit.userData.config;
+          const item = document.createElement("div");
+          item.className = "orbit-item";
+          item.innerHTML = `
+                    <div class="orbit-color" style="background: #${config.color.toString(16).padStart(6, "0")}"></div>
+                    <div class="orbit-name">${config.name}</div>
+                    <input type="checkbox" class="orbit-toggle" data-index="${index}" checked>
+                `;
+          orbitList.appendChild(item);
+        });
+        // 轨道显示切换
+        document.querySelectorAll(".orbit-toggle").forEach((toggle) => {
+          toggle.addEventListener("change", (e) => {
+            const index = parseInt(e.target.dataset.index);
+            const visible = e.target.checked;
+            orbits[index].visible = visible;
+            satellites[index].visible = visible;
+            labels[index].visible = visible;
+            orbits[index].userData.visible = visible;
+          });
+        });
+      }
+      // 初始化统计数据
+      function initStatsData() {
+        // 计算轨道高度相关统计
+        const heights = orbitConfigs.map((config) => config.a - earthRadius);
+        const avgHeight = heights.reduce((a, b) => a + b, 0) / heights.length;
+        const maxHeight = Math.max(...heights);
+        const minHeight = Math.min(...heights);
+        // 计算轨道总周长
+        const totalLength = orbitConfigs.reduce((sum, config) => {
+          // 椭圆周长近似公式
+          const b = config.a * Math.sqrt(1 - config.e * config.e);
+          const perimeter =
+            2 * Math.PI * Math.sqrt((config.a * config.a + b * b) / 2);
+          return sum + perimeter;
+        }, 0);
+        // 更新初始统计
+        document.getElementById("statAvgHeight").textContent =
+          Math.round(avgHeight);
+        document.getElementById("statMaxHeight").textContent =
+          Math.round(maxHeight);
+        document.getElementById("statMinHeight").textContent =
+          Math.round(minHeight);
+        document.getElementById("statTotalOrbitLength").textContent =
+          Math.round(totalLength).toLocaleString();
+      }
+      // 窗口大小调整
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      // 更新统计信息
+      function updateStats() {
+        // 更新活跃轨道数
+        const activeOrbits = orbits.filter((o) => o.userData.visible).length;
+        document.getElementById("statActiveOrbits").textContent =
+          `${activeOrbits}/${orbits.length}`;
+        // 更新模拟时间
+        document.getElementById("statTime").textContent =
+          simulationTime.toFixed(1);
+        // 更新时间缩放
+        document.getElementById("statSpeed").textContent =
+          timeScale.toFixed(1) + "x";
+      }
+      // 动画循环
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        // 更新帧率统计
+        frameCount++;
+        const now = performance.now();
+        if (now - lastFpsUpdate >= 1000) {
+          document.getElementById("statFPS").textContent = frameCount;
+          frameCount = 0;
+          lastFpsUpdate = now;
+        }
+        if (isPlaying) {
+          updateSatellites(delta);
+          simulationTime += (delta * timeScale) / 86400;
+          document.getElementById("currentTime").textContent =
+            simulationTime.toFixed(1) + " 天";
+        }
+        // 更新轨道流动效果
+        orbits.forEach((orbit) => {
+          if (orbit.visible) {
+            orbit.material.dashOffset -= 10 * timeScale;
+          }
+        });
+        // 更新统计信息
+        updateStats();
+        // 地球自转
+        if (earth) {
+          earth.rotation.y += delta * 0.1;
+        }
+        controls.update();
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+      }
+      // 启动应用
+      init();
+    </script>
+  </body>
+</html>

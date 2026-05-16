@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片滑动验证</title>
+    <link rel="stylesheet" href="./css/all.min.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+        background-size: 400%400%;
+        animation: gradientBG 15s ease infinite;
+        padding: 20px;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0%50%;
+        }
+        50% {
+          background-position: 100%50%;
+        }
+        100% {
+          background-position: 0%50%;
+        }
+      }
+
+      .container {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 015px40pxrgba (0, 0, 0, 0.3);
+        overflow: hidden;
+        transition: transform 0.4s ease;
+        position: relative;
+      }
+
+      .card-header {
+        background: linear-gradient(90deg, #4a00e0, #8e2de2);
+        color: white;
+        padding: 25px;
+        text-align: center;
+        position: relative;
+      }
+
+      .card-headerh1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-shadow: 02px4pxrgba (0, 0, 0, 0.2);
+      }
+
+      .card-content {
+        padding: 30px;
+      }
+
+      .instructions {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 18px;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+
+      .verification-area {
+        position: relative;
+        margin-bottom: 30px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 08px25pxrgba (0, 0, 0, 0.15);
+        border: 1px solid #eee;
+      }
+
+      .image-container {
+        position: relative;
+        height: 320px;
+        background-size: cover;
+        background-position: center;
+        background-color: #f8f9fa;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        padding: 20px;
+        opacity: 0;
+        transition: all 0.5s ease;
+        pointer-events: none;
+        z-index: 5;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+      }
+
+      .puzzle-piece {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        box-shadow: 08px20pxrgba (0, 0, 0, 0.4);
+        transition: transform 0.2s ease;
+        z-index: 10;
+        border: 3px solid white;
+        cursor: move;
+      }
+
+      .target-area {
+        position: absolute;
+        height: 70px;
+        width: 70px;
+        border-radius: 15px;
+        border: 3px dashed rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.25);
+        pointer-events: none;
+        z-index: 3;
+        box-shadow: inset 0015pxrgba (0, 0, 0, 0.2);
+      }
+
+      .slider-container {
+        background: #f0f4ff;
+        border-radius: 15px;
+        padding: 18px;
+        position: relative;
+        margin-top: 25px;
+      }
+
+      .slider-track {
+        background: #e0e7ff;
+        height: 55px;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: inset 02px5pxrgba (0, 0, 0, 0.1);
+      }
+
+      .slider-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 55px;
+        width: 70px;
+        background: linear-gradient(90deg, #4a00e0, #6a11cb);
+        border-radius: 30px;
+        cursor: grab;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 06px18pxrgba (74, 0, 224, 0.5);
+        z-index: 2;
+        transition: all 0.3s ease;
+      }
+
+      .slider-handle:active {
+        cursor: grabbing;
+        transform: scale(1.03);
+      }
+
+      .slider-icon {
+        color: white;
+        font-size: 24px;
+      }
+
+      .slider-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(74, 0, 224, 0.25),
+          rgba(106, 17, 203, 0.25)
+        );
+        border-radius: 30px;
+        transition: width 0.2s ease;
+      }
+
+      .status-area {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        color: #555;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .attempts,
+      .timer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(240, 244, 255, 0.7);
+        padding: 8px15px;
+        border-radius: 30px;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      button {
+        padding: 14px30px;
+        border: none;
+        border-radius: 35px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        box-shadow: 06px15pxrgba (0, 0, 0, 0.15);
+      }
+
+      .verify-btn {
+        background: linear-gradient(90deg, #00c853, #009624);
+        color: white;
+      }
+
+      .verify-btn:hover {
+        background: linear-gradient(90deg, #009624, #00701c);
+        transform: translateY(-3px) scale(1.05);
+      }
+
+      .verify-btn:disabled {
+        background: #b0b0b0;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .refresh-btn {
+        background: linear-gradient(90deg, #f0f4ff, #e0e7ff);
+        color: #4a00e0;
+      }
+
+      .refresh-btn:hover {
+        background: linear-gradient(90deg, #e0e7ff, #d0d9ff);
+        transform: translateY(-3px) scale(1.05);
+      }
+
+      /* Success and Failure states */
+      .success.slider-handle {
+        background: linear-gradient(90deg, #00c853, #009624);
+        box-shadow: 06px18pxrgba (0, 200, 83, 0.5);
+      }
+
+      .success.slider-fill {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 200, 83, 0.25),
+          rgba(0, 150, 36, 0.25)
+        );
+      }
+
+      .failure.slider-handle {
+        background: linear-gradient(90deg, #ff1744, #d50000);
+        box-shadow: 06px18pxrgba (255, 23, 68, 0.5);
+      }
+
+      .failure.slider-fill {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 23, 68, 0.25),
+          rgba(213, 0, 0, 0.25)
+        );
+      }
+
+      /* Animations */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes confetti {
+        0% {
+          transform: translateY(0) rotate(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      .success-animation {
+        animation: pulse 0.6s ease-in-out 2;
+      }
+
+      .failure-animation {
+        animation: pulse 0.3s ease-in-out 3;
+      }
+
+      .bounce-animation {
+        animation: bounce 1s ease;
+      }
+
+      .progress-bar {
+        height: 5px;
+        background: linear-gradient(90deg, #00c853, #4a00e0);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(1);
+        transition: transform 1s linear;
+      }
+
+      .confetti {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background-color: #f00;
+        top: -20px;
+        opacity: 0;
+      }
+
+      /* Responsive design */
+      @media (max-width: 600px) {
+        .card-headerh1 {
+          font-size: 1.5rem;
+        }
+
+        .instructions {
+          font-size: 16px;
+        }
+
+        .image-container {
+          height: 280px;
+        }
+
+        .card-content {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .card-content {
+          padding: 15px;
+        }
+
+        .image-container {
+          height: 240px;
+        }
+
+        button {
+          padding: 12px20px;
+          font-size: 15px;
+        }
+
+        .puzzle-piece,
+        .target-area {
+          width: 60px;
+          height: 60px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <h1><i class="fas fa-shield-alt"></i> 安全验证</h1>
+
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="card-content">
+          <div class="instructions">
+            <i class="fas fa-puzzle-piece"></i> 请将拼图拖动到正确位置完成验证
+          </div>
+
+          <div class="verification-area">
+            <div class="image-container" id="imageContainer">
+              <div class="overlay" id="overlay">验证成功！</div>
+
+              <div class="puzzle-piece" id="puzzlePiece"></div>
+
+              <div class="target-area" id="targetArea"></div>
+            </div>
+
+            <div class="slider-container">
+              <div class="slider-track" id="sliderTrack">
+                <div class="slider-fill" id="sliderFill"></div>
+
+                <div class="slider-handle" id="sliderHandle">
+                  <div class="slider-icon">
+                    <i class="fas fa-arrows-alt-h"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="status-area">
+              <div class="attempts">
+                <i class="fas fa-redo"></i>
+                <span>尝试次数:</span>
+                <span id="attemptCount">0/3</span>
+              </div>
+
+              <div class="timer">
+                <i class="fas fa-clock"></i>
+                <span>剩余时间:</span>
+                <span id="timer">60秒</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="verify-btn" id="verifyBtn" disabled>
+              <i class="fas fa-check-circle"></i> 验证
+            </button>
+            <button class="refresh-btn" id="refreshBtn">
+              <i class="fas fa-sync-alt"></i> 刷新验证
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // DOM elements
+      const imageContainer = document.getElementById("imageContainer");
+      const puzzlePiece = document.getElementById("puzzlePiece");
+      const targetArea = document.getElementById("targetArea");
+      const sliderTrack = document.getElementById("sliderTrack");
+      const sliderHandle = document.getElementById("sliderHandle");
+      const sliderFill = document.getElementById("sliderFill");
+      const verifyBtn = document.getElementById("verifyBtn");
+      const refreshBtn = document.getElementById("refreshBtn");
+      const attemptCount = document.getElementById("attemptCount");
+      const timerElement = document.getElementById("timer");
+      const overlay = document.getElementById("overlay");
+      const progressBar = document.getElementById("progressBar"); // State variables
+      let attempts = 0;
+      let maxAttempts = 3;
+      let timeLeft = 60;
+      let timer;
+      let correctPosition;
+      let isDragging = false;
+      let currentPosition = 0;
+      let isVerified = false;
+      let initialPuzzleX, targetX;
+      let puzzlePieceX; // Image URLs
+      const images = [
+        "./images/photo-1501854140801-50d01698950b.png",
+        "./images/photo-1441974231531-c6227db76b6e.png",
+        "./images/photo-1470071459604-3b5ec3a7fe05.png",
+        "./images/photo-1465146344425-f00d5f5c8f07.png",
+        "./images/photo-1418065460487-3e41a6c84dc5.png",
+        "./images/photo-1475924156734-496f6cac6ec1.png",
+      ]; // Initialize the verification
+      function initVerification() {
+        // Reset state
+        attempts = 0;
+        timeLeft = 60;
+        isVerified = false;
+        currentPosition = 0;
+        updateAttempts();
+        updateTimer(); // Reset progress bar
+        progressBar.style.transform = "scaleX(1)"; // Clear existing timer
+        if (timer) clearInterval(timer); // Start timer
+        timer = setInterval(updateTimer, 1000); // Set random image
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        imageContainer.style.backgroundImage = `url(${randomImage})`; // Position puzzle piece and target area randomly on image
+        const containerWidth = imageContainer.offsetWidth;
+        const containerHeight = imageContainer.offsetHeight; // Ensure positions are within boundaries
+        const minX = 50;
+        const maxX = containerWidth - 130;
+        const minY = 50;
+        const maxY = containerHeight - 130; // Set puzzle piece position
+        const pieceX = Math.floor(Math.random() * (maxX - minX) + minX);
+        const pieceY = Math.floor(Math.random() * (maxY - minY) + minY);
+        puzzlePiece.style.left = `${pieceX}px`;
+        puzzlePiece.style.top = `${pieceY}px`;
+        puzzlePieceX = pieceX; // Set target area position (same Y position, random X within limits) // Ensure target is at least 60px away from puzzle piece
+        let targetPosX;
+        do {
+          targetPosX = Math.floor(Math.random() * (maxX - minX) + minX);
+        } while (Math.abs(targetPosX - pieceX) < 60);
+        targetArea.style.left = `${targetPosX}px`;
+        targetArea.style.top = `${pieceY}px`; // Set puzzle piece background to match the image
+        puzzlePiece.style.backgroundImage = `url(${randomImage})`;
+        puzzlePiece.style.backgroundPosition = `-${pieceX}px -${pieceY}px`; // Store initial positions
+        initialPuzzleX = pieceX;
+        targetX = targetPosX; // Reset slider
+        sliderHandle.style.left = "0px";
+        sliderFill.style.width = "0px";
+        sliderTrack.classList.remove("success", "failure");
+        verifyBtn.disabled = true; // Reset overlay
+        overlay.style.opacity = "0";
+        overlay.classList.remove("success", "failure"); // Reset puzzle piece position
+        puzzlePiece.style.transform = "none";
+        puzzlePiece.classList.remove("bounce-animation");
+        puzzlePiece.style.transition = "";
+      } // Update attempts display
+      function updateAttempts() {
+        attemptCount.textContent = `${attempts}/${maxAttempts}`;
+      } // Update timer display
+      function updateTimer() {
+        timerElement.textContent = `${timeLeft}秒`;
+        const progress = timeLeft / 60;
+        progressBar.style.transform = `scaleX(${progress})`;
+        timeLeft--;
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          showResult(false, "验证超时");
+          verifyBtn.disabled = true;
+        }
+      } // Show verification result
+      function showResult(isSuccess, message) {
+        // Add animation class
+        sliderTrack.classList.add(isSuccess ? "success" : "failure");
+        sliderTrack.classList.add(
+          isSuccess ? "success-animation" : "failure-animation"
+        ); // Show overlay message
+        overlay.textContent = message;
+        overlay.style.opacity = "1";
+        overlay.classList.add(isSuccess ? "success" : "failure"); // Remove animation classes after animation completes
+        setTimeout(
+          () => {
+            sliderTrack.classList.remove(
+              "success-animation",
+              "failure-animation"
+            );
+          },
+          isSuccess ? 1000 : 800
+        ); // Create confetti for success
+        if (isSuccess) {
+          createConfetti();
+        } // Disable further interaction if failed too many times
+        if (!isSuccess && attempts >= maxAttempts) {
+          setTimeout(() => {
+            overlay.textContent = "尝试次数已达上限";
+            overlay.style.opacity = "1";
+            verifyBtn.disabled = true;
+          }, 1000);
+        }
+      } // Create confetti animation
+      function createConfetti() {
+        const colors = [
+          "#ff0000",
+          "#00ff00",
+          "#0000ff",
+          "#ffff00",
+          "#ff00ff",
+          "#00ffff",
+        ];
+        const container = document.querySelector(".card");
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = Math.random() * 100 + "%";
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animation = `confetti ${
+            Math.random() * 3 + 2
+          }s ease-out forwards`;
+          confetti.style.opacity = "1";
+          container.appendChild(confetti); // Remove confetti after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, 5000);
+        }
+      } // Check if the position is correct
+      function checkPosition() {
+        const tolerance = 5; // Reduced tolerance to 5px for better accuracy
+        const currentX = parseFloat(puzzlePiece.style.left);
+        const diff = Math.abs(currentX - targetX);
+        return diff <= tolerance;
+      } // Event Listeners
+      sliderHandle.addEventListener("mousedown", startDrag);
+      sliderHandle.addEventListener("touchstart", startDrag, {
+        passive: false,
+      });
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("touchmove", drag, { passive: false });
+      document.addEventListener("mouseup", endDrag);
+      document.addEventListener("touchend", endDrag);
+      verifyBtn.addEventListener("click", verify);
+      refreshBtn.addEventListener("click", initVerification); // Drag functions
+      function startDrag(e) {
+        if (isVerified || attempts >= maxAttempts) return;
+        isDragging = true;
+        sliderHandle.style.cursor = "grabbing";
+        e.preventDefault(); // Prevent text selection
+      }
+      function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const sliderRect = sliderTrack.getBoundingClientRect();
+        let clientX;
+        if (e.type === "touchmove") {
+          clientX = e.touches[0].clientX;
+        } else {
+          clientX = e.clientX;
+        } // Calculate new position
+        let newPosition =
+          clientX - sliderRect.left - sliderHandle.offsetWidth / 2; // Constrain within slider bounds
+        const maxPosition = sliderRect.width - sliderHandle.offsetWidth;
+        newPosition = Math.max(0, Math.min(maxPosition, newPosition)); // Update position
+        currentPosition = newPosition;
+        sliderHandle.style.left = `${newPosition}px`;
+        sliderFill.style.width = `${newPosition}px`; // Calculate the puzzle piece position based on slider movement
+        const ratio = newPosition / maxPosition;
+        const maxMovement = targetX - initialPuzzleX;
+        puzzlePieceX = initialPuzzleX + maxMovement * ratio;
+        puzzlePiece.style.left = `${puzzlePieceX}px`; // Enable verify button if moved
+        verifyBtn.disabled = false; // Check if position is correct while dragging (optional)
+        if (checkPosition()) {
+          verify();
+        }
+      }
+      function endDrag() {
+        if (!isDragging) return;
+        isDragging = false;
+        sliderHandle.style.cursor = "grab";
+      } // Verification function
+      function verify() {
+        if (isVerified) return;
+        attempts++;
+        updateAttempts();
+        const isCorrect = checkPosition();
+        if (isCorrect) {
+          isVerified = true;
+          showResult(true, "验证成功！");
+          clearInterval(timer);
+          verifyBtn.disabled = true; // Snap puzzle piece to exact target position
+          puzzlePiece.style.transition = "left 0.3s ease-out";
+          puzzlePiece.style.left = `${targetX}px`;
+          puzzlePiece.classList.add("bounce-animation");
+        } else {
+          showResult(false, "位置不正确，请重试"); // Shake animation for incorrect position
+          puzzlePiece.style.transition = "transform 0.3s";
+          puzzlePiece.style.transform = "translateX(5px)";
+          setTimeout(() => {
+            puzzlePiece.style.transform = "translateX(-5px)";
+            setTimeout(() => {
+              puzzlePiece.style.transform = "translateX(0)";
+            }, 100);
+          }, 100);
+        }
+      } // Initialize on page load
+      window.addEventListener("load", initVerification);
+    </script>
+  </body>
+</html>

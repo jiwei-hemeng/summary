@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 适配移动端，保证点击坐标计算准确 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>点击脉冲特效</title>
+    <!-- 引入样式文件 -->
+    <style>
+      /* 初始化全局样式，清除默认边距和统一盒模型 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* 页面基础布局：居中显示标题，深色背景突出脉冲效果 */
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* 让页面占满整个视口高度 */
+        background: #0c2935; /* 深青蓝色背景，和淡蓝色脉冲形成对比 */
+      }
+
+      /* 标题样式：弱化装饰，不影响点击交互 */
+      h2 {
+        color: rgba(0, 0, 0, 0.2); /* 半透明黑色，降低存在感 */
+        font-size: 12vw; /* 适配不同屏幕宽度，移动端也能全屏显示 */
+        pointer-events: none; /* 让标题不拦截点击事件 */
+        user-select: none; /* 禁止选中标题文字 */
+      }
+
+      /* 脉冲元素核心样式 */
+      .pulse {
+        position: absolute; /* 绝对定位，基于点击坐标精准定位 */
+        transform: translate(-50%, -50%); /* 让元素中心对准点击位置 */
+        border: 2px solid #03a9f4; /* 淡蓝色边框，脉冲的视觉主体 */
+        border-radius: 50%; /* 圆形脉冲效果 */
+        z-index: 10000; /* 提高层级，确保脉冲在页面最上层显示 */
+        animation: animate 1s linear infinite; /* 绑定动画，1秒匀速播放 */
+      }
+
+      /* 脉冲扩散+渐隐动画 */
+      @keyframes animate {
+        0% {
+          width: 0; /* 初始宽度为0，从无到有 */
+          height: 0; /* 初始高度为0 */
+          opacity: 1; /* 初始完全不透明 */
+        }
+        50% {
+          opacity: 1; /* 中间阶段保持不透明，增强视觉过渡 */
+        }
+        100% {
+          width: 100px; /* 最终扩散到100px */
+          height: 100px; /* 最终扩散到100px */
+          opacity: 0; /* 最终完全透明，实现渐隐 */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 页面装饰标题，可根据需求修改或删除 -->
+    <h2>Pulse on Click</h2>
+
+    <script>
+      // 监听整个文档的点击事件
+      document.addEventListener("click", function (event) {
+        // 1. 创建一个i标签作为脉冲元素
+        let pulseElement = document.createElement("i");
+        // 2. 给脉冲元素添加类名，用于绑定CSS动画样式
+        pulseElement.setAttribute("class", "pulse");
+        // 3. 将脉冲元素添加到页面中
+        document.body.appendChild(pulseElement);
+
+        // 4. 定位脉冲元素到点击位置
+        // pageY/pageX是相对于文档的坐标，适配页面滚动场景
+        pulseElement.style.top = event.pageY + "px";
+        pulseElement.style.left = event.pageX + "px";
+
+        // 5. 动画时长1秒，结束后移除元素，避免DOM节点堆积
+        setTimeout(function () {
+          document.body.removeChild(pulseElement);
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

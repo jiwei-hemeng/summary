@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AnimatedRadial Menu</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #2f363e;
+      }
+      .menu {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .menu li {
+        position: absolute;
+        left: 0;
+        list-style: none;
+        transition: 0.5s;
+        transform-origin: 140px;
+        transition-delay: calc(0.1s * var(--i));
+        transform: rotate(0deg) translateX(110px);
+      }
+      .menu.active li {
+        transform: rotate(calc(360deg / 8 * var(--i))) translateX(0);
+      }
+      .menu li a {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--clr);
+        border: 2px solid var(--clr);
+        border-radius: 50%;
+        transform: rotate(calc(360deg / -8 * var(--i))) translateX(0);
+        font-size: 1.5em;
+        transition: 1s;
+      }
+      .menu li a:hover {
+        background-color: var(--clr);
+        color: #333;
+        box-shadow: 0 0 10px var(--clr), 0 0 30px var(--clr),
+          0 0 50px var(--clr);
+        transition: 0s;
+      }
+      .menu .toggle {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: #2f363e;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 2em;
+        transition: transform 1.25s;
+        z-index: 999;
+      }
+      .menu.active .toggle {
+        transform: rotate(135deg);
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="menu">
+      <div class="toggle"><ion-icon name="add-outline"></ion-icon></div>
+      <li style="--i: 0; --clr: #ff2972">
+        <a href="#"><ion-icon name="home-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 1; --clr: #fee800">
+        <a href="#"><ion-icon name="person-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 2; --clr: #04fc43">
+        <a href="#"><ion-icon name="settings-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 3; --clr: #fe00f1">
+        <a href="#"><ion-icon name="mail-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 4; --clr: #00b0fe">
+        <a href="#"><ion-icon name="key-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 5; --clr: #fea600">
+        <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 6; --clr: #a529ff">
+        <a href="#"><ion-icon name="game-controller-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 7; --clr: #01bdab">
+        <a href="#"><ion-icon name="camera-outline"></ion-icon></a>
+      </li>
+    </ul>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script>
+      const toggle = document.querySelector(".toggle"),
+        menu = document.querySelector(".menu");
+      toggle.onclick = () => {
+        menu.classList.toggle("active");
+      };
+    </script>
+  </body>
+</html>

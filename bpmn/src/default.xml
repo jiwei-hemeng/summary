@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             id="Definitions_1">
+
+  <process id="ShoppingConfirmationProcess" name="购物确认流程" isExecutable="true">
+
+    <!-- 开始事件 -->
+    <startEvent id="StartEvent_1" name="开始购物">
+      <outgoing>SequenceFlow_1</outgoing>
+    </startEvent>
+
+    <!-- 用户下单任务 -->
+    <userTask id="PlaceOrderTask" name="提交订单" camunda:assignee="${customer}">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+    </userTask>
+
+    <!-- 库存检查 -->
+    <serviceTask id="CheckInventoryTask" name="检查库存"
+                 camunda:class="com.example.service.InventoryService">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_3</outgoing>
+    </serviceTask>
+
+    <!-- 排他网关：库存是否充足 -->
+    <exclusiveGateway id="InventoryGateway" name="库存是否充足">
+      <incoming>SequenceFlow_3</incoming>
+      <outgoing>SequenceFlow_4</outgoing>
+      <outgoing>SequenceFlow_5</outgoing>
+    </exclusiveGateway>
+
+    <!-- 库存充足分支：继续支付 -->
+    <sequenceFlow id="SequenceFlow_4" name="充足"
+                  sourceRef="InventoryGateway" targetRef="PaymentTask">
+      <conditionExpression xsi:type="tFormalExpression">
+        ${inventoryAvailable == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <!-- 支付任务 -->
+    <userTask id="PaymentTask" name="确认支付" camunda:assignee="${customer}">
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_6</outgoing>
+    </userTask>
+
+    <!-- 支付验证服务 -->
+    <serviceTask id="VerifyPaymentTask" name="验证支付"
+                 camunda:class="com.example.service.PaymentVerificationService">
+      <incoming>SequenceFlow_6</incoming>
+      <outgoing>SequenceFlow_7</outgoing>
+    </serviceTask>
+
+    <!-- 排他网关：支付是否成功 -->
+    <exclusiveGateway id="PaymentGateway" name="支付是否成功">
+      <incoming>SequenceFlow_7</incoming>
+      <outgoing>SequenceFlow_8</outgoing>
+      <outgoing>SequenceFlow_9</outgoing>
+    </exclusiveGateway>
+
+    <!-- 库存不足分支：通知用户 -->
+    <sequenceFlow id="SequenceFlow_5" name="库存不足"
+                  sourceRef="InventoryGateway" targetRef="NotifyOutOfStockTask">
+      <conditionExpression xsi:type="tFormalExpression">
+        ${inventoryAvailable == false}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <!-- 通知缺货任务 -->
+    <userTask id="NotifyOutOfStockTask" name="通知缺货" camunda:assignee="${customer}">
+      <incoming>SequenceFlow_5</incoming>
+      <outgoing>SequenceFlow_10</outgoing>
+    </userTask>
+
+    <!-- 取消订单 -->
+    <endEvent id="CancelOrderEvent" name="订单取消">
+      <incoming>SequenceFlow_10</incoming>
+    </endEvent>
+
+    <!-- 支付成功分支 -->
+    <sequenceFlow id="SequenceFlow_8" name="支付成功"
+                  sourceRef="PaymentGateway" targetRef="PrepareShipmentTask">
+      <conditionExpression xsi:type="tFormalExpression">
+        ${paymentSuccess == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <!-- 支付失败分支 -->
+    <sequenceFlow id="SequenceFlow_9" name="支付失败"
+                  sourceRef="PaymentGateway" targetRef="NotifyPaymentFailedTask">
+      <conditionExpression xsi:type="tFormalExpression">
+        ${paymentSuccess == false}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <!-- 准备发货任务 -->
+    <userTask id="PrepareShipmentTask" name="准备发货" camunda:assignee="${warehouse}">
+      <incoming>SequenceFlow_8</incoming>
+      <outgoing>SequenceFlow_11</outgoing>
+    </userTask>
+
+    <!-- 通知支付失败任务 -->
+    <userTask id="NotifyPaymentFailedTask" name="通知支付失败" camunda:assignee="${customer}">
+      <incoming>SequenceFlow_9</incoming>
+      <outgoing>SequenceFlow_12</outgoing>
+    </userTask>
+
+    <!-- 发货任务 -->
+    <serviceTask id="ShipOrderTask" name="发货"
+                 camunda:class="com.example.service.ShippingService">
+      <incoming>SequenceFlow_11</incoming>
+      <outgoing>SequenceFlow_13</outgoing>
+    </serviceTask>
+
+    <!-- 发送确认邮件 -->
+    <serviceTask id="SendConfirmationTask" name="发送确认邮件"
+                 camunda:class="com.example.service.EmailService">
+      <incoming>SequenceFlow_13</incoming>
+      <outgoing>SequenceFlow_14</outgoing>
+    </serviceTask>
+
+    <!-- 结束事件：订单完成 -->
+    <endEvent id="OrderCompletedEvent" name="订单完成">
+      <incoming>SequenceFlow_14</incoming>
+    </endEvent>
+
+    <!-- 支付失败后的结束 -->
+    <endEvent id="PaymentFailedEvent" name="支付失败">
+      <incoming>SequenceFlow_12</incoming>
+    </endEvent>
+
+    <!-- 流程连线定义 -->
+    <sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="PlaceOrderTask"/>
+    <sequenceFlow id="SequenceFlow_2" sourceRef="PlaceOrderTask" targetRef="CheckInventoryTask"/>
+    <sequenceFlow id="SequenceFlow_3" sourceRef="CheckInventoryTask" targetRef="InventoryGateway"/>
+    <sequenceFlow id="SequenceFlow_6" sourceRef="PaymentTask" targetRef="VerifyPaymentTask"/>
+    <sequenceFlow id="SequenceFlow_7" sourceRef="VerifyPaymentTask" targetRef="PaymentGateway"/>
+    <sequenceFlow id="SequenceFlow_10" sourceRef="NotifyOutOfStockTask" targetRef="CancelOrderEvent"/>
+    <sequenceFlow id="SequenceFlow_11" sourceRef="PrepareShipmentTask" targetRef="ShipOrderTask"/>
+    <sequenceFlow id="SequenceFlow_12" sourceRef="NotifyPaymentFailedTask" targetRef="PaymentFailedEvent"/>
+    <sequenceFlow id="SequenceFlow_13" sourceRef="ShipOrderTask" targetRef="SendConfirmationTask"/>
+    <sequenceFlow id="SequenceFlow_14" sourceRef="SendConfirmationTask" targetRef="OrderCompletedEvent"/>
+
+  </process>
+
+  <!-- BPMN 图形定义 -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ShoppingConfirmationProcess">
+
+      <!-- 开始事件 -->
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="142" y="138" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- 用户下单任务 -->
+      <bpmndi:BPMNShape id="PlaceOrderTask_di" bpmnElement="PlaceOrderTask">
+        <dc:Bounds x="240" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 库存检查任务 -->
+      <bpmndi:BPMNShape id="CheckInventoryTask_di" bpmnElement="CheckInventoryTask">
+        <dc:Bounds x="390" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 库存网关 -->
+      <bpmndi:BPMNShape id="InventoryGateway_di" bpmnElement="InventoryGateway" isMarkerVisible="true">
+        <dc:Bounds x="535" y="95" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 支付任务 -->
+      <bpmndi:BPMNShape id="PaymentTask_di" bpmnElement="PaymentTask">
+        <dc:Bounds x="640" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 支付验证任务 -->
+      <bpmndi:BPMNShape id="VerifyPaymentTask_di" bpmnElement="VerifyPaymentTask">
+        <dc:Bounds x="790" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 支付网关 -->
+      <bpmndi:BPMNShape id="PaymentGateway_di" bpmnElement="PaymentGateway" isMarkerVisible="true">
+        <dc:Bounds x="935" y="95" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 准备发货任务 -->
+      <bpmndi:BPMNShape id="PrepareShipmentTask_di" bpmnElement="PrepareShipmentTask">
+        <dc:Bounds x="1040" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 发货任务 -->
+      <bpmndi:BPMNShape id="ShipOrderTask_di" bpmnElement="ShipOrderTask">
+        <dc:Bounds x="1190" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 发送确认邮件 -->
+      <bpmndi:BPMNShape id="SendConfirmationTask_di" bpmnElement="SendConfirmationTask">
+        <dc:Bounds x="1340" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 订单完成结束事件 -->
+      <bpmndi:BPMNShape id="OrderCompletedEvent_di" bpmnElement="OrderCompletedEvent">
+        <dc:Bounds x="1492" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 库存不足分支：通知缺货 -->
+      <bpmndi:BPMNShape id="NotifyOutOfStockTask_di" bpmnElement="NotifyOutOfStockTask">
+        <dc:Bounds x="640" y="220" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 取消订单结束事件 -->
+      <bpmndi:BPMNShape id="CancelOrderEvent_di" bpmnElement="CancelOrderEvent">
+        <dc:Bounds x="792" y="242" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 支付失败分支：通知支付失败 -->
+      <bpmndi:BPMNShape id="NotifyPaymentFailedTask_di" bpmnElement="NotifyPaymentFailedTask">
+        <dc:Bounds x="1040" y="220" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 支付失败结束事件 -->
+      <bpmndi:BPMNShape id="PaymentFailedEvent_di" bpmnElement="PaymentFailedEvent">
+        <dc:Bounds x="1192" y="242" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- 流程连线图形定义 -->
+      <bpmndi:BPMNEdge id="SequenceFlow_1_di" bpmnElement="SequenceFlow_1">
+        <di:waypoint x="188" y="120"/>
+        <di:waypoint x="240" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_2_di" bpmnElement="SequenceFlow_2">
+        <di:waypoint x="340" y="120"/>
+        <di:waypoint x="390" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_3_di" bpmnElement="SequenceFlow_3">
+        <di:waypoint x="490" y="120"/>
+        <di:waypoint x="535" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_4_di" bpmnElement="SequenceFlow_4">
+        <di:waypoint x="560" y="120"/>
+        <di:waypoint x="640" y="120"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="590" y="102" width="30" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_5_di" bpmnElement="SequenceFlow_5">
+        <di:waypoint x="560" y="145"/>
+        <di:waypoint x="560" y="260"/>
+        <di:waypoint x="640" y="260"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="590" y="202" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_10_di" bpmnElement="SequenceFlow_10">
+        <di:waypoint x="740" y="260"/>
+        <di:waypoint x="792" y="260"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_6_di" bpmnElement="SequenceFlow_6">
+        <di:waypoint x="740" y="120"/>
+        <di:waypoint x="790" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_7_di" bpmnElement="SequenceFlow_7">
+        <di:waypoint x="890" y="120"/>
+        <di:waypoint x="935" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_8_di" bpmnElement="SequenceFlow_8">
+        <di:waypoint x="960" y="120"/>
+        <di:waypoint x="1040" y="120"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="102" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_9_di" bpmnElement="SequenceFlow_9">
+        <di:waypoint x="960" y="145"/>
+        <di:waypoint x="960" y="260"/>
+        <di:waypoint x="1040" y="260"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="202" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_11_di" bpmnElement="SequenceFlow_11">
+        <di:waypoint x="1140" y="120"/>
+        <di:waypoint x="1190" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_13_di" bpmnElement="SequenceFlow_13">
+        <di:waypoint x="1290" y="120"/>
+        <di:waypoint x="1340" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_14_di" bpmnElement="SequenceFlow_14">
+        <di:waypoint x="1440" y="120"/>
+        <di:waypoint x="1492" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="SequenceFlow_12_di" bpmnElement="SequenceFlow_12">
+        <di:waypoint x="1140" y="260"/>
+        <di:waypoint x="1192" y="260"/>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

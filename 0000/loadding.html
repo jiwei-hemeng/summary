@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      .app {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: space-around;
+      }
+      .loading {
+        margin: 0 auto 50px;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: space-between;
+        animation: loading-eff 3s linear infinite;
+      }
+      @keyframes loading-eff {
+        0% {
+          transform: scale(1) rotate(0);
+        }
+        20% {
+          transform: scale(1) rotate(72deg);
+        }
+        40% {
+          transform: scale(0.5) rotate(144deg);
+        }
+        60% {
+          transform: scale(0.5) rotate(216deg);
+        }
+        80% {
+          transform: scale(1) rotate(288deg);
+        }
+        100% {
+          transform: scale(1) rotate(360deg);
+        }
+      }
+      .round {
+        width: 40px;
+        height: 40px;
+        display: block;
+        border-radius: 20px 20px 20px 20px;
+        box-sizing: border-box;
+      }
+      .round:nth-of-type(1) {
+        background-color: #50de68;
+        animation: round-eff261 3s linear infinite;
+      }
+      .round:nth-of-type(2) {
+        background-color: #3dc453;
+        animation: round-eff262 3s linear infinite;
+      }
+      .round:nth-of-type(3) {
+        background-color: #14be71;
+        animation: round-eff263 3s linear infinite;
+      }
+      .round:nth-of-type(4) {
+        background-color: #78de35;
+        animation: round-eff264 3s linear infinite;
+      }
+      @keyframes round-eff261 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 20px 0 20px;
+        }
+        60% {
+          border-radius: 20px 20px 0 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff262 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 20px 20px 0;
+        }
+        60% {
+          border-radius: 20px 20px 20px 0;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff263 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 20px 0 20px 20px;
+        }
+        60% {
+          border-radius: 20px 0 20px 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+      @keyframes round-eff264 {
+        0% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        20% {
+          border-radius: 20px 20px 20px 20px;
+        }
+        40% {
+          border-radius: 0 20px 20px 20px;
+        }
+        60% {
+          border-radius: 0 20px 20px 20px;
+        }
+        80% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+        100% {
+          border-radius: 20px 20px 20px 20px 20px;
+        }
+      }
+
+      /* 下面的lodding效果 */
+
+      .loading_2,
+      .loading_2_bg {
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      .loading_2_bg {
+        margin: 0;
+        padding: 0;
+      }
+
+      .loading_2_box {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .loading_2_box ul {
+        height: 20px;
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0px;
+      }
+
+      .loading_2_box ul li {
+        width: 14px;
+        height: 14px;
+        border-radius: 1rem;
+        margin-right: 10px;
+        list-style-type: none;
+      }
+
+      .loading_2_box ul li:nth-child(1) {
+        background: #f4433c;
+        animation: loading-v3 3s 0s infinite;
+      }
+
+      .loading_2_box ul li:nth-child(2) {
+        background: #ff9800;
+        animation: loading-v3 3s 0.2s infinite;
+      }
+
+      .loading_2_box ul li:nth-child(3) {
+        background: #ffeb3b;
+        animation: loading-v3 3s 0.4s infinite;
+      }
+
+      .loading_2_box ul li:nth-child(4) {
+        background: #64e291;
+        animation: loading-v3 3s 0.6s infinite;
+      }
+
+      .loading_2_box ul li:nth-child(5) {
+        background: #2d85f0;
+        animation: loading-v3 3s 0.8s infinite;
+      }
+
+      .loading_2_box ul li:nth-child(6) {
+        background: #794c74;
+        animation: loading-v3 3s 1s infinite;
+      }
+
+      @keyframes loading-v3 {
+        25%,
+        50% {
+          height: 60px;
+          transform: translateY(-30px);
+        }
+        75%,
+        100% {
+          height: 14px;
+          transform: translateY(-7px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="loading">
+        <span class="round"></span>
+        <span class="round"></span>
+        <span class="round"></span>
+        <span class="round"></span>
+      </div>
+
+      <div class="loading_2">
+        <div class="loading_2_bg"></div>
+        <div class="loading_2_box">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

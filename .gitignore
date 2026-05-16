@@ -1,0 +1,6 @@
+chunksFileUpload/uploads/*
+server/proxy_public/uploads/*
+server/privatePem.txt
+server/publicPem.txt
+dist
+node_modules

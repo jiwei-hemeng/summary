@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>刮刮卡效果</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #fff;
+      }
+
+      #canvas {
+        position: absolute;
+        left: 0;
+        cursor: pointer;
+      }
+      h1 {
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        position: relative;
+        width: 700px;
+        height: 300px;
+        background-color: red;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      "
+    >
+      <h1>关注小白讲前端</h1>
+      <canvas id="canvas" width="700" height="300"> </canvas>
+    </div>
+    <script type="module">
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 设置一个颜色 覆盖在这个图片上
+      ctx.beginPath();
+      ctx.fillStyle = "gray";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // 属性方法
+      ctx.globalCompositeOperation = "destination-out";
+      // 设置画笔为圆形
+      ctx.lineCap = "round";
+      // 设置画笔宽度
+      ctx.lineWidth = 40;
+
+      // 鼠标或触摸按下
+      function start(e) {
+        e.preventDefault();
+        const x = e.clientX || e.touches[0].clientX;
+        const y = e.clientY || e.touches[0].clientY;
+        ctx.moveTo(x, y);
+        move();
+      }
+
+      // 移动
+      function move() {
+        canvas.addEventListener("mousemove", drawLine);
+        canvas.addEventListener("touchmove", drawLine);
+      }
+
+      // 绘制线条
+      function drawLine(e) {
+        e.preventDefault();
+        const x = e.clientX || e.touches[0].clientX;
+        const y = e.clientY || e.touches[0].clientY;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+
+      // 结束
+      function end(e) {
+        e.preventDefault();
+        canvas.removeEventListener("mousemove", drawLine);
+        canvas.removeEventListener("touchmove", drawLine);
+      }
+
+      // 添加事件监听器
+      canvas.addEventListener("mousedown", start);
+      canvas.addEventListener("touchstart", start);
+      canvas.addEventListener("mouseup", end);
+      canvas.addEventListener("touchend", end);
+    </script>
+  </body>
+</html>

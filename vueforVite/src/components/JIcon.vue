@@ -1,0 +1,27 @@
+<template>
+  <svg
+    aria-hidden="true" :fill="props.color"
+    :style="{ width: props.size, height: props.size }">
+    <use :href="symbolId" />
+  </svg>
+</template>
+<script lang="ts">
+export default {
+  name: "JIcon"
+}
+</script>
+<script setup lang="ts">
+import { computed } from "vue"
+interface Props {
+  name: string
+  color?: string
+  size?: string | number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  color: '#000',
+  size: '1em'
+})
+
+const symbolId = computed(() => `#icon-${props.name}`)
+</script>

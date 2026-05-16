@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .signature-container {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      #signature-pad {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 10px 0;
+        background-color: #f9f9f9;
+      }
+
+      .buttons {
+        margin: 15px 0;
+      }
+
+      button {
+        padding: 8px 15px;
+        margin: 0 5px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .stamp-preview {
+        margin-top: 30px;
+        padding: 20px;
+        border-top: 1px dashed #ddd;
+      }
+      /* 新增样式确保SVG背景透明 */
+      #stamp-result svg {
+        background-color: transparent !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signature-container">
+      <h2>请在下方绘制您的签名</h2>
+      <canvas id="signature-pad" width="400" height="200"></canvas>
+      <div class="buttons">
+        <button id="clear-btn">清除</button>
+        <button id="save-btn">保存签名</button>
+        <button id="download-btn">下载签名</button>
+      </div>
+
+      <div class="stamp-preview">
+        <h3>您的电子签章</h3>
+        <div id="stamp-result"></div>
+      </div>
+    </div>
+    <script src="./js/html2canvas.min.js"></script>
+    <script>
+      // 初始化签名板
+      const canvas = document.getElementById("signature-pad");
+      const ctx = canvas.getContext("2d");
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      // 设置签名样式
+      ctx.strokeStyle = "#2d8cf0";
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      // 事件监听
+      canvas.addEventListener("mousedown", startDrawing);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", stopDrawing);
+      canvas.addEventListener("mouseout", stopDrawing);
+
+      // 触摸支持
+      canvas.addEventListener("touchstart", handleTouchStart);
+      canvas.addEventListener("touchmove", handleTouchMove);
+      canvas.addEventListener("touchend", handleTouchEnd);
+
+      document
+        .getElementById("clear-btn")
+        .addEventListener("click", clearSignature);
+      document
+        .getElementById("save-btn")
+        .addEventListener("click", saveSignature);
+      document
+        .getElementById("download-btn")
+        .addEventListener("click", downloadSignature);
+      // 绘图函数
+      function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = getPosition(e);
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        [lastX, lastY] = getPosition(e);
+        ctx.lineTo(lastX, lastY);
+        ctx.stroke();
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+      // 触摸事件处理
+      function handleTouchStart(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousedown", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        canvas.dispatchEvent(mouseEvent);
+      }
+
+      function handleTouchMove(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousemove", {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        });
+        canvas.dispatchEvent(mouseEvent);
+      }
+
+      function handleTouchEnd(e) {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent("mouseup");
+        canvas.dispatchEvent(mouseEvent);
+      }
+
+      // 辅助函数
+      function getPosition(e) {
+        const rect = canvas.getBoundingClientRect();
+        let x, y;
+
+        if (e.type.includes("touch")) {
+          x = e.touches[0].clientX - rect.left;
+          y = e.touches[0].clientY - rect.top;
+        } else {
+          x = e.clientX - rect.left;
+          y = e.clientY - rect.top;
+        }
+
+        return [x, y];
+      }
+
+      function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function saveSignature() {
+        // 获取签名数据URL
+        const signatureData = canvas.toDataURL("image/png");
+
+        // 创建电子签章
+        createElectronicStamp(signatureData);
+      }
+
+      function createElectronicStamp(signatureData) {
+        const stampContainer = document.getElementById("stamp-result");
+
+        // 创建SVG印章（确保没有背景色）
+        const svgStamp = `
+                <svg width="300" height="150" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 印章外框 -->
+                    <rect x="10" y="10" width="280" height="130" rx="10" ry="10"
+                          fill="none" stroke="#c33" stroke-width="3"/>
+
+                    <!-- 印章文字 -->
+                    <text x="150" y="50" text-anchor="middle" font-family="SimHei"
+                          font-size="20" fill="#c33">个人电子签章</text>
+
+                    <!-- 签名图片 - 注意添加preserveAspectRatio -->
+                    <image href="${signatureData}" x="50" y="50" width="200" height="60"
+                           preserveAspectRatio="xMidYMid meet"/>
+
+                    <!-- 印章底部信息 -->
+                    <text x="150" y="120" text-anchor="middle" font-family="Arial"
+                          font-size="12" fill="#c33">${new Date().toLocaleDateString()}</text>
+                </svg>
+            `;
+
+        stampContainer.innerHTML = svgStamp;
+
+        // 实际应用中，这里可以添加将签章保存到服务器的代码
+        console.log("电子签章已创建:", signatureData);
+      }
+      function downloadSignature() {
+        const stampContainer = document.getElementById("stamp-result");
+
+        // 配置html2canvas使用透明背景
+        const options = {
+          backgroundColor: null, // 设置为null或'transparent'
+          scale: 2, // 提高导出质量
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+        };
+
+        html2canvas(stampContainer, options).then((canvas) => {
+          // 转换为PNG DataURL
+          const pngUrl = canvas.toDataURL("image/png");
+
+          // 创建下载链接
+          const downloadLink = document.createElement("a");
+          downloadLink.href = pngUrl;
+          downloadLink.download = "transparent-signature.png";
+
+          // 触发下载
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS 计数器</title>
+    <style>
+      @property --t {
+        syntax: "<integer>";
+        inherits: false;
+        initial-value: 0;
+      }
+
+      @counter-style 太棒了 {
+        system: cyclic;
+        symbols: "太棒了！！！";
+        /* range: 51 infinite; */
+      }
+      @counter-style 加油 {
+        system: cyclic; /* 指定一个算法，用于将计数器的整数值转化为字符串表示。*/
+        symbols: "加油！！";
+        range: 0 50;
+        fallback: 太棒了;
+      }
+      @counter-style 鼓励 {
+        system: cyclic;
+        symbols: "鼓励！";
+        range: 0 20; /* 指定一个counter-style生效的范围，如果计数器的值不再这个范围内，那么自定义的counter-style不会生效，counter-style会后退到fallback的style。 */
+        fallback: 加油; /* 当自定义的系统不能使用或者计数器的值超过了定义的范围时使用 */
+      }
+      body {
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .like {
+        position: relative;
+      }
+      .like::after {
+        position: absolute;
+        bottom: 100%;
+        width: max-content;
+        font-size: 2rem;
+        font-style: italic;
+        font-weight: bolder;
+        background-image: linear-gradient(#ffcf02, #ff7352);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        counter-reset: time var(--t);
+        content: "x" counter(time) counter(time, 鼓励);
+        animation: count 100s steps(999) forwards;
+        animation-play-state: paused;
+        transform: translateY(100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s 0.3s, 0s 0.6s transform;
+      }
+      @keyframes count {
+        to {
+          --t: 999;
+        }
+      }
+      .like:active::after {
+        animation-play-state: running;
+        visibility: visible;
+        opacity: 1;
+        transition: 0.3s;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <button class="like">长按我试试~</button>
+  </body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026年全年倒计时 | 记录时光</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入字体 -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- 自定义配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FF3E6C",
+              secondary: "#FFD166",
+              dark: "#0A0E26",
+              star: "#7DDDFA",
+            },
+            fontFamily: { sans: ["Noto Sans SC", "sans-serif"] },
+            animation: {
+              snowfall: "snowfall 20s linear infinite",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              float: "float 6s ease-in-out infinite",
+              countdown: "countdown 0.5s ease-out",
+            },
+            keyframes: {
+              snowfall: {
+                "0%": { transform: "translateY(0) rotate(0deg)" },
+                "100%": { transform: "translateY(100vh) rotate(360deg)" },
+              },
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-20px)" },
+              },
+              countdown: {
+                "0%": { transform: "scale(0.8)", opacity: 0 },
+                "100%": { transform: "scale(1)", opacity: 1 },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      :root {
+        --color-primary: #2563eb;
+        /* 色轮上均匀分布 120 度 */
+        --color-secondary: hsl(from var(--color-primary) calc(h + 120) s l);
+        --color-tertiary: hsl(from var(--color-primary) calc(h - 120) s l);
+      }
+      @layer utilities {
+        .text-gradient {
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .bg-stars {
+          background-image: radial-gradient(
+            circle,
+            theme("colors.star") 1px,
+            transparent 1px
+          );
+          background-size: 50px 50px;
+        }
+        .firework-canvas {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 10;
+        }
+        .snowflake {
+          position: absolute;
+          color: white;
+          opacity: 0.7;
+          user-select: none;
+          z-index: 5;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-dark bg-stars min-h-screen overflow-hidden font-sans text-white"
+  >
+    <!-- 烟花画布 -->
+    <canvas id="fireworkCanvas" class="firework-canvas"></canvas>
+    <!-- 雪花容器 -->
+    <div id="snowContainer" class="fixed inset-0 pointer-events-none"></div>
+    <!-- 主内容容器 -->
+    <div
+      class="relative z-20 flex flex-col items-center justify-center min-h-screen px-4"
+    >
+      <!-- 顶部装饰 -->
+      <div class="absolute top-8 left-0 right-0 text-center">
+        <h2
+          class="text-[clamp(1rem,3vw,1.5rem)] font-light text-star animate-pulse-slow"
+        >
+          2026年全年倒计时
+        </h2>
+      </div>
+      <!-- 倒计时区域 -->
+      <div
+        id="countdown"
+        class="mb-10 flex flex-wrap justify-center gap-4 md:gap-8"
+      >
+        <div class="countdown-item flex flex-col items-center w-20 md:w-28">
+          <span
+            id="days"
+            class="text-[clamp(2rem,8vw,4rem)] font-black text-gradient bg-gradient-to-r from-primary to-secondary animate-countdown"
+            >00</span
+          >
+          <span class="mt-2 text-sm md:text-base text-gray-300">天</span>
+        </div>
+        <div class="countdown-item flex flex-col items-center w-20 md:w-28">
+          <span
+            id="hours"
+            class="text-[clamp(2rem,8vw,4rem)] font-black text-gradient bg-gradient-to-r from-primary to-secondary animate-countdown"
+            >00</span
+          >
+          <span class="mt-2 text-sm md:text-base text-gray-300">时</span>
+        </div>
+        <div class="countdown-item flex flex-col items-center w-20 md:w-28">
+          <span
+            id="minutes"
+            class="text-[clamp(2rem,8vw,4rem)] font-black text-gradient bg-gradient-to-r from-primary to-secondary animate-countdown"
+            >00</span
+          >
+          <span class="mt-2 text-sm md:text-base text-gray-300">分</span>
+        </div>
+        <div class="countdown-item flex flex-col items-center w-20 md:w-28">
+          <span
+            id="seconds"
+            class="text-[clamp(2rem,8vw,4rem)] font-black text-gradient bg-gradient-to-r from-primary to-secondary animate-countdown"
+            >00</span
+          >
+          <span class="mt-2 text-sm md:text-base text-gray-300">秒</span>
+        </div>
+      </div>
+      <!-- 2026主视觉 -->
+      <div class="mb-8 animate-float">
+        <h1
+          class="text-[clamp(5rem,20vw,12rem)] font-black text-gradient bg-gradient-to-br from-secondary via-primary to-purple-500 leading-none"
+        >
+          2026
+        </h1>
+      </div>
+      <!-- 新年祝福 -->
+      <div class="text-center max-w-md mx-auto mb-12">
+        <p class="text-[clamp(1rem,3vw,1.25rem)] text-gray-200 leading-relaxed">
+          愿新年，胜旧年<br />
+          三餐四季，温柔有趣<br />
+          奔赴下一场山海，万事皆可期
+        </p>
+      </div>
+      <!-- 底部提示 -->
+      <div class="absolute bottom-8 text-sm text-gray-400">
+        <p>自动燃放烟花 · 移动鼠标生成星光 · 点击屏幕额外绽放烟花</p>
+      </div>
+      <!-- 跨年成功提示（初始隐藏） -->
+      <div
+        id="celebration"
+        class="fixed inset-0 flex flex-col items-center justify-center bg-dark/90 z-30 hidden"
+      >
+        <h2
+          class="text-[clamp(3rem,15vw,8rem)] font-black text-gradient bg-gradient-to-r from-yellow-300 to-red-500 mb-4"
+        >
+          新年快乐！
+        </h2>
+        <p class="text-xl text-gray-200 mb-8">2026，一切皆有可能</p>
+        <button
+          id="resetBtn"
+          class="px-8 py-3 bg-primary/80 hover:bg-primary rounded-full text-white font-medium transition-all"
+        >
+          重新倒计时
+        </button>
+      </div>
+    </div>
+    <script>
+      // 1. 倒计时逻辑
+      const targetDate = new Date("2027-01-01T00:00:00").getTime();
+      let countdownInterval;
+      // 更新倒计时
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+        // 计算时间差
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        // 补零
+        document.getElementById("days").innerText = days
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("hours").innerText = hours
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("minutes").innerText = minutes
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("seconds").innerText = seconds
+          .toString()
+          .padStart(2, "0");
+        // 倒计时结束
+        if (distance < 0) {
+          clearInterval(countdownInterval);
+          document.getElementById("countdown").classList.add("hidden");
+          document.getElementById("celebration").classList.remove("hidden"); // 触发全屏烟花
+          createFirework(targetDate, true);
+        }
+      }
+      // 重置倒计时
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        document.getElementById("celebration").classList.add("hidden");
+        document.getElementById("countdown").classList.remove("hidden");
+        startCountdown(); // 重置后重新启动自动烟花
+        setTimeout(autoFirework, 1000);
+      });
+      // 启动倒计时
+      function startCountdown() {
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
+      }
+      // 2. 雪花生成
+      function createSnowflakes() {
+        const snowContainer = document.getElementById("snowContainer");
+        const snowflakeCount = window.innerWidth / 8; // 根据屏幕宽度调整数量
+        // 清空现有雪花
+        snowContainer.innerHTML = "";
+        for (let i = 0; i < snowflakeCount; i++) {
+          const snowflake = document.createElement("div");
+          snowflake.classList.add("snowflake");
+          // 随机字符（雪花/圆点）
+          const snowChars = ["❄️", "❅", "❆", "•", "✧"];
+          snowflake.innerText =
+            snowChars[Math.floor(Math.random() * snowChars.length)];
+          // 随机样式
+          const size = Math.random() * 10 + 5; // 5-15px
+          snowflake.style.fontSize = `${size}px`;
+          snowflake.style.left = `${Math.random() * 100}%`;
+          snowflake.style.top = `${Math.random() * -100}px`;
+          snowflake.style.animationDuration = `${Math.random() * 20 + 10}s`; // 10-30s
+          snowflake.style.animationDelay = `${Math.random() * 20}s`;
+          snowflake.style.opacity = Math.random() * 0.8 + 0.2; // 0.2-1
+          snowflake.style.animation = `snowfall ${
+            Math.random() * 20 + 10
+          }s linear infinite`;
+          snowContainer.appendChild(snowflake);
+        }
+      }
+      // 3. 烟花动画（Canvas）
+      const canvas = document.getElementById("fireworkCanvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+      // 4. 祝福语弹幕
+      const wishes = [
+        "新年快乐！",
+        "2026万事如意！",
+        "身体健康，阖家幸福！",
+        "事业有成，财源广进！",
+        "心想事成，美梦成真！",
+        "步步高升，一帆风顺！",
+        "岁岁平安，年年有余！",
+        "吉星高照，鸿运当头！",
+        "笑口常开，好运连连！",
+        "青春永驻，美丽常在！",
+        "学业进步，前程似锦！",
+        "爱情甜蜜，幸福美满！",
+        "家庭和睦，邻里和谐！",
+        "生意兴隆，财源滚滚！",
+        "工作顺利，步步高升！",
+        "身体健康，心情愉快！",
+        "万事如意，心想事成！",
+        "年年有今日，岁岁有今朝！",
+        "新年新气象，好运好风光！",
+        "恭喜发财，红包拿来！",
+      ];
+      // 创建弹幕元素
+      function createWish() {
+        const wishElement = document.createElement("div");
+        wishElement.classList.add(
+          "absolute",
+          "z-20",
+          "pointer-events-none",
+          "text-white",
+          "font-medium"
+        );
+        // 随机选择祝福语
+        const wishText = wishes[Math.floor(Math.random() * wishes.length)];
+        wishElement.innerText = wishText;
+        // 随机样式
+        const size = Math.random() * 16 + 12; // 12-28px
+        wishElement.style.fontSize = `${size}px`;
+        // 随机颜色
+        const colors = [
+          "#FF3E6C",
+          "#FFD166",
+          "#7DDDFA",
+          "#A78BFA",
+          "#F472B6",
+          "#06D6A0",
+          "#118AB2",
+          "#073B4C",
+        ];
+        wishElement.style.color =
+          colors[Math.floor(Math.random() * colors.length)];
+        // 随机透明度
+        wishElement.style.opacity = Math.random() * 0.8 + 0.2;
+        // 随机方向（从左到右或从右到左）
+        const direction = Math.random() > 0.5 ? "left" : "right";
+        if (direction === "left") {
+          wishElement.style.left = "-100px";
+          wishElement.style.right = "auto";
+        } else {
+          wishElement.style.right = "-100px";
+          wishElement.style.left = "auto";
+        }
+        // 随机垂直位置
+        wishElement.style.top = `${Math.random() * window.innerHeight}px`;
+        // 添加动画
+        const duration = Math.random() * 10 + 5; // 5-15秒
+        const delay = Math.random() * 2; // 0-2秒延迟
+        wishElement.style.transition = `all ${duration}s linear ${delay}s`;
+        // 添加到页面
+        document.body.appendChild(wishElement);
+        // 触发动画
+        setTimeout(() => {
+          if (direction === "left") {
+            wishElement.style.left = `${window.innerWidth + 100}px`;
+          } else {
+            wishElement.style.right = `${window.innerWidth + 100}px`;
+          }
+        }, 100);
+        // 动画结束后移除元素
+        setTimeout(() => {
+          wishElement.remove();
+        }, (duration + delay) * 1000);
+      }
+      // 自动生成弹幕
+      function autoWish() {
+        createWish(); // 随机间隔（0.5-2秒）
+        const randomDelay = Math.random() * 1500 + 500;
+        setTimeout(autoWish, randomDelay);
+      }
+      // 调整Canvas尺寸
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        createSnowflakes(); // 重新生成雪花
+      });
+      // 粒子类
+      class Particle {
+        constructor(x, y, color, isCelebration = false) {
+          this.x = x;
+          this.y = y;
+          this.speed = isCelebration
+            ? Math.random() * 8 + 5
+            : Math.random() * 6 + 2;
+          this.angle = Math.random() * Math.PI * 2;
+          this.gravity = 0.05;
+          this.vx = Math.cos(this.angle) * this.speed;
+          this.vy = Math.sin(this.angle) * this.speed;
+          this.alpha = 1;
+          this.decay = Math.random() * 0.01 + 0.005;
+          this.color = color;
+          this.isCelebration = isCelebration;
+        }
+        update() {
+          // 重力影响
+          this.vy += this.gravity; // 空气阻力
+          this.vx *= 0.98;
+          this.vy *= 0.98;
+          this.x += this.vx;
+          this.y += this.vy;
+          // 透明度衰减
+          this.alpha -= this.decay;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.isCelebration ? 3 : 2, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+      // 创建烟花
+      function createFirework(e, isCelebration = false) {
+        // 坐标处理（点击事件/庆祝模式）
+        let x, y;
+        if (isCelebration) {
+          x = canvas.width / 2;
+          y = canvas.height / 2; // 庆祝模式生成多个烟花
+          for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+              createSingleFirework(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                isCelebration
+              );
+            }, i * 100);
+          }
+        } else {
+          x = e.clientX;
+          y = e.clientY;
+          createSingleFirework(x, y, isCelebration);
+        }
+      }
+      // 创建单个烟花
+      function createSingleFirework(x, y, isCelebration) {
+        // 随机颜色
+        const colors = [
+          "#FF3E6C",
+          "#FFD166",
+          "#7DDDFA",
+          "#A78BFA",
+          "#F472B6",
+          "#06D6A0",
+          "#118AB2",
+          "#073B4C",
+        ];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        // 生成粒子数量（增加数量）
+        const particleCount = isCelebration ? 200 : 120;
+        // 创建粒子
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle(x, y, color, isCelebration));
+        }
+      }
+      // 鼠标移动生成小粒子
+      function createMouseParticles(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        const color = "#7DDDFA";
+        // 少量小粒子
+        for (let i = 0; i < 3; i++) {
+          particles.push(new Particle(x, y, color, false));
+          particles[particles.length - 1].speed = Math.random() * 2 + 1;
+          particles[particles.length - 1].decay = Math.random() * 0.02 + 0.01;
+        }
+      }
+      // 自动随机燃放烟花
+      function autoFirework() {
+        // 随机生成画布内的坐标（避开边缘，视觉效果更好）
+        const x = Math.random() * (canvas.width - 100) + 50;
+        const y = Math.random() * (canvas.height - 100) + 50;
+        // 30%概率生成更大的烟花，增加视觉层次
+        const isBigFirework = Math.random() > 0.7;
+        // 创建单个烟花
+        createSingleFirework(x, y, isBigFirework);
+        // 随机间隔（0.5-3秒）递归调用，让燃放效果更频繁
+        const randomDelay = Math.random() * 2500 + 500; // 500-3000毫秒
+        setTimeout(autoFirework, randomDelay);
+      }
+      // 动画循环
+      function animate() {
+        // 半透明背景，实现拖影效果
+        ctx.fillStyle = "rgba(10, 14, 38, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // 更新和绘制粒子
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.update();
+          p.draw();
+          // 移除透明的粒子
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      // 初始化
+      window.addEventListener("load", () => {
+        resizeCanvas();
+        startCountdown();
+        createSnowflakes();
+        animate();
+
+        // 启动自动烟花
+        autoFirework();
+        // 启动自动弹幕
+        autoWish();
+        // 点击生成烟花（保留手动触发）
+        document.addEventListener("click", (e) => createFirework(e));
+        // 鼠标移动生成小粒子
+        document.addEventListener("mousemove", (e) => {
+          // 节流，避免性能问题
+          if (Math.random() > 0.7) {
+            createMouseParticles(e);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

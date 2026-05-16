@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pdf提取媒体文件</title>
+</head>
+<body>
+  <input type="file" name="file" id="file">
+  <button>下载</button>
+  <span>媒体文件位于压缩文件的ppt目录下面的media目录中</span>
+  <script>
+    let resultUrl = null;
+    document.querySelector("#file").addEventListener("change", (e) => {
+      // const fd = new FileReader();
+      // fd.readAsDataURL(e.target.files[0]);
+      // fd.addEventListener("load", (ev) => {
+      //   resultUrl = ev.target.result
+      // })
+      resultUrl = URL.createObjectURL(e.target.files[0])
+    })
+    document.querySelector("button").addEventListener("click", () => {
+      if(resultUrl) {
+        const alink = document.createElement("a");
+        alink.setAttribute("href", resultUrl);
+        alink.setAttribute("download", Date.now() + ".zip");
+        alink.setAttribute("target", "_blank");
+        document.body.appendChild(alink);
+        alink.click()
+        document.body.removeChild(alink);
+      } else {
+        alert("请选择文件")
+      }
+      
+    })
+  </script>
+</body>
+</html>

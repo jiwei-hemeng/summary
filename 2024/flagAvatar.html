@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>国旗头像</title>
+    <style>
+      div {
+        position: relative;
+        margin: auto;
+        width: 200px;
+        height: 200px;
+        background: url("https://img0.baidu.com/it/u=3435975908,2384326966&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500")
+          no-repeat;
+        background-size: cover;
+      }
+      div::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: url("https://img1.baidu.com/it/u=331200533,2965705563&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=333")
+          no-repeat;
+        background-size: cover;
+        mask: linear-gradient(110deg, #000 10%, transparent 70%, transparent);
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>

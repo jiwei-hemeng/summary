@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拾色器</title>
+  </head>
+  <body>
+    <button id="start-button">打开拾色器</button> <span id="result"></span>
+    <script>
+      const resultElement = document.getElementById("result");
+      document.getElementById("start-button").addEventListener("click", () => {
+        if (!window.EyeDropper) {
+          resultElement.textContent = "你的浏览器不支持 EyeDropper API";
+          return;
+        }
+
+        const eyeDropper = new EyeDropper();
+        const abortController = new AbortController();
+
+        eyeDropper
+          .open({ signal: abortController.signal })
+          .then((result) => {
+            console.log("result", result);
+            resultElement.textContent = result.sRGBHex;
+            resultElement.style.backgroundColor = result.sRGBHex;
+          })
+          .catch((e) => {
+            resultElement.textContent = e;
+          });
+
+        setTimeout(() => {
+          // 中止拾色器模式
+          abortController.abort();
+        }, 20000);
+      });
+    </script>
+  </body>
+</html>
