@@ -8,10 +8,10 @@
 <script lang="ts">
 export default {
   name: "JIcon"
-}
+};
 </script>
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed } from "vue";
 interface Props {
   name: string
   color?: string
@@ -19,9 +19,9 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  color: '#000',
-  size: '1em'
-})
+  color: "#000",
+  size: "1em"
+});
 
-const symbolId = computed(() => `#icon-${props.name}`)
+const symbolId = computed(() => `#icon-${props.name}`);
 </script>
