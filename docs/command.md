@@ -797,6 +797,8 @@ yarn config set registry https://registry.npm.taobao.org
 
 [Github 地址](https://github.com/termux/termux-app/releases)
 
+## 常用命令
+
 ```shell
 # 更换源
 termux-change-repo
@@ -825,6 +827,27 @@ top
 # 杀死进程
 kill [pid]
 ```
+
+## 在Termux中使用别名
+
+```bash
+cd ~
+touch .bashrc
+```
+
+编辑内容
+
+```txt
+alias ll="ls -Ahl"
+```
+
+让配置立即生效
+
+```bash
+source ~/.bashrc
+```
+
+现在就可以使用`ll`命令了
 
 # 谷歌浏览器长截屏
 
