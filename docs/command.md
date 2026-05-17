@@ -571,6 +571,17 @@ function rm-nm {
 }
 ```
 
+# 使用pnpm 将当前项目的依赖升级到最新版本
+
+```sh
+# 全局递归升级所有依赖到最新版本
+pnpm up "*" -r --latest
+# 清空就依赖目录
+pnpm dlx rimraf node_modules
+# 重新安装
+pnpm i
+```
+
 # npm 如何优雅的升级版本
 
 ## 升级主版本号 Major
