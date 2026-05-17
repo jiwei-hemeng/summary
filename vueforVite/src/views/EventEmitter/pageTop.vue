@@ -1,26 +1,21 @@
 <template>
   <div>count: {{ count }}</div>
 </template>
-<script>
-export default {
-  name: "EventEmitter"
-}
-</script>
-<script setup>
-import { ref, onUnmounted } from "vue"
-import eventEmitter from "@/utils/EventEmitter"
-const count = ref(0)
-function sysLanguageChange(e) {
-  count.value = e
+<script setup lang="ts">
+import { ref, onUnmounted } from "vue";
+import eventEmitter from "@/utils/EventEmitter.ts";
+const count = ref(0);
+function sysLanguageChange(e: number) {
+  count.value = e;
 }
 onUnmounted(() => {
-  eventEmitter.off("sysLanguageChange", sysLanguageChange)
-})
-eventEmitter.on("sysLanguageChange", sysLanguageChange)
-function setCount(count) {
-  console.log("setCount called", count)
+  eventEmitter.off("sysLanguageChange", sysLanguageChange);
+});
+eventEmitter.on("sysLanguageChange", sysLanguageChange);
+function setCount(count: number) {
+  console.log("setCount called", count);
 }
 defineExpose({
   setCount
-})
+});
 </script>

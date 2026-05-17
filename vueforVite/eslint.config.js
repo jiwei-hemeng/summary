@@ -32,8 +32,8 @@ export default [
   {
     languageOptions: {
       globals: {
-        ...globals.browser // 确保所有文件都能识别浏览器全局变量
-        // 或者单独添加 console: 'readonly',
+        ...globals.browser,
+        process: "readonly"
       }
     },
     rules: {
@@ -41,6 +41,10 @@ export default [
       "vue/multi-word-component-names": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "no-unused-vars": "off",
+      semi: ["error", "always"],
+      quotes: ["error", "double"],
+      "@typescript-eslint/semi": "off",
+      "@typescript-eslint/quotes": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "vue/order-in-components": [
         "error",

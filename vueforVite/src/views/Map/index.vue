@@ -4,49 +4,49 @@
 <script>
 export default {
   name: "BMapTest"
-}
+};
 </script>
 <script setup>
-import { onMounted } from "vue"
+import { onMounted } from "vue";
 
 // 假设 BMapGL 已通过类型声明扩展 Window
-const BMapGL = window.BMapGL
-const BMAP_ANCHOR_TOP_RIGHT = BMapGL?.BMAP_ANCHOR_TOP_RIGHT
+const BMapGL = window.BMapGL;
+const BMAP_ANCHOR_TOP_RIGHT = BMapGL?.BMAP_ANCHOR_TOP_RIGHT;
 
 onMounted(() => {
   if (!BMapGL) {
-    console.error("BMapGL 未加载")
-    return
+    console.error("BMapGL 未加载");
+    return;
   }
 
-  const myCity = new BMapGL.LocalCity()
-  myCity.get(myFun)
+  const myCity = new BMapGL.LocalCity();
+  myCity.get(myFun);
 
   function myFun(result) { // 添加类型注解以提高安全性
-    const cityName = result.name
-    const map = new BMapGL.Map("container")
-    const point = new BMapGL.Point(result.center.lng, result.center.lat)
-    map.centerAndZoom(point, 11)
+    const cityName = result.name;
+    const map = new BMapGL.Map("container");
+    const point = new BMapGL.Point(result.center.lng, result.center.lat);
+    map.centerAndZoom(point, 11);
 
     const zoomCtrl = new BMapGL.ZoomControl({
       anchor: BMAP_ANCHOR_TOP_RIGHT
-    })
-    map.addControl(zoomCtrl)
+    });
+    map.addControl(zoomCtrl);
 
     const opts = {
       position: point,
       offset: new BMapGL.Size(-30, -15)
-    }
-    const label = new BMapGL.Label("", opts)
-    label.setContent(`<div class="overlay">${cityName}</div>`)
+    };
+    const label = new BMapGL.Label("", opts);
+    label.setContent(`<div class="overlay">${cityName}</div>`);
     label.setStyle({
       border: "0 none",
       padding: 0
-    })
-    map.addOverlay(label)
-    map.enableScrollWheelZoom()
+    });
+    map.addOverlay(label);
+    map.enableScrollWheelZoom();
   }
-})
+});
 </script>
 <style scoped>
 #container {
