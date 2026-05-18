@@ -7,22 +7,17 @@ const photoList = ref<string[]>([]);
 
 // 打开摄像头（APP 兼容版）
 const startCamera = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: "environment", // 后置摄像头
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      }
-    });
-
-    if (video.value) {
-      video.value.srcObject = stream;
-      video.value.play();
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: "environment", // 后置摄像头
+      width: { ideal: 1280 },
+      height: { ideal: 720 }
     }
-  } catch (err) {
-    console.error("打开相机失败：", err);
-    alert("相机打开失败，请允许权限");
+  });
+
+  if (video.value) {
+    video.value.srcObject = stream;
+    video.value.play();
   }
 };
 

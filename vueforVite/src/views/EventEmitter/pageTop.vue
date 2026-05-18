@@ -12,9 +12,7 @@ onUnmounted(() => {
   eventEmitter.off("sysLanguageChange", sysLanguageChange);
 });
 eventEmitter.on("sysLanguageChange", sysLanguageChange);
-function setCount(count: number) {
-  console.log("setCount called", count);
-}
+function setCount(count: number) {}
 defineExpose({
   setCount
 });

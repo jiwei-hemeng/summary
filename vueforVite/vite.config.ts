@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import viteAutoImport from "unplugin-auto-import/vite";
@@ -40,7 +39,7 @@ export default ({ mode }) => {
       preprocessorOptions: {
         scss: {
           // 可选的 SCSS 配置
-          additionalData: `@import "@/styles/variables.scss";`
+          additionalData: "@import '@/styles/variables.scss';"
         }
       }
     },
@@ -66,6 +65,18 @@ export default ({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
+            if (id.includes("node_modules")) {
+              // 可以进一步细分 vendor chunk
+              if (id.includes("echarts")) return "vendor-echarts";
+              if (id.includes("lodash")) return "vendor-lodash";
+              if (id.includes("vue")) return "vendor-vue";
+              if (id.includes("pinia")) return "vendor-pinia";
+              return "vendor";
+            }
+            // 2. 公共代码：src 下，但不属于 src/views 的文件 → 打 common
+            if (id.includes("src/") && !id.includes("src/views")) {
+              return "common";
+            }
             const groupHome = [
               "/views/index.vue",
               "/views/HomeView.vue",
@@ -90,14 +101,7 @@ export default ({ mode }) => {
               }
               return flag;
             }
-            if (id.includes("node_modules")) {
-              // 可以进一步细分 vendor chunk
-              if (id.includes("echarts")) return "vendor-echarts";
-              if (id.includes("lodash")) return "vendor-lodash";
-              if (id.includes("vue")) return "vendor-vue";
-              if (id.includes("pinia")) return "vendor-pinia";
-              return "vendor";
-            } else if (isGroup(groupHome, id)) {
+            if (isGroup(groupHome, id)) {
               return "group-home";
             } else if (isGroup(groupDemo, id)) {
               return "group-demo";

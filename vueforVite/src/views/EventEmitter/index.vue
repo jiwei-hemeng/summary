@@ -18,9 +18,7 @@ const pageTop = useTemplateRef<InstanceType<typeof PageTop>>("page-top");
 const allData = await IndexDB.readAll();
 const timeList = await IndexDB.getDataByIndex("moduleType", "timeStarp");
 const cursorList = await IndexDB.cursorGetDataByIndexAndPage("moduleType", "routers", 3, 2);
-console.log("all-data", allData);
-console.log("timeList", timeList);
-console.log("cursorList", cursorList);
+
 function sysLanguageChange(count: number) {
   pageTop.value?.setCount(count);
 }

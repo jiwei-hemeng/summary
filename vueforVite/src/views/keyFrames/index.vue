@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue"
-let isDevelop = ref(false)
-let reftDom = useTemplateRef<HTMLElement | null>("reftDom")
+import { ref, useTemplateRef } from "vue";
+let isDevelop = ref(false);
+let reftDom = useTemplateRef<HTMLElement | null>("reftDom");
 function developChange() {
   if (!reftDom.value) {
-    return
+    return;
   }
   if (isDevelop.value) {
-    reftDom.value.style.display = "block"
-    reftDom.value.classList.add("sideLeftIn")
+    reftDom.value.style.display = "block";
+    reftDom.value.classList.add("sideLeftIn");
   } else {
-    reftDom.value.classList.add("sideLeftOut")
+    reftDom.value.classList.add("sideLeftOut");
   }
 }
 function leftAnimationend() {
   if (!reftDom.value) {
-    return
+    return;
   }
-  isDevelop.value = !isDevelop.value
+  isDevelop.value = !isDevelop.value;
   if (isDevelop.value) {
-    reftDom.value.style.display = "none"
-    reftDom.value.classList.remove("sideLeftOut")
+    reftDom.value.style.display = "none";
+    reftDom.value.classList.remove("sideLeftOut");
   } else {
-    reftDom.value.style.display = "block"
-    reftDom.value.classList.remove("sideLeftIn")
+    reftDom.value.style.display = "block";
+    reftDom.value.classList.remove("sideLeftIn");
   }
 }
 </script>
