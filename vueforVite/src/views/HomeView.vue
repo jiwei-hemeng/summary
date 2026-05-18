@@ -1,10 +1,10 @@
 <script setup name="HomeView">
-import MenuLsit from "@/components/menuList.vue"
-import { useRouter } from "vue-router"
-const router = useRouter()
+import MenuLsit from "@/components/menuList.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 function changePage(path) {
-  router.push(path)
+  router.push(path);
 }
 
 </script>

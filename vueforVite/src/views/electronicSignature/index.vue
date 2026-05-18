@@ -9,7 +9,8 @@
     @mouseleave="stopDrawing"
     @touchstart="startDrawing"
     @touchmove="draw"
-    @touchend="stopDrawing"></canvas>
+    @touchend="stopDrawing"
+  ></canvas>
   <div class="controls">
     <button @click="clearCanvas">清除</button>
     <button @click="saveCanvas">保存签名</button>
@@ -17,7 +18,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useWatchFields } from "@/utils/useWatchFields";
 import { ref, onMounted } from "vue";
 import { fancyConsole } from "@/utils/fancy-console.js";
@@ -42,13 +43,13 @@ onMounted(() => {
   ctx.value.lineCap = "round"; // 设置线条端点样式
   ctx.value.strokeStyle = "#000"; // 设置线条颜色
 });
-function startDrawing(event) {
+function startDrawing(event: MouseEvent | TouchEvent) {
   isDrawing.value = true;
   const { x, y } = getCanvasCoordinates(event);
   ctx.value.beginPath();
   ctx.value.moveTo(x, y);
 }
-function draw(event) {
+function draw(event: MouseEvent | TouchEvent) {
   if (!isDrawing.value) return;
   const { x, y } = getCanvasCoordinates(event);
   ctx.value.lineTo(x, y);
@@ -69,14 +70,14 @@ function saveCanvas() {
   link.download = "signature.png";
   link.click();
 }
-function getCanvasCoordinates(event) {
+function getCanvasCoordinates(event: MouseEvent | TouchEvent) {
   const rect = canvas.value.getBoundingClientRect();
-  const isTouch = event.type.includes("touch");
-  const clientX = isTouch && event.touches ? event.touches[0].clientX : event.clientX;
-  const clientY = isTouch && event.touches ? event.touches[0].clientY : event.clientY;
+  const x = event instanceof TouchEvent ? event.touches[0].clientX : event.clientX;
+  const y = event instanceof TouchEvent ? event.touches[0].clientY : event.clientY;
+
   return {
-    x: clientX - rect.left,
-    y: clientY - rect.top
+    x: x - rect.left,
+    y: y - rect.top
   };
 }
 // 假设你的 state 包含多个字段

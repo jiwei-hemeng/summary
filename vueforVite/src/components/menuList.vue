@@ -4,15 +4,15 @@ const props = defineProps({
     type: Array,
     required: true
   }
-})
-const emit = defineEmits(["changePage"])
+});
+const emit = defineEmits(["changePage"]);
 interface MenuItem {
   name: string
   path: string
 }
 
 function changePage(item: MenuItem) {
-  emit("changePage", item.path)
+  emit("changePage", item.path);
 }
 </script>
 <template>
