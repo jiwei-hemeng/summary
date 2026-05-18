@@ -323,6 +323,82 @@ type MyInstance = InstanceType<typeof MyClass>;
 let instance: MyInstance = new MyClass("John", 25);
 ```
 
+## ts 中的对象观测器
+
+```ts
+type Watcher<T> = {
+  on<K extends string & keyof T>(
+    eventName: `${K}Changed`,
+    callback: (newValue: T[K], oldValue: T[K]) => void,
+  ): void;
+  value: T;
+};
+
+function watch<T extends object>(obj: T): Watcher<T> {
+  const eventMap = new Map<
+    `${string & keyof T}Changed`,
+    Array<(newVal: any, oldVal: any) => void>
+  >();
+
+  // 代理对象（只有修改这个，才会触发监听）
+  const proxy = new Proxy(obj, {
+    set(target, propertyKey: string | symbol, value, receiver) {
+      if (typeof propertyKey !== "string") {
+        return Reflect.set(target, propertyKey, value, receiver);
+      }
+
+      const oldValue = Reflect.get(target, propertyKey, receiver);
+      const success = Reflect.set(target, propertyKey, value, receiver);
+
+      if (oldValue !== value) {
+        const eventName =
+          `${propertyKey}Changed` as `${string & keyof T}Changed`;
+        const callbacks = eventMap.get(eventName);
+        callbacks?.forEach((cb) => cb(value, oldValue));
+      }
+
+      return success;
+    },
+  });
+
+  return {
+    on(eventName, callback) {
+      const prop = eventName.replace("Changed", "") as keyof T;
+      if (!(prop in proxy)) {
+        console.warn(`监听无效：对象不存在属性 ${String(prop)}`);
+        return;
+      }
+      if (!eventMap.has(eventName)) {
+        eventMap.set(eventName, []);
+      }
+      eventMap.get(eventName)!.push(callback);
+    },
+    // 👇 把代理对象暴露出去
+    value: proxy,
+  };
+}
+
+const personWatch = watch({
+  name: "张三",
+  age: 28,
+  sex: "男",
+});
+
+// 监听 age 变化
+personWatch.on("ageChanged", (newValue, oldValue) => {
+  console.log("年龄变化：", newValue, oldValue);
+});
+
+// 监听 name 变化
+personWatch.on("nameChanged", (newVal, oldVal) => {
+  console.log("姓名变化：", newVal, oldVal);
+});
+
+// ✅ 关键：必须修改 .value 上的属性！
+personWatch.value.age = 29; // 输出：年龄变化：29 28
+personWatch.value.name = "李四"; // 输出：姓名变化：李四 张三
+```
+
 ## 泛型（Generics）
 
 > [相关链接](https://www.bookstack.cn/read/wangdoc-typescript-tutorial/docs-generics.md)
