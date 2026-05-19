@@ -221,3 +221,21 @@ function getUserAge(user) {
 ## @ts-check 单行注释
 
 使用 // @ts-check 单行注释，可以对 JS 文件开启 TS 级别的校验，这能帮我们过滤一些干扰项。不仅如此，如果声明的类型和实际类型不符，VS Code 还能给出有益的报错信息。
+
+## 泛型参数
+
+```js
+/**
+ * 将一对值交换位置，返回一个新的数组。
+ * @template T, U
+ * @param {T} first 第一个值
+ * @param {U} second 第二个值
+ * @returns {[U, T]} 交换后的新数组
+ */
+function swap(first, second) {
+    return [second, first];
+}
+
+// 使用时，编辑器能推断出结果是 [number, string] 类型
+const swapped = swap("hello", 123);
+```
