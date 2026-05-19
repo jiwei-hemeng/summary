@@ -587,6 +587,23 @@ export function getTypeOf(obj) {
 }
 ```
 
+如果你想要改变 Object.prototype.toString.call() 的结果，应该使用 Symbol.toStringTag：
+
+```js
+class MyArray {
+  get [Symbol.toStringTag]() {
+    return 'Array'
+  }
+  
+  [Symbol.iterator]() {
+    // 迭代器实现
+  }
+}
+
+const arr = new MyArray()
+Object.prototype.toString.call(arr)  // "[object Array]" ✅
+```
+
 ## 使用 Object.groupBy 分组
 
 ```js
