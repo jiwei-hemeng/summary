@@ -3,12 +3,8 @@
     <button @click="setCount">count++</button>
   </div>
 </template>
-<script>
-export default {
-  name: "EventEmitter"
-};
-</script>
-<script setup>
+
+<script setup lang="ts">
 import eventEmitter from "@/utils/EventEmitter";
 const emit = defineEmits(["sysLanguageChange"]);
 let count = 0;
