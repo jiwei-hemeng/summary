@@ -136,6 +136,37 @@ let tom: Person = {
 
 在上面的例子中，我们定义来一个接口 Person，接着定义了一个变量 tom，它的类型是 Person，这样就约束了 tom 的属性必须和接口一致，如果少了或者多了属性都会报错。
 
+### interface 和 type 的区别
+
+```ts
+// interface - 可以声明合并
+interface User {
+  name: string;
+}
+interface User {
+  age: number; // 合并
+}
+const user: User = { name: "Tom", age: 18 };
+
+// type - 不能重复声明
+type Person = {
+  name: string;
+};
+// type Person = { age: number }; // ❌ Error
+
+// type 可以做联合类型、元组等
+type Status = "success" | "error";
+type Point = [number, number];
+
+// interface 可以 extends，type 可以 &
+interface Animal {
+  eat(): void;
+}
+interface Dog extends Animal {
+  bark(): void;
+}
+```
+
 ### 可选属性
 
 ```ts
