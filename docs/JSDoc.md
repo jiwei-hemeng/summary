@@ -239,3 +239,25 @@ function swap(first, second) {
 // 使用时，编辑器能推断出结果是 [number, string] 类型
 const swapped = swap("hello", 123);
 ```
+
+更加严格的泛型
+
+```js
+/**
+ * 从对象中选取指定属性
+ * @template T, K extends keyof T
+ * @param {T} obj 源对象
+ * @param {K[]} keys 要选取的键名数组
+ * @returns {Pick<T, K>} 新对象
+ */
+function pick(obj, keys) {
+  let result = {};
+  keys.forEach((key) => {
+    // @ts-ignore
+    result[key] = obj[key];
+  });
+  // @ts-ignore
+  return result;
+}
+```
+
