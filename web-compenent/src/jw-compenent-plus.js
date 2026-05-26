@@ -10,62 +10,62 @@ import { reactive, effect } from "@vue/reactivity";
  */
 export default class JwComponent extends HTMLElement {
   html = html;
-  _isDisconnected = false;
-  _cleanups = new Set();
+  #isDisconnected = false;
+  #cleanups = new Set();
 
   connectedCallback() {
     if (this.shadowRoot) return;
 
     this.attachShadow({ mode: "open" });
-    this._initReactiveState();
-    this._setupRenderEffect();
+    this.#initReactiveState();
+    this.#setupRenderEffect();
 
     // 延迟执行 mounted，确保首次渲染完成
     requestAnimationFrame(() => {
-      if (!this._isDisconnected) {
+      if (!this.#isDisconnected) {
         this.mounted?.();
       }
     });
   }
 
   disconnectedCallback() {
-    this._isDisconnected = true;
+    this.#isDisconnected = true;
     this.unmounted?.();
-    this._cleanupEffects();
+    this.#cleanupEffects();
   }
 
-  _initReactiveState() {
+  #initReactiveState() {
     // 支持默认状态
     const defaultState = this.defaultState?.() || {};
     this.state = reactive({ ...defaultState, ...this.state });
   }
 
-  _setupRenderEffect() {
+  #setupRenderEffect() {
     const stop = effect(() => {
-      if (this._isDisconnected) return;
+      if (this.#isDisconnected) return;
 
       const content = this.render();
 
       // 使用 requestAnimationFrame 优化渲染时机
       requestAnimationFrame(() => {
-        if (!this._isDisconnected && this.shadowRoot) {
+        if (!this.#isDisconnected && this.shadowRoot) {
           render(content, this.shadowRoot);
         }
       });
     });
 
-    this._cleanups.add(stop);
+    this.#cleanups.add(stop);
   }
 
-  _cleanupEffects() {
-    this._cleanups.forEach((cleanup) => {
+  #cleanupEffects() {
+    this.#cleanups.forEach((cleanup) => {
       try {
         cleanup();
       } catch (error) {
         console.error("Cleanup error:", error);
       }
     });
-    this._cleanups.clear();
+    this.#cleanups.clear();
   }
 
   // 工具方法：批量更新状态
@@ -75,7 +75,7 @@ export default class JwComponent extends HTMLElement {
 
   // 工具方法：强制重新渲染
   forceUpdate() {
-    if (!this._isDisconnected) {
+    if (!this.#isDisconnected) {
       const content = this.render();
       render(content, this.shadowRoot);
     }
