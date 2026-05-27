@@ -107,3 +107,53 @@ function convertBase64UrlToImgFile(urlData, fileName, fileType) {
   blob.name = fileName;
   return blob;
 }
+
+/**
+ * 根据文件扩展名获取MIME类型
+ * @param {string} extension 文件扩展名（带点或不带点均可，如 ".json" 或 "json"）
+ * @returns {string} MIME类型字符串（未找到时返回默认类型）
+ */
+export function getMimeType(extension) {
+  // 扩展名映射表（使用对象字面量以提高查询效率）
+  const mimeTypes = {
+    // 文本格式
+    ".json": "application/json",
+    ".xml": "application/xml",
+    ".csv": "text/csv",
+    ".txt": "text/plain",
+    ".html": "text/html",
+    ".css": "text/css",
+    ".js": "text/javascript",
+    // 图片格式
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".svg": "image/svg+xml",
+    // 音频/视频
+    ".mp3": "audio/mpeg",
+    ".mp4": "video/mp4",
+    // 文档
+    ".pdf": "application/pdf",
+    ".zip": "application/zip",
+    // Office系列
+    ".doc": "application/msword",
+    ".docx":
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx":
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx":
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  };
+
+  // 处理输入参数：转小写并确保带点号
+  const normalizedExtension =
+    typeof extension === "string" && extension.startsWith(".")
+      ? extension.toLowerCase()
+      : `.${extension.toLowerCase()}`;
+
+  // 查找并返回（未匹配时使用默认类型）
+  return mimeTypes[normalizedExtension] || "application/octet-stream";
+}
