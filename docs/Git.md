@@ -538,7 +538,7 @@ git tag -d v1.2
 git push origin :refs/tags/V1.2
 ```
 
-## Git代码审计
+# Git代码审计
 
 ```sh
 不想一条条输命令？把下面整段复制到项目根目录终端，自动输出完整项目体检报告，省心高效：
@@ -567,3 +567,20 @@ echo "5. 最近一年救火记录（回滚/紧急修复）"
 echo "====================================="
 git log --oneline --since="1 year ago" | grep -iE 'revert|hotfix|emergency|rollback'
 ```
+
+# git bash 的常用配置
+
+在` ~/.bashrc` 文件内编辑
+
+```bash
+alias cls='clear'
+alias wp='_wp() {
+  result=$(netstat -ano | findstr LISTENING | findstr ":$1");
+  if [ -z "$result" ]; then
+    echo "端口 $1 未被占用 ✅";
+  else
+    echo "$result";
+  fi;
+}; _wp'
+```
+
