@@ -847,6 +847,36 @@ function User2(price, num) {
 ## 关于es6 的迭代器对象
 
 ```js
+const obj = {
+  a: 1,
+  b: 2,
+  c: 3,
+
+  // 让对象变成可迭代
+  [Symbol.iterator]() {
+    let keys = Object.keys(this);
+    let index = 0;
+    
+    return {
+      next: () => {
+        if (index < keys.length) {
+          return { value: this[keys[index++]], done: false };
+        }
+        return { value: undefined, done: true };
+      }
+    };
+  }
+};
+
+// 现在可以用 for...of 了！
+for (let val of obj) {
+  console.log(val); // 1,2,3
+}
+```
+
+进一步优化
+
+```js
 Object.prototype[Symbol.iterator] = function () {
   return Object.values(this)[Symbol.iterator]();
 };
