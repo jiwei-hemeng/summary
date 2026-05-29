@@ -6,6 +6,7 @@ import slideIn from "@/directives/v-slide-in";
 import lazyLoad from "@/directives/v-lazy-load";
 import "@/assets/main.css";
 import pinia from "./stores";
+import "@/common/index.js";
 IndexDB.getIndexDB().then(() => {
   const app = createApp(App);
   app.directive("slide-in", slideIn);

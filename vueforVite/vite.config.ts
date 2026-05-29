@@ -13,7 +13,13 @@ export default ({ mode }) => {
     plugins: [
       VueDevTools(),
       vue({
-        vapor: true // 启用 Vapor 模式
+        vapor: true, // 启用 Vapor 模式
+        template: {
+          compilerOptions: {
+            // 将所有带短横线的标签名都视为自定义元素
+            isCustomElement: (tag) => tag.startsWith("lit-")
+          }
+        }
       }),
       visualizer({ open: false, gzipSize: true, brotliSize: true }),
       viteAutoImport({

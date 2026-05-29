@@ -360,11 +360,11 @@ customElements.define("my-counter", MyCounter);
 需要`v-if`时在 Vue `onUnmounted`手动调用 Lit 清理：
 
 ```js
-import { ref, onUnmounted } from 'vue'
-const litRef = ref(null)
-onUnmounted(()=>{
-  litRef.value?.disconnectedCallback?.()
-})
+import { ref, onUnmounted } from "vue";
+const litRef = ref(null);
+onUnmounted(() => {
+  litRef.value?.disconnectedCallback?.();
+});
 ```
 
 ### Lit 初始化晚于 Vue 传参，`attributeChangedCallback` 漏初始属性
@@ -386,11 +386,13 @@ onUnmounted(()=>{
 
 ```js
 // Lit组件内
-this.dispatchEvent(new CustomEvent('select', {
-  detail: data,
-  bubbles: true, // 事件向上冒泡到Vue父DOM
-  composed: true // 穿透shadowDom（Lit默认开shadow）
-}))
+this.dispatchEvent(
+  new CustomEvent("select", {
+    detail: data,
+    bubbles: true, // 事件向上冒泡到Vue父DOM
+    composed: true, // 穿透shadowDom（Lit默认开shadow）
+  }),
+);
 ```
 
 Vue 写法：`<lit-comp @select="handleSelect" />`
@@ -400,48 +402,175 @@ Vue 写法：`<lit-comp @select="handleSelect" />`
 Lit 自定义组件无法被 Vue 原生 v-model 识别，`v-model="val"`事件收不到。
 
 ```js
-import { LitElement, html } from 'lit';
+/* eslint-disable no-undef */
+import { LitElement, html } from "lit";
 
 class LitInput extends LitElement {
-  static get properties() {
-    return {
-      modelValue: { type: String }
-    };
-  }
+  static properties = {
+    modelValue: { type: String },
+    debounce: { type: Number },
+    type: { type: String },
+  };
+
   constructor() {
     super();
-    this.modelValue = '';
-  }
-  // 你的更新方法，完全保留逻辑
-  updateVal(v) {
-    this.modelValue = v;
-    // 触发 v-model 必须的事件
-    this.dispatchEvent(new CustomEvent('update:model-value', {
-      detail: v,
-      bubbles: true,
-      composed: true
-    }));
+    this.modelValue = "";
+    this.debounce = 0;
+    /** @type {number | null} */
+    this.debounceTimer = null;
   }
 
-  // 必须加 render，否则不渲染
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    requestAnimationFrame(() => {
+      this.initProps();
+    });
+  }
+
+  initProps() {
+    // 从属性中获取初始值
+    const initialValue = this.getAttribute("model-value") || "";
+    this.modelValue = initialValue;
+    console.log("LitInput initialized with modelValue:", this.modelValue);
+  }
+
+  updateVal(v) {
+    if (this.debounce > 0) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        // 防抖结束后，检查值是否仍然匹配
+        const inputEl = this.renderRoot?.querySelector("input");
+        if (inputEl && inputEl.value === v) {
+          this.#emitValue(v);
+        }
+        this.debounceTimer = null;
+      }, this.debounce);
+    } else {
+      this.#emitValue(v);
+    }
+  }
+
+  #emitValue(v) {
+    if (this.modelValue === v) return; // 避免重复设置
+    this.modelValue = v;
+    this.dispatchEvent(
+      new CustomEvent("update:model-value", {
+        detail: v,
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
   render() {
+    const inputType = this.type || "text";
     return html`
-      <input 
-        value="${this.modelValue}" 
-        @input="${e => this.updateVal(e.target.value)}"
+      <input
+        type="${inputType}"
+        .value="${this.modelValue}"
+        @input="${(e) => this.updateVal(e.target.value)}"
       />
     `;
   }
 }
 
-// 注册自定义元素
-customElements.define('lit-input', LitInput);
+customElements.define("lit-input", LitInput);
+export default LitInput;
+```
+
+封装通用 WebComponent 适配器（Vue3 setup + 兼容原生 WC v-model、可拿完整 Event.detail）
+
+```html
+<template>
+  <component :is="tagName" ref="wcDom" v-bind="attrs" :model-value="modelValue">
+    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
+      <slot :name="slotName" v-bind="slotProps" />
+    </template>
+  </component>
+</template>
+
+<script setup>
+  import {
+    useTemplateRef,
+    computed,
+    onMounted,
+    onBeforeUnmount,
+    useAttrs,
+    watch,
+  } from "vue";
+  // eslint-disable-next-line vue/require-prop-types
+  const props = defineProps(["modelValue", "tagName"]);
+  const emit = defineEmits(["update:modelValue", "native-change"]);
+  const wcDomRef = useTemplateRef("wcDom");
+  let handler = null;
+  const $attrs = useAttrs();
+  const attrs = computed(() => {
+    const raw = { ...$attrs };
+    Object.keys(raw).forEach((key) => {
+      if (key.startsWith("on")) delete raw[key];
+    });
+    return raw;
+  });
+
+  watch(
+    () => props.modelValue,
+    (val) => {
+      if (wcDomRef.value) {
+        wcDomRef.value.modelValue = val;
+      }
+    },
+    { flush: "post" },
+  );
+
+  onMounted(() => {
+    if (!wcDomRef.value) return;
+    handler = (e) => {
+      emit("update:modelValue", e.detail);
+      emit("native-change", e);
+    };
+    wcDomRef.value.addEventListener("update:model-value", handler);
+  });
+
+  onBeforeUnmount(() => {
+    if (wcDomRef.value && handler) {
+      wcDomRef.value.removeEventListener("update:model-value", handler);
+    }
+  });
+</script>
 ```
 
 vue 代码
 
 ```html
-<!-- Vue直接v-model -->
-<lit-input v-model="formVal"/>
+<script setup lang="ts">
+  import { computed } from "vue";
+  import { useToken } from "@/stores/useInfo";
+  import WcModel from "@/components/WcModel.vue";
+  // 可以在组件中的任意位置访问 `store` 变量 ✨
+  const url = computed(() => {
+    return location.href + "?id=" + store.token;
+  });
+  const store = useToken();
+  function setToken() {
+    store.setToken(Date.now().toString());
+  }
+</script>
+<template>
+  <div class="about">
+    <WcModel
+      v-model="store.token"
+      tag-name="lit-input"
+      placeholder="请输入token"
+    />
+    <button @click="setToken">设置token</button>
+  </div>
+</template>
 ```
-
