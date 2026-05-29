@@ -812,3 +812,108 @@ type NonNullableRole = "ADMIN" | "USER";
 // 正确的做法 ✅
 type NonNullableRole = NonNullable<Role>; // "ADMIN" | "USER"
 ```
+
+## react 相关
+
+组件 props 用 type 还是 interface？
+
+```ts
+type ButtonProps = {
+  variant?: 'primary' | 'ghost';
+  onClick?: () => void;
+};
+
+interface ButtonProps {
+  variant?: 'primary' | 'ghost';
+  onClick?: () => void;
+}
+```
+
+两个都行，团队约定统一就好。建议：
+
+- ‎**组件 props 用 type**：写联合类型、交叉、Pick/Omit 更自然
+- ‎**可扩展的对象用 interface**：比如全局配置、可被第三方扩展的类型
+
+函数组件类型，别再写 React.FC
+
+```tsx
+// ❌ 现在不推荐
+const Button: React.FC<ButtonProps> = ({ children, ...rest }) => { ... };
+
+// ✅ 现代写法
+function Button({ children, ...rest }: ButtonProps) {
+  return <button {...rest}>{children}</button>;
+}
+```
+
+children 类型选 `React.ReactNode`
+
+```tsx
+type CardProps = {
+  children: React.ReactNode;   // 几乎能接受任何 JSX 子元素
+};
+```
+
+不要用 `JSX.Element`（只能是单个元素，数组不行）或 `string`（太窄）。
+
+如果**必须是函数**：
+
+```tsx
+type Props = {
+  children: (data: User) => React.ReactNode;
+};
+```
+
+事件类型不要靠 any 蒙混
+
+```tsx
+// ❌
+function Input({ onChange }: { onChange: (e: any) => void }) {}
+
+// ✅
+function Input({ onChange }: { onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {}
+```
+
+常用事件类型：
+
+|                  类型                   |      用途      |
+| :-------------------------------------: | :------------: |
+|  ‎`React.ChangeEvent<HTMLInputElement>`  | input 输入变化 |
+|   ‎`React.FormEvent<HTMLFormElement>`    |    表单提交    |
+|  ‎`React.MouseEvent<HTMLButtonElement>`  |    鼠标点击    |
+| ‎`React.KeyboardEvent<HTMLInputElement>` |      键盘      |
+|  ‎`React.FocusEvent<HTMLInputElement>`   |      失焦      |
+
+useState 的泛型推断
+
+```tsx
+const [count, setCount] = useState(0);            // 自动推断为 number
+const [user, setUser] = useState<User | null>(null);  // 显式声明
+const [list, setList] = useState<User[]>([]);     // 空数组要显式
+```
+
+useRef 的三种用法
+
+```tsx
+// 1. 引用 DOM
+const inputRef = useRef<HTMLInputElement>(null);
+
+// 2. 可变值，不需要初始
+const timerRef = useRef<number | null>(null);
+
+// 3. 可变值，有初始
+const countRef = useRef(0);
+```
+
+Props 类型扩展原生属性
+
+```tsx
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'ghost';
+};
+
+function Button({ variant, children, ...rest }: ButtonProps) {
+  return <button className={variant} {...rest}>{children}</button>;
+}
+```
+
