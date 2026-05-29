@@ -2,49 +2,7 @@
 
 > web-componets 类似于vue以及react中组件定制，将一组ui以及公共逻辑抽取，并且封装成为一个公共组件。在页面可以随处调用
 
-## web component的基本使用
-
-### 创建一个类或函数来指定web组件的功能
-
-```js
-class Dialog extends HTMLElement {
-  constructor() {
-    super();
-    const shadow = this.attachShadow({ mode: "open" });
-    const p = document.createElement("p");
-    const text = this.getAttribute("dialog-text");
-    p.textContent = text;
-    shadow.appendChild(p);
-  }
-}
-```
-
-### 用 customElements.define() 方法注册自定义的元素 ，并且指定component名称，以及创建的类
-
-```js
-customElements.define("dialog-element", Dialog);
-```
-
-### 在页面中使用
-
-```html
-<body>
-  <dialog-element dialog-text="this is dialog-text"></dialog-element>
-</body>
-```
-
 ## 生命周期
-
-- connectedCallback
-
-  当 custom element首次被插入文档DOM时，被调用, 类似于react 组件的`componentDidMount` 生命周期
-
-- disconnectedCallback
-- 当 custom element从文档DOM中删除时，被调用
-- adoptedCallback
-- 当 custom element被移动到新的文档时，被调用
-- attributeChangedCallback
-  - 当 custom element增加、删除、修改自身属性时，被调用
 
 ```js
 class Dialog extends HTMLElement {
@@ -385,3 +343,105 @@ class MyCounter extends JwComponent {
 
 customElements.define("my-counter", MyCounter);
 ```
+
+## Vue + Lit 集成生命周期 / 事件常见冲突与解决方案
+
+### `disconnectedCallback` 提前 / 滞后触发
+
+**现象**：Vue `v-if` 销毁组件时，Lit 元素 `disconnectedCallback` 不执行（资源不释放、定时器 / 监听残留）；或 Vue 组件更新 diff 临时移除 DOM 再挂载，Lit 反复 `connected/disconnected` 重复初始化。
+
+**原因**：Vue diff 机制临时挪 DOM 节点（文档碎片），元素脱离文档又快速插回，WebComponent 规范：**脱离文档 > 瞬间复入不会触发 disconnected**；`v-if` 销毁 Vue 实例先卸载子组件 DOM，Vue 异步更新队列和 Lit 同步 DOM 生命周期时序错位。
+
+```html
+<!-- 避免v-if频繁切换，v-show只改display不删DOM -->
+<lit-comp v-show="show" />
+```
+
+需要`v-if`时在 Vue `onUnmounted`手动调用 Lit 清理：
+
+```js
+import { ref, onUnmounted } from 'vue'
+const litRef = ref(null)
+onUnmounted(()=>{
+  litRef.value?.disconnectedCallback?.()
+})
+```
+
+### Lit 初始化晚于 Vue 传参，`attributeChangedCallback` 漏初始属性
+
+**现象**：Vue 通过`:attr="val"`绑定属性，Lit 首次拿不到初始值，属性监听回调不触发；后续更新正常。
+
+**原因**：Vue 模板属性赋值在 DOM 挂载后异步执行，Lit `constructor/connectedCallback` 执行更早，属性还未注入 DOM。
+
+**方案**
+
+1. Lit 内部`connectedCallback`延迟一帧读取属性：`requestAnimationFrame(()=>{this.initProps()})`
+2. Vue 改用`ref`挂载后手动赋值属性 /prop。
+
+### 自定义事件无法用 Vue `@event` 捕获（原生 CustomEvent 和 Vue 事件模型不兼容）
+
+**现象**：Lit `this.dispatchEvent(new CustomEvent('change',{detail:xx}))`，Vue 写`@change="handler"`收不到事件。
+
+**根因**：Vue 模板`@xxx`默认**合成事件**，WebComponent 派发的是**原生 DOM 事件**；Vue3 对原生自定义事件部分兼容，但**冒泡配置、cancelable 缺省会拦截**。
+
+```js
+// Lit组件内
+this.dispatchEvent(new CustomEvent('select', {
+  detail: data,
+  bubbles: true, // 事件向上冒泡到Vue父DOM
+  composed: true // 穿透shadowDom（Lit默认开shadow）
+}))
+```
+
+Vue 写法：`<lit-comp @select="handleSelect" />`
+
+### v-model 双向绑定失效
+
+Lit 自定义组件无法被 Vue 原生 v-model 识别，`v-model="val"`事件收不到。
+
+```js
+import { LitElement, html } from 'lit';
+
+class LitInput extends LitElement {
+  static get properties() {
+    return {
+      modelValue: { type: String }
+    };
+  }
+  constructor() {
+    super();
+    this.modelValue = '';
+  }
+  // 你的更新方法，完全保留逻辑
+  updateVal(v) {
+    this.modelValue = v;
+    // 触发 v-model 必须的事件
+    this.dispatchEvent(new CustomEvent('update:model-value', {
+      detail: v,
+      bubbles: true,
+      composed: true
+    }));
+  }
+
+  // 必须加 render，否则不渲染
+  render() {
+    return html`
+      <input 
+        value="${this.modelValue}" 
+        @input="${e => this.updateVal(e.target.value)}"
+      />
+    `;
+  }
+}
+
+// 注册自定义元素
+customElements.define('lit-input', LitInput);
+```
+
+vue 代码
+
+```html
+<!-- Vue直接v-model -->
+<lit-input v-model="formVal"/>
+```
+
