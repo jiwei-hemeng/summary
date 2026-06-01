@@ -36,7 +36,6 @@ class LitInput extends LitElement {
     // 从属性中获取初始值
     const initialValue = this.getAttribute("model-value") || "";
     this.modelValue = initialValue;
-    console.log("LitInput initialized with modelValue:", this.modelValue);
   }
 
   updateVal(v) {

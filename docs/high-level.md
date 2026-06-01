@@ -360,7 +360,7 @@ gen.next(); // 需要适当的处理响应和继续生成器函数的执行
      requestIdleCallback(myNonEssentialWork);
    }
   }, { timeout: 2000 });
-
+  
   ```
 
 ## createDocumentFragment
@@ -526,18 +526,16 @@ class PausableTaskQueue {
     }
 
     const task = this.queue.shift();
-    this.runningCount++; // 正在执行的任务数增加
+    this.runningCount++;
 
     try {
-      await task();
+      // ✅ 这里替换成 Promise.try，更安全
+      await Promise.try(task);
     } catch (error) {
       console.error("任务执行出错：", error);
     } finally {
-      this.runningCount--; // 任务执行完毕，减少计数
-
-      if (!this.isPaused) {
-        this.run(); // 继续尝试执行下一个任务
-      }
+      this.runningCount--;
+      this.run(); // 自动继续执行下一个
     }
   }
 
@@ -546,13 +544,12 @@ class PausableTaskQueue {
     this.isPaused = true;
   }
 
-  // 恢复队列
+  // 恢复队列（修复死循环）
   resume() {
     if (this.isPaused) {
       this.isPaused = false;
-
-      // 恢复执行，直到达到并行任务数上限
-      while (this.runningCount < this.concurrency) {
+      // 安全恢复，不会死循环
+      for (let i = 0; i < this.concurrency - this.runningCount; i++) {
         this.run();
       }
     }
