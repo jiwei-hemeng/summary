@@ -6,13 +6,32 @@
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useTemplateRef, computed, onMounted, onBeforeUnmount, useAttrs, watch } from "vue";
-// eslint-disable-next-line vue/require-prop-types
-const props = defineProps(["modelValue", "tagName"]);
-const emit = defineEmits(["update:modelValue", "native-change"]);
-const wcDomRef = useTemplateRef("wcDom");
-let handler = null;
+
+// 定义 Props 类型
+interface Props {
+  modelValue?: any;
+  tagName?: string;
+}
+
+// 定义 Emits 类型
+interface Emits {
+  (e: "update:modelValue", value: any): void;
+  (e: "native-change", event: Event): void;
+}
+
+// 扩展 HTMLElement 类型以包含 modelValue 属性
+interface WebComponentElement extends HTMLElement {
+  modelValue?: any;
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
+
+const wcDomRef = useTemplateRef<WebComponentElement>("wcDom");
+let handler: ((e: CustomEvent) => void) | null = null;
+
 const $attrs = useAttrs();
 const attrs = computed(() => {
   const raw = { ...$attrs };
@@ -34,16 +53,18 @@ watch(
 
 onMounted(() => {
   if (!wcDomRef.value) return;
-  handler = (e) => {
+
+  handler = (e: CustomEvent) => {
     emit("update:modelValue", e.detail);
     emit("native-change", e);
   };
-  wcDomRef.value.addEventListener("update:model-value", handler);
+
+  wcDomRef.value.addEventListener("update:model-value", handler as (e: Event) => void);
 });
 
 onBeforeUnmount(() => {
   if (wcDomRef.value && handler) {
-    wcDomRef.value.removeEventListener("update:model-value", handler);
+    wcDomRef.value.removeEventListener("update:model-value", handler as (e: Event) => void);
   }
 });
 </script>

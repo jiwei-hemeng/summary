@@ -12,11 +12,20 @@ const store = useToken();
 function setToken() {
   store.setToken(Date.now().toString());
 }
+function ttt(e: Event) {
+  console.log("原生事件", (e as CustomEvent<any>).detail);
+}
 </script>
 <template>
   <div class="about">
     <div>token:{{ store.token }}</div>
-    <WcModel v-model="store.token" tag-name="lit-input" type="password" placeholder="请输入token" />
+    <WcModel
+      v-model="store.token"
+      tag-name="lit-input"
+      type="text"
+      placeholder="请输入token"
+      @native-change="ttt"
+    />
     <Abutton type="primary" size="small" @click="setToken">
       <template #icon>
         <PoweroffOutlined />
