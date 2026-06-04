@@ -1637,3 +1637,58 @@ p {
 }
 </style>
 ```
+
+# vue 中动态路由页面空白的问题
+
+## 未加载动态路由直接放行的情况
+
+```js
+let hasAddDynamic = false // 标记是否已加载动态路由
+router.beforeEach(async (to, from, next) => {
+  // 1. 未加载动态路由 && 需要权限路由
+  if (!hasAddDynamic) {
+    // 接口获取后端菜单路由
+    const asyncRoutes = await getApiRoutes()
+    asyncRoutes.forEach(route => router.addRoute(route))
+    hasAddDynamic = true
+    // 刷新一次路由，匹配新增路由
+    next({ ...to, replace: true })
+  } else {
+    // 已加载完所有动态路由，校验路由是否存在
+    const routes = router.getRoutes()
+    const isExist = routes.some(r => r.path === to.path)
+    if (isExist) next()
+    else next('/404') // 不存在跳转404
+  }
+})
+```
+
+`addRoute` 是**即时生效**，注册后必须 `next(to.fullPath)`或者`next({ ...to, replace: true })` 重新触发守卫，否则依旧 404
+
+## 404 + 空白混用
+
+```js
+// 先加动态路由
+router.addRoute(dynamicRoutes)
+// 最后添加404通配路由
+router.addRoute({path:'/:pathMatch(.*)*',redirect:'/404'})
+```
+
+如果动态路由后访问 404，**404 路由必须放在 addRoute 之后注册**：
+
+## 缺少父级嵌套路由（addRoute 嵌套规则）
+
+```js
+// 错误：直接添加子路由 /system/user
+router.addRoute({path:'/system/user',component:()=>import('@/views/system/user')})
+// 正确写法
+router.addRoute({
+  path:'/system',
+  component:()=>import('@/layout'), // 侧边栏布局外壳
+  children:[{
+    path:'user',
+    component:()=>import('@/views/system/user')
+  }]
+})
+```
+
