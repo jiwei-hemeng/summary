@@ -6,14 +6,13 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=yes"
     />
-    <title>个人写作室 · 云端书栈</title>
+    <title>个人写作室 · 深邃书栈</title>
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family:
           "Inter",
@@ -21,26 +20,21 @@
           -apple-system,
           "Segoe UI",
           Roboto,
-          "Helvetica Neue",
           sans-serif;
         background: #f1f5f9;
         color: #0f172a;
         padding: 20px;
       }
-
       #app {
         max-width: 1280px;
         margin: 0 auto;
       }
-
       .view {
         display: none;
       }
       .view.active {
         display: block;
       }
-
-      /* 头部与卡片 */
       .header {
         display: flex;
         justify-content: space-between;
@@ -49,7 +43,6 @@
         flex-wrap: wrap;
         gap: 12px;
       }
-
       button {
         cursor: pointer;
         padding: 8px 18px;
@@ -61,17 +54,14 @@
         background: #eef2ff;
         color: #1e293b;
       }
-
       .primary {
         background: #3b82f6;
         color: white;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       }
       .primary:hover {
         background: #2563eb;
         transform: translateY(-1px);
       }
-
       .secondary {
         background: #f1f5f9;
         border: 1px solid #e2e8f0;
@@ -79,14 +69,12 @@
       .secondary:hover {
         background: #e6edf5;
       }
-
       .small-primary {
         background: #3b82f6;
         color: white;
         padding: 6px 14px;
         font-size: 0.8rem;
       }
-
       .history-btn {
         background: #8b5cf6;
         color: white;
@@ -98,21 +86,26 @@
       .history-btn:hover {
         background: #7c3aed;
       }
-
-      /* 书架网格 */
+      .export-btn {
+        background: #10b981;
+        color: white;
+        font-size: 0.75rem;
+        padding: 6px 14px;
+        margin-left: 12px;
+      }
+      .export-btn:hover {
+        background: #059669;
+      }
       .bookshelf {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 24px;
       }
-
       .book-card {
         background: white;
         border-radius: 28px;
         padding: 1.5rem;
-        box-shadow:
-          0 8px 20px rgba(0, 0, 0, 0.03),
-          0 2px 6px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
         transition: all 0.25s;
         cursor: pointer;
         border: 1px solid #eef2ff;
@@ -122,17 +115,20 @@
         box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
         border-color: #cbdffc;
       }
-
       .book-title {
         font-size: 1.35rem;
         font-weight: 700;
         margin-bottom: 8px;
-        letter-spacing: -0.3px;
       }
       .book-update {
         font-size: 0.7rem;
         color: #5b6e8c;
         margin: 12px 0;
+      }
+      .book-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
       }
       .delete-book {
         background: #fee2e2;
@@ -143,8 +139,12 @@
       .delete-book:hover {
         background: #fecaca;
       }
-
-      /* tab样式 */
+      .export-book-txt {
+        background: #e6f7ec;
+        color: #0b5e2e;
+        padding: 6px 16px;
+        font-size: 0.75rem;
+      }
       .book-detail-tabs {
         display: flex;
         gap: 8px;
@@ -164,7 +164,6 @@
         color: #3b82f6;
         border-bottom-color: #3b82f6;
       }
-
       .tab-panel {
         display: none;
         background: white;
@@ -176,7 +175,6 @@
       .tab-panel.active {
         display: block;
       }
-
       textarea,
       input[type="text"],
       input[type="password"] {
@@ -185,7 +183,7 @@
         border: 1.5px solid #e2e8f0;
         border-radius: 20px;
         font-size: 0.9rem;
-        font-family: "SF Mono", "Courier New", monospace;
+        font-family: monospace;
         transition: 0.2s;
       }
       textarea:focus,
@@ -194,7 +192,6 @@
         border-color: #8b5cf6;
         box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
       }
-
       .chapter-list {
         max-height: 340px;
         overflow-y: auto;
@@ -209,7 +206,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: 0.1s;
       }
       .chapter-item:hover {
         background: #fafcff;
@@ -222,20 +218,17 @@
         color: #6c86a3;
         margin-top: 4px;
       }
-
       #chapter-editor {
         margin-top: 20px;
         border-top: 2px dashed #eef2ff;
         padding-top: 24px;
       }
-
       .editor-buttons {
         display: flex;
         gap: 12px;
         justify-content: flex-end;
         margin-top: 16px;
       }
-
       .modal {
         display: none;
         position: fixed;
@@ -306,8 +299,10 @@
         margin-top: 8px;
         font-size: 0.7rem;
         padding: 4px 12px;
+        cursor: pointer;
+        border: none;
+        border-radius: 20px;
       }
-
       .auto-save-status {
         font-size: 0.7rem;
         margin-top: 10px;
@@ -319,22 +314,36 @@
         border-radius: 60px;
         padding: 8px 20px;
         margin-bottom: 28px;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      }
+      .detail-header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .toast-msg {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1e293b;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 60px;
+        font-size: 0.85rem;
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
       }
     </style>
   </head>
   <body>
     <div id="app">
-      <div
-        id="user-bar"
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <div><span id="user-status">📖 未登录</span></div>
+      <div id="user-bar">
+        <div><span id="user-status">📖 未登录 (IndexedDB)</span></div>
         <div>
           <button id="show-login-btn" class="secondary">🔐 登录/注册</button>
           <button id="logout-btn" style="display: none" class="secondary">
@@ -343,7 +352,6 @@
         </div>
       </div>
 
-      <!-- 书架视图 -->
       <div id="bookshelf-view" class="view active">
         <div class="header">
           <h1>📚 我的书架</h1>
@@ -352,17 +360,20 @@
         <div id="bookshelf" class="bookshelf"></div>
       </div>
 
-      <!-- 书本详情视图 -->
       <div id="book-detail-view" class="view">
         <div class="header">
           <button id="back-to-shelf" class="secondary">← 返回书架</button>
-          <h1 id="book-title-display"></h1>
+          <div class="detail-header-actions">
+            <h1 id="book-title-display"></h1>
+            <button id="export-current-book" class="export-btn">
+              📄 导出全书TXT
+            </button>
+          </div>
         </div>
         <div class="book-detail-tabs">
           <button id="tab-character" class="tab active">👥 人设</button
           ><button id="tab-chapters" class="tab">📑 章节</button>
         </div>
-
         <div id="character-panel" class="tab-panel active">
           <div class="editor-with-history">
             <textarea
@@ -378,7 +389,6 @@
             💾 已自动同步
           </div>
         </div>
-
         <div id="chapters-panel" class="tab-panel">
           <div>
             <button id="add-chapter-btn" class="small-primary">+ 新章节</button>
@@ -405,7 +415,6 @@
         </div>
       </div>
 
-      <!-- 登录modal -->
       <div id="login-modal" class="modal">
         <div class="modal-content" style="max-width: 400px">
           <div class="modal-header">
@@ -413,17 +422,11 @@
             <button class="close-modal">&times;</button>
           </div>
           <div style="padding: 24px">
-            <input
-              type="text"
-              id="login-username"
-              placeholder="用户名"
-              autocomplete="username"
-            />
+            <input type="text" id="login-username" placeholder="用户名" />
             <input
               type="password"
               id="login-password"
               placeholder="密码"
-              autocomplete="current-password"
               style="margin-top: 12px"
             />
             <button
@@ -444,7 +447,6 @@
         </div>
       </div>
 
-      <!-- 历史版本modal -->
       <div id="history-modal" class="modal">
         <div class="modal-content">
           <div class="modal-header">
@@ -460,322 +462,646 @@
           </div>
         </div>
       </div>
+      <div id="toast" class="toast-msg"></div>
     </div>
 
     <script>
-      // ---------- 存储 keys 前缀，基于用户 ----------
-      let currentUser = null; // { username }
-      let currentBookId = null; // 当前打开的书id
-      let currentChapterId = null; // 正在编辑的章节id (若有)
+      // ==================== IndexedDB 稳定封装 ====================
+      // 使用较高的版本号，避免版本冲突
+      const DB_NAME = "WritingRoomDB";
+      const DB_VERSION = 5; // 提升版本号，避免低于已存在版本
+
+      let currentUser = null;
+      let currentBookId = null;
+      let currentChapterId = null;
       let autoSaveTimer = null;
-      let currentHistoryTarget = null; // 存储当前历史弹窗的目标 { type, bookId, chapterId? }
+      let db = null;
+      let dbInitPromise = null; // 确保数据库只初始化一次
 
-      // 辅助函数
-      function storageKeyForUser(baseKey) {
-        if (!currentUser) return `__anonymous__${baseKey}`;
-        return `writer_${currentUser.username}_${baseKey}`;
+      function showToast(msg, duration = 2000) {
+        const toastEl = document.getElementById("toast");
+        toastEl.innerText = msg;
+        toastEl.style.opacity = "1";
+        setTimeout(() => {
+          toastEl.style.opacity = "0";
+        }, duration);
       }
 
-      // 获取用户所有的书 books: { [bookId]: { id, title, updatedAt, createdAt } }
-      function loadBooks() {
-        const raw = localStorage.getItem(storageKeyForUser("books"));
-        if (!raw) return {};
-        try {
-          return JSON.parse(raw);
-        } catch (e) {
-          return {};
+      function openDB() {
+        // 如果已经初始化完成，直接返回
+        if (db && db.name === DB_NAME) {
+          return Promise.resolve(db);
         }
-      }
-      function saveBooks(booksObj) {
-        localStorage.setItem(
-          storageKeyForUser("books"),
-          JSON.stringify(booksObj),
-        );
+        // 如果正在初始化，返回同一个 Promise
+        if (dbInitPromise) {
+          return dbInitPromise;
+        }
+
+        dbInitPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+          request.onerror = () => {
+            console.error("IndexedDB error:", request.error);
+            reject(request.error);
+          };
+
+          request.onsuccess = () => {
+            db = request.result;
+            // 处理数据库关闭事件，以便重新打开
+            db.onclose = () => {
+              console.log("Database closed");
+              db = null;
+              dbInitPromise = null;
+            };
+            db.onversionchange = () => {
+              // 版本变化时关闭连接，让新版本打开
+              if (db) db.close();
+              db = null;
+              dbInitPromise = null;
+            };
+            resolve(db);
+          };
+
+          request.onupgradeneeded = (event) => {
+            const dbRef = event.target.result;
+            const oldVersion = event.oldVersion;
+
+            // 创建 object stores（如果不存在）
+            if (!dbRef.objectStoreNames.contains("users")) {
+              const userStore = dbRef.createObjectStore("users", {
+                keyPath: "username",
+              });
+              userStore.createIndex("username", "username", { unique: true });
+            }
+
+            if (!dbRef.objectStoreNames.contains("books")) {
+              const bookStore = dbRef.createObjectStore("books", {
+                keyPath: "id",
+              });
+              bookStore.createIndex("owner", "owner", { unique: false });
+              bookStore.createIndex("updatedAt", "updatedAt", {
+                unique: false,
+              });
+            }
+
+            if (!dbRef.objectStoreNames.contains("characterDocs")) {
+              dbRef.createObjectStore("characterDocs", { keyPath: "id" });
+            }
+
+            if (!dbRef.objectStoreNames.contains("chapters")) {
+              const chapStore = dbRef.createObjectStore("chapters", {
+                keyPath: "id",
+              });
+              chapStore.createIndex("bookRef", "bookRef", { unique: false });
+            }
+
+            if (!dbRef.objectStoreNames.contains("history")) {
+              const histStore = dbRef.createObjectStore("history", {
+                keyPath: "id",
+              });
+              histStore.createIndex("targetKey", "targetKey", {
+                unique: false,
+              });
+              histStore.createIndex("timestamp", "timestamp", {
+                unique: false,
+              });
+            }
+          };
+        });
+
+        return dbInitPromise;
       }
 
-      // 人设内容 (bookId -> string)
-      function loadCharacter(bookId) {
-        return localStorage.getItem(storageKeyForUser(`char_${bookId}`)) || "";
+      function userPrefix() {
+        return currentUser ? currentUser.username : "anonymous";
       }
-      function saveCharacter(bookId, content, recordHistory = true) {
+
+      // 确保数据库打开的工具函数
+      async function ensureDB() {
+        if (!db) {
+          await openDB();
+        }
+        return db;
+      }
+
+      async function getBooks() {
+        await ensureDB();
+        const tx = db.transaction(["books"], "readonly");
+        const store = tx.objectStore("books");
+        const index = store.index("owner");
+        return new Promise((resolve) => {
+          const req = index.getAll(userPrefix());
+          req.onsuccess = () => {
+            const books = req.result || [];
+            const map = {};
+            books.forEach((b) => {
+              map[b.id] = b;
+            });
+            resolve(map);
+          };
+          req.onerror = () => resolve({});
+        });
+      }
+
+      async function saveBook(book) {
+        await ensureDB();
+        const tx = db.transaction(["books"], "readwrite");
+        const store = tx.objectStore("books");
+        store.put({ ...book, owner: userPrefix() });
+        return new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
+      }
+
+      async function deleteBookById(bookId) {
+        await ensureDB();
+        const tx = db.transaction(
+          ["books", "characterDocs", "chapters", "history"],
+          "readwrite",
+        );
+        const bookStore = tx.objectStore("books");
+        const charStore = tx.objectStore("characterDocs");
+        const chapStore = tx.objectStore("chapters");
+        const histStore = tx.objectStore("history");
+
+        bookStore.delete(bookId);
+        charStore.delete(`${userPrefix()}_${bookId}`);
+
+        const bookRef = `${userPrefix()}_${bookId}`;
+        const chapIndex = chapStore.index("bookRef");
+        const chapReq = chapIndex.getAll(bookRef);
+        chapReq.onsuccess = () => {
+          const chapters = chapReq.result || [];
+          chapters.forEach((chap) => {
+            chapStore.delete(chap.id);
+          });
+          const histKeys = [
+            `char_${bookId}`,
+            ...chapters.map((c) => `chap_${bookId}_${c.chapterId}`),
+          ];
+          histKeys.forEach((k) => {
+            const range = IDBKeyRange.bound(
+              `${userPrefix()}_${k}_`,
+              `${userPrefix()}_${k}_\uffff`,
+            );
+            const cursorReq = histStore.index("targetKey").openCursor(range);
+            cursorReq.onsuccess = (e) => {
+              const cursor = e.target.result;
+              if (cursor) {
+                cursor.delete();
+                cursor.continue();
+              }
+            };
+          });
+        };
+        return new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
+      }
+
+      async function loadCharacter(bookId) {
+        await ensureDB();
+        const tx = db.transaction(["characterDocs"], "readonly");
+        const store = tx.objectStore("characterDocs");
+        return new Promise((resolve) => {
+          const req = store.get(`${userPrefix()}_${bookId}`);
+          req.onsuccess = () => resolve(req.result ? req.result.content : "");
+        });
+      }
+
+      async function saveCharacter(bookId, content, recordHistory = true) {
+        await ensureDB();
         if (recordHistory) {
-          const old = loadCharacter(bookId);
-          if (old !== content)
-            addHistory(bookId, "character", null, old, content);
+          const old = await loadCharacter(bookId);
+          if (old !== content) {
+            await addHistory("character", bookId, null, old, content);
+          }
         }
-        localStorage.setItem(storageKeyForUser(`char_${bookId}`), content);
+        const tx = db.transaction(["characterDocs"], "readwrite");
+        const store = tx.objectStore("characterDocs");
+        store.put({
+          id: `${userPrefix()}_${bookId}`,
+          bookId,
+          owner: userPrefix(),
+          content,
+          updatedAt: new Date().toISOString(),
+        });
+        return new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
       }
 
-      // 章节: { [chapterId]: { id, title, content, updatedAt, createdAt } }
-      function loadChapters(bookId) {
-        const raw = localStorage.getItem(
-          storageKeyForUser(`chapters_${bookId}`),
-        );
-        if (!raw) return {};
-        try {
-          return JSON.parse(raw);
-        } catch (e) {
-          return {};
-        }
+      async function loadChapters(bookId) {
+        await ensureDB();
+        const tx = db.transaction(["chapters"], "readonly");
+        const store = tx.objectStore("chapters");
+        const index = store.index("bookRef");
+        return new Promise((resolve) => {
+          const req = index.getAll(`${userPrefix()}_${bookId}`);
+          req.onsuccess = () => {
+            const chapters = req.result || [];
+            const map = {};
+            chapters.forEach((ch) => {
+              map[ch.chapterId] = {
+                id: ch.chapterId,
+                title: ch.title,
+                content: ch.content,
+                createdAt: ch.createdAt,
+                updatedAt: ch.updatedAt,
+              };
+            });
+            resolve(map);
+          };
+        });
       }
-      function saveChapters(bookId, chaptersObj) {
-        localStorage.setItem(
-          storageKeyForUser(`chapters_${bookId}`),
-          JSON.stringify(chaptersObj),
-        );
-      }
-      function saveChapterContent(
+
+      async function saveChapterContent(
         bookId,
         chapterId,
         title,
         content,
         recordHistory = true,
       ) {
-        const chapters = loadChapters(bookId);
-        const oldChap = chapters[chapterId];
-        if (recordHistory && oldChap) {
-          if (oldChap.title !== title || oldChap.content !== content) {
-            addHistory(
-              bookId,
-              "chapter",
-              chapterId,
-              oldChap.content,
-              content,
-              oldChap.title,
-              title,
-            );
-          }
+        await ensureDB();
+        let oldChap = null;
+        if (recordHistory) {
+          const chapters = await loadChapters(bookId);
+          oldChap = chapters[chapterId];
         }
+
+        const tx = db.transaction(["chapters", "books"], "readwrite");
+        const chapStore = tx.objectStore("chapters");
+        const bookStore = tx.objectStore("books");
+
         const now = new Date().toISOString();
-        if (chapters[chapterId]) {
-          chapters[chapterId].title = title;
-          chapters[chapterId].content = content;
-          chapters[chapterId].updatedAt = now;
-        } else {
-          chapters[chapterId] = {
-            id: chapterId,
-            title,
-            content,
-            createdAt: now,
-            updatedAt: now,
-          };
-        }
-        saveChapters(bookId, chapters);
-        // 更新书本更新时间
-        const books = loadBooks();
-        if (books[bookId]) {
-          books[bookId].updatedAt = now;
-          saveBooks(books);
-        }
-      }
-      function deleteChapter(bookId, chapterId) {
-        const chapters = loadChapters(bookId);
-        if (chapters[chapterId]) {
-          delete chapters[chapterId];
-          saveChapters(bookId, chapters);
-          if (currentChapterId === chapterId) {
-            currentChapterId = null;
-            closeChapterEditor();
+        const chapDoc = {
+          id: `${userPrefix()}_${bookId}_${chapterId}`,
+          bookRef: `${userPrefix()}_${bookId}`,
+          owner: userPrefix(),
+          bookId,
+          chapterId,
+          title,
+          content,
+          createdAt: oldChap ? oldChap.createdAt : now,
+          updatedAt: now,
+        };
+        chapStore.put(chapDoc);
+
+        // 更新书籍更新时间
+        const bookReq = bookStore.index("owner").getAll(userPrefix());
+        bookReq.onsuccess = () => {
+          const books = bookReq.result || [];
+          const targetBook = books.find((b) => b.id === bookId);
+          if (targetBook) {
+            targetBook.updatedAt = now;
+            bookStore.put(targetBook);
           }
-          renderChapterList();
+        };
+
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
+
+        if (
+          recordHistory &&
+          oldChap &&
+          (oldChap.title !== title || oldChap.content !== content)
+        ) {
+          await addHistory(
+            "chapter",
+            bookId,
+            chapterId,
+            oldChap.content,
+            content,
+            oldChap.title,
+            title,
+          );
         }
       }
 
-      // 历史记录
-      function getHistoryKey(bookId, type, chapterId = null) {
-        if (type === "character")
-          return storageKeyForUser(`hist_char_${bookId}`);
-        else return storageKeyForUser(`hist_chap_${bookId}_${chapterId}`);
+      async function deleteChapter(bookId, chapterId) {
+        await ensureDB();
+        const tx = db.transaction(["chapters", "history"], "readwrite");
+        const chapStore = tx.objectStore("chapters");
+        const histStore = tx.objectStore("history");
+        chapStore.delete(`${userPrefix()}_${bookId}_${chapterId}`);
+
+        const histTarget = `chap_${bookId}_${chapterId}`;
+        const range = IDBKeyRange.bound(
+          `${userPrefix()}_${histTarget}_`,
+          `${userPrefix()}_${histTarget}_\uffff`,
+        );
+        const cursorReq = histStore.index("targetKey").openCursor(range);
+        cursorReq.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            cursor.delete();
+            cursor.continue();
+          }
+        };
+        return new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
       }
-      function addHistory(
-        bookId,
+
+      async function addHistory(
         type,
+        bookId,
         chapterId,
         oldContent,
         newContent,
         oldTitle = "",
         newTitle = "",
       ) {
-        const key = getHistoryKey(bookId, type, chapterId);
-        const existing = localStorage.getItem(key);
-        let history = existing ? JSON.parse(existing) : [];
+        await ensureDB();
+        const tx = db.transaction(["history"], "readwrite");
+        const store = tx.objectStore("history");
+        const targetKeyRaw =
+          type === "character"
+            ? `char_${bookId}`
+            : `chap_${bookId}_${chapterId}`;
+        const targetKey = `${userPrefix()}_${targetKeyRaw}`;
         const snapshot = {
-          id: Date.now() + Math.random(),
+          id: `${targetKey}_${Date.now()}_${Math.random()}`,
+          targetKey,
           timestamp: new Date().toISOString(),
+          type,
+          bookId,
+          chapterId: chapterId || null,
           preview:
             (type === "chapter" ? `标题: ${newTitle || "无标题"} | ` : "") +
             (newContent?.slice(0, 100) || ""),
           fullContent: newContent,
           fullTitle: type === "chapter" ? newTitle : undefined,
-          oldContent: oldContent,
-          oldTitle: oldTitle,
+          oldContent,
+          oldTitle,
         };
-        history.unshift(snapshot);
-        if (history.length > 50) history.pop();
-        localStorage.setItem(key, JSON.stringify(history));
+        store.put(snapshot);
+
+        // 限制历史数量
+        const idx = store.index("targetKey");
+        const req = idx.getAll(targetKey);
+        req.onsuccess = () => {
+          const all = req.result || [];
+          if (all.length > 40) {
+            const toDelete = all.slice(40);
+            toDelete.forEach((item) => store.delete(item.id));
+          }
+        };
+        return new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = reject;
+        });
       }
-      function getHistory(bookId, type, chapterId = null) {
-        const key = getHistoryKey(bookId, type, chapterId);
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : [];
+
+      async function getHistory(type, bookId, chapterId = null) {
+        await ensureDB();
+        const tx = db.transaction(["history"], "readonly");
+        const store = tx.objectStore("history");
+        const index = store.index("targetKey");
+        const targetKeyRaw =
+          type === "character"
+            ? `char_${bookId}`
+            : `chap_${bookId}_${chapterId}`;
+        const targetKey = `${userPrefix()}_${targetKeyRaw}`;
+        return new Promise((resolve) => {
+          const req = index.getAll(targetKey);
+          req.onsuccess = () => {
+            const items = req.result || [];
+            items.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            resolve(items);
+          };
+        });
       }
-      function restoreHistory(bookId, type, chapterId, snapshot, isCharacter) {
+
+      async function restoreHistory(
+        bookId,
+        type,
+        chapterId,
+        snapshot,
+        isCharacter,
+      ) {
         if (isCharacter) {
-          const old = loadCharacter(bookId);
+          const old = await loadCharacter(bookId);
           if (old !== snapshot.fullContent)
-            addHistory(bookId, "character", null, old, snapshot.fullContent);
-          localStorage.setItem(
-            storageKeyForUser(`char_${bookId}`),
-            snapshot.fullContent,
-          );
+            await addHistory(
+              "character",
+              bookId,
+              null,
+              old,
+              snapshot.fullContent,
+            );
+          await saveCharacter(bookId, snapshot.fullContent, false);
           if (currentBookId === bookId)
             document.getElementById("character-content").value =
               snapshot.fullContent;
           showToast("人设已恢复");
         } else {
-          const chapters = loadChapters(bookId);
-          const chap = chapters[chapterId];
-          if (chap) {
-            const oldTitle = chap.title,
-              oldContent = chap.content;
-            if (
-              oldTitle !== snapshot.fullTitle ||
-              oldContent !== snapshot.fullContent
-            ) {
-              addHistory(
-                bookId,
-                "chapter",
-                chapterId,
-                oldContent,
-                snapshot.fullContent,
-                oldTitle,
-                snapshot.fullTitle,
-              );
-            }
-            chap.title = snapshot.fullTitle || "恢复章节";
-            chap.content = snapshot.fullContent;
-            chap.updatedAt = new Date().toISOString();
-            saveChapters(bookId, chapters);
-            if (currentBookId === bookId && currentChapterId === chapterId) {
-              document.getElementById("chapter-title").value = chap.title;
-              document.getElementById("chapter-content").value = chap.content;
-            }
-            renderChapterList();
-            showToast("章节已恢复");
+          const oldChap = (await loadChapters(bookId))[chapterId];
+          if (
+            oldChap &&
+            (oldChap.title !== snapshot.fullTitle ||
+              oldChap.content !== snapshot.fullContent)
+          ) {
+            await addHistory(
+              "chapter",
+              bookId,
+              chapterId,
+              oldChap.content,
+              snapshot.fullContent,
+              oldChap.title,
+              snapshot.fullTitle,
+            );
           }
+          await saveChapterContent(
+            bookId,
+            chapterId,
+            snapshot.fullTitle || "恢复章节",
+            snapshot.fullContent,
+            false,
+          );
+          if (currentBookId === bookId && currentChapterId === chapterId) {
+            document.getElementById("chapter-title").value =
+              snapshot.fullTitle || "恢复章节";
+            document.getElementById("chapter-content").value =
+              snapshot.fullContent;
+          }
+          await renderChapterList();
+          showToast("章节已恢复");
         }
       }
 
-      // 渲染书架
-      function renderBookshelf() {
+      // 用户认证
+      async function register(username, password) {
+        if (!username.trim()) {
+          showToast("用户名不能为空");
+          return false;
+        }
+        await ensureDB();
+        const tx = db.transaction(["users"], "readwrite");
+        const store = tx.objectStore("users");
+        const existing = await new Promise((resolve) => {
+          const req = store.get(username);
+          req.onsuccess = () => resolve(req.result);
+        });
+        if (existing) {
+          showToast("用户名已存在");
+          return false;
+        }
+        store.put({ username, password: btoa(password) });
+        return new Promise((resolve) => {
+          tx.oncomplete = () => {
+            showToast("注册成功，请登录");
+            resolve(true);
+          };
+          tx.onerror = () => {
+            showToast("注册失败");
+            resolve(false);
+          };
+        });
+      }
+
+      async function login(username, password) {
+        await ensureDB();
+        const tx = db.transaction(["users"], "readonly");
+        const store = tx.objectStore("users");
+        const user = await new Promise((resolve) => {
+          const req = store.get(username);
+          req.onsuccess = () => resolve(req.result);
+        });
+        if (!user || atob(user.password) !== password) {
+          showToast("账号或密码错误");
+          return false;
+        }
+        currentUser = { username };
+        localStorage.setItem(
+          "writing_current_user",
+          JSON.stringify(currentUser),
+        );
+        updateUIForUser();
+        await renderBookshelf();
+        closeModal(document.getElementById("login-modal"));
+        return true;
+      }
+
+      function logout() {
+        currentUser = null;
+        localStorage.removeItem("writing_current_user");
+        currentBookId = null;
+        currentChapterId = null;
+        updateUIForUser();
+        backToShelf();
+        renderBookshelf();
+      }
+
+      // ==================== UI 渲染 ====================
+      async function renderBookshelf() {
         const container = document.getElementById("bookshelf");
-        const books = loadBooks();
-        if (Object.keys(books).length === 0) {
+        const booksMap = await getBooks();
+        const books = Object.values(booksMap);
+        if (books.length === 0) {
           container.innerHTML =
             '<div style="text-align:center; padding: 48px; background: #fff; border-radius: 32px;">✨ 还没有书，点击“新建书”开始创作～</div>';
           return;
         }
-        container.innerHTML = Object.values(books)
+        container.innerHTML = books
           .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
           .map(
             (book) => `
       <div class="book-card" data-id="${book.id}">
         <div class="book-title">📖 ${escapeHtml(book.title)}</div>
         <div class="book-update">更新于 ${new Date(book.updatedAt).toLocaleString()}</div>
-        <button class="delete-book" data-id="${book.id}">删除书籍</button>
+        <div class="book-actions">
+          <button class="delete-book" data-id="${book.id}">删除</button>
+          <button class="export-book-txt" data-id="${book.id}">📄 导出TXT</button>
+        </div>
       </div>
     `,
           )
           .join("");
-        // 绑定事件
+
         document.querySelectorAll(".book-card").forEach((card) => {
           const id = card.getAttribute("data-id");
           card.addEventListener("click", (e) => {
-            if (!e.target.classList.contains("delete-book")) openBook(id);
+            if (
+              !e.target.classList.contains("delete-book") &&
+              !e.target.classList.contains("export-book-txt")
+            )
+              openBook(id);
           });
           const delBtn = card.querySelector(".delete-book");
           if (delBtn)
-            delBtn.addEventListener("click", (e) => {
+            delBtn.addEventListener("click", async (e) => {
               e.stopPropagation();
-              deleteBookById(id);
+              if (confirm("永久删除整本书？")) {
+                await deleteBookById(id);
+                if (currentBookId === id) backToShelf();
+                await renderBookshelf();
+              }
+            });
+          const exportBtn = card.querySelector(".export-book-txt");
+          if (exportBtn)
+            exportBtn.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              await exportBookToTxt(id);
             });
         });
       }
 
-      function deleteBookById(bookId) {
-        if (confirm("永久删除整本书及所有章节？")) {
-          const books = loadBooks();
-          delete books[bookId];
-          saveBooks(books);
-          localStorage.removeItem(storageKeyForUser(`char_${bookId}`));
-          localStorage.removeItem(storageKeyForUser(`chapters_${bookId}`));
-          localStorage.removeItem(storageKeyForUser(`hist_char_${bookId}`));
-          const chapters = loadChapters(bookId);
-          Object.keys(chapters).forEach((chId) => {
-            localStorage.removeItem(
-              storageKeyForUser(`hist_chap_${bookId}_${chId}`),
-            );
-          });
-          if (currentBookId === bookId) backToShelf();
-          renderBookshelf();
-        }
-      }
-
-      function addNewBook() {
+      async function addNewBook() {
         let title = prompt("输入书名", "未命名故事");
         if (!title) title = "新作";
-        const books = loadBooks();
         const id =
           "book_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
         const now = new Date().toISOString();
-        books[id] = { id, title, createdAt: now, updatedAt: now };
-        saveBooks(books);
-        renderBookshelf();
-        openBook(id);
+        await saveBook({ id, title, createdAt: now, updatedAt: now });
+        await renderBookshelf();
+        await openBook(id);
       }
 
-      function openBook(bookId) {
+      async function openBook(bookId) {
         currentBookId = bookId;
-        const books = loadBooks();
-        const book = books[bookId];
+        const booksMap = await getBooks();
+        const book = booksMap[bookId];
         if (!book) return;
         document.getElementById("book-title-display").innerText = book.title;
-        // 加载人设
-        const charContent = loadCharacter(bookId);
+        const charContent = await loadCharacter(bookId);
         document.getElementById("character-content").value = charContent;
-        // 加载章节列表
-        renderChapterList();
-        // 切换视图
+        await renderChapterList();
         document.getElementById("bookshelf-view").classList.remove("active");
         document.getElementById("book-detail-view").classList.add("active");
-        // 重置编辑器关闭
         closeChapterEditor();
-        // 激活人设tab
         document.getElementById("tab-character").click();
       }
 
-      function renderChapterList() {
+      async function renderChapterList() {
         if (!currentBookId) return;
-        const chapters = loadChapters(currentBookId);
+        const chapters = await loadChapters(currentBookId);
         const container = document.getElementById("chapter-list");
-        if (Object.keys(chapters).length === 0) {
+        const sorted = Object.values(chapters).sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
+        if (sorted.length === 0) {
           container.innerHTML =
             '<div style="padding: 24px; text-align:center;">✍️ 暂无章节，点击“新章节”开始创作</div>';
           return;
         }
-        const sorted = Object.values(chapters).sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-        );
         container.innerHTML = sorted
           .map(
             (ch) => `
       <div class="chapter-item" data-chapter-id="${ch.id}">
         <div><div class="chapter-title">📌 ${escapeHtml(ch.title)}</div><div class="chapter-meta">${new Date(ch.updatedAt).toLocaleString()}</div></div>
-        <div><button class="delete-chapter secondary" data-id="${ch.id}" style="background:#fee; color:#b91c1c;">删除</button></div>
+        <div><button class="delete-chapter" data-id="${ch.id}" style="background:#fee; color:#b91c1c; padding:4px 12px; border-radius:20px; cursor:pointer;">删除</button></div>
       </div>
     `,
           )
           .join("");
+
         document.querySelectorAll(".chapter-item").forEach((el) => {
           const cid = el.getAttribute("data-chapter-id");
           el.addEventListener("click", (e) => {
@@ -784,17 +1110,20 @@
           });
           const delBtn = el.querySelector(".delete-chapter");
           if (delBtn)
-            delBtn.addEventListener("click", (e) => {
+            delBtn.addEventListener("click", async (e) => {
               e.stopPropagation();
-              if (confirm("删除章节不可恢复"))
-                deleteChapter(currentBookId, cid);
+              if (confirm("删除章节不可恢复")) {
+                await deleteChapter(currentBookId, cid);
+                await renderChapterList();
+                if (currentChapterId === cid) closeChapterEditor();
+              }
             });
         });
       }
 
-      function openChapterEditor(chapterId) {
+      async function openChapterEditor(chapterId) {
         if (!currentBookId) return;
-        const chapters = loadChapters(currentBookId);
+        const chapters = await loadChapters(currentBookId);
         const chap = chapters[chapterId];
         if (!chap) return;
         currentChapterId = chapterId;
@@ -803,7 +1132,6 @@
         document.getElementById("chapter-content").value = chap.content;
         document.getElementById("chapter-editor-title").innerText =
           "✏️ 编辑章节";
-        // 绑定自动保存
         setupAutoSaveChapter();
       }
 
@@ -817,15 +1145,13 @@
         const titleInput = document.getElementById("chapter-title");
         const contentArea = document.getElementById("chapter-content");
         const saveIndicator = document.getElementById("chapter-save-status");
-        const save = () => {
+        const save = async () => {
           if (!currentBookId || !currentChapterId) return;
-          const newTitle = titleInput.value;
-          const newContent = contentArea.value;
-          saveChapterContent(
+          await saveChapterContent(
             currentBookId,
             currentChapterId,
-            newTitle,
-            newContent,
+            titleInput.value,
+            contentArea.value,
             true,
           );
           saveIndicator.innerText =
@@ -834,7 +1160,7 @@
             if (saveIndicator.innerText.includes("已自动保存"))
               saveIndicator.innerText = "💾 自动保存就绪";
           }, 1500);
-          renderChapterList();
+          await renderChapterList();
         };
         const handler = () => {
           if (autoSaveTimer) clearTimeout(autoSaveTimer);
@@ -850,12 +1176,12 @@
         const charArea = document.getElementById("character-content");
         const statusSpan = document.getElementById("character-save-status");
         let timer = null;
-        const saveChar = () => {
+        const saveChar = async () => {
           if (!currentBookId) return;
           const newVal = charArea.value;
-          const old = loadCharacter(currentBookId);
+          const old = await loadCharacter(currentBookId);
           if (old !== newVal) {
-            saveCharacter(currentBookId, newVal, true);
+            await saveCharacter(currentBookId, newVal, true);
             statusSpan.innerText =
               "💾 人设已同步 " + new Date().toLocaleTimeString();
             setTimeout(() => {
@@ -870,6 +1196,32 @@
         });
       }
 
+      async function exportBookToTxt(bookId) {
+        const booksMap = await getBooks();
+        const book = booksMap[bookId];
+        if (!book) return;
+        const chapters = await loadChapters(bookId);
+        const characterText = await loadCharacter(bookId);
+        let content = `《${book.title}》\n导出时间：${new Date().toLocaleString()}\n==========================================\n\n`;
+        if (characterText && characterText.trim())
+          content += `【人物设定】\n${characterText.trim()}\n\n==========================================\n\n`;
+        const sorted = Object.values(chapters).sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
+        for (let chap of sorted)
+          content += `第 ${chap.title}\n${chap.content || "（暂无正文）"}\n\n------------------------------------------\n\n`;
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `${book.title.replace(/[\\/:*?"<>|]/g, "")}_完整小说.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast(`已导出「${book.title}」`);
+      }
+
       function backToShelf() {
         currentBookId = null;
         currentChapterId = null;
@@ -878,208 +1230,141 @@
         renderBookshelf();
       }
 
-      // 历史弹窗通用
-      function showHistory(targetType, bookId, chapterId = null) {
-        const isChar = targetType === "character";
-        const historyList = getHistory(bookId, targetType, chapterId);
+      async function showHistoryModal(type, bookId, chapterId = null) {
+        const history = await getHistory(type, bookId, chapterId);
         const modal = document.getElementById("history-modal");
-        const titleElem = document.getElementById("modal-title");
-        titleElem.innerText = isChar
-          ? `📜 人设历史 · ${loadBooks()[bookId]?.title || ""}`
-          : `📜 章节历史`;
+        document.getElementById("modal-title").innerText =
+          type === "character" ? "人设历史" : "章节历史";
         const container = document.getElementById("history-list");
-        if (historyList.length === 0) {
+        if (history.length === 0)
           container.innerHTML =
-            '<div style="padding: 20px; text-align:center;">暂无历史版本</div>';
-        } else {
-          container.innerHTML = historyList
+            '<div style="padding:20px;text-align:center;">暂无历史版本</div>';
+        else
+          container.innerHTML = history
             .map(
-              (h) => `
-        <div class="history-item" data-time="${h.timestamp}">
-          <div class="history-time">📅 ${new Date(h.timestamp).toLocaleString()}</div>
-          <div class="history-preview">${escapeHtml(h.preview || h.fullContent?.slice(0, 80))}</div>
-          <button class="restore-btn" data-id="${h.id}">↺ 恢复此版本</button>
-        </div>
-      `,
+              (h, idx) =>
+                `<div class="history-item" data-index="${idx}"><div class="history-time">📅 ${new Date(h.timestamp).toLocaleString()}</div><div class="history-preview">${escapeHtml(h.preview)}</div><button class="restore-btn" data-index="${idx}">↺ 恢复此版本</button></div>`,
             )
             .join("");
-          container.querySelectorAll(".restore-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-              const parent = btn.closest(".history-item");
-              const timeStr = parent.getAttribute("data-time");
-              const snapshot = historyList.find((h) => h.timestamp === timeStr);
-              if (snapshot) {
-                if (isChar)
-                  restoreHistory(bookId, "character", null, snapshot, true);
-                else
-                  restoreHistory(bookId, "chapter", chapterId, snapshot, false);
-                modal.classList.remove("active");
-              }
-            });
+        container.querySelectorAll(".restore-btn").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const idx = parseInt(btn.getAttribute("data-index"));
+            const snap = history[idx];
+            if (snap) {
+              await restoreHistory(
+                bookId,
+                type,
+                chapterId,
+                snap,
+                type === "character",
+              );
+              modal.classList.remove("active");
+            }
           });
-        }
+        });
         modal.classList.add("active");
-        currentHistoryTarget = { type: targetType, bookId, chapterId };
       }
 
-      // 登录注册
-      function register(username, password) {
-        if (!username.trim()) {
-          alert("用户名不能为空");
-          return false;
-        }
-        const users = JSON.parse(
-          localStorage.getItem("writing_app_users") || "{}",
-        );
-        if (users[username]) {
-          alert("用户名已存在");
-          return false;
-        }
-        users[username] = { username, password: btoa(password) };
-        localStorage.setItem("writing_app_users", JSON.stringify(users));
-        alert("注册成功，请登录");
-        return true;
-      }
-      function login(username, password) {
-        const users = JSON.parse(
-          localStorage.getItem("writing_app_users") || "{}",
-        );
-        if (!users[username] || atob(users[username].password) !== password) {
-          alert("账号或密码错误");
-          return false;
-        }
-        currentUser = { username };
-        localStorage.setItem(
-          "writing_current_user",
-          JSON.stringify(currentUser),
-        );
-        updateUIForUser();
-        renderBookshelf();
-        closeModal(document.getElementById("login-modal"));
-        return true;
-      }
-      function logout() {
-        currentUser = null;
-        localStorage.removeItem("writing_current_user");
-        currentBookId = null;
-        updateUIForUser();
-        backToShelf();
-        renderBookshelf();
-      }
       function updateUIForUser() {
-        const userSpan = document.getElementById("user-status");
-        const logoutBtn = document.getElementById("logout-btn");
-        const loginBtn = document.getElementById("show-login-btn");
-        if (currentUser) {
-          userSpan.innerText = `👤 欢迎，${currentUser.username}`;
-          logoutBtn.style.display = "inline-block";
-          loginBtn.style.display = "none";
-        } else {
-          userSpan.innerText = "📖 未登录 (数据本地存储)";
-          logoutBtn.style.display = "none";
-          loginBtn.style.display = "inline-block";
-        }
+        document.getElementById("user-status").innerHTML = currentUser
+          ? `👤 欢迎，${currentUser.username} (IDB)`
+          : "📖 未登录 (IndexedDB)";
+        document.getElementById("logout-btn").style.display = currentUser
+          ? "inline-block"
+          : "none";
+        document.getElementById("show-login-btn").style.display = currentUser
+          ? "none"
+          : "inline-block";
       }
+
       function closeModal(modal) {
         modal.classList.remove("active");
       }
-
       function escapeHtml(str) {
         if (!str) return "";
-        return str.replace(/[&<>]/g, function (m) {
-          if (m === "&") return "&amp;";
-          if (m === "<") return "&lt;";
-          if (m === ">") return "&gt;";
-          return m;
-        });
+        return str.replace(
+          /[&<>]/g,
+          (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[m],
+        );
       }
-      function showToast(msg) {
-        alert(msg);
-      } // simple
 
-      // 事件绑定
-      document
-        .getElementById("add-book-btn")
-        .addEventListener("click", addNewBook);
-      document
-        .getElementById("back-to-shelf")
-        .addEventListener("click", backToShelf);
-      document.getElementById("tab-character").addEventListener("click", () => {
+      // 初始化
+      window.addEventListener("load", async () => {
+        try {
+          await openDB();
+          const saved = localStorage.getItem("writing_current_user");
+          if (saved)
+            try {
+              currentUser = JSON.parse(saved);
+            } catch (e) {}
+          updateUIForUser();
+          await renderBookshelf();
+          setupAutoSaveCharacter();
+        } catch (e) {
+          console.error("初始化失败:", e);
+          showToast("数据库初始化失败，请刷新页面重试");
+        }
+      });
+
+      document.getElementById("add-book-btn").onclick = addNewBook;
+      document.getElementById("back-to-shelf").onclick = backToShelf;
+      document.getElementById("tab-character").onclick = () => {
         document.getElementById("tab-character").classList.add("active");
         document.getElementById("tab-chapters").classList.remove("active");
         document.getElementById("character-panel").classList.add("active");
         document.getElementById("chapters-panel").classList.remove("active");
-      });
-      document.getElementById("tab-chapters").addEventListener("click", () => {
+      };
+      document.getElementById("tab-chapters").onclick = () => {
         document.getElementById("tab-chapters").classList.add("active");
         document.getElementById("tab-character").classList.remove("active");
         document.getElementById("chapters-panel").classList.add("active");
         document.getElementById("character-panel").classList.remove("active");
         if (currentBookId) renderChapterList();
-      });
-      document
-        .getElementById("add-chapter-btn")
-        .addEventListener("click", () => {
-          if (!currentBookId) return;
-          const newId =
-            "chap_" +
-            Date.now() +
-            "_" +
-            Math.random().toString(36).substr(2, 4);
-          saveChapterContent(currentBookId, newId, "新章节", "", true);
-          renderChapterList();
-          openChapterEditor(newId);
-        });
-      document
-        .getElementById("close-editor")
-        .addEventListener("click", closeChapterEditor);
-      document
-        .getElementById("view-character-history")
-        .addEventListener("click", () => {
-          if (currentBookId) showHistory("character", currentBookId);
-        });
-      document
-        .getElementById("view-chapter-history")
-        .addEventListener("click", () => {
-          if (currentBookId && currentChapterId)
-            showHistory("chapter", currentBookId, currentChapterId);
-        });
+      };
+      document.getElementById("add-chapter-btn").onclick = async () => {
+        if (!currentBookId) return;
+        const newId =
+          "chap_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
+        await saveChapterContent(currentBookId, newId, "新章节", "", true);
+        await renderChapterList();
+        await openChapterEditor(newId);
+      };
+      document.getElementById("close-editor").onclick = closeChapterEditor;
+      document.getElementById("view-character-history").onclick = () => {
+        if (currentBookId) showHistoryModal("character", currentBookId);
+      };
+      document.getElementById("view-chapter-history").onclick = () => {
+        if (currentBookId && currentChapterId)
+          showHistoryModal("chapter", currentBookId, currentChapterId);
+      };
+      document.getElementById("export-current-book").onclick = () => {
+        if (currentBookId) exportBookToTxt(currentBookId);
+      };
       document
         .querySelectorAll(".close-modal, #close-history-modal")
-        .forEach((btn) =>
-          btn.addEventListener("click", function () {
-            document.getElementById("history-modal").classList.remove("active");
-          }),
+        .forEach(
+          (btn) =>
+            (btn.onclick = () =>
+              document
+                .getElementById("history-modal")
+                .classList.remove("active")),
         );
-      document
-        .getElementById("show-login-btn")
-        .addEventListener("click", () => {
-          document.getElementById("login-modal").classList.add("active");
-        });
-      document.getElementById("logout-btn").addEventListener("click", logout);
-      document.getElementById("do-login").addEventListener("click", () => {
-        const u = document.getElementById("login-username").value;
-        const p = document.getElementById("login-password").value;
-        login(u, p);
-      });
-      document.getElementById("do-register").addEventListener("click", () => {
-        const u = document.getElementById("login-username").value;
-        const p = document.getElementById("login-password").value;
-        if (register(u, p)) {
+      document.getElementById("show-login-btn").onclick = () =>
+        document.getElementById("login-modal").classList.add("active");
+      document.getElementById("logout-btn").onclick = logout;
+      document.getElementById("do-login").onclick = async () => {
+        const u = document.getElementById("login-username").value,
+          p = document.getElementById("login-password").value;
+        await login(u, p);
+      };
+      document.getElementById("do-register").onclick = async () => {
+        const u = document.getElementById("login-username").value,
+          p = document.getElementById("login-password").value;
+        if (await register(u, p)) {
           document.getElementById("login-username").value = "";
           document.getElementById("login-password").value = "";
         }
-      });
-      // 初始化加载已登录用户
-      const savedUser = localStorage.getItem("writing_current_user");
-      if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
-        } catch (e) {}
-      }
-      updateUIForUser();
-      renderBookshelf();
-      setupAutoSaveCharacter();
+      };
     </script>
   </body>
 </html>
