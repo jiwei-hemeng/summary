@@ -1,0 +1,16 @@
+{
+  "project-info": {
+    "prefix": "info",
+    "body": [
+      "<!-- ",
+      "标题: $RELATIVE_FILEPATH", // 替换为文件名
+      "功能: $2", // 描述文件核心功能（如「送检农田选择组件」）
+      "说明: $3", // 补充注意事项（如「依赖农田数据接口/api/farm/list」）
+      "开发信息: Created by $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND jiwei", // 替换为姓名+创建日期
+      "当前版本: 1 .0", // 按实际版本填写
+      "-->",
+      "" // 预留空行，便于后续代码编写
+    ],
+    "description": "项目文件信息备注模板"
+  }
+}

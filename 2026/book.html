@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>个人写作室 · 云端书栈</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif;
+        background: #f1f5f9;
+        color: #0f172a;
+        padding: 20px;
+      }
+
+      #app {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+
+      /* 头部与卡片 */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      button {
+        cursor: pointer;
+        padding: 8px 18px;
+        border: none;
+        border-radius: 40px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background: #eef2ff;
+        color: #1e293b;
+      }
+
+      .primary {
+        background: #3b82f6;
+        color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      .secondary {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+      }
+      .secondary:hover {
+        background: #e6edf5;
+      }
+
+      .small-primary {
+        background: #3b82f6;
+        color: white;
+        padding: 6px 14px;
+        font-size: 0.8rem;
+      }
+
+      .history-btn {
+        background: #8b5cf6;
+        color: white;
+        font-size: 0.75rem;
+        padding: 6px 14px;
+        margin-top: 12px;
+        width: fit-content;
+      }
+      .history-btn:hover {
+        background: #7c3aed;
+      }
+
+      /* 书架网格 */
+      .bookshelf {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 24px;
+      }
+
+      .book-card {
+        background: white;
+        border-radius: 28px;
+        padding: 1.5rem;
+        box-shadow:
+          0 8px 20px rgba(0, 0, 0, 0.03),
+          0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.25s;
+        cursor: pointer;
+        border: 1px solid #eef2ff;
+      }
+      .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+        border-color: #cbdffc;
+      }
+
+      .book-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.3px;
+      }
+      .book-update {
+        font-size: 0.7rem;
+        color: #5b6e8c;
+        margin: 12px 0;
+      }
+      .delete-book {
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 6px 16px;
+        font-size: 0.75rem;
+      }
+      .delete-book:hover {
+        background: #fecaca;
+      }
+
+      /* tab样式 */
+      .book-detail-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+      }
+      .tab {
+        background: none;
+        border-radius: 0;
+        padding: 10px 4px;
+        margin-right: 24px;
+        font-weight: 600;
+        border-bottom: 3px solid transparent;
+        color: #475569;
+      }
+      .tab.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+      }
+
+      .tab-panel {
+        display: none;
+        background: white;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #eef2ff;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      textarea,
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-family: "SF Mono", "Courier New", monospace;
+        transition: 0.2s;
+      }
+      textarea:focus,
+      input:focus {
+        outline: none;
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+      }
+
+      .chapter-list {
+        max-height: 340px;
+        overflow-y: auto;
+        margin-bottom: 24px;
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+      }
+      .chapter-item {
+        padding: 14px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.1s;
+      }
+      .chapter-item:hover {
+        background: #fafcff;
+      }
+      .chapter-title {
+        font-weight: 600;
+      }
+      .chapter-meta {
+        font-size: 0.7rem;
+        color: #6c86a3;
+        margin-top: 4px;
+      }
+
+      #chapter-editor {
+        margin-top: 20px;
+        border-top: 2px dashed #eef2ff;
+        padding-top: 24px;
+      }
+
+      .editor-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal.active {
+        display: flex;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 32px;
+        max-width: 680px;
+        width: 90%;
+        max-height: 85%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        animation: fadeUp 0.2s;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .modal-header {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid #ecf3fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .close-modal {
+        background: transparent;
+        font-size: 28px;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        border-radius: 40px;
+      }
+      .history-list {
+        padding: 1.2rem;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .history-item {
+        background: #fafcff;
+        border: 1px solid #e9eff6;
+        border-radius: 20px;
+        padding: 1rem;
+        margin-bottom: 12px;
+      }
+      .restore-btn {
+        background: #10b981;
+        color: white;
+        margin-top: 8px;
+        font-size: 0.7rem;
+        padding: 4px 12px;
+      }
+
+      .auto-save-status {
+        font-size: 0.7rem;
+        margin-top: 10px;
+        text-align: right;
+        color: #4b7bec;
+      }
+      #user-bar {
+        background: white;
+        border-radius: 60px;
+        padding: 8px 20px;
+        margin-bottom: 28px;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div
+        id="user-bar"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div><span id="user-status">📖 未登录</span></div>
+        <div>
+          <button id="show-login-btn" class="secondary">🔐 登录/注册</button>
+          <button id="logout-btn" style="display: none" class="secondary">
+            🚪 退出登录
+          </button>
+        </div>
+      </div>
+
+      <!-- 书架视图 -->
+      <div id="bookshelf-view" class="view active">
+        <div class="header">
+          <h1>📚 我的书架</h1>
+          <button id="add-book-btn" class="primary">+ 新建书</button>
+        </div>
+        <div id="bookshelf" class="bookshelf"></div>
+      </div>
+
+      <!-- 书本详情视图 -->
+      <div id="book-detail-view" class="view">
+        <div class="header">
+          <button id="back-to-shelf" class="secondary">← 返回书架</button>
+          <h1 id="book-title-display"></h1>
+        </div>
+        <div class="book-detail-tabs">
+          <button id="tab-character" class="tab active">👥 人设</button
+          ><button id="tab-chapters" class="tab">📑 章节</button>
+        </div>
+
+        <div id="character-panel" class="tab-panel active">
+          <div class="editor-with-history">
+            <textarea
+              id="character-content"
+              placeholder="详细描述角色性格、外貌、背景故事……"
+              rows="12"
+            ></textarea>
+            <button id="view-character-history" class="history-btn">
+              📜 人设版本历史
+            </button>
+          </div>
+          <div class="auto-save-status" id="character-save-status">
+            💾 已自动同步
+          </div>
+        </div>
+
+        <div id="chapters-panel" class="tab-panel">
+          <div>
+            <button id="add-chapter-btn" class="small-primary">+ 新章节</button>
+          </div>
+          <div id="chapter-list" class="chapter-list"></div>
+          <div id="chapter-editor" style="display: none">
+            <h3 id="chapter-editor-title">编辑章节</h3>
+            <input type="text" id="chapter-title" placeholder="章节标题" />
+            <textarea
+              id="chapter-content"
+              rows="10"
+              placeholder="正文……"
+            ></textarea>
+            <button id="view-chapter-history" class="history-btn">
+              📜 此章节版本历史
+            </button>
+            <div class="editor-buttons">
+              <button id="close-editor">关闭编辑器</button>
+            </div>
+            <div class="auto-save-status" id="chapter-save-status">
+              💾 自动保存
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 登录modal -->
+      <div id="login-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px">
+          <div class="modal-header">
+            <h2>登录 / 注册</h2>
+            <button class="close-modal">&times;</button>
+          </div>
+          <div style="padding: 24px">
+            <input
+              type="text"
+              id="login-username"
+              placeholder="用户名"
+              autocomplete="username"
+            />
+            <input
+              type="password"
+              id="login-password"
+              placeholder="密码"
+              autocomplete="current-password"
+              style="margin-top: 12px"
+            />
+            <button
+              id="do-login"
+              class="primary"
+              style="width: 100%; margin-top: 20px"
+            >
+              登录
+            </button>
+            <button
+              id="do-register"
+              class="secondary"
+              style="width: 100%; margin-top: 12px"
+            >
+              注册新账号
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 历史版本modal -->
+      <div id="history-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="modal-title">版本历史</h2>
+            <button class="close-modal">&times;</button>
+          </div>
+          <div id="history-list" class="history-list"></div>
+          <div
+            class="modal-buttons"
+            style="padding: 16px; border-top: 1px solid #ecf3fa"
+          >
+            <button id="close-history-modal" class="secondary">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---------- 存储 keys 前缀，基于用户 ----------
+      let currentUser = null; // { username }
+      let currentBookId = null; // 当前打开的书id
+      let currentChapterId = null; // 正在编辑的章节id (若有)
+      let autoSaveTimer = null;
+      let currentHistoryTarget = null; // 存储当前历史弹窗的目标 { type, bookId, chapterId? }
+
+      // 辅助函数
+      function storageKeyForUser(baseKey) {
+        if (!currentUser) return `__anonymous__${baseKey}`;
+        return `writer_${currentUser.username}_${baseKey}`;
+      }
+
+      // 获取用户所有的书 books: { [bookId]: { id, title, updatedAt, createdAt } }
+      function loadBooks() {
+        const raw = localStorage.getItem(storageKeyForUser("books"));
+        if (!raw) return {};
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          return {};
+        }
+      }
+      function saveBooks(booksObj) {
+        localStorage.setItem(
+          storageKeyForUser("books"),
+          JSON.stringify(booksObj),
+        );
+      }
+
+      // 人设内容 (bookId -> string)
+      function loadCharacter(bookId) {
+        return localStorage.getItem(storageKeyForUser(`char_${bookId}`)) || "";
+      }
+      function saveCharacter(bookId, content, recordHistory = true) {
+        if (recordHistory) {
+          const old = loadCharacter(bookId);
+          if (old !== content)
+            addHistory(bookId, "character", null, old, content);
+        }
+        localStorage.setItem(storageKeyForUser(`char_${bookId}`), content);
+      }
+
+      // 章节: { [chapterId]: { id, title, content, updatedAt, createdAt } }
+      function loadChapters(bookId) {
+        const raw = localStorage.getItem(
+          storageKeyForUser(`chapters_${bookId}`),
+        );
+        if (!raw) return {};
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          return {};
+        }
+      }
+      function saveChapters(bookId, chaptersObj) {
+        localStorage.setItem(
+          storageKeyForUser(`chapters_${bookId}`),
+          JSON.stringify(chaptersObj),
+        );
+      }
+      function saveChapterContent(
+        bookId,
+        chapterId,
+        title,
+        content,
+        recordHistory = true,
+      ) {
+        const chapters = loadChapters(bookId);
+        const oldChap = chapters[chapterId];
+        if (recordHistory && oldChap) {
+          if (oldChap.title !== title || oldChap.content !== content) {
+            addHistory(
+              bookId,
+              "chapter",
+              chapterId,
+              oldChap.content,
+              content,
+              oldChap.title,
+              title,
+            );
+          }
+        }
+        const now = new Date().toISOString();
+        if (chapters[chapterId]) {
+          chapters[chapterId].title = title;
+          chapters[chapterId].content = content;
+          chapters[chapterId].updatedAt = now;
+        } else {
+          chapters[chapterId] = {
+            id: chapterId,
+            title,
+            content,
+            createdAt: now,
+            updatedAt: now,
+          };
+        }
+        saveChapters(bookId, chapters);
+        // 更新书本更新时间
+        const books = loadBooks();
+        if (books[bookId]) {
+          books[bookId].updatedAt = now;
+          saveBooks(books);
+        }
+      }
+      function deleteChapter(bookId, chapterId) {
+        const chapters = loadChapters(bookId);
+        if (chapters[chapterId]) {
+          delete chapters[chapterId];
+          saveChapters(bookId, chapters);
+          if (currentChapterId === chapterId) {
+            currentChapterId = null;
+            closeChapterEditor();
+          }
+          renderChapterList();
+        }
+      }
+
+      // 历史记录
+      function getHistoryKey(bookId, type, chapterId = null) {
+        if (type === "character")
+          return storageKeyForUser(`hist_char_${bookId}`);
+        else return storageKeyForUser(`hist_chap_${bookId}_${chapterId}`);
+      }
+      function addHistory(
+        bookId,
+        type,
+        chapterId,
+        oldContent,
+        newContent,
+        oldTitle = "",
+        newTitle = "",
+      ) {
+        const key = getHistoryKey(bookId, type, chapterId);
+        const existing = localStorage.getItem(key);
+        let history = existing ? JSON.parse(existing) : [];
+        const snapshot = {
+          id: Date.now() + Math.random(),
+          timestamp: new Date().toISOString(),
+          preview:
+            (type === "chapter" ? `标题: ${newTitle || "无标题"} | ` : "") +
+            (newContent?.slice(0, 100) || ""),
+          fullContent: newContent,
+          fullTitle: type === "chapter" ? newTitle : undefined,
+          oldContent: oldContent,
+          oldTitle: oldTitle,
+        };
+        history.unshift(snapshot);
+        if (history.length > 50) history.pop();
+        localStorage.setItem(key, JSON.stringify(history));
+      }
+      function getHistory(bookId, type, chapterId = null) {
+        const key = getHistoryKey(bookId, type, chapterId);
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : [];
+      }
+      function restoreHistory(bookId, type, chapterId, snapshot, isCharacter) {
+        if (isCharacter) {
+          const old = loadCharacter(bookId);
+          if (old !== snapshot.fullContent)
+            addHistory(bookId, "character", null, old, snapshot.fullContent);
+          localStorage.setItem(
+            storageKeyForUser(`char_${bookId}`),
+            snapshot.fullContent,
+          );
+          if (currentBookId === bookId)
+            document.getElementById("character-content").value =
+              snapshot.fullContent;
+          showToast("人设已恢复");
+        } else {
+          const chapters = loadChapters(bookId);
+          const chap = chapters[chapterId];
+          if (chap) {
+            const oldTitle = chap.title,
+              oldContent = chap.content;
+            if (
+              oldTitle !== snapshot.fullTitle ||
+              oldContent !== snapshot.fullContent
+            ) {
+              addHistory(
+                bookId,
+                "chapter",
+                chapterId,
+                oldContent,
+                snapshot.fullContent,
+                oldTitle,
+                snapshot.fullTitle,
+              );
+            }
+            chap.title = snapshot.fullTitle || "恢复章节";
+            chap.content = snapshot.fullContent;
+            chap.updatedAt = new Date().toISOString();
+            saveChapters(bookId, chapters);
+            if (currentBookId === bookId && currentChapterId === chapterId) {
+              document.getElementById("chapter-title").value = chap.title;
+              document.getElementById("chapter-content").value = chap.content;
+            }
+            renderChapterList();
+            showToast("章节已恢复");
+          }
+        }
+      }
+
+      // 渲染书架
+      function renderBookshelf() {
+        const container = document.getElementById("bookshelf");
+        const books = loadBooks();
+        if (Object.keys(books).length === 0) {
+          container.innerHTML =
+            '<div style="text-align:center; padding: 48px; background: #fff; border-radius: 32px;">✨ 还没有书，点击“新建书”开始创作～</div>';
+          return;
+        }
+        container.innerHTML = Object.values(books)
+          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+          .map(
+            (book) => `
+      <div class="book-card" data-id="${book.id}">
+        <div class="book-title">📖 ${escapeHtml(book.title)}</div>
+        <div class="book-update">更新于 ${new Date(book.updatedAt).toLocaleString()}</div>
+        <button class="delete-book" data-id="${book.id}">删除书籍</button>
+      </div>
+    `,
+          )
+          .join("");
+        // 绑定事件
+        document.querySelectorAll(".book-card").forEach((card) => {
+          const id = card.getAttribute("data-id");
+          card.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("delete-book")) openBook(id);
+          });
+          const delBtn = card.querySelector(".delete-book");
+          if (delBtn)
+            delBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              deleteBookById(id);
+            });
+        });
+      }
+
+      function deleteBookById(bookId) {
+        if (confirm("永久删除整本书及所有章节？")) {
+          const books = loadBooks();
+          delete books[bookId];
+          saveBooks(books);
+          localStorage.removeItem(storageKeyForUser(`char_${bookId}`));
+          localStorage.removeItem(storageKeyForUser(`chapters_${bookId}`));
+          localStorage.removeItem(storageKeyForUser(`hist_char_${bookId}`));
+          const chapters = loadChapters(bookId);
+          Object.keys(chapters).forEach((chId) => {
+            localStorage.removeItem(
+              storageKeyForUser(`hist_chap_${bookId}_${chId}`),
+            );
+          });
+          if (currentBookId === bookId) backToShelf();
+          renderBookshelf();
+        }
+      }
+
+      function addNewBook() {
+        let title = prompt("输入书名", "未命名故事");
+        if (!title) title = "新作";
+        const books = loadBooks();
+        const id =
+          "book_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+        const now = new Date().toISOString();
+        books[id] = { id, title, createdAt: now, updatedAt: now };
+        saveBooks(books);
+        renderBookshelf();
+        openBook(id);
+      }
+
+      function openBook(bookId) {
+        currentBookId = bookId;
+        const books = loadBooks();
+        const book = books[bookId];
+        if (!book) return;
+        document.getElementById("book-title-display").innerText = book.title;
+        // 加载人设
+        const charContent = loadCharacter(bookId);
+        document.getElementById("character-content").value = charContent;
+        // 加载章节列表
+        renderChapterList();
+        // 切换视图
+        document.getElementById("bookshelf-view").classList.remove("active");
+        document.getElementById("book-detail-view").classList.add("active");
+        // 重置编辑器关闭
+        closeChapterEditor();
+        // 激活人设tab
+        document.getElementById("tab-character").click();
+      }
+
+      function renderChapterList() {
+        if (!currentBookId) return;
+        const chapters = loadChapters(currentBookId);
+        const container = document.getElementById("chapter-list");
+        if (Object.keys(chapters).length === 0) {
+          container.innerHTML =
+            '<div style="padding: 24px; text-align:center;">✍️ 暂无章节，点击“新章节”开始创作</div>';
+          return;
+        }
+        const sorted = Object.values(chapters).sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
+        container.innerHTML = sorted
+          .map(
+            (ch) => `
+      <div class="chapter-item" data-chapter-id="${ch.id}">
+        <div><div class="chapter-title">📌 ${escapeHtml(ch.title)}</div><div class="chapter-meta">${new Date(ch.updatedAt).toLocaleString()}</div></div>
+        <div><button class="delete-chapter secondary" data-id="${ch.id}" style="background:#fee; color:#b91c1c;">删除</button></div>
+      </div>
+    `,
+          )
+          .join("");
+        document.querySelectorAll(".chapter-item").forEach((el) => {
+          const cid = el.getAttribute("data-chapter-id");
+          el.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("delete-chapter"))
+              openChapterEditor(cid);
+          });
+          const delBtn = el.querySelector(".delete-chapter");
+          if (delBtn)
+            delBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (confirm("删除章节不可恢复"))
+                deleteChapter(currentBookId, cid);
+            });
+        });
+      }
+
+      function openChapterEditor(chapterId) {
+        if (!currentBookId) return;
+        const chapters = loadChapters(currentBookId);
+        const chap = chapters[chapterId];
+        if (!chap) return;
+        currentChapterId = chapterId;
+        document.getElementById("chapter-editor").style.display = "block";
+        document.getElementById("chapter-title").value = chap.title;
+        document.getElementById("chapter-content").value = chap.content;
+        document.getElementById("chapter-editor-title").innerText =
+          "✏️ 编辑章节";
+        // 绑定自动保存
+        setupAutoSaveChapter();
+      }
+
+      function closeChapterEditor() {
+        document.getElementById("chapter-editor").style.display = "none";
+        currentChapterId = null;
+        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+      }
+
+      function setupAutoSaveChapter() {
+        const titleInput = document.getElementById("chapter-title");
+        const contentArea = document.getElementById("chapter-content");
+        const saveIndicator = document.getElementById("chapter-save-status");
+        const save = () => {
+          if (!currentBookId || !currentChapterId) return;
+          const newTitle = titleInput.value;
+          const newContent = contentArea.value;
+          saveChapterContent(
+            currentBookId,
+            currentChapterId,
+            newTitle,
+            newContent,
+            true,
+          );
+          saveIndicator.innerText =
+            "✅ 已自动保存 " + new Date().toLocaleTimeString();
+          setTimeout(() => {
+            if (saveIndicator.innerText.includes("已自动保存"))
+              saveIndicator.innerText = "💾 自动保存就绪";
+          }, 1500);
+          renderChapterList();
+        };
+        const handler = () => {
+          if (autoSaveTimer) clearTimeout(autoSaveTimer);
+          autoSaveTimer = setTimeout(save, 800);
+        };
+        titleInput.removeEventListener("input", handler);
+        contentArea.removeEventListener("input", handler);
+        titleInput.addEventListener("input", handler);
+        contentArea.addEventListener("input", handler);
+      }
+
+      function setupAutoSaveCharacter() {
+        const charArea = document.getElementById("character-content");
+        const statusSpan = document.getElementById("character-save-status");
+        let timer = null;
+        const saveChar = () => {
+          if (!currentBookId) return;
+          const newVal = charArea.value;
+          const old = loadCharacter(currentBookId);
+          if (old !== newVal) {
+            saveCharacter(currentBookId, newVal, true);
+            statusSpan.innerText =
+              "💾 人设已同步 " + new Date().toLocaleTimeString();
+            setTimeout(() => {
+              if (statusSpan.innerText.includes("已同步"))
+                statusSpan.innerText = "💾 等待编辑...";
+            }, 1500);
+          }
+        };
+        charArea.addEventListener("input", () => {
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(saveChar, 700);
+        });
+      }
+
+      function backToShelf() {
+        currentBookId = null;
+        currentChapterId = null;
+        document.getElementById("book-detail-view").classList.remove("active");
+        document.getElementById("bookshelf-view").classList.add("active");
+        renderBookshelf();
+      }
+
+      // 历史弹窗通用
+      function showHistory(targetType, bookId, chapterId = null) {
+        const isChar = targetType === "character";
+        const historyList = getHistory(bookId, targetType, chapterId);
+        const modal = document.getElementById("history-modal");
+        const titleElem = document.getElementById("modal-title");
+        titleElem.innerText = isChar
+          ? `📜 人设历史 · ${loadBooks()[bookId]?.title || ""}`
+          : `📜 章节历史`;
+        const container = document.getElementById("history-list");
+        if (historyList.length === 0) {
+          container.innerHTML =
+            '<div style="padding: 20px; text-align:center;">暂无历史版本</div>';
+        } else {
+          container.innerHTML = historyList
+            .map(
+              (h) => `
+        <div class="history-item" data-time="${h.timestamp}">
+          <div class="history-time">📅 ${new Date(h.timestamp).toLocaleString()}</div>
+          <div class="history-preview">${escapeHtml(h.preview || h.fullContent?.slice(0, 80))}</div>
+          <button class="restore-btn" data-id="${h.id}">↺ 恢复此版本</button>
+        </div>
+      `,
+            )
+            .join("");
+          container.querySelectorAll(".restore-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const parent = btn.closest(".history-item");
+              const timeStr = parent.getAttribute("data-time");
+              const snapshot = historyList.find((h) => h.timestamp === timeStr);
+              if (snapshot) {
+                if (isChar)
+                  restoreHistory(bookId, "character", null, snapshot, true);
+                else
+                  restoreHistory(bookId, "chapter", chapterId, snapshot, false);
+                modal.classList.remove("active");
+              }
+            });
+          });
+        }
+        modal.classList.add("active");
+        currentHistoryTarget = { type: targetType, bookId, chapterId };
+      }
+
+      // 登录注册
+      function register(username, password) {
+        if (!username.trim()) {
+          alert("用户名不能为空");
+          return false;
+        }
+        const users = JSON.parse(
+          localStorage.getItem("writing_app_users") || "{}",
+        );
+        if (users[username]) {
+          alert("用户名已存在");
+          return false;
+        }
+        users[username] = { username, password: btoa(password) };
+        localStorage.setItem("writing_app_users", JSON.stringify(users));
+        alert("注册成功，请登录");
+        return true;
+      }
+      function login(username, password) {
+        const users = JSON.parse(
+          localStorage.getItem("writing_app_users") || "{}",
+        );
+        if (!users[username] || atob(users[username].password) !== password) {
+          alert("账号或密码错误");
+          return false;
+        }
+        currentUser = { username };
+        localStorage.setItem(
+          "writing_current_user",
+          JSON.stringify(currentUser),
+        );
+        updateUIForUser();
+        renderBookshelf();
+        closeModal(document.getElementById("login-modal"));
+        return true;
+      }
+      function logout() {
+        currentUser = null;
+        localStorage.removeItem("writing_current_user");
+        currentBookId = null;
+        updateUIForUser();
+        backToShelf();
+        renderBookshelf();
+      }
+      function updateUIForUser() {
+        const userSpan = document.getElementById("user-status");
+        const logoutBtn = document.getElementById("logout-btn");
+        const loginBtn = document.getElementById("show-login-btn");
+        if (currentUser) {
+          userSpan.innerText = `👤 欢迎，${currentUser.username}`;
+          logoutBtn.style.display = "inline-block";
+          loginBtn.style.display = "none";
+        } else {
+          userSpan.innerText = "📖 未登录 (数据本地存储)";
+          logoutBtn.style.display = "none";
+          loginBtn.style.display = "inline-block";
+        }
+      }
+      function closeModal(modal) {
+        modal.classList.remove("active");
+      }
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function (m) {
+          if (m === "&") return "&amp;";
+          if (m === "<") return "&lt;";
+          if (m === ">") return "&gt;";
+          return m;
+        });
+      }
+      function showToast(msg) {
+        alert(msg);
+      } // simple
+
+      // 事件绑定
+      document
+        .getElementById("add-book-btn")
+        .addEventListener("click", addNewBook);
+      document
+        .getElementById("back-to-shelf")
+        .addEventListener("click", backToShelf);
+      document.getElementById("tab-character").addEventListener("click", () => {
+        document.getElementById("tab-character").classList.add("active");
+        document.getElementById("tab-chapters").classList.remove("active");
+        document.getElementById("character-panel").classList.add("active");
+        document.getElementById("chapters-panel").classList.remove("active");
+      });
+      document.getElementById("tab-chapters").addEventListener("click", () => {
+        document.getElementById("tab-chapters").classList.add("active");
+        document.getElementById("tab-character").classList.remove("active");
+        document.getElementById("chapters-panel").classList.add("active");
+        document.getElementById("character-panel").classList.remove("active");
+        if (currentBookId) renderChapterList();
+      });
+      document
+        .getElementById("add-chapter-btn")
+        .addEventListener("click", () => {
+          if (!currentBookId) return;
+          const newId =
+            "chap_" +
+            Date.now() +
+            "_" +
+            Math.random().toString(36).substr(2, 4);
+          saveChapterContent(currentBookId, newId, "新章节", "", true);
+          renderChapterList();
+          openChapterEditor(newId);
+        });
+      document
+        .getElementById("close-editor")
+        .addEventListener("click", closeChapterEditor);
+      document
+        .getElementById("view-character-history")
+        .addEventListener("click", () => {
+          if (currentBookId) showHistory("character", currentBookId);
+        });
+      document
+        .getElementById("view-chapter-history")
+        .addEventListener("click", () => {
+          if (currentBookId && currentChapterId)
+            showHistory("chapter", currentBookId, currentChapterId);
+        });
+      document
+        .querySelectorAll(".close-modal, #close-history-modal")
+        .forEach((btn) =>
+          btn.addEventListener("click", function () {
+            document.getElementById("history-modal").classList.remove("active");
+          }),
+        );
+      document
+        .getElementById("show-login-btn")
+        .addEventListener("click", () => {
+          document.getElementById("login-modal").classList.add("active");
+        });
+      document.getElementById("logout-btn").addEventListener("click", logout);
+      document.getElementById("do-login").addEventListener("click", () => {
+        const u = document.getElementById("login-username").value;
+        const p = document.getElementById("login-password").value;
+        login(u, p);
+      });
+      document.getElementById("do-register").addEventListener("click", () => {
+        const u = document.getElementById("login-username").value;
+        const p = document.getElementById("login-password").value;
+        if (register(u, p)) {
+          document.getElementById("login-username").value = "";
+          document.getElementById("login-password").value = "";
+        }
+      });
+      // 初始化加载已登录用户
+      const savedUser = localStorage.getItem("writing_current_user");
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+        } catch (e) {}
+      }
+      updateUIForUser();
+      renderBookshelf();
+      setupAutoSaveCharacter();
+    </script>
+  </body>
+</html>
