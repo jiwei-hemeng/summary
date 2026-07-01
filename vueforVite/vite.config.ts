@@ -43,10 +43,7 @@ export default ({ mode }) => {
     },
     css: {
       preprocessorOptions: {
-        scss: {
-          // 可选的 SCSS 配置
-          additionalData: "@import '@/styles/variables.scss';"
-        }
+        
       }
     },
     resolve: {
