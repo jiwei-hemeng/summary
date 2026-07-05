@@ -71,9 +71,16 @@ export default {
     logout: "Logout"
   },
   slideVerify: {
+    title: "Security Verify",
+    subtitle: "Drag the slider to complete verification",
     refresh: "Refresh",
-    tip: "Drag the slider to verify",
+    tip: "Drag right to complete the puzzle",
     success: "Verified",
-    loading: "Loading..."
+    fail: "Failed",
+    loading: "Loading...",
+    statusIdle: "Awaiting verification",
+    statusScanning: "Analyzing behavior...",
+    statusPassed: "Identity confirmed",
+    statusFailed: "Verification failed"
   }
 };

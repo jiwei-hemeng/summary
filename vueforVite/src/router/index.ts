@@ -39,6 +39,12 @@ const router = createRouter({
       ]
     },
     {
+      path: "/register",
+      name: "Register",
+      component: () => import("@/views/register.vue"),
+      meta: { requiresAuth: false, savedPosition: false, title: "注册" }
+    },
+    {
       path: "/authRouter",
       name: "AuthRoute",
       component: () => import("@/views/AuthRouter.vue"),

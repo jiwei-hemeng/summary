@@ -1,13 +1,3 @@
-<!--
-  标题：         login.vue
-  功能：         注册页
-  说明：
-  当前版本：     1.0
-  创建信息：     Created by 纪计伟 2026-06-30
-  修改记录：
-  修改人：        纪计伟
-    -  2026-06-30：添加滑块验证码代码调整
- -->
 <template>
   <div class="register">
     <button type="button" class="back-btn" aria-label="返回登录" @click="handleBackLogin">
@@ -26,20 +16,44 @@
         class="register-form"
       >
         <a-form-item label="手机号" name="phone">
-          <a-input v-model:value="registerForm.phone" type="text" size="large" autocomplete="off" placeholder="请输入手机号" />
+          <a-input
+            v-model:value="registerForm.phone"
+            type="text"
+            size="large"
+            autocomplete="off"
+            placeholder="请输入手机号"
+          />
         </a-form-item>
 
         <a-form-item label="验证码" name="smsCode">
           <div class="code-row">
-            <a-input v-model:value="registerForm.smsCode" type="text" size="large" autocomplete="off" placeholder="请输入验证码" class="code-input" />
-            <a-button class="send-code-btn" size="large" :disabled="sendCodeDisabled" @click="handleSendCode">
+            <a-input
+              v-model:value="registerForm.smsCode"
+              type="text"
+              size="large"
+              autocomplete="off"
+              placeholder="请输入验证码"
+              class="code-input"
+            />
+            <a-button
+              class="send-code-btn"
+              size="large"
+              :disabled="sendCodeDisabled"
+              @click="handleSendCode"
+            >
               {{ sendCodeText }}
             </a-button>
           </div>
         </a-form-item>
 
         <a-form-item label="账号名称" name="username">
-          <a-input v-model:value="registerForm.username" type="text" size="large" autocomplete="off" placeholder="请输入账号名称" />
+          <a-input
+            v-model:value="registerForm.username"
+            type="text"
+            size="large"
+            autocomplete="off"
+            placeholder="请输入账号名称"
+          />
         </a-form-item>
 
         <a-form-item label="设置密码" name="password">
@@ -63,11 +77,23 @@
         </a-form-item>
 
         <a-form-item label="邮箱" name="email">
-          <a-input v-model:value="registerForm.email" type="text" size="large" autocomplete="off" placeholder="请输入邮箱" />
+          <a-input
+            v-model:value="registerForm.email"
+            type="text"
+            size="large"
+            autocomplete="off"
+            placeholder="请输入邮箱"
+          />
         </a-form-item>
 
         <a-form-item class="submit-item">
-          <a-button :loading="loading" size="large" type="primary" class="submit-btn" @click.prevent="handleRegister">
+          <a-button
+            :loading="loading"
+            size="large"
+            type="primary"
+            class="submit-btn"
+            @click.prevent="handleRegister"
+          >
             <span v-if="!loading">注册</span>
             <span v-else>注册中...</span>
           </a-button>
@@ -275,14 +301,30 @@ onBeforeUnmount(() => {
     line-height: 46px;
   }
 
-  :deep(.ant-input-affix-wrapper),
-  :deep(.ant-input) {
+  :deep(.ant-input-affix-wrapper) {
+    height: 46px;
+  }
+
+  :deep(.ant-form-item-control-input-content > .ant-input) {
     height: 46px;
   }
 }
 
-.register-form :deep(.ant-input-affix-wrapper),
-.register-form :deep(.ant-input) {
+.register-form :deep(.ant-input-affix-wrapper) {
+  background-color: #f0f4f8;
+  border-radius: 8px;
+  box-shadow: none;
+  border: 1px solid #e4eaf0;
+}
+
+.register-form :deep(.ant-input-affix-wrapper .ant-input) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  height: 100%;
+}
+
+.register-form :deep(.ant-form-item-control-input-content > .ant-input) {
   background-color: #f0f4f8;
   border-radius: 8px;
   box-shadow: none;
@@ -290,7 +332,7 @@ onBeforeUnmount(() => {
 }
 
 .register-form :deep(.ant-input-affix-wrapper-focused),
-.register-form :deep(.ant-input:focus) {
+.register-form :deep(.ant-form-item-control-input-content > .ant-input:focus) {
   border-color: rgba(23, 127, 254, 0.4);
   box-shadow: 0 0 0 2px rgba(23, 127, 254, 0.1);
 }

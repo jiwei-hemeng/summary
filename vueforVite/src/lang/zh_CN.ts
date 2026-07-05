@@ -69,9 +69,16 @@ export default {
     logout: "退出登录"
   },
   slideVerify: {
+    title: "安全验证",
+    subtitle: "拖动滑块完成人机校验",
     refresh: "刷新",
-    tip: "向右拖动滑块完成验证",
-    success: "验证成功",
-    loading: "加载中..."
+    tip: "向右拖动滑块完成拼图",
+    success: "验证通过",
+    fail: "验证失败",
+    loading: "加载中...",
+    statusIdle: "等待验证",
+    statusScanning: "行为分析中...",
+    statusPassed: "身份已确认",
+    statusFailed: "校验未通过"
   }
 };

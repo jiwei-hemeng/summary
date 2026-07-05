@@ -46,28 +46,13 @@
                 size="large"
                 autocomplete="off"
                 :placeholder="proxy.$t('login.password')"
-                @keyup.enter="handleLogin"
+                @keyup.enter="handleLoginClick"
               >
                 <template #prefix><svg-icon icon-class="login-password" class="input-icon" /></template>
               </a-input-password>
             </a-form-item>
-            <a-form-item v-if="captchaEnabled" name="code">
-              <a-input
-                v-model:value="loginForm.code"
-                size="large"
-                autocomplete="off"
-                :placeholder="proxy.$t('login.code')"
-                class="login-code-input"
-                @keyup.enter="handleLogin"
-              >
-                <template #prefix><svg-icon icon-class="login-code" class="input-icon" /></template>
-              </a-input>
-              <div class="login-code">
-                <img :src="codeUrl" class="login-code-img" alt="captcha" @click="getCode" />
-              </div>
-            </a-form-item>
             <a-form-item class="login-btn-item">
-              <a-button :loading="loading" size="large" type="primary" class="login-btn" @click.prevent="handleLogin">
+              <a-button :loading="loading" size="large" type="primary" class="login-btn" @click.prevent="handleLoginClick">
                 <span v-if="!loading">{{ proxy.$t('login.login') }}</span>
                 <span v-else>{{ proxy.$t('login.logging') }}</span>
               </a-button>
@@ -160,8 +145,7 @@ const loginForm = ref<LoginData>({
 const loginRules: Record<string, Rule[]> = {
   tenantId: [{ required: true, trigger: 'blur', message: t('login.rule.tenantId.required') }],
   username: [{ required: true, trigger: 'blur', message: t('login.rule.username.required') }],
-  password: [{ required: true, trigger: 'blur', message: t('login.rule.password.required') }],
-  code: [{ required: true, trigger: 'change', message: t('login.rule.code.required') }]
+  password: [{ required: true, trigger: 'blur', message: t('login.rule.password.required') }]
 };
 
 const phoneForm = ref({
@@ -177,8 +161,6 @@ const phoneRules: Record<string, Rule[]> = {
   smsCode: [{ required: true, trigger: 'blur', message: t('login.rule.smsCode.required') }]
 };
 
-const codeUrl = ref('');
-const loading = ref(false);
 const captchaEnabled = ref(true);
 const tenantEnabled = ref(true);
 
@@ -189,6 +171,7 @@ const tenantList = ref<TenantVO[]>([]);
 const phoneLoading = ref(false);
 const countdown = ref(0);
 const slideVerifyVisible = ref(false);
+const slideVerifyMode = ref<'login' | 'sms'>('sms');
 let countdownTimer: ReturnType<typeof setInterval> | null = null;
 
 const sendCodeDisabled = computed(() => countdown.value > 0);
@@ -203,46 +186,47 @@ watch(
   { immediate: true }
 );
 
-const handleLogin = async () => {
+const handleLoginClick = async () => {
   try {
     await loginRef.value?.validate();
-    loading.value = true;
-    if (loginForm.value.rememberMe) {
-      localStorage.setItem('tenantId', String(loginForm.value.tenantId));
-      localStorage.setItem('username', String(loginForm.value.username));
-      localStorage.setItem('password', String(loginForm.value.password));
-      localStorage.setItem('rememberMe', String(loginForm.value.rememberMe));
-    } else {
-      localStorage.removeItem('tenantId');
-      localStorage.removeItem('username');
-      localStorage.removeItem('password');
-      localStorage.removeItem('rememberMe');
+    if (captchaEnabled.value) {
+      slideVerifyMode.value = 'login';
+      slideVerifyVisible.value = true;
+      return;
     }
-    const [err] = await to(userStore.login(loginForm.value));
-    if (!err) {
-      const redirectUrl = await resolvePostLoginPath(redirect.value);
-      await router.push(redirectUrl);
-      loading.value = false;
-    } else {
-      loading.value = false;
-      if (captchaEnabled.value) {
-        await getCode();
-      }
-    }
+    await doLogin();
   } catch (fields) {
     console.log('error submit!', fields);
   }
 };
 
-const getCode = async () => {
+const doLogin = async () => {
+  loading.value = true;
+  if (loginForm.value.rememberMe) {
+    localStorage.setItem('tenantId', String(loginForm.value.tenantId));
+    localStorage.setItem('username', String(loginForm.value.username));
+    localStorage.setItem('password', String(loginForm.value.password));
+    localStorage.setItem('rememberMe', String(loginForm.value.rememberMe));
+  } else {
+    localStorage.removeItem('tenantId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    localStorage.removeItem('rememberMe');
+  }
+  const [err] = await to(userStore.login(loginForm.value));
+  if (!err) {
+    const redirectUrl = await resolvePostLoginPath(redirect.value);
+    await router.push(redirectUrl);
+    loading.value = false;
+  } else {
+    loading.value = false;
+  }
+};
+
+const initCaptchaConfig = async () => {
   const res = await getCodeImg();
   const { data } = res;
   captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled;
-  if (captchaEnabled.value) {
-    loginForm.value.code = '';
-    codeUrl.value = 'data:image/gif;base64,' + data.img;
-    loginForm.value.uuid = data.uuid;
-  }
 };
 
 const getLoginData = () => {
@@ -303,10 +287,15 @@ const handleSendCode = async () => {
     return;
   }
 
+  slideVerifyMode.value = 'sms';
   slideVerifyVisible.value = true;
 };
 
 const onSlideVerifySuccess = async () => {
+  if (slideVerifyMode.value === 'login') {
+    await doLogin();
+    return;
+  }
   // TODO: 调用发送验证码接口，可携带滑块验证结果
   message.success(t('login.sendCodeSuccess'));
   startCountdown();
@@ -328,7 +317,7 @@ const handlePhoneLogin = async () => {
 };
 
 onMounted(() => {
-  getCode();
+  initCaptchaConfig();
   initTenantList();
   getLoginData();
 });
@@ -497,6 +486,13 @@ onBeforeUnmount(() => {
   padding: 0 14px;
 }
 
+.login-form :deep(.ant-input-affix-wrapper .ant-input) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  height: 100%;
+}
+
 .login-form :deep(.ant-input-affix-wrapper-focused) {
   border-color: rgba(24, 144, 255, 0.4);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
@@ -505,24 +501,6 @@ onBeforeUnmount(() => {
 .login-code-input {
   flex: 1;
   min-width: 0;
-}
-
-.login-code {
-  flex-shrink: 0;
-  width: 110px;
-  height: 46px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid #e4eaf0;
-
-  img {
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    height: 46px;
-    object-fit: cover;
-  }
 }
 
 .send-code-btn {
