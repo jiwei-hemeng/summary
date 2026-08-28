@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>大会门票选择</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Microsoft Yahei", sans-serif;
+      }
+      body {
+        padding: 30px;
+        background: #fff;
+      }
+      .title-wrap {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .main-title {
+        font-size: 24px;
+        color: #d92121;
+        font-weight: bold;
+      }
+      .tip-text {
+        font-size: 14px;
+        color: #d92121;
+        margin-top: 6px;
+      }
+      .ticket-item {
+        display: flex;
+        align-items: center;
+        border: 1px solid #f7d8d8;
+        background: #fff5f5;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        padding: 16px;
+        transition: all 0.2s;
+      }
+      /* 票数大于0的选中样式 */
+      .ticket-item.active {
+        border-color: #f44336;
+        background: #ffe8e8;
+      }
+      .label-tag {
+        width: 60px;
+        font-size: 18px;
+        color: #d92121;
+        font-weight: bold;
+      }
+      .content-wrap {
+        flex: 1;
+      }
+      .price-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .early-tag {
+        background: #f44336;
+        color: #fff;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+      .price-now {
+        font-size: 16px;
+        color: #d92121;
+        font-weight: bold;
+      }
+      .price-old {
+        font-size: 12px;
+        color: #999;
+        text-decoration: line-through;
+      }
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .radio-item {
+        font-size: 14px;
+        color: #333;
+      }
+      .count-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .count-btn {
+        width: 24px;
+        height: 24px;
+        border: 1px solid #ccc;
+        background: #fff;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .count-input {
+        width: 36px;
+        height: 24px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title-wrap">
+      <div class="main-title">● ● 大会门票 ● ●</div>
+      <div class="tip-text">(9月10号24点前购买即可享受早鸟价购票优惠)</div>
+    </div>
+
+    <!-- 套餐A -->
+    <div class="ticket-item" data-type="A">
+      <div class="label-tag">套餐A</div>
+      <div class="content-wrap">
+        <div class="price-row">
+          <span class="early-tag">早鸟价门票</span>
+          <span class="price-now">349元/张（二选一）</span>
+          <span class="price-old">原价:499元/张</span>
+        </div>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" name="radioA" value="储能产业论坛（不含餐）" />
+            参加储能产业论坛（不含餐）
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="radioA" value="光伏产业论坛（不含餐）" />
+            参加光伏产业论坛（不含餐）
+          </label>
+        </div>
+      </div>
+      <div class="count-wrap">
+        <button class="count-btn minus">-</button>
+        <input type="text" class="count-input" value="0" readonly />
+        <button class="count-btn plus">+</button>
+      </div>
+    </div>
+
+    <!-- 套餐B -->
+    <div class="ticket-item" data-type="B">
+      <div class="label-tag">套餐B</div>
+      <div class="content-wrap">
+        <div class="price-row">
+          <span class="early-tag">早鸟价门票</span>
+          <span class="price-now">462元/张（二选一）</span>
+          <span class="price-old">原价:660元/张</span>
+        </div>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input
+              type="radio"
+              name="radioB"
+              value="储能产业论坛+储能品牌发布（含午餐）"
+            />
+            参加储能产业论坛+储能品牌发布（含午餐）
+          </label>
+          <label class="radio-item">
+            <input
+              type="radio"
+              name="radioB"
+              value="光伏产业论坛+好光伏盛典（含午餐）"
+            />
+            参加光伏产业论坛+好光伏盛典（含午餐）
+          </label>
+        </div>
+      </div>
+      <div class="count-wrap">
+        <button class="count-btn minus">-</button>
+        <input type="text" class="count-input" value="0" readonly />
+        <button class="count-btn plus">+</button>
+      </div>
+    </div>
+
+    <!-- 套餐C -->
+    <div class="ticket-item" data-type="C">
+      <div class="label-tag">套餐C</div>
+      <div class="content-wrap">
+        <div class="price-row">
+          <span class="early-tag">早鸟价门票</span>
+          <span class="price-now">693元/张</span>
+          <span class="price-old">原价:990元/张</span>
+        </div>
+        <div class="radio-item">
+          储能论坛+储能品牌发布+光伏论坛+光伏品牌盛典（含午餐）
+        </div>
+      </div>
+      <div class="count-wrap">
+        <button class="count-btn minus">-</button>
+        <input type="text" class="count-input" value="0" readonly />
+        <button class="count-btn plus">+</button>
+      </div>
+    </div>
+
+    <!-- 套餐D -->
+    <div class="ticket-item" data-type="D">
+      <div class="label-tag">套餐D</div>
+      <div class="content-wrap">
+        <div class="price-row">
+          <span class="early-tag">早鸟价门票</span>
+          <span class="price-now">2098元/张</span>
+          <span class="price-old">原价:2998元/张</span>
+        </div>
+        <div class="radio-item">
+          储能论坛+储能品牌发布+光伏论坛+光伏品牌盛典（含午餐+2晚会议所在酒店住宿）
+        </div>
+      </div>
+      <div class="count-wrap">
+        <button class="count-btn minus">-</button>
+        <input type="text" class="count-input" value="0" readonly />
+        <button class="count-btn plus">+</button>
+      </div>
+    </div>
+
+    <script>
+      const ticketList = document.querySelectorAll(".ticket-item");
+      ticketList.forEach((item) => {
+        const type = item.dataset.type;
+        const minusBtn = item.querySelector(".minus");
+        const plusBtn = item.querySelector(".plus");
+        const input = item.querySelector(".count-input");
+        const radioName = `radio${type}`;
+
+        // 更新选中样式
+        function updateActive() {
+          const num = Number(input.value);
+          if (num > 0) {
+            item.classList.add("active");
+          } else {
+            item.classList.remove("active");
+          }
+        }
+
+        // 加号
+        plusBtn.onclick = () => {
+          // A B 需要校验单选是否选中
+          if (type === "A" || type === "B") {
+            const checked = document.querySelector(
+              `input[name="${radioName}"]:checked`,
+            );
+            if (!checked) {
+              alert(`请先选择套餐${type}的选项！`);
+              return;
+            }
+          }
+          let val = Number(input.value);
+          input.value = val + 1;
+          updateActive();
+        };
+
+        // 减号
+        minusBtn.onclick = () => {
+          let val = Number(input.value);
+          if (val > 0) {
+            input.value = val - 1;
+            updateActive();
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
