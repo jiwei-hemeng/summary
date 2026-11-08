@@ -51,7 +51,7 @@
       geometry.scale(-1, 1, 1); // 将球体反向，使得相机在球体内部
 
       // 加载全景图纹理
-      const texture = new EXRLoader().load("/360vr/public/hotel_room_4k.exr");
+      const texture = new EXRLoader().load("../public/hotel_room_4k.exr");
 
       // 创建材质并将纹理应用到球体
       const material = new THREE.MeshBasicMaterial({ map: texture });
