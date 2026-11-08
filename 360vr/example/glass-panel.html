@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D 粒子手势交互系统 v2.6 - 完整HUD版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../node_modules/three/build/three.module.js",
+          "three/addons/": "../node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #020205;
+        font-family: "Segoe UI", sans-serif;
+      }
+      #canvas-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      /* --- HUD 摄像头 (右下角) --- */
+      .cam-container {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 240px;
+        height: 180px;
+        z-index: 50;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+      #video-element,
+      #output-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: scaleX(-1);
+        object-fit: cover;
+      }
+      #output-canvas {
+        z-index: 2;
+      }
+      .cam-label {
+        position: absolute;
+        top: 5px;
+        left: 8px;
+        font-family: monospace;
+        font-size: 10px;
+        color: #00ffff;
+        z-index: 3;
+        text-shadow: 0 0 2px black;
+      }
+
+      /* --- UI 通用 --- */
+      .glass-panel {
+        background: rgba(10, 10, 20, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        pointer-events: auto;
+      }
+      .control-btn {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .control-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+      .control-btn.active {
+        background: linear-gradient(
+          135deg,
+          rgba(100, 200, 255, 0.4),
+          rgba(100, 200, 255, 0.1)
+        );
+        border: 1px solid rgba(100, 200, 255, 0.5);
+        box-shadow: 0 0 25px rgba(79, 209, 197, 0.3);
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      }
+
+      /* 模式提示高亮 */
+      .mode-item {
+        transition: all 0.2s ease;
+        opacity: 0.4;
+        transform: scale(0.95);
+        font-weight: normal;
+      }
+      .mode-item.active {
+        opacity: 1;
+        transform: scale(1);
+        color: #22d3ee;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+      }
+
+      /* 音乐按钮动画 */
+      .playing-anim span {
+        display: inline-block;
+        width: 3px;
+        height: 10px;
+        background-color: #00ffff;
+        margin: 0 1px;
+        animation: bounce 1s infinite ease-in-out;
+      }
+      .playing-anim span:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .playing-anim span:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          height: 5px;
+        }
+        50% {
+          height: 15px;
+        }
+      }
+
+      /* 颜色选择器 */
+      .color-wrapper {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      }
+      .color-wrapper:hover {
+        transform: scale(1.1);
+        border-color: #fff;
+      }
+      input[type="color"] {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        padding: 0;
+        margin: 0;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+      }
+      #color-preview {
+        width: 100%;
+        height: 100%;
+        background-color: #00ffff;
+      }
+
+      .loader {
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-left-color: #00ffff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 0.8s infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .custom-scroll::-webkit-scrollbar {
+        height: 4px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <audio id="bgm" loop>
+      <source
+        src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3"
+        type="audio/mp3"
+      />
+    </audio>
+
+    <div class="cam-container">
+      <div class="cam-label">LINK v2.6</div>
+      <video id="video-element" playsinline></video>
+      <canvas id="output-canvas"></canvas>
+    </div>
+
+    <div
+      id="loader-overlay"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-95 transition-opacity duration-700"
+    >
+      <div class="loader mb-6 shadow-[0_0_30px_rgba(0,255,255,0.3)]"></div>
+      <div
+        class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500 text-2xl font-bold tracking-widest uppercase"
+      >
+        Visual Core
+      </div>
+      <div class="text-gray-500 text-xs mt-3 tracking-widest">
+        INITIALIZING INTERFACE v2.6...
+      </div>
+    </div>
+
+    <div
+      class="absolute top-0 left-0 w-full h-full pointer-events-none z-40 p-4 md:p-8 flex flex-col justify-between"
+    >
+      <div class="flex justify-between items-start pointer-events-auto">
+        <div class="glass-panel p-5 animate-fade-in-down">
+          <h1
+            class="text-white text-2xl font-bold tracking-tight mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+          >
+            粒子 · 幻境
+            <span class="text-xs text-cyan-400 align-top">v2.6</span>
+          </h1>
+
+          <div
+            class="flex items-center gap-3 bg-black/30 rounded-full px-3 py-1 w-fit border border-white/5"
+          >
+            <div
+              id="status-dot"
+              class="w-2 h-2 rounded-full bg-red-500 transition-all duration-500 shadow-[0_0_10px_red]"
+            ></div>
+            <span
+              id="status-text"
+              class="text-[10px] text-gray-300 font-mono uppercase tracking-wider"
+              >Offline</span
+            >
+          </div>
+
+          <button
+            onclick="toggleMusic()"
+            class="mt-3 flex items-center gap-2 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-xs text-cyan-300 border border-cyan-500/30 transition-all"
+          >
+            <div id="music-icon" class="text-xs">🎵 MUSIC OFF</div>
+            <div id="music-anim" class="playing-anim hidden">
+              <span></span><span></span><span></span>
+            </div>
+          </button>
+
+          <div
+            class="text-[10px] text-gray-400 mt-4 font-mono border-t border-white/10 pt-2 flex flex-col gap-1.5"
+          >
+            <div id="mode-scale" class="mode-item active">
+              👋 五指张合: 能量爆发 (缩放)
+            </div>
+            <div id="mode-rotate" class="mode-item">
+              ☝️ 食指滑动: 视角旋转 (移动)
+            </div>
+            <div id="mode-roll" class="mode-item">
+              ✌️ 双指旋转: 平面翻转 (旋钮)
+            </div>
+          </div>
+        </div>
+
+        <button
+          onclick="toggleFullScreen()"
+          class="glass-panel p-4 text-white hover:text-cyan-300 control-btn rounded-full group"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 group-hover:scale-110 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="pointer-events-auto flex flex-col md:flex-row gap-4 items-end md:items-center justify-center w-full pb-4"
+      >
+        <div
+          class="glass-panel p-2 flex gap-2 overflow-x-auto max-w-[70vw] custom-scroll"
+        >
+          <button
+            onclick="changeShape('sphere')"
+            class="control-btn active px-5 py-2 rounded-lg text-sm text-white font-semibold whitespace-nowrap"
+            data-shape="sphere"
+          >
+            星云球
+          </button>
+          <button
+            onclick="changeShape('heart')"
+            class="control-btn px-5 py-2 rounded-lg text-sm text-white font-semibold whitespace-nowrap"
+            data-shape="heart"
+          >
+            机械心
+          </button>
+          <button
+            onclick="changeShape('saturn')"
+            class="control-btn px-5 py-2 rounded-lg text-sm text-white font-semibold whitespace-nowrap"
+            data-shape="saturn"
+          >
+            土星环
+          </button>
+          <button
+            onclick="changeShape('lotus')"
+            class="control-btn px-5 py-2 rounded-lg text-sm text-white font-semibold whitespace-nowrap"
+            data-shape="lotus"
+          >
+            能量莲
+          </button>
+          <button
+            onclick="changeShape('galaxy')"
+            class="control-btn px-5 py-2 rounded-lg text-sm text-white font-semibold whitespace-nowrap"
+            data-shape="galaxy"
+          >
+            黑洞
+          </button>
+        </div>
+
+        <div class="glass-panel p-2 flex items-center justify-center">
+          <div class="color-wrapper" title="Change Color">
+            <div id="color-preview"></div>
+            <input
+              type="color"
+              id="color-picker"
+              value="#00ffff"
+              oninput="updateColor(this.value)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+      import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+
+      // --- Configuration ---
+      const PARTICLE_COUNT = 45000;
+      const PARTICLE_SIZE = 0.18;
+      const SATURN_BODY_RATIO = 0.3;
+
+      // State
+      let scene, camera, renderer, composer, particles, controls;
+      let targetPositions = [];
+      let targetColors = [];
+      let currentShape = "sphere";
+      let handInfluence = 0;
+      let isHandDetected = false;
+      let clock = new THREE.Clock();
+      let userBaseColor = new THREE.Color(0x00ffff);
+
+      // Interaction
+      let rotationVelocity = { x: 0, y: 0, z: 0 };
+      let isTrackingRoll = false;
+      let previousRollAngle = 0;
+      let isTrackingRotate = false;
+      let lastCursorPos = { x: 0, y: 0 };
+      let currentStableMode = "scale";
+      let modeFrameCounter = 0;
+
+      // Music State
+      let isMusicPlaying = false;
+
+      function lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+      }
+
+      // --- Music Control ---
+      window.toggleMusic = function () {
+        const audio = document.getElementById("bgm");
+        const icon = document.getElementById("music-icon");
+        const anim = document.getElementById("music-anim");
+
+        if (isMusicPlaying) {
+          audio.pause();
+          icon.innerText = "🎵 MUSIC OFF";
+          icon.style.color = "#a5f3fc";
+          anim.classList.add("hidden");
+          isMusicPlaying = false;
+        } else {
+          audio.volume = 0.5;
+          audio
+            .play()
+            .then(() => {
+              icon.innerText = "🔊 PLAYING";
+              icon.style.color = "#00ffff";
+              anim.classList.remove("hidden");
+              isMusicPlaying = true;
+            })
+            .catch((e) => {
+              console.error("Audio Play Error:", e);
+              alert("无法播放音频，请检查网络或浏览器权限。");
+            });
+        }
+      };
+
+      async function init() {
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x020205, 0.02);
+        camera = new THREE.PerspectiveCamera(
+          60,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000,
+        );
+        camera.position.z = 30;
+
+        renderer = new THREE.WebGLRenderer({
+          antialias: false,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        document
+          .getElementById("canvas-container")
+          .appendChild(renderer.domElement);
+
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(window.innerWidth, window.innerHeight),
+          1.5,
+          0.4,
+          0.85,
+        );
+        bloomPass.threshold = 0.05;
+        bloomPass.strength = 1.4;
+        bloomPass.radius = 0.6;
+        composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+
+        createParticles();
+        await setupMediaPipe();
+
+        window.addEventListener("resize", onWindowResize);
+        animate();
+      }
+
+      function createParticles() {
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(PARTICLE_COUNT * 3);
+        const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+        const initialPos = getShapePositions("sphere");
+        const initialColors = getShapeColors("sphere");
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          positions[i * 3] = initialPos[i * 3];
+          positions[i * 3 + 1] = initialPos[i * 3 + 1];
+          positions[i * 3 + 2] = initialPos[i * 3 + 2];
+          colors[i * 3] = initialColors[i * 3];
+          colors[i * 3 + 1] = initialColors[i * 3 + 1];
+          colors[i * 3 + 2] = initialColors[i * 3 + 2];
+        }
+
+        geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3),
+        );
+        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+          size: PARTICLE_SIZE,
+          map: createParticleTexture(),
+          color: userBaseColor,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          vertexColors: true,
+        });
+
+        particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        targetPositions = Float32Array.from(initialPos);
+        targetColors = Float32Array.from(initialColors);
+      }
+
+      // --- 核心数学逻辑 (还原自 v2.1) ---
+      function getShapePositions(type) {
+        const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          let x, y, z;
+
+          if (type === "sphere") {
+            const r = 10 + Math.random() * 2;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            x = r * Math.sin(phi) * Math.cos(theta);
+            y = r * Math.sin(phi) * Math.sin(theta);
+            z = r * Math.cos(phi);
+            if (i < PARTICLE_COUNT * 0.2) {
+              x *= 0.3;
+              y *= 0.3;
+              z *= 0.3;
+            }
+          } else if (type === "heart") {
+            const t = Math.PI - 2 * Math.PI * Math.random();
+            const u = 2 * Math.PI * Math.random();
+            x = 16 * Math.pow(Math.sin(t), 3);
+            y =
+              13 * Math.cos(t) -
+              5 * Math.cos(2 * t) -
+              2 * Math.cos(3 * t) -
+              Math.cos(4 * t);
+            z = 6 * Math.cos(t) * Math.sin(u) * Math.sin(t);
+            const scale = 0.6;
+            x *= scale;
+            y *= scale;
+            z *= scale;
+            if (Math.random() > 0.8) {
+              x *= 1.1;
+              y *= 1.1;
+              z *= 1.1;
+            }
+          } else if (type === "saturn") {
+            if (i < PARTICLE_COUNT * SATURN_BODY_RATIO) {
+              const r = 5.5;
+              const theta = Math.random() * Math.PI * 2;
+              const phi = Math.acos(2 * Math.random() - 1);
+              x = r * Math.sin(phi) * Math.cos(theta);
+              y = r * 0.9 * Math.sin(phi) * Math.sin(theta);
+              z = r * Math.cos(phi);
+            } else {
+              const angle = Math.random() * Math.PI * 2;
+              const ringSelector = Math.random();
+              let r, thickness;
+              if (ringSelector < 0.45) {
+                r = 7 + Math.random() * 3.5;
+                thickness = 0.2;
+              } else if (ringSelector < 0.5) {
+                r = 10.5 + Math.random() * 1.5;
+                thickness = 0.1;
+                if (Math.random() > 0.2) {
+                  x = 0;
+                  y = 0;
+                  z = 0;
+                  pos[i * 3] = x;
+                  pos[i * 3 + 1] = y;
+                  pos[i * 3 + 2] = z;
+                  continue;
+                }
+              } else {
+                r = 12 + Math.random() * 5;
+                thickness = 0.4;
+              }
+              r += (Math.random() - 0.5) * 0.3;
+              x = r * Math.cos(angle);
+              y = (Math.random() - 0.5) * thickness;
+              z = r * Math.sin(angle);
+              const tilt = 0.4;
+              const y_new = y * Math.cos(tilt) - x * Math.sin(tilt);
+              const x_new = y * Math.sin(tilt) + x * Math.cos(tilt);
+              x = x_new;
+              y = y_new;
+            }
+          } else if (type === "lotus") {
+            const u = Math.random() * Math.PI * 2;
+            const v = Math.random();
+            const petals = 7;
+            const rBase =
+              8 * (0.5 + 0.5 * Math.pow(Math.sin(petals * u * 0.5), 2)) * v;
+            x = rBase * Math.cos(u);
+            z = rBase * Math.sin(u);
+            y = 4 * Math.pow(v, 2) - 2;
+            if (i < PARTICLE_COUNT * 0.15) {
+              x = Math.random() - 0.5;
+              z = Math.random() - 0.5;
+              y = (Math.random() - 0.5) * 10;
+            }
+          } else if (type === "galaxy") {
+            const arms = 3;
+            const spin = i % arms;
+            const angleOffset = (spin / arms) * Math.PI * 2;
+            const dist = Math.pow(Math.random(), 0.5);
+            const r = dist * 20;
+            const angle = dist * 10 + angleOffset;
+            x = r * Math.cos(angle);
+            z = r * Math.sin(angle);
+            y = (Math.random() - 0.5) * (15 - r) * 0.2;
+            if (r < 2) y *= 0.2;
+          }
+
+          pos[i * 3] = x;
+          pos[i * 3 + 1] = y;
+          pos[i * 3 + 2] = z;
+        }
+        return pos;
+      }
+
+      function getShapeColors(type) {
+        const cols = new Float32Array(PARTICLE_COUNT * 3);
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          let brightness = 0.2 + Math.random() * 0.8;
+          let r, g, b;
+
+          if (type === "saturn") {
+            if (i < PARTICLE_COUNT * SATURN_BODY_RATIO) {
+              r = 1.0;
+              g = 0.7;
+              b = 0.3;
+            } else {
+              r = 0.6;
+              g = 0.8;
+              b = 1.0;
+            }
+            r *= brightness;
+            g *= brightness;
+            b *= brightness;
+          } else {
+            r = brightness;
+            g = brightness;
+            b = brightness;
+          }
+          cols[i * 3] = r;
+          cols[i * 3 + 1] = g;
+          cols[i * 3 + 2] = b;
+        }
+        return cols;
+      }
+
+      function createParticleTexture() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+        const context = canvas.getContext("2d");
+        const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(0.4, "rgba(255,255,255,0.5)");
+        gradient.addColorStop(1, "rgba(0,0,0,0)");
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 32, 32);
+        return new THREE.CanvasTexture(canvas);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const time = clock.getElapsedTime();
+
+        const positions = particles.geometry.attributes.position.array;
+        const colors = particles.geometry.attributes.color.array;
+
+        rotationVelocity.x *= 0.92;
+        rotationVelocity.y *= 0.92;
+        rotationVelocity.z *= 0.94;
+        if (particles) {
+          particles.rotation.y += rotationVelocity.y;
+          particles.rotation.x += rotationVelocity.x;
+          particles.rotation.z += rotationVelocity.z;
+        }
+
+        const lerpSpeed = 0.06;
+        let scaleBase = isHandDetected
+          ? 0.2 + handInfluence * 2.3
+          : 1.0 + Math.sin(time * 1.5) * 0.05;
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const idx = i * 3;
+          let tx = targetPositions[idx];
+          let ty = targetPositions[idx + 1];
+          let tz = targetPositions[idx + 2];
+
+          if (currentShape === "galaxy") {
+            const angle =
+              time * (0.1 + (1.0 - Math.sqrt(tx * tx + tz * tz) / 20) * 0.5);
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            const rx = tx * cos - tz * sin;
+            const rz = tx * sin + tz * cos;
+            tx = rx;
+            tz = rz;
+          } else if (currentShape === "lotus") {
+            ty += Math.sin(time + tx) * 0.5;
+          } else {
+            tx += Math.sin(time * 2 + i) * 0.05;
+            ty += Math.cos(time * 3 + i) * 0.05;
+          }
+
+          tx *= scaleBase;
+          ty *= scaleBase;
+          tz *= scaleBase;
+
+          positions[idx] += (tx - positions[idx]) * lerpSpeed;
+          positions[idx + 1] += (ty - positions[idx + 1]) * lerpSpeed;
+          positions[idx + 2] += (tz - positions[idx + 2]) * lerpSpeed;
+
+          if (targetColors.length > 0) {
+            colors[idx] += (targetColors[idx] - colors[idx]) * 0.03;
+            colors[idx + 1] += (targetColors[idx + 1] - colors[idx + 1]) * 0.03;
+            colors[idx + 2] += (targetColors[idx + 2] - colors[idx + 2]) * 0.03;
+          }
+
+          if (Math.random() > 0.9995) {
+            colors[idx] = 2.0;
+            colors[idx + 1] = 2.0;
+            colors[idx + 2] = 2.0;
+          }
+          if (colors[idx] > 1.5) {
+            colors[idx] *= 0.9;
+            colors[idx + 1] *= 0.9;
+            colors[idx + 2] *= 0.9;
+          }
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+        particles.geometry.attributes.color.needsUpdate = true;
+
+        controls.update();
+        composer.render();
+      }
+
+      async function setupMediaPipe() {
+        const videoElement = document.getElementById("video-element");
+        const canvasElement = document.getElementById("output-canvas");
+        const canvasCtx = canvasElement.getContext("2d");
+        const statusDot = document.getElementById("status-dot");
+        const statusText = document.getElementById("status-text");
+        // 获取之前被遗漏的手势提示元素
+        const modeScaleText = document.getElementById("mode-scale");
+        const modeRotateText = document.getElementById("mode-rotate");
+        const modeRollText = document.getElementById("mode-roll");
+
+        const hands = new Hands({
+          locateFile: (file) =>
+            `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+        });
+        hands.setOptions({
+          maxNumHands: 1,
+          modelComplexity: 0,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+
+        hands.onResults((results) => {
+          canvasCtx.save();
+          canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+          canvasCtx.drawImage(
+            results.image,
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height,
+          );
+
+          if (
+            results.multiHandLandmarks &&
+            results.multiHandLandmarks.length > 0
+          ) {
+            isHandDetected = true;
+            statusDot.className =
+              "w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_15px_cyan]";
+            statusText.innerText = "LINK ESTABLISHED";
+            statusText.className =
+              "text-[10px] text-cyan-300 font-mono uppercase tracking-wider font-bold";
+
+            const landmarks = results.multiHandLandmarks[0];
+            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+              color: "#00ffff",
+              lineWidth: 2,
+            });
+            drawLandmarks(canvasCtx, landmarks, {
+              color: "#ffffff",
+              lineWidth: 1,
+              radius: 3,
+            });
+
+            const getDist = (i, j) =>
+              Math.sqrt(
+                Math.pow(landmarks[i].x - landmarks[j].x, 2) +
+                  Math.pow(landmarks[i].y - landmarks[j].y, 2),
+              );
+            const isIndexOpen = getDist(8, 0) > getDist(5, 0) * 1.5;
+            const isMiddleOpen = getDist(12, 0) > getDist(9, 0) * 1.5;
+            const isRingOpen = getDist(16, 0) > getDist(13, 0) * 1.3;
+            const isPinkyOpen = getDist(20, 0) > getDist(17, 0) * 1.3;
+
+            let detectedMode = "scale";
+            if (isRingOpen || isPinkyOpen) detectedMode = "scale";
+            else if (isIndexOpen && isMiddleOpen) detectedMode = "roll";
+            else if (isIndexOpen && !isMiddleOpen) detectedMode = "rotate";
+
+            if (detectedMode === currentStableMode) modeFrameCounter = 0;
+            else {
+              modeFrameCounter++;
+              if (modeFrameCounter > 8) {
+                currentStableMode = detectedMode;
+                modeFrameCounter = 0;
+                isTrackingRoll = false;
+                isTrackingRotate = false;
+              }
+            }
+
+            // 实时高亮当前模式
+            [modeScaleText, modeRotateText, modeRollText].forEach((el) =>
+              el.classList.remove("active"),
+            );
+            if (currentStableMode === "roll")
+              modeRollText.classList.add("active");
+            else if (currentStableMode === "rotate")
+              modeRotateText.classList.add("active");
+            else modeScaleText.classList.add("active");
+
+            if (currentStableMode === "roll") {
+              const dx = landmarks[8].x - landmarks[12].x;
+              const dy = landmarks[8].y - landmarks[12].y;
+              const angle = Math.atan2(dy, dx);
+              if (!isTrackingRoll) {
+                previousRollAngle = angle;
+                isTrackingRoll = true;
+              } else {
+                let delta = angle - previousRollAngle;
+                if (delta > Math.PI) delta -= 2 * Math.PI;
+                if (delta < -Math.PI) delta += 2 * Math.PI;
+                rotationVelocity.z += -delta * 0.15;
+                previousRollAngle = angle;
+              }
+            } else if (currentStableMode === "rotate") {
+              const cx = landmarks[8].x;
+              const cy = landmarks[8].y;
+              if (!isTrackingRotate) {
+                lastCursorPos = { x: cx, y: cy };
+                isTrackingRotate = true;
+              } else {
+                const dx = cx - lastCursorPos.x;
+                const dy = cy - lastCursorPos.y;
+                rotationVelocity.y -= dx * 0.15;
+                rotationVelocity.x += dy * 0.15;
+                lastCursorPos = { x: cx, y: cy };
+              }
+            } else {
+              isTrackingRoll = false;
+              isTrackingRotate = false;
+              let totalDist = 0;
+              [4, 8, 12, 16, 20].forEach((i) => (totalDist += getDist(i, 0)));
+              let openAmt = (totalDist / 5 - 0.1) / (0.4 - 0.1);
+              handInfluence = lerp(
+                handInfluence,
+                Math.max(0, Math.min(1, openAmt)),
+                0.1,
+              );
+            }
+          } else {
+            isHandDetected = false;
+            statusDot.className =
+              "w-2 h-2 rounded-full bg-red-500 shadow-[0_0_10px_red]";
+            statusText.innerText = "SCANNING...";
+            statusText.className =
+              "text-[10px] text-red-400 font-mono uppercase tracking-wider animate-pulse";
+            handInfluence = lerp(handInfluence, 0.0, 0.05);
+
+            // 默认显示第一个模式
+            [modeScaleText, modeRotateText, modeRollText].forEach((el) =>
+              el.classList.remove("active"),
+            );
+            modeScaleText.classList.add("active");
+          }
+          canvasCtx.restore();
+        });
+
+        const cameraUtils = new Camera(videoElement, {
+          onFrame: async () => {
+            await hands.send({ image: videoElement });
+          },
+          width: 320,
+          height: 240,
+        });
+        cameraUtils.start();
+
+        videoElement.addEventListener("loadeddata", () => {
+          canvasElement.width = videoElement.videoWidth;
+          canvasElement.height = videoElement.videoHeight;
+          const loader = document.getElementById("loader-overlay");
+          loader.style.opacity = "0";
+          setTimeout(() => loader.remove(), 800);
+        });
+      }
+
+      window.onWindowResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      };
+
+      window.changeShape = (shape) => {
+        currentShape = shape;
+        targetPositions = getShapePositions(shape);
+        targetColors = getShapeColors(shape);
+
+        if (shape === "saturn") {
+          new TWEEN.Tween(particles.material.color)
+            .to({ r: 1, g: 1, b: 1 }, 500)
+            .start();
+        } else {
+          new TWEEN.Tween(particles.material.color)
+            .to(
+              { r: userBaseColor.r, g: userBaseColor.g, b: userBaseColor.b },
+              500,
+            )
+            .start();
+        }
+
+        document.querySelectorAll("[data-shape]").forEach((btn) => {
+          btn.classList.remove("active");
+          if (btn.dataset.shape === shape) btn.classList.add("active");
+        });
+      };
+
+      window.updateColor = (hex) => {
+        const c = new THREE.Color(hex);
+        userBaseColor = c;
+        document.getElementById("color-preview").style.backgroundColor = hex;
+        if (particles && currentShape !== "saturn") {
+          particles.material.color.set(userBaseColor);
+        }
+      };
+
+      window.toggleFullScreen = () => {
+        if (!document.fullscreenElement)
+          document.documentElement.requestFullscreen();
+        else if (document.exitFullscreen) document.exitFullscreen();
+      };
+
+      const TWEEN = {
+        Tween: function (obj) {
+          this.obj = obj;
+          this.target = {};
+          this.duration = 1000;
+          this.startTime = 0;
+          this.to = function (target, duration) {
+            this.target = target;
+            this.duration = duration;
+            return this;
+          };
+          this.start = function () {
+            this.startTime = performance.now();
+            this.initial = { r: this.obj.r, g: this.obj.g, b: this.obj.b };
+            requestAnimationFrame(this.update.bind(this));
+            return this;
+          };
+          this.update = function (time) {
+            const elapsed = time - this.startTime;
+            const progress = Math.min(elapsed / this.duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            if (this.obj.r !== undefined) {
+              this.obj.r =
+                this.initial.r + (this.target.r - this.initial.r) * ease;
+              this.obj.g =
+                this.initial.g + (this.target.g - this.initial.g) * ease;
+              this.obj.b =
+                this.initial.b + (this.target.b - this.initial.b) * ease;
+            }
+            if (progress < 1) {
+              requestAnimationFrame(this.update.bind(this));
+            }
+          };
+        },
+      };
+
+      init();
+    </script>
+  </body>
+</html>
