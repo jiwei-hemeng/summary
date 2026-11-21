@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>甜蜜烘焙坊 · 购物车</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="welcomebar">
+    欢迎来到甜蜜烘焙坊 · 每日新鲜出炉
+  </div>
+
+  <div class="header">
+    <div class="logobox">
+      <span class="logotext">🍞 甜蜜烘焙坊</span>
+    </div>
+    <div class="searchbox">
+      <input type="text" class="searchinput" placeholder="搜索面包、蛋糕...">
+      <button class="searchbtn">搜索</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="index.html" class="navlink">首页</a>
+    <a href="products.html" class="navlink">产品中心</a>
+    <a href="cart.html" class="navlink active">购物车</a>
+    <a href="about.html" class="navlink">关于我们</a>
+    <a href="message.html" class="navlink">留言板</a>
+  </div>
+
+  <div class="banner">
+    <img src="images/banner.jpg" alt="banner">
+  </div>
+
+  <div class="container">
+    <h1 class="pagetitle">我的购物车</h1>
+
+    <div class="carttable">
+      <div class="cartrow carthead">
+        <div class="cartcol cartcolproduct">商品</div>
+        <div class="cartcol cartcolprice">单价</div>
+        <div class="cartcol cartcolnum">数量</div>
+        <div class="cartcol cartcoltotal">小计</div>
+        <div class="cartcol cartcolaction">操作</div>
+      </div>
+
+      <div class="cartrow">
+        <div class="cartcol cartcolproduct">
+          <span class="cartitemicon">
+            <img src="images/jingdian.jpg">
+          </span> 经典可颂
+        </div>
+        <div class="cartcol cartcolprice">¥ 18.00</div>
+        <div class="cartcol cartcolnum">
+          <button class="numbtn">-</button>
+          <span class="numvalue">2</span>
+          <button class="numbtn">+</button>
+        </div>
+        <div class="cartcol cartcoltotal">¥ 36.00</div>
+        <div class="cartcol cartcolaction">
+          <a href="#" class="removebtn">删除</a>
+        </div>
+      </div>
+
+      <div class="cartrow">
+        <div class="cartcol cartcolproduct">
+          <span class="cartitemicon">
+           <img src="images/caomei.jpg">
+          </span> 草莓蛋糕
+        </div>
+        <div class="cartcol cartcolprice">¥ 32.00</div>
+        <div class="cartcol cartcolnum">
+          <button class="numbtn">-</button>
+          <span class="numvalue">1</span>
+          <button class="numbtn">+</button>
+        </div>
+        <div class="cartcol cartcoltotal">¥ 32.00</div>
+        <div class="cartcol cartcolaction">
+          <a href="#" class="removebtn">删除</a>
+        </div>
+      </div>
+
+      <div class="cartrow">
+        <div class="cartcol cartcolproduct">
+          <span class="cartitemicon">
+            <img src="images/quqi.jpg">
+          </span> 巧克力曲奇
+        </div>
+        <div class="cartcol cartcolprice">¥ 22.00</div>
+        <div class="cartcol cartcolnum">
+          <button class="numbtn">-</button>
+          <span class="numvalue">3</span>
+          <button class="numbtn">+</button>
+        </div>
+        <div class="cartcol cartcoltotal">¥ 66.00</div>
+        <div class="cartcol cartcolaction">
+          <a href="#" class="removebtn">删除</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cartsummary">
+      <p class="summaryline">商品总数：<span class="summaryvalue">6</span> 件</p>
+      <p class="summaryline">商品合计：<span class="summaryvalue">¥ 134.00</span></p>
+      <p class="summaryline summarytotal">应付总额：<span class="totalprice">¥ 134.00</span></p>
+      <button class="checkoutbtn">去结算</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p class="footertext">甜蜜烘焙坊 · 用心烘焙每一份幸福</p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+/* style.css —— 甜蜜烘焙坊 公共样式 */
+
+/* 全局基础 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fdf6ec;
+  font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  color: #4a3b2f;
+  font-size: 14px;
+}
+
+/* 顶部欢迎语 */
+.welcomebar {
+  background-color: #e8b48a;
+  color: #ffffff;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* 头部：logo + 搜索框 */
+.header {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.logobox {
+  float: left;
+  width: 400px;
+  padding-top: 8px;
+}
+
+.logotext {
+  font-size: 26px;
+  font-weight: bold;
+  color: #a0522d;
+}
+
+.searchbox {
+  float: right;
+  width: 400px;
+  padding-top: 12px;
+  text-align: right;
+}
+
+.searchinput {
+  width: 280px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #d8c3ae;
+  background-color: #ffffff;
+  color: #4a3b2f;
+  font-size: 14px;
+  outline: none;
+}
+
+.searchbtn {
+  height: 34px;
+  padding: 0 18px;
+  border: none;
+  background-color: #c07a45;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 导航栏 */
+.nav {
+  width: 1200px;
+  margin: 0 auto;
+  background-color: #a0522d;
+  overflow: hidden;
+}
+
+.navlink {
+  float: left;
+  display: block;
+  width: 240px;
+  height: 46px;
+  line-height: 46px;
+  text-align: center;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.navlink:hover {
+  background-color: #c07a45;
+}
+
+.active {
+  background-color: #c07a45;
+  font-weight: bold;
+}
+
+.banner{
+    width: 1200px;
+    margin: 20px auto;
+}
+
+/* 内容容器 宽1200px 居中 */
+.container {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 10px 0 40px 0;
+}
+
+/* 页面标题 */
+.pagetitle {
+  font-size: 28px;
+  color: #a0522d;
+  margin: 10px 0 16px 0;
+  border-left: 8px solid #e8b48a;
+  padding-left: 14px;
+}
+
+/* 段落文字 */
+.welcomepara {
+  font-size: 15px;
+  line-height: 28px;
+  color: #6b5747;
+  margin: 0 0 26px 0;
+}
+
+/* 区块小标题 */
+.sectiontitle {
+  font-size: 20px;
+  color: #a0522d;
+  margin: 30px 0 18px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e8b48a;
+}
+
+/* 商品列表及卡片 */
+.productlist {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.productcard {
+  width: 20%;
+  margin: 10px 1%;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+  text-align: center;
+}
+
+.productcard:last-child {
+  margin-right: 0;
+}
+
+.productimg {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.productimg img{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.productname {
+  font-size: 16px;
+  color: #4a3b2f;
+  margin: 6px 0;
+}
+
+.productdesc {
+  font-size: 13px;
+  color: #9a8574;
+  margin: 6px 0;
+}
+
+.productprice {
+  font-size: 16px;
+  color: #c0392b;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.addbtn {
+  padding: 6px 14px;
+  border: none;
+  background-color: #e8b48a;
+  color: #5a3a22;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.addbtn:hover {
+  background-color: #c07a45;
+  color: #ffffff;
+}
+
+/* 烘焙小贴士 */
+.tipsbox {
+  margin-top: 20px;
+  padding: 18px 22px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+}
+
+.tippara {
+  font-size: 14px;
+  line-height: 26px;
+  color: #6b5747;
+  margin: 0;
+}
+
+/* 产品分类标签 */
+.categorytab {
+  overflow: hidden;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #eddfd0;
+  padding-bottom: 10px;
+}
+
+.cattabitem {
+  float: left;
+  display: block;
+  padding: 6px 20px;
+  margin-right: 12px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+  color: #6b5747;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cattabitem:hover {
+  background-color: #e8b48a;
+  color: #ffffff;
+}
+
+.activecat {
+  background-color: #c07a45;
+  color: #ffffff;
+  border-color: #c07a45;
+}
+
+/* 购物车表格 */
+.carttable {
+  margin-bottom: 30px;
+  border: 1px solid #eddfd0;
+  background-color: #ffffff;
+}
+
+.cartrow {
+  overflow: hidden;
+  border-bottom: 1px solid #eddfd0;
+}
+
+.carthead {
+  background-color: #f5e6d8;
+  font-weight: bold;
+}
+
+.cartcol {
+  float: left;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #4a3b2f;
+}
+
+.cartcolproduct {
+  width: 340px;
+  text-align: left;
+  padding-left: 24px;
+  width: 316px;
+}
+
+.cartcolprice {
+  width: 160px;
+}
+
+.cartcolnum {
+  width: 220px;
+}
+
+.cartcoltotal {
+  width: 180px;
+  color: #c0392b;
+  font-weight: bold;
+}
+
+.cartcolaction {
+  width: 120px;
+}
+
+.cartitemicon {
+  font-size: 22px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.cartitemicon img{
+    width: 100%;
+
+}
+
+.numbtn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d8c3ae;
+  background-color: #ffffff;
+  color: #6b5747;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.numvalue {
+  display: inline-block;
+  width: 40px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.removebtn {
+  color: #c0392b;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.removebtn:hover {
+  text-decoration: underline;
+}
+
+/* 购物车汇总 */
+.cartsummary {
+  width: 360px;
+  float: right;
+  padding: 20px 24px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+}
+
+.summaryline {
+  font-size: 14px;
+  line-height: 30px;
+  color: #4a3b2f;
+  margin: 0;
+  text-align: right;
+}
+
+.summaryvalue {
+  color: #6b5747;
+}
+
+.summarytotal {
+  font-size: 16px;
+  font-weight: bold;
+  border-top: 1px dashed #d8c3ae;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.totalprice {
+  color: #c0392b;
+  font-size: 20px;
+}
+
+.checkoutbtn {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 0;
+  border: none;
+  background-color: #c07a45;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.checkoutbtn:hover {
+  background-color: #a0522d;
+}
+
+/* 关于我们区块 */
+.aboutblock {
+  margin-bottom: 20px;
+}
+
+.aboutpara {
+  font-size: 15px;
+  line-height: 28px;
+  color: #6b5747;
+  margin: 0 0 14px 0;
+  text-indent: 2em;
+}
+
+.ideagrid {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ideacard {
+  margin: 0 10px;
+  width: 100%;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+  text-align: center;
+}
+
+.ideacard:last-child {
+  width: 100%;
+}
+
+.ideaicon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.ideaname {
+  font-size: 17px;
+  color: #a0522d;
+  margin: 8px 0;
+}
+
+.ideadesc {
+  font-size: 14px;
+  line-height: 24px;
+  color: #6b5747;
+  margin: 0;
+}
+
+
+/* 留言表单 */
+.formbox {
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+  margin-bottom: 30px;
+}
+
+.formrow {
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.formlabel {
+  float: left;
+  width: 100px;
+  line-height: 36px;
+  font-size: 14px;
+  color: #4a3b2f;
+  text-align: right;
+  padding-right: 16px;
+}
+
+.forminput {
+  float: left;
+  width: 500px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d8c3ae;
+  background-color: #ffffff;
+  color: #4a3b2f;
+  font-size: 14px;
+  outline: none;
+}
+
+.formtextarea {
+  float: left;
+  width: 800px;
+  height: 120px;
+  padding: 10px;
+  border: 1px solid #d8c3ae;
+  background-color: #ffffff;
+  color: #4a3b2f;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.submitbtn {
+  display: block;
+  margin-left: 116px;
+  padding: 8px 36px;
+  border: none;
+  background-color: #c07a45;
+  color: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.submitbtn:hover {
+  background-color: #a0522d;
+}
+
+/* 留言列表 */
+.messagelist {
+  margin-top: 10px;
+}
+
+.messageitem {
+  padding: 18px 22px;
+  background-color: #ffffff;
+  border: 1px solid #eddfd0;
+  margin-bottom: 16px;
+}
+
+.messagehead {
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.messagename {
+  float: left;
+  font-size: 15px;
+  font-weight: bold;
+  color: #a0522d;
+}
+
+.messagetime {
+  float: right;
+  font-size: 13px;
+  color: #9a8574;
+}
+
+.messagecontent {
+  font-size: 14px;
+  line-height: 26px;
+  color: #6b5747;
+  margin: 0;
+}
+
+/* 页脚 */
+.footer {
+  width: 1200px;
+  margin: 10px auto 0 auto;
+  padding: 20px 0;
+  border-top: 1px solid #eddfd0;
+  text-align: center;
+  clear: both;
+}
+
+.footertext {
+  font-size: 13px;
+  color: #9a8574;
+  margin: 0;
+}
